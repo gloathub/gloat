@@ -1,0 +1,27 @@
+{
+  "name": "Gloat - Clojure AOT Tool",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "hostRequirements": {
+    "cpus": 4
+  },
+  "postStartCommand": "make -C example starting-this-demo-might-take-120-seconds-but-it-is-worth-it 2>&1",
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": {
+      "label": "Gloat Web Demo",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultLocation": "editor",
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "editor.fontFamily": "'DejaVu Sans Mono', 'Liberation Mono', monospace",
+        "terminal.integrated.fontFamily": "'DejaVu Sans Mono', 'Liberation Mono', monospace"
+      }
+    }
+  }
+}

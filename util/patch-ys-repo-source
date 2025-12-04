@@ -1,0 +1,377 @@
+#!/usr/bin/env bash
+# Fetch and transform upstream YAMLScript sources for gloat
+
+GLOAT_ROOT=$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
+source "$GLOAT_ROOT/.bpan/lib/bpan.bash" --
+
+main() (
+  setup "$@"
+  mkdir -p "$SRC/yamlscript"
+  mkdir -p "$SRC/ys"
+
+  clj_file=${1#ys/src/}
+  repo_url=$2
+
+  curl -sL "$repo_url/$clj_file" |
+    case $clj_file in
+      yamlscript/util.clj) transform-util;;
+      ys/dwim.clj) transform-dwim;;
+      ys/std.clj) transform-std;;
+      *) cat;;
+    esac
+)
+
+setup() {
+  SRC=$GLOAT_ROOT/ys/src
+
+  command -v curl &> /dev/null ||
+    die "Error: curl is required but not found"
+  command -v perl &> /dev/null ||
+    die "Error: perl is required but not found"
+}
+
+#==============================================================================
+# yamlscript/util.clj transformations
+#==============================================================================
+
+transform-util() {
+  # Add atom? function after the (ns ...) declaration
+  perl -0777 -pe '
+    s{(\(ns yamlscript\.util\)\n)}{$1
+(defn atom?
+  "Returns true if x is an Atom"
+  [x]
+  (instance? clojure.lang.Atom x))
+
+};
+  '
+}
+
+#==============================================================================
+# ys/dwim.clj transformations
+#==============================================================================
+
+transform-dwim() {
+  transform-dwim-remove-yamlscript-common |
+  transform-dwim-add-regex-helper |
+  transform-dwim-replace-refind-plus |
+  transform-dwim-remove-chop |
+  transform-dwim-replace-die
+}
+
+transform-dwim-remove-yamlscript-common() {
+  # Remove [yamlscript.common ...] from ns :require, close the :require properly
+  perl -0777 -pe 's{(\[clojure\.string :refer \[escape replace\]\])\n   \[yamlscript\.common[^\n]+}{$1)};'
+}
+
+transform-dwim-add-regex-helper() {
+  # Add regex? helper after first ;;---
+  perl -0777 -pe 's{(;;-{70,}\n)}{$1(defn- regex? [x] (instance? java.util.regex.Pattern x))
+
+};'
+}
+
+transform-dwim-replace-refind-plus() {
+  # Replace re-find+ with re-find
+  perl -0777 -pe 's{re-find[+]}{re-find}g;'
+}
+
+transform-dwim-remove-chop() {
+  # Remove the (dwim 2.2 seqable? chop) line
+  perl -0777 -pe 's{\(dwim 2\.2 seqable\? chop\)\n}{};'
+}
+
+transform-dwim-replace-die() {
+  # Replace die with throw Exception in dwim macro
+  perl -0777 -pe 's{\(die ([^)]+)\)}{(throw (Exception. (str $1)))}g;'
+}
+
+#==============================================================================
+# ys/std.clj transformations
+#==============================================================================
+
+transform-std-replace-ns() {
+  # Replace entire ns declaration and add helper functions
+  perl -0777 -pe '
+  s{\n(\(ns\s+ys\.std\n)}{
+(ns ys.std
+  (:require
+   [clojure.string :as str]
+   [yamlscript.util :as util])
+  (:refer-clojure :exclude [atom read replace reverse set]))
+
+;;------------------------------------------------------------------------------
+;; XXX - Helper functions
+;;------------------------------------------------------------------------------
+(defn- regex? [x] (instance? java.util.regex.Pattern x))
+;;------------------------------------------------------------------------------
+
+#_$1}m;
+
+  '
+}
+
+transform-std-unavailable() {
+  # Comment out unavailable functions
+  perl -0777 -pe '
+    my $names = join "|", qw<
+      base64
+      base64-decode
+      base64-encode
+      base64-points
+      bash
+      cube
+      curl
+      destructure-
+      destructure-idx
+      destructure-map
+      destructure-vector
+      diff
+      env-update
+      err
+      eval
+      exec
+      exit
+      floor
+      get-url
+      if
+      index
+      instant
+      load-url
+      _max-alias-size
+      md5
+      new
+      now
+      out
+      pow
+      pp
+      pretty
+      print
+      _println
+      process
+      process-opts
+      round
+      sh
+      sha1
+      sha256
+      shell
+      sh-out
+      sleep
+      sqr
+      stream
+      throw
+      to-vars
+      use-pod
+      warn
+    >;
+    s{^(\((?:def|defn-?|defmacro) \b(?:$names)\b)}{#_$1}gm;
+
+    s{^(\(declare \+def-defn)}{#_$1}gm;
+    s{^(\(defn- \+def-defn)}{#_$1}gm;
+    s{^(\(defmacro \+def)}{#_$1}gm;
+    s{^(\(defn \=-- )}{#_$1}gm;
+    s{^(\(defn \!-- )}{#_$1}gm;
+    s{^(\(defn _\&)}{#_$1}gm;
+    s{^(\(defn _\*)}{#_$1}gm;
+    s{^(\(defn _\*\*)}{#_$1}gm;
+    s{^(\(defn \+\+\+\*)}{#_$1}gm;
+    s{^(\(defmacro \+\+\+)}{#_$1}gm;
+    s{^(\(intern .ys.std .fs-)}{#_$1}gm;
+    s{^(\(intern .ys.std .floor)}{#_$1}gm;
+    s{^(\(intern .ys.std .round)}{#_$1}gm;
+    # s{^(\)}{#_$1}gm;
+    '
+}
+
+transform-std-intern() {
+  # Comment out unavailable functions
+  perl -0777 -pe '
+    
+    $names = join "|", qw<
+      to-bool
+      to-char
+      to-float
+      to-keyw
+      to-list
+      to-map
+      to-omap
+      to-str
+      to-type
+      to-vec
+    >;
+    s{^(\(intern .* )($names)\)}{#_$1$2)\n$1(fn [x] ($2 x)))   ; XXX}gm;
+
+    $names = join "|", qw<
+      list
+      hash-map
+      omap
+      to-num
+
+      vector
+    >;
+    s{^(\(intern .* )($names)\)}{#_$1$2)\n$1(fn [& args] (apply $2 args)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .die)(.*)$}
+     {#_$1$2
+$1 (fn [& args] (apply util/die args)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .blank\?)(.*)$}
+     {#_$1$2
+$1 (fn [s] (str/blank? s)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .chomp)(.*)$}
+     {#_$1$2
+$1 (fn [s] (str/trim-newline s)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .chop)(.*)$}
+     {#_$1$2}gm;
+
+    s{^(\(intern .ys.std .ends\?)(.*)$}
+     {#_$1$2
+$1 (fn [s e] (str/ends-with? s e)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .starts\?)(.*)$}
+     {#_$1$2
+$1 (fn [s p] (str/starts-with? s p)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .escape)(.*)$}
+     {#_$1$2
+$1 (fn [s m] (str/escape s m)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .index)(.*)$}
+     {#_$1$2
+$1 (fn [& args] (apply str/index-of args)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .lc)(.*)$}
+     {#_$1$2
+$1 (fn [s] (str/lower-case s)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .uc\b)(.*)$}
+     {#_$1$2
+$1 (fn [s] (str/upper-case s)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .uc1)(.*)$}
+     {#_$1$2
+$1 (fn [s] (str/capitalize s)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .replace1)(.*)$}
+     {#_$1$2
+$1 (fn [& args] (apply str/replace-first args)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .rindex)(.*)$}
+     {#_$1$2
+$1 (fn [& args] (apply str/last-index-of args)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .trim\b)(.*)$}
+     {#_$1$2
+$1 (fn [s] (str/trim s)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .triml)(.*)$}
+     {#_$1$2
+$1 (fn [s] (str/triml s)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .trimr)(.*)$}
+     {#_$1$2
+$1 (fn [s] (str/trimr s)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .a\b)(.*)$}
+     {#_$1$2
+$1 (fn [x] (identity x)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .len\b)(.*)$}
+     {#_$1$2
+$1 (fn [x] (count x)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .read)(.*)$}
+     {#_$1$2
+$1 (fn [& args] (apply slurp args)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .write)(.*)$}
+     {#_$1$2
+$1 (fn [& args] (apply spit args)))   ; XXX}gm;
+
+    s{^(\(intern .ys.std .sqrt\b)(.*)$}
+     {#_$1$2
+;; XXX
+(defn sqrt [x]
+  (let [epsilon 1e-15
+        abs-fn (fn [n] (if (< n 0) (- n) n))]
+    (loop [guess 1.0]
+      (let [next-guess (/ (+ guess (/ x guess)) 2)]
+        (if (< (abs-fn (- next-guess guess)) epsilon)
+          next-guess
+          (recur next-guess))))))}gm;
+
+  '
+}
+
+transform-std-fix-omap() {
+  # Replace flatland.ordered.map/ordered-map with hash-map workaround
+  perl -0777 -pe '
+    s{^(\(defn omap \[& xs\]\n  \(apply flatland\.ordered\.map/ordered-map xs\)\))}{#_$1
+
+\#_(intern '\''ys.std '\''% omap)
+
+;;------------------------------------------------------------------------------
+;; XXX - ordered map workarounds
+(defn omap [& xs]
+  (apply hash-map xs))
+
+(defn % [& xs]
+  (apply omap xs))
+;;------------------------------------------------------------------------------
+}gm;
+
+    s{\n\(intern .ys.std .% omap\)\n\n}{};
+  '
+}
+
+transform-std-specific-functions() {
+  perl -0777 -pe '
+    # sqrt - replace math/sqrt with Newton'\''s method
+    s{
+      \(defn\s+sqrt\s+\[n\]\s*
+      \(math/sqrt\s+n\)
+    }{
+(defn sqrt [n]
+  (if (or (zero? n) (= n 1))
+    n
+    (loop [guess 1.0]
+      (let [next-guess (/ (+ guess (/ n guess)) 2)]
+        (if (< (abs (- next-guess guess)) 0.00001)
+          next-guess
+          (recur next-guess))))))
+}gsx;
+
+    s{\(apply _println}{(apply println};
+
+    s{set\?\s+\(reduce\s+set/union\s+x\s+xs\)}{set? (reduce into x xs)}g;
+
+    s{re/xnum}{\#"^[+-]?[0-9]+\\.?[0-9]*([eE][+-]?[0-9]+)?\$"};
+
+    s{(\s+)atom\?(\s+\(util/atom\? x\))}{$1util/atom?$2}g;
+
+    s{common/die}{util/die}g;
+
+    s{^( +)set\? \(set.*}{$1set? (into (to-set x) (to-set y))}m;
+    s{^( +)atom\? ".*}{$1util/atom? "atom"}m;
+
+    s{^( +)\(->> rest.*\n.*\n.*}{$1(->> (concat [a b c d] rest)
+       (reduce conj ())}m;
+
+    s{^  \(\[\] \(atom nil\)\)}{  ([] (clojure.core/atom nil))}m;
+
+    s{^#_\{:clj-kondo.*\n}{}m;
+    s{\n#_\(intern .ys\.std .% omap\)\n.*\n\n}{};
+  '
+}
+
+transform-std() {
+  transform-std-replace-ns |
+  transform-std-unavailable |
+  transform-std-intern |
+  transform-std-fix-omap |
+  transform-std-specific-functions
+}
+
+main "$@"

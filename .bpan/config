@@ -1,0 +1,58 @@
+# Configuration for the 'gloat' BPAN package.
+
+[bpan]
+version = 0.1.107
+updated = 2026-02-01T08:30:15Z
+
+
+# Required package info:
+[package]
+name = gloat
+version = 0.0.0
+title = CHANGEME short description of 'gloat'
+license = MIT
+copyright = 2026
+tag = bash bpan
+
+# # Not usually needed:
+# domain = github.com
+# owner = ___
+# branch = main
+
+# # Extra package info:
+# bug = https://github.com/___/gloat/issues/
+# doc = https://...
+# web = https://...
+# irc = irc.libera.chat/bpan
+
+
+# Required author info:
+[author "github:___"]
+name = ___
+email = ___
+
+# # Optional author info:
+# irc = ___
+# matrix = ___
+# web = https://github.com/github-user-id
+# twitter = ___
+
+
+# Required packages.
+[require "package"]
+getopt-bash = 0.1+
+
+# Required external commands.
+[require "command"]
+bash = 3.2+
+
+# Packages, Files and Manpages to update (bpan update).
+[update]
+file = test/init
+file = test/00-env.t
+file = test/00-shellcheck.t
+file = License
+package = getopt-bash
+package = test-tap-bash
+
+# vim: ft=gitconfig:

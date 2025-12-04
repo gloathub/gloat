@@ -1,0 +1,780 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Gloat WASM Demo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/clojure.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+  <style>
+    * {
+      margin: 0; padding: 0;
+      box-sizing: border-box;
+    }
+    *, *::before, *::after {
+      font-family: inherit;
+    }
+    body {
+      font-family: 'Fira Mono', monospace;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    h1 {
+      padding: 20px;
+      background: #333;
+      color: #fff;
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    .left-panel, .right-panel {
+      flex: 1;
+      padding: 20px;
+      overflow: auto;
+      background: #f8f8f8;
+    }
+    .left-panel {
+      border-right: 2px solid #ddd;
+    }
+    h2 {
+      margin-bottom: 15px;
+      font-size: 16px;
+      color: #666;
+      height: 38px;
+      display: flex;
+      align-items: center;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    .header-row h2 {
+      margin-bottom: 0;
+    }
+    #code, #gljCode, #goCode {
+      white-space: pre;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    #editor {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 120px;
+    }
+    .cm-editor {
+      height: 100%;
+    }
+    .cm-editor .cm-scroller {
+      font-family: 'Fira Mono', monospace !important;
+    }
+    #code code, #gljCode code, #goCode code {
+      padding: 0;
+    }
+    #output {
+      white-space: pre;
+      background: #fff;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 200px;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px 20px;
+      font-family: 'Fira Mono', monospace;
+      font-size: 14px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover:not(:disabled) {
+      background: #45a049;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    select, input[type="text"] {
+      padding: 10px;
+      font-family: 'Fira Mono', monospace;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: white;
+      cursor: pointer;
+    }
+    input[type="text"] {
+      width: 160px;
+    }
+    #argControls {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      flex-wrap: nowrap;
+    }
+    .arg-input {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .arg-input label {
+      font-size: 12px;
+      color: #666;
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+    .section-header {
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      color: #666;
+      height: 38px;
+      transition: color 0.2s;
+    }
+    .section-header:hover {
+      color: #333;
+    }
+    .toggle-indicator {
+      display: inline-block;
+      transition: transform 0.2s;
+      font-size: 12px;
+    }
+    .collapsed .toggle-indicator {
+      transform: rotate(-90deg);
+    }
+    .section-content {
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, opacity 0.2s;
+      max-height: 10000px;
+      opacity: 1;
+    }
+    .collapsed .section-content {
+      max-height: 0;
+      opacity: 0;
+    }
+    .section-content pre {
+      margin-bottom: 0;
+    }
+    #pageTitle a {
+      color: #fff;
+      text-decoration: underline;
+    }
+    #pageTitle a:hover {
+      color: #ccc;
+    }
+    .feedback {
+      color: #2e7d32;
+    }
+    .dimmed {
+      opacity: 0.3;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 id="pageTitle">Gloat - <span id="pipelineTitle">YS→CLJ→GLJ→GO→WASM/JS</span> - <span id="programTitle"></span></h1>
+  <div class="container">
+    <div class="left-panel">
+      <div class="section">
+        <div class="header-row">
+          <h2>&nbsp;</h2>
+          <select id="cljSelector" onchange="window.loadFile && window.loadFile('clj')" style="width: 16em">
+            <option value="">Choose Clojure...</option>
+          </select>
+          <select id="ysSelector" onchange="window.loadFile && window.loadFile('ys')" style="width: 16em">
+            <option value="">Choose YAMLScript...</option>
+          </select>
+          <button onclick="window.compile()" id="compileButton" disabled style="margin-left: auto">Compile</button>
+        </div>
+        <div class="section-content">
+          <div id="editor"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-header" onclick="window.toggleSection && window.toggleSection(this)">
+          <span class="toggle-indicator">&#9660;</span>
+          <span id="gljTitle">Glojure Code</span>
+        </h2>
+        <div class="section-content">
+          <pre id="gljCode"><code class="language-clojure">Click Compile to generate code</code></pre>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-header" onclick="window.toggleSection && window.toggleSection(this)">
+          <span class="toggle-indicator">&#9660;</span>
+          <span id="goTitle">Go Code</span>
+        </h2>
+        <div class="section-content">
+          <pre id="goCode"><code class="language-go">Click Compile to generate code</code></pre>
+        </div>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="controls">
+        <button onclick="run()" id="runButton" disabled>Run</button>
+        <div id="argControls"></div>
+      </div>
+      <pre id="output"><span class="feedback">Select a program, click Compile, then Run</span></pre>
+    </div>
+  </div>
+
+  <script src="wasm_exec.js"></script>
+  <script type="module">
+    import {EditorView, basicSetup} from "https://esm.sh/codemirror@6.0.1";
+    import {yaml} from "https://esm.sh/@codemirror/lang-yaml@6.0.0";
+    import {javascript} from "https://esm.sh/@codemirror/lang-javascript@6.2.1";
+
+    // Global state
+    let editor;
+    let currentFile = '';
+    let currentExt = '.ys';
+    let compiledWasm = null;
+    let wasmModule = null; // Cached compiled WASM module
+    let config = {};
+
+    const output = document.getElementById('output');
+    const gljCodeElement = document.getElementById('gljCode');
+    const goCodeElement = document.getElementById('goCode');
+    const runButton = document.getElementById('runButton');
+    const compileButton = document.getElementById('compileButton');
+    const argControls = document.getElementById('argControls');
+
+    // Initialize CodeMirror editor
+    function initEditor(content = '', ext = '.ys') {
+      const editorDiv = document.getElementById('editor');
+      editorDiv.innerHTML = ''; // Clear existing editor
+
+      const lang = ext === '.clj' ? javascript() : yaml();
+
+      editor = new EditorView({
+        doc: content,
+        extensions: [basicSetup, lang],
+        parent: editorDiv
+      });
+    }
+
+    // Load config
+    async function loadConfig() {
+      try {
+        console.log('Fetching config from /api/config');
+        const response = await fetch('/api/config');
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        config = await response.json();
+        console.log('Config loaded:', config);
+      } catch (err) {
+        console.error('Error loading config:', err);
+        config = {};
+      }
+    }
+
+    // Get program name from file path
+    function getProgramName(filePath) {
+      const fileName = filePath.split('/').pop().replace(/\.(ys|clj)$/, '');
+      return fileName;
+    }
+
+    // Load list of available files
+    async function loadFileList() {
+      try {
+        console.log('Fetching file list from /api/files');
+        const response = await fetch('/api/files');
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const files = await response.json();
+        console.log('Files loaded:', files);
+
+        const ysSelector = document.getElementById('ysSelector');
+        const cljSelector = document.getElementById('cljSelector');
+
+        // Separate YAMLScript and Clojure files
+        const ysFiles = files.filter(f => f.startsWith('yamlscript/'));
+        const cljFiles = files.filter(f => f.startsWith('clojure/'));
+
+        // Filter to only show programs with config entries
+        const filteredYsFiles = ysFiles.filter(f => config[getProgramName(f)]);
+        const filteredCljFiles = cljFiles.filter(f => config[getProgramName(f)]);
+
+        // Populate YAMLScript dropdown
+        ysSelector.innerHTML = '<option value="">Choose YAMLScript...</option>';
+        filteredYsFiles.forEach(file => {
+          const option = document.createElement('option');
+          option.value = file;
+          option.textContent = file.replace('yamlscript/', '');
+          ysSelector.appendChild(option);
+        });
+
+        // Populate Clojure dropdown
+        cljSelector.innerHTML = '<option value="">Choose Clojure...</option>';
+        filteredCljFiles.forEach(file => {
+          const option = document.createElement('option');
+          option.value = file;
+          option.textContent = file.replace('clojure/', '');
+          cljSelector.appendChild(option);
+        });
+      } catch (err) {
+        console.error('Error loading file list:', err);
+        output.innerHTML = '<span class="feedback">Error loading file list: ' + err.message + '</span>';
+      }
+    }
+
+    // Load selected file
+    window.loadFile = async function(sourceType) {
+      const ysSelector = document.getElementById('ysSelector');
+      const cljSelector = document.getElementById('cljSelector');
+      const sourceLabel = document.querySelector('.header-row h2');
+
+      // Get value from the appropriate selector and clear the other
+      if (sourceType === 'ys') {
+        currentFile = ysSelector.value;
+        cljSelector.value = '';
+        // Dim the Source label and Clojure selector
+        sourceLabel.classList.add('dimmed');
+        cljSelector.classList.add('dimmed');
+        ysSelector.classList.remove('dimmed');
+      } else if (sourceType === 'clj') {
+        currentFile = cljSelector.value;
+        ysSelector.value = '';
+        // Dim the Source label and YAMLScript selector
+        sourceLabel.classList.add('dimmed');
+        ysSelector.classList.add('dimmed');
+        cljSelector.classList.remove('dimmed');
+      }
+
+      if (!currentFile) {
+        // If no file selected, remove dimming
+        sourceLabel.classList.remove('dimmed');
+        ysSelector.classList.remove('dimmed');
+        cljSelector.classList.remove('dimmed');
+        return;
+      }
+
+      currentExt = currentFile.endsWith('.clj') ? '.clj' : '.ys';
+
+      try {
+        console.log('Loading file:', currentFile);
+        const response = await fetch('/api/source/' + currentFile);
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const content = await response.text();
+        console.log('File loaded, length:', content.length);
+
+        // Update editor with new content
+        initEditor(content, currentExt);
+
+        // Update page title with program name and pipeline
+        const programName = getProgramName(currentFile);
+        const displayName = programName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+        // Extract Rosetta Code URL from first line comment if present
+        const firstLine = content.split('\n')[0];
+        const urlMatch = firstLine.match(/https?:\/\/[^\s]+/);
+
+        const programTitleElement = document.getElementById('programTitle');
+        if (urlMatch) {
+          programTitleElement.innerHTML = `<a href="${urlMatch[0]}" target="_blank">${displayName}</a>`;
+        } else {
+          programTitleElement.textContent = displayName;
+        }
+
+        // Update pipeline based on source type
+        const pipeline = currentExt === '.ys' ? 'YS→CLJ→GLJ→GO→WASM/JS' : 'CLJ→GLJ→GO→WASM/JS';
+        document.getElementById('pipelineTitle').textContent = pipeline;
+
+        // Clear compiled code panels
+        gljCodeElement.querySelector('code').textContent = 'Click Compile to generate code';
+        goCodeElement.querySelector('code').textContent = 'Click Compile to generate code';
+
+        // Reset compiled WASM
+        compiledWasm = null;
+        wasmModule = null;
+
+        // Enable compile button, disable run button
+        compileButton.disabled = false;
+        runButton.disabled = true;
+
+        // Setup argument controls based on config
+        setupArgControls();
+
+      } catch (err) {
+        console.error('Error loading file:', err);
+        output.innerHTML = '<span class="feedback">Error loading file: ' + err.message + '</span>';
+      }
+    }
+
+    // Setup argument controls based on config
+    function setupArgControls() {
+      argControls.innerHTML = '';
+
+      const programName = getProgramName(currentFile);
+      const programConfig = config[programName];
+
+      if (!programConfig) {
+        return;
+      }
+
+      // Get the first (and only) argument configuration
+      const argConfig = programConfig[0];
+
+      if (Array.isArray(argConfig) && argConfig.length > 0) {
+        const firstItem = argConfig[0];
+
+        // Check if it's labeled format [["label", value, default], ...] or simple [value, ...]
+        const isLabeled = Array.isArray(firstItem) && typeof firstItem[0] === 'string';
+
+        const select = document.createElement('select');
+        select.id = 'progArgs';
+
+        if (isLabeled) {
+          // Format: [["99 bottles", 99, true], ["50 bottles", 50], ...]
+          argConfig.forEach(item => {
+            const [label, value, isDefault] = item;
+            const option = document.createElement('option');
+            // Store arrays as JSON, primitives as-is
+            option.value = Array.isArray(value) ? JSON.stringify(value) : value;
+            option.textContent = label;
+            if (isDefault) {
+              option.selected = true;
+            }
+            select.appendChild(option);
+          });
+        } else {
+          // Format: [1, 2, [42], 99, 100] where bracketed is default
+          argConfig.forEach(item => {
+            const isDefault = Array.isArray(item);
+            const value = isDefault ? item[0] : item;
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = value;
+            if (isDefault) {
+              option.selected = true;
+            }
+            select.appendChild(option);
+          });
+        }
+
+        argControls.appendChild(select);
+      }
+    }
+
+    // Compile source code
+    window.compile = async function() {
+      const source = editor.state.doc.toString();
+
+      return new Promise((resolve) => {
+        compileButton.disabled = true;
+        runButton.disabled = true;
+
+        // Clear code panes immediately
+        gljCodeElement.querySelector('code').textContent = 'Compiling...';
+        goCodeElement.querySelector('code').textContent = 'Compiling...';
+
+        const steps = {clj: false, glj: false, go: false, wasm: false, encode: false};
+        const stepTimes = {clj: 0, glj: 0, go: 0, wasm: 0, encode: 0};
+        let statusText = '';
+        const isYamlScript = currentExt === '.ys';
+        const compileStartTime = performance.now();
+
+        const updateStatus = () => {
+          const lines = [];
+          const filename = currentFile.split('/').pop();
+
+          // Header line
+          lines.push(`Compiling ${filename} to WASM/JS...`);
+
+          // Only show YS→CLJ step for YAMLScript files
+          if (isYamlScript) {
+            if (steps.clj) lines.push(`  YS→CLJ... done (${stepTimes.clj}ms)`);
+            else lines.push('  YS→CLJ...');
+          }
+
+          if (steps.clj) {
+            if (steps.glj) lines.push(`  CLJ→GLJ... done (${stepTimes.glj}ms)`);
+            else if (statusText.includes('glj')) lines.push('  CLJ→GLJ...');
+          }
+
+          if (steps.glj) {
+            if (steps.go) lines.push(`  GLJ→GO... done (${stepTimes.go}ms)`);
+            else if (statusText.includes('go')) lines.push('  GLJ→GO...');
+          }
+
+          if (steps.go) {
+            if (steps.wasm) {
+              lines.push(`  GO→WASM/JS... done (${stepTimes.wasm}ms)`);
+            }
+            else if (statusText.includes('wasm')) lines.push('  GO→WASM/JS...');
+          }
+
+          if (steps.wasm) {
+            if (steps.encode)
+              lines.push(`  WASM/JS→Base64... done (${stepTimes.encode}ms)`);
+            else if (statusText.includes('encode'))
+              lines.push('  WASM/JS→Base64...');
+          }
+
+          output.innerHTML = '<span class="feedback">' + lines.join('\n') + '</span>';
+        };
+
+        // Use fetch with text/event-stream
+        fetch('/api/compile', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({source, ext: currentExt})
+        }).then(response => {
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = '';
+
+          const processEvents = () => {
+            reader.read().then(({done, value}) => {
+              if (done) return;
+
+              buffer += decoder.decode(value, {stream: true});
+              const events = buffer.split('\n\n');
+              buffer = events.pop(); // Keep incomplete event in buffer
+
+              events.forEach(eventText => {
+                const lines = eventText.split('\n');
+                let eventType = 'message';
+                let eventData = '';
+
+                lines.forEach(line => {
+                  if (line.startsWith('event: ')) {
+                    eventType = line.substring(7);
+                  } else if (line.startsWith('data: ')) {
+                    eventData = line.substring(6);
+                  }
+                });
+
+                if (eventData) {
+                  const data = JSON.parse(eventData);
+
+                  if (eventType === 'progress') {
+                    statusText = data.step + ' ' + data.status;
+                    if (data.status === 'done') {
+                      steps[data.step] = true;
+                      stepTimes[data.step] = data.ms || 0;
+
+                      // Display code as soon as it's available
+                      if (data.step === 'glj' && data.code) {
+                        const gljCode = gljCodeElement.querySelector('code');
+                        gljCode.textContent = data.code;
+                        hljs.highlightElement(gljCode);
+                      } else if (data.step === 'go' && data.code) {
+                        const goCode = goCodeElement.querySelector('code');
+                        goCode.textContent = data.code;
+                        hljs.highlightElement(goCode);
+                      }
+                    }
+                    updateStatus();
+                  } else if (eventType === 'done') {
+                    // Store compiled WASM
+                    compiledWasm = data.wasm;
+
+                    // Build status message based on source type
+                    const statusLines = [];
+                    const filename = currentFile.split('/').pop();
+                    const totalMs = (isYamlScript ? stepTimes.clj : 0) + stepTimes.glj + stepTimes.go + stepTimes.wasm + stepTimes.encode;
+
+                    statusLines.push(`Compiling ${filename} to WASM/JS...`);
+                    if (isYamlScript) statusLines.push(`  YS→CLJ... done (${stepTimes.clj}ms)`);
+                    statusLines.push(`  CLJ→GLJ... done (${stepTimes.glj}ms)`);
+                    statusLines.push(`  GLJ→GO... done (${stepTimes.go}ms)`);
+                    statusLines.push(`  GO→WASM/JS... done (${stepTimes.wasm}ms)`);
+                    statusLines.push(`  WASM/JS→Base64... done (${stepTimes.encode}ms)`);
+                    statusLines.push(`done (${totalMs}ms)`);
+
+                    // Show compilation status (never updated again)
+                    output.innerHTML = '<span class="feedback">' + statusLines.join('\n') + '</span><span class="feedback" id="loading-status"></span>';
+
+                    // Compile WASM module in background
+                    setTimeout(async () => {
+                      const wasmLoadStart = performance.now();
+
+                      // Compile WASM bytes to module
+                      const binaryString = atob(compiledWasm);
+                      const wasmBytes = new Uint8Array(binaryString.length);
+                      for (let i = 0; i < binaryString.length; i++) {
+                        wasmBytes[i] = binaryString.charCodeAt(i);
+                      }
+                      wasmModule = await WebAssembly.compile(wasmBytes);
+
+                      const wasmLoadMs = Math.round(performance.now() - wasmLoadStart);
+
+                      // Update only the loading status in its own element
+                      const loadingStatus = document.getElementById('loading-status');
+                      loadingStatus.textContent = `\n\nLoading WASM/JS module... done (${wasmLoadMs}ms)\n\nReady to run.`;
+
+                      runButton.disabled = false;
+                      compileButton.disabled = false;
+                      resolve(true);
+                    }, 10);
+                  } else if (eventType === 'error') {
+                    output.innerHTML = '<span class="feedback">Compilation error:\n' + (data.error || 'Unknown error') + '</span>';
+                    compiledWasm = null;
+                    wasmModule = null;
+                    compileButton.disabled = false;
+                    resolve(false);
+                  }
+                }
+              });
+
+              processEvents();
+            });
+          };
+
+          processEvents();
+        }).catch(err => {
+          output.innerHTML = '<span class="feedback">Error during compilation: ' + err + '</span>';
+          compiledWasm = null;
+          wasmModule = null;
+          compileButton.disabled = false;
+          resolve(false);
+        });
+      });
+    }
+
+    // Run compiled WASM
+    window.run = async function() {
+      if (!compiledWasm) {
+        output.innerHTML = '<span class="feedback">No compiled WASM. Please click Compile first.</span>';
+        return;
+      }
+
+      // Disable button
+      runButton.disabled = true;
+
+      // Get arguments from select dropdown first
+      const argSelect = document.getElementById('progArgs');
+      let args = [];
+      if (argSelect) {
+        const rawValue = argSelect.value;
+        // Try to parse as JSON array, fall back to single value
+        try {
+          const parsed = JSON.parse(rawValue);
+          args = Array.isArray(parsed) ? parsed.map(String) : [String(parsed)];
+        } catch {
+          args = [rawValue];
+        }
+      }
+
+      // Show what we're running with initialization message
+      const argsDisplay = args.length > 0 ? ' ' + args.join(' ') : '';
+      output.innerHTML = `<span class="feedback">Running: ${currentFile}${argsDisplay}\nInitializing Go runtime in Wasm...</span>`;
+
+      // Give browser a chance to update UI
+      await new Promise(resolve => setTimeout(resolve, 10));
+
+      // Buffer console.log output during WASM execution
+      const originalLog = console.log;
+      let outputBuffer = [];
+      console.log = (...args) => {
+        outputBuffer.push(args.join(' '));
+      };
+
+      try {
+        // Initialize Go runtime
+        const initStart = performance.now();
+        const go = new Go();
+        go.argv = ['program', ...args];
+
+        // Instantiate WASM from compiled module
+        const instance = await WebAssembly.instantiate(wasmModule, go.importObject);
+        const initMs = Math.round(performance.now() - initStart);
+
+        // Show initialization complete
+        output.innerHTML = `<span class="feedback">Running: ${currentFile}${argsDisplay}\nInitializing Go runtime in Wasm... done (${initMs}ms)\nStarting program now:\n</span>`;
+
+        // Give browser a chance to update UI before starting program
+        await new Promise(resolve => setTimeout(resolve, 10));
+
+        // Run WASM
+        await go.run(instance);
+
+        // Render all buffered output at once
+        const escapedOutput = outputBuffer.map(line =>
+          line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        ).join('\n');
+        output.innerHTML += escapedOutput + '\n';
+
+        // Show program complete
+        output.innerHTML += `<span class="feedback">Program complete</span>`;
+
+      } catch (err) {
+        output.innerHTML = '<span class="feedback">Error running WASM: ' + err + '</span>';
+      } finally {
+        // Restore original console.log and re-enable button
+        console.log = originalLog;
+        runButton.disabled = false;
+      }
+    }
+
+    // Function for collapsible sections
+    function toggleSection(header) {
+      const section = header.parentElement;
+      section.classList.toggle('collapsed');
+    }
+    window.toggleSection = toggleSection;
+
+    // Initialize on load
+    async function init() {
+      try {
+        console.log('Starting initialization...');
+        initEditor('', '.ys');
+        console.log('Editor initialized');
+        await loadConfig();
+        console.log('Config loaded');
+        await loadFileList();
+        console.log('File list loaded');
+      } catch (err) {
+        console.error('Initialization error:', err);
+        if (output) {
+          output.innerHTML = '<span class="feedback">Initialization error: ' + err.message + '</span>';
+        }
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

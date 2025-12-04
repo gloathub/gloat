@@ -1,0 +1,25 @@
+diff --git a/ys/pkg/yamlscript/util/loader.go b/ys/pkg/yamlscript/util/loader.go
+index a342edd..e3024de 100644
+--- a/ys/pkg/yamlscript/util/loader.go
++++ b/ys/pkg/yamlscript/util/loader.go
+@@ -779,4 +779,20 @@ func LoadNS() {
+ 			var_yamlscript_DOT_util_when_DASH_lets.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+ 		}
+ 	}
++	// Override seqable? to fix broken Java interop in upstream Glojure.
++	// The upstream core.glj defines seqable? as (clojure.lang.RT/canSeq x)
++	// which compiles to lang.Apply(nil, ...) and panics at runtime.
++	{
++		seqableNs := lang.FindOrCreateNamespace(lang.NewSymbol("clojure.core"))
++		seqableSym := lang.NewSymbol("seqable?").WithMeta(
++			lang.NewMap(
++				lang.NewKeyword("doc"),
++				"Return true if the seq function is supported for x",
++			)).(*lang.Symbol)
++		seqableFn := lang.NewFnFunc(func(args ...any) any {
++			checkArity(args, 1)
++			return lang.CanSeq(args[0])
++		})
++		seqableNs.InternWithValue(seqableSym, seqableFn, true)
++	}
+ }

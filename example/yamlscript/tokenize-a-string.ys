@@ -1,0 +1,6 @@
+# https://rosettacode.org/wiki/Tokenize_a_string#YAMLScript
+
+!ys-0
+
+defn main(input='Hello,How,Are,You,Today'):
+  say: input.split(/,/).join('.')

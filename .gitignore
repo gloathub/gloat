@@ -1,0 +1,9 @@
+/CLAUDE.md
+/.cache/
+/.claude/
+/note/
+/*.clj
+/*.glj
+/*.go
+/*.md
+/*.ys

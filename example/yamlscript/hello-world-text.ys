@@ -1,0 +1,6 @@
+# https://rosettacode.org/wiki/Hello_world/Text#YAMLScript
+
+!ys-0
+
+defn main():
+  say: "Hello, world!"

@@ -1,0 +1,7 @@
+# shellcheck shell=bash disable=2086
+
+# Works for bash and zsh.
+
+PATH=$(cd -P "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd -P)/bin:$PATH
+
+export PATH

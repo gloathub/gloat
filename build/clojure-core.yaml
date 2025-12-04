@@ -1,0 +1,3405 @@
+'*':
+- '*'
+- '*unchecked-math*'
+- ./S
+- concat
+- list
+- reduce1
+- seq
+'*''':
+- '*'''
+- '*unchecked-math*'
+- ./S
+- concat
+- list
+- reduce1
+- seq
++:
+- '*unchecked-math*'
+- +
+- ./S
+- concat
+- list
+- reduce1
+- seq
++':
+- '*unchecked-math*'
+- +'
+- ./S
+- concat
+- list
+- reduce1
+- seq
+'-':
+- '*'
+- '*unchecked-math*'
+- '-'
+- ./S
+- concat
+- list
+- reduce1
+- seq
+-':
+- '*'''
+- '*unchecked-math*'
+- -'
+- ./S
+- concat
+- list
+- reduce1
+- seq
+->/M:
+- concat
+- first
+- list
+- meta
+- next
+- seq
+- seq?
+- with-meta
+->>/M:
+- concat
+- first
+- list
+- meta
+- next
+- seq
+- seq?
+- with-meta
+-protocols:
+- apply
+- class
+- cons
+../M:
+- ./S
+- concat
+- list
+- seq
+/:
+- '*unchecked-math*'
+- ./S
+- /
+- concat
+- list
+- reduce1
+- seq
+<:
+- ./S
+- <
+- concat
+- first
+- list
+- next
+- seq
+<=:
+- ./S
+- <=
+- concat
+- first
+- list
+- next
+- seq
+'=':
+- ./S
+- concat
+- first
+- list
+- next
+- seq
+==:
+- ./S
+- ==
+- concat
+- first
+- list
+- next
+- seq
+'>':
+- ./S
+- '>'
+- concat
+- first
+- list
+- next
+- seq
+'>=':
+- ./S
+- '>='
+- concat
+- first
+- list
+- next
+- seq
+NaN?:
+- concat
+- list
+- seq
+StackTraceElement->vec:
+- symbol
+Throwable->map:
+- StackTraceElement->vec
+- aget
+- alength
+- class
+- conj
+- ex-data
+- map
+- merge
+- peek
+- pos?
+- symbol
+- vec
+abs:
+- concat
+- list
+- seq
+aclone:
+- ./S
+- concat
+- list
+- seq
+add-classpath:
+- println
+add-doc-and-meta/M:
+- concat
+- list
+- seq
+- var/S
+agent:
+- apply
+- hash-map
+- setup-reference
+agent-errors:
+- agent-error
+- list
+aget:
+- ./S
+- aget
+- apply
+- concat
+- list
+- seq
+alength:
+- ./S
+- concat
+- list
+- seq
+alias:
+- '*ns*'
+- the-ns
+amap/M:
+- apply
+- concat
+- do/S
+- if/S
+- list
+- recur/S
+- seq
+- vector
+ancestors:
+- ancestors
+- class?
+- cons
+- get
+- global-hierarchy
+- into1
+- map
+- not-empty
+- reduce1
+- set
+- supers
+and/M:
+- apply
+- concat
+- if/S
+- list
+- seq
+- vector
+apply:
+- cons
+- list*
+- seq
+- spread
+areduce/M:
+- apply
+- concat
+- if/S
+- list
+- recur/S
+- seq
+- vector
+array:
+- into-array
+array-map:
+- alength
+- last
+- odd?
+- str
+- to-array
+as->/M:
+- apply
+- butlast
+- concat
+- empty?
+- interleave
+- last
+- list
+- repeat
+- seq
+- vector
+aset:
+- ./S
+- aget
+- apply
+- aset
+- concat
+- list
+- seq
+aset-boolean:
+- aget
+- apply
+- aset-boolean
+- boolean
+aset-byte:
+- aget
+- apply
+- aset-byte
+- byte
+aset-char:
+- aget
+- apply
+- aset-char
+- char
+aset-double:
+- aget
+- apply
+- aset-double
+- double
+aset-float:
+- aget
+- apply
+- aset-float
+- float
+aset-int:
+- aget
+- apply
+- aset-int
+- int
+aset-long:
+- aget
+- apply
+- aset-long
+- long
+aset-short:
+- aget
+- apply
+- aset-short
+- short
+assert-args/M:
+- concat
+- do/S
+- first
+- list
+- list*
+- nnext
+- second
+- seq
+- throw/S
+assert-valid-fdecl:
+- empty?
+- first
+- map
+- remove
+- seq
+- seq?
+- str
+- vector?
+assert/M:
+- '*assert*'
+- concat
+- list
+- new/S
+- quote/S
+- seq
+- throw/S
+assoc:
+- first
+- next
+- nnext
+- second
+assoc!:
+- first
+- nnext
+- second
+assoc-in:
+- assoc
+- assoc-in
+- first
+- get
+- next
+- seq
+associative?:
+- instance?
+atom:
+- atom
+- setup-reference
+await:
+- '*agent*'
+- <
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- count
+- first
+- int
+- next
+- send
+- seq
+- unchecked-inc
+await-for:
+- '*agent*'
+- <
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- count
+- first
+- int
+- next
+- send
+- seq
+- unchecked-inc
+await1:
+- await
+- pos?
+bases:
+- cons
+- seq
+bigdec:
+- decimal?
+- double
+- float?
+- instance?
+- long
+- number?
+- ratio?
+bigint:
+- bigint
+- decimal?
+- double
+- float?
+- instance?
+- long
+- number?
+- ratio?
+biginteger:
+- decimal?
+- double
+- float?
+- instance?
+- long
+- number?
+- ratio?
+binding-conveyor-fn:
+- apply
+binding/M:
+- '*ns*'
+- apply
+- concat
+- conj
+- count
+- even?
+- finally/S
+- first
+- list
+- meta
+- next
+- second
+- seq
+- str
+- try/S
+- var/S
+- vector
+- vector?
+bit-and:
+- '*unchecked-math*'
+- ./S
+- bit-and
+- concat
+- list
+- reduce1
+- seq
+bit-and-not:
+- '*unchecked-math*'
+- ./S
+- bit-and-not
+- concat
+- list
+- reduce1
+- seq
+bit-not:
+- ./S
+- concat
+- list
+- seq
+bit-or:
+- '*unchecked-math*'
+- ./S
+- bit-or
+- concat
+- list
+- reduce1
+- seq
+bit-shift-left:
+- ./S
+- concat
+- list
+- seq
+bit-shift-right:
+- ./S
+- concat
+- list
+- seq
+bit-xor:
+- '*unchecked-math*'
+- ./S
+- bit-xor
+- concat
+- list
+- reduce1
+- seq
+boolean:
+- ./S
+- concat
+- list
+- seq
+boolean-array:
+- ./S
+- concat
+- list
+- seq
+boolean?:
+- instance?
+booleans:
+- ./S
+- concat
+- list
+- seq
+bound-fn*:
+- apply
+- get-thread-bindings
+- with-bindings*
+bound-fn/M:
+- concat
+- list
+- seq
+bound?:
+- every?
+bounded-count:
+- <
+- count
+- counted?
+- inc
+- next
+- seq
+butlast:
+- conj
+- first
+- next
+- seq
+byte:
+- '*unchecked-math*'
+- ./S
+- concat
+- list
+- seq
+byte-array:
+- ./S
+- concat
+- list
+- seq
+bytes:
+- ./S
+- concat
+- list
+- seq
+bytes?:
+- '='
+- class
+- nil?
+case-map:
+- into1
+- map
+- sorted-map
+- vector
+- zipmap
+case/M:
+- <=
+- '='
+- '>'
+- apply
+- assoc
+- case*/S
+- concat
+- contains?
+- count
+- every?
+- gensym
+- integer?
+- keys
+- keyword?
+- last
+- list
+- nth
+- odd?
+- partition
+- prep-hashes
+- prep-ints
+- reduce1
+- seq
+- seq?
+- str
+- throw/S
+- vals
+- vector
+- with-meta
+cat:
+- preserving-reduced
+- reduce
+char:
+- '*unchecked-math*'
+- ./S
+- concat
+- list
+- seq
+char-array:
+- ./S
+- concat
+- list
+- seq
+char?:
+- instance?
+chars:
+- ./S
+- concat
+- list
+- seq
+check-cyclic-dependency:
+- '*pending-paths*'
+- '='
+- apply
+- cons
+- interpose
+- map
+- rest
+- some
+- str
+- throw-if
+check-valid-options:
+- apply
+- disj
+- first
+- hash-set
+- keys
+- map
+- rest
+- seq
+- str
+chunked-seq?:
+- instance?
+class:
+- nil?
+class?:
+- instance?
+clear-agent-errors:
+- restart-agent
+coll?:
+- instance?
+comp:
+- apply
+- comp
+- identity
+- list*
+- reduce1
+compare:
+- ./S
+- concat
+- list
+- seq
+compile:
+- hash-map
+- load-one
+- pop-thread-bindings
+- push-thread-bindings
+complement:
+- apply
+- not
+completing:
+- completing
+- identity
+concat:
+- chunk-cons
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- concat
+- cons
+- first
+- next
+- rest
+- seq
+cond->/M:
+- apply
+- butlast
+- concat
+- empty?
+- gensym
+- if/S
+- interleave
+- last
+- list
+- map
+- nth
+- partition
+- repeat
+- seq
+- vector
+cond->>/M:
+- apply
+- butlast
+- concat
+- empty?
+- gensym
+- if/S
+- interleave
+- last
+- list
+- map
+- nth
+- partition
+- repeat
+- seq
+- vector
+cond/M:
+- cons
+- first
+- if/S
+- list
+- next
+- second
+condp/M:
+- '='
+- apply
+- concat
+- count
+- gensym
+- if/S
+- list
+- nth
+- second
+- seq
+- split-at
+- throw/S
+- vector
+conj:
+- first
+- next
+conj!:
+- transient
+count:
+- ./S
+- concat
+- list
+- seq
+counted?:
+- instance?
+cycle:
+- seq
+data-reader-var:
+- create-ns
+- intern
+- name
+- namespace
+- symbol
+dec:
+- '*unchecked-math*'
+- ./S
+- concat
+- list
+- seq
+dec':
+- ./S
+- concat
+- list
+- seq
+decimal?:
+- instance?
+declare/M:
+- assoc
+- concat
+- def/S
+- do/S
+- list
+- map
+- seq
+- vary-meta
+dedupe:
+- '='
+- dedupe
+- deref
+- sequence
+- volatile!
+- vreset!
+def-aset/M:
+- ./S
+- apply
+- concat
+- hash-map
+- list
+- quote/S
+- seq
+- vector
+definline/M:
+- apply
+- comp
+- concat
+- do/S
+- eval
+- list
+- not
+- nth
+- seq
+- split-with
+- var/S
+- vector?
+defmacro/M:
+- ./S
+- conj
+- cons
+- do/S
+- first
+- list
+- map?
+- next
+- nil?
+- seq
+- string?
+- var/S
+- vec
+- vector?
+defmethod/M:
+- ./S
+- concat
+- list
+- seq
+- with-meta
+defmulti/M:
+- '='
+- apply
+- assoc
+- check-valid-options
+- concat
+- conj
+- count
+- def/S
+- first
+- get
+- hash-map
+- list
+- map?
+- meta
+- name
+- next
+- seq
+- string?
+- vector
+- with-meta
+defn-/M:
+- assoc
+- list*
+- meta
+- with-meta
+defn/M:
+- assoc
+- butlast
+- conj
+- cons
+- def/S
+- first
+- fn/S
+- instance?
+- last
+- list
+- map?
+- meta
+- next
+- quote/S
+- second
+- sigs
+- string?
+- vector?
+- with-meta
+defonce/M:
+- apply
+- concat
+- def/S
+- list
+- seq
+- vector
+defprotocol/M:
+- '='
+- apply
+- concat
+- def/S
+- do/S
+- drop-while
+- first
+- hash-map
+- list
+- map
+- not
+- quote/S
+- rest
+- seq
+- seq?
+- string?
+- take-while
+- var/S
+- vector
+defstruct/M:
+- concat
+- def/S
+- list
+- seq
+delay/M:
+- list
+- list*
+delay?:
+- instance?
+deref:
+- deref-future
+- instance?
+deref-as-map:
+- agent-error
+- deref
+- instance?
+- not
+- nth
+derive:
+- alter-var-root
+- assoc
+- conj
+- cons
+- contains?
+- derive
+- get
+- print-str
+- reduce1
+descendants:
+- class?
+- descendants
+- get
+- global-hierarchy
+- not-empty
+destructure:
+- '='
+- assoc
+- concat
+- conj
+- contains?
+- dissoc
+- every?
+- first
+- gensym
+- ident?
+- if/S
+- inc
+- instance?
+- key
+- keys
+- keyword
+- keyword?
+- list
+- map
+- map?
+- meta
+- name
+- namespace
+- next
+- nnext
+- partition
+- quote/S
+- reduce1
+- second
+- seq
+- some
+- str
+- symbol
+- symbol?
+- val
+- vector?
+- with-meta
+disj:
+- disj
+- first
+- next
+disj!:
+- first
+- next
+dissoc:
+- dissoc
+- first
+- next
+dissoc!:
+- first
+- next
+distinct:
+- conj
+- cons
+- contains?
+- deref
+- nth
+- rest
+- seq
+- volatile!
+distinct?:
+- '='
+- conj
+- contains?
+- first
+- next
+- not
+- not=
+- seq
+doall:
+- dorun
+dorun:
+- dec
+- next
+- pos?
+- seq
+doseq/M:
+- '*ns*'
+- '='
+- apply
+- concat
+- count
+- do/S
+- even?
+- first
+- gensym
+- if/S
+- keyword?
+- list
+- meta
+- nnext
+- not
+- nth
+- recur/S
+- second
+- seq
+- str
+- vector
+- vector?
+- with-meta
+dosync/M:
+- concat
+- list
+- seq
+dotimes/M:
+- '*ns*'
+- '='
+- apply
+- concat
+- count
+- first
+- list
+- meta
+- recur/S
+- second
+- seq
+- str
+- vector
+- vector?
+doto/M:
+- apply
+- concat
+- first
+- gensym
+- list
+- map
+- meta
+- next
+- seq
+- seq?
+- vector
+- with-meta
+double:
+- ./S
+- concat
+- list
+- seq
+double-array:
+- ./S
+- concat
+- list
+- seq
+double?:
+- instance?
+doubles:
+- ./S
+- concat
+- list
+- seq
+drop:
+- dec
+- deref
+- instance?
+- int?
+- pos?
+- rest
+- seq
+- volatile!
+drop-last:
+- drop
+- drop-last
+- map
+drop-while:
+- deref
+- first
+- rest
+- seq
+- volatile!
+- vreset!
+elide-top-frames:
+- '='
+- drop-while
+- into-array
+emit-extend-protocol:
+- concat
+- do/S
+- list
+- map
+- nth
+- parse-impls
+- seq
+emit-extend-type:
+- concat
+- emit-hinted-impl
+- list
+- mapcat
+- parse-impls
+- partial
+- seq
+emit-hinted-impl:
+- apply
+- assoc
+- cons
+- drop
+- first
+- keyword
+- list
+- map
+- name
+- next
+- nth
+- seq
+- vary-meta
+- vector
+- vector?
+- zipmap
+empty:
+- instance?
+empty?:
+- count
+- counted?
+- not
+- seq
+- zero?
+ensure-reduced:
+- reduced
+- reduced?
+even?:
+- bit-and
+- integer?
+- str
+- zero?
+every-pred:
+- boolean
+- every?
+- list*
+every?:
+- first
+- next
+- nil?
+- seq
+ex-cause:
+- instance?
+ex-message:
+- instance?
+extend:
+- <
+- apply
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- cons
+- count
+- deref
+- first
+- get-in
+- int
+- next
+- nth
+- partition
+- protocol?
+- reduce1
+- seq
+- str
+- unchecked-inc
+extend-protocol/M:
+- emit-extend-protocol
+extend-type/M:
+- emit-extend-type
+ffirst:
+- first
+file-seq:
+- seq
+- tree-seq
+filter:
+- <
+- chunk
+- chunk-append
+- chunk-buffer
+- chunk-cons
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- cons
+- count
+- filter
+- first
+- rest
+- seq
+- unchecked-inc
+filter-key:
+- assoc
+- first
+- key
+- next
+- seq
+- val
+filterv:
+- conj!
+- persistent!
+- reduce
+- transient
+find-keyword:
+- keyword?
+- string?
+- symbol?
+fits-table?:
+- '-'
+- <
+- apply
+- max
+- max-switch-table-size
+- min
+- seq
+flatten:
+- complement
+- filter
+- rest
+- seq
+- sequential?
+- tree-seq
+float:
+- '*unchecked-math*'
+- ./S
+- concat
+- list
+- seq
+float-array:
+- ./S
+- concat
+- list
+- seq
+float?:
+- instance?
+floats:
+- ./S
+- concat
+- list
+- seq
+flush:
+- '*out*'
+fn/M:
+- <
+- apply
+- concat
+- cons
+- count
+- do/S
+- first
+- list
+- list*
+- map
+- map?
+- maybe-destructured
+- meta
+- next
+- not
+- seq
+- seq?
+- str
+- symbol?
+- vector
+- vector?
+- with-meta
+fn?:
+- instance?
+fnext:
+- first
+- next
+fnil:
+- apply
+- nil?
+for/M:
+- '*ns*'
+- '='
+- apply
+- concat
+- conj
+- count
+- do/S
+- even?
+- first
+- gensym
+- if/S
+- keyword?
+- list
+- meta
+- next
+- nth
+- partition
+- peek
+- pop
+- recur/S
+- reduce1
+- second
+- seq
+- str
+- vector
+- vector?
+format:
+- apply
+frequencies:
+- assoc!
+- get
+- inc
+- persistent!
+- reduce
+- transient
+future-call:
+- binding-conveyor-fn
+future/M:
+- apply
+- concat
+- list
+- seq
+- vector
+future?:
+- instance?
+gensym:
+- gensym
+- str
+get:
+- ./S
+- concat
+- list
+- seq
+get-in:
+- first
+- get
+- identical?
+- next
+- reduce1
+- seq
+group-by:
+- assoc!
+- conj
+- get
+- persistent!
+- reduce
+- transient
+halt-when:
+- contains?
+- halt-when
+- map?
+- reduced
+hash-set:
+- apply
+ident?:
+- keyword?
+- symbol?
+identical?:
+- ./S
+- concat
+- list
+- seq
+if-let/M:
+- '*ns*'
+- '='
+- apply
+- concat
+- count
+- first
+- if/S
+- list
+- meta
+- nil?
+- seq
+- str
+- vector
+- vector?
+if-not/M:
+- concat
+- if/S
+- list
+- seq
+if-some/M:
+- '*ns*'
+- '='
+- apply
+- concat
+- count
+- first
+- if/S
+- list
+- meta
+- nil?
+- seq
+- str
+- vector
+- vector?
+ifn?:
+- instance?
+import/M:
+- '='
+- concat
+- conj
+- do/S
+- first
+- into1
+- list
+- map
+- name
+- quote/S
+- reduce1
+- rest
+- second
+- seq
+- seq?
+- str
+- symbol?
+inc:
+- '*unchecked-math*'
+- ./S
+- concat
+- list
+- seq
+inc':
+- ./S
+- concat
+- list
+- seq
+indexed?:
+- instance?
+infinite?:
+- concat
+- list
+- seq
+int:
+- '*unchecked-math*'
+- ./S
+- concat
+- list
+- seq
+int-array:
+- ./S
+- concat
+- list
+- seq
+int?:
+- instance?
+interleave:
+- apply
+- concat
+- conj
+- cons
+- every?
+- first
+- identity
+- interleave
+- map
+- rest
+- seq
+intern:
+- meta
+- the-ns
+interpose:
+- deref
+- drop
+- interleave
+- reduced?
+- repeat
+- volatile!
+- vreset!
+into:
+- conj
+- conj!
+- instance?
+- meta
+- persistent!
+- reduce
+- transduce
+- transient
+- with-meta
+into-array:
+- seq
+into1:
+- conj
+- conj!
+- instance?
+- persistent!
+- reduce1
+- transient
+ints:
+- ./S
+- concat
+- list
+- seq
+io!/M:
+- concat
+- do/S
+- first
+- if/S
+- list
+- new/S
+- next
+- seq
+- string?
+- throw/S
+isa?:
+- '='
+- class?
+- contains?
+- count
+- global-hierarchy
+- inc
+- isa?
+- not
+- some
+- supers
+- vector?
+iteration:
+- cons
+- deref
+- first
+- get
+- identity
+- next
+- nil?
+- reduce
+- reduced?
+- seq
+- seq?
+- some?
+- to-array
+juxt:
+- apply
+- conj
+- list*
+- reduce1
+keep:
+- <
+- chunk
+- chunk-append
+- chunk-buffer
+- chunk-cons
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- cons
+- count
+- first
+- keep
+- long
+- nil?
+- rest
+- seq
+- unchecked-inc
+keep-indexed:
+- +
+- <
+- chunk
+- chunk-append
+- chunk-buffer
+- chunk-cons
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- cons
+- count
+- first
+- inc
+- long
+- nil?
+- rest
+- seq
+- unchecked-inc
+- volatile!
+keyword:
+- keyword?
+- string?
+- symbol?
+keyword?:
+- instance?
+last:
+- first
+- next
+lazy-cat/M:
+- concat
+- list
+- map
+- seq
+lazy-seq/M:
+- list
+- list*
+let/M:
+- '*ns*'
+- concat
+- count
+- destructure
+- even?
+- first
+- list
+- meta
+- seq
+- str
+- vector?
+letfn/M:
+- concat
+- cons
+- first
+- interleave
+- list
+- map
+- seq
+- vec
+libspec?:
+- keyword?
+- nil?
+- second
+- symbol?
+- vector?
+lift-ns:
+- '*print-namespace-maps*'
+- '='
+- conj
+- first
+- namespace
+- next
+- nth
+- qualified-ident?
+- seq
+- strip-ns
+line-seq:
+- cons
+- line-seq
+list*:
+- cons
+- seq
+- spread
+list?:
+- instance?
+load:
+- '*loading-verbosely*'
+- '*ns*'
+- '*pending-paths*'
+- <
+- '='
+- check-cyclic-dependency
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- conj
+- count
+- first
+- flush
+- hash-map
+- int
+- next
+- ns-name
+- pop-thread-bindings
+- printf
+- push-thread-bindings
+- root-directory
+- seq
+- str
+- unchecked-inc
+load-all:
+- '*loaded-libs*'
+- commute
+- conj
+- deref
+- hash-map
+- load-one
+- pop-thread-bindings
+- push-thread-bindings
+- reduce1
+- ref
+- sorted-set
+load-data-reader-file:
+- assoc
+- contains?
+- data-reader-var
+- ex-info
+- hash-map
+- map?
+- not
+- not=
+- nth
+- pop-thread-bindings
+- push-thread-bindings
+- read
+- reduce
+- str
+- symbol?
+load-data-readers:
+- alter-var-root
+- data-reader-urls
+- load-data-reader-file
+- reduce
+load-lib:
+- '*loaded-libs*'
+- '*loading-verbosely*'
+- '*ns*'
+- <
+- alias
+- apply
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- contains?
+- count
+- create-ns
+- deref
+- find-ns
+- first
+- get
+- hash-map
+- int
+- key
+- load-all
+- load-one
+- mapcat
+- name
+- next
+- not
+- ns-name
+- pop-thread-bindings
+- pos?
+- print-str
+- printf
+- push-thread-bindings
+- refer
+- remove-ns
+- select-keys
+- seq
+- seq?
+- str
+- symbol
+- throw-if
+- to-array
+- unchecked-inc
+- val
+load-libs:
+- <
+- apply
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- complement
+- count
+- filter
+- first
+- int
+- interleave
+- interpose
+- keyword?
+- libspec?
+- load-lib
+- next
+- nil?
+- not
+- prependss
+- remove
+- repeat
+- seq
+- str
+- throw-if
+- unchecked-inc
+load-one:
+- '*loaded-libs*'
+- commute
+- conj
+- find-ns
+- load
+- not
+- root-resource
+- throw-if
+load-string:
+- load-reader
+loaded-libs:
+- '*loaded-libs*'
+- deref
+locking/M:
+- apply
+- concat
+- finally/S
+- list
+- seq
+- try/S
+- vector
+long:
+- ./S
+- concat
+- list
+- seq
+long-array:
+- ./S
+- concat
+- list
+- seq
+longs:
+- ./S
+- concat
+- list
+- seq
+loop/M:
+- '*ns*'
+- '='
+- concat
+- conj
+- count
+- destructure
+- drop
+- even?
+- first
+- gensym
+- interleave
+- list
+- map
+- meta
+- nth
+- reduce1
+- seq
+- str
+- symbol?
+- take-nth
+- vec
+- vector
+- vector?
+macroexpand:
+- identical?
+- macroexpand
+- macroexpand-1
+make-array:
+- <
+- alength
+- aset-int
+- cons
+- count
+- int
+- long
+- make-array
+- nth
+- unchecked-inc
+map:
+- <
+- apply
+- chunk
+- chunk-append
+- chunk-buffer
+- chunk-cons
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- conj
+- cons
+- count
+- every?
+- first
+- identity
+- int
+- map
+- rest
+- seq
+- unchecked-inc
+map-entry?:
+- instance?
+map-indexed:
+- +
+- <
+- chunk
+- chunk-append
+- chunk-buffer
+- chunk-cons
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- cons
+- count
+- first
+- inc
+- int
+- long
+- rest
+- seq
+- unchecked-inc
+- volatile!
+map?:
+- instance?
+mapcat:
+- apply
+- cat
+- comp
+- concat
+- map
+mapv:
+- apply
+- conj!
+- into
+- map
+- persistent!
+- reduce
+- transient
+max:
+- '*unchecked-math*'
+- ./S
+- concat
+- list
+- max
+- reduce1
+- seq
+max-key:
+- '>'
+- '>='
+- first
+- next
+- nth
+maybe-destructured:
+- concat
+- conj
+- cons
+- every?
+- first
+- gensym
+- list
+- meta
+- next
+- seq
+- symbol?
+- with-meta
+maybe-min-hash:
+- <
+- apply
+- bit-shift-left
+- chunk
+- chunk-append
+- chunk-buffer
+- chunk-cons
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- concat
+- cons
+- count
+- dec
+- distinct?
+- filter
+- first
+- inc
+- int
+- map
+- max-mask-bits
+- nth
+- range
+- rest
+- seq
+- shift-mask
+- unchecked-inc
+memfn/M:
+- ./S
+- apply
+- concat
+- gensym
+- list
+- meta
+- seq
+- vector
+- with-meta
+memoize:
+- apply
+- assoc
+- atom
+- deref
+- find
+- swap!
+- val
+merge:
+- conj
+- identity
+- reduce1
+- some
+merge-hash-collisions:
+- <
+- ==
+- assoc
+- concat
+- conj
+- count
+- ffirst
+- filter
+- first
+- fnil
+- into1
+- keys
+- list
+- map
+- mapcat
+- next
+- nth
+- quote/S
+- reduce1
+- second
+- seq
+- update
+- vals
+merge-with:
+- assoc
+- contains?
+- get
+- identity
+- key
+- reduce1
+- seq
+- some
+- val
+meta:
+- instance?
+min:
+- '*unchecked-math*'
+- ./S
+- concat
+- list
+- min
+- reduce1
+- seq
+min-key:
+- <
+- <=
+- first
+- next
+- nth
+mod:
+- +
+- '='
+- pos?
+- rem
+- zero?
+name:
+- string?
+nary-inline:
+- '*unchecked-math*'
+- ./S
+- concat
+- list
+- nary-inline
+- reduce1
+- seq
+nat-int?:
+- int?
+- neg?
+- not
+neg-int?:
+- int?
+- neg?
+neg?:
+- ./S
+- concat
+- list
+- seq
+newline:
+- '*out*'
+- system-newline
+nfirst:
+- first
+- next
+nil?:
+- list
+nnext:
+- next
+normalize-slurp-opts:
+- first
+- println
+- string?
+not-any?:
+- apply
+not-empty:
+- seq
+not-every?:
+- apply
+not=:
+- '='
+- apply
+- not
+ns-aliases:
+- the-ns
+ns-imports:
+- filter-key
+- instance?
+- ns-map
+- partial
+- val
+ns-interns:
+- '='
+- filter-key
+- instance?
+- ns-map
+- the-ns
+- val
+ns-map:
+- the-ns
+ns-name:
+- the-ns
+ns-publics:
+- '='
+- filter-key
+- instance?
+- ns-map
+- the-ns
+- val
+ns-refers:
+- filter-key
+- instance?
+- not=
+- ns-map
+- the-ns
+- val
+ns-resolve:
+- contains?
+- ns-resolve
+- the-ns
+ns-unalias:
+- the-ns
+ns-unmap:
+- the-ns
+ns/M:
+- '='
+- assoc
+- concat
+- do/S
+- filter
+- first
+- if/S
+- list
+- list*
+- map
+- map?
+- merge
+- meta
+- name
+- next
+- not-any?
+- not=
+- quote/S
+- remove
+- seq
+- str
+- string?
+- symbol
+- var/S
+- vary-meta
+nth:
+- ./S
+- concat
+- list
+- seq
+nthnext:
+- dec
+- instance?
+- int?
+- next
+- pos?
+- seq
+nthrest:
+- dec
+- instance?
+- int?
+- pos?
+- rest
+- seq
+num:
+- ./S
+- concat
+- list
+- seq
+object-array:
+- ./S
+- concat
+- list
+- seq
+odd?:
+- even?
+- not
+or/M:
+- apply
+- concat
+- if/S
+- list
+- seq
+- vector
+parents:
+- bases
+- class?
+- get
+- global-hierarchy
+- into1
+- not-empty
+- parents
+- set
+parse-boolean:
+- parsing-err
+- string?
+parse-double:
+- parsing-err
+- string?
+parse-impls:
+- assoc
+- drop-while
+- first
+- next
+- seq
+- seq?
+- take-while
+parse-long:
+- parsing-err
+- string?
+parse-uuid:
+- nth
+- str
+parsing-err:
+- class
+- nil?
+- str
+partial:
+- apply
+- concat
+partition:
+- '='
+- concat
+- cons
+- count
+- doall
+- list
+- nthrest
+- partition
+- seq
+- take
+partition-all:
+- '='
+- cons
+- doall
+- nthrest
+- partition-all
+- seq
+- take
+- to-array
+- unreduced
+- vec
+partition-by:
+- '='
+- cons
+- count
+- deref
+- drop
+- first
+- identical?
+- next
+- partition-by
+- reduced?
+- seq
+- take-while
+- unreduced
+- vec
+- volatile!
+- vreset!
+partitionv:
+- '='
+- concat
+- cons
+- count
+- into
+- list
+- nthrest
+- partitionv
+- seq
+- take
+partitionv-all:
+- cons
+- drop
+- into
+- partition-all
+- partitionv-all
+- seq
+- take
+pcalls:
+- pmap
+pmap:
+- +
+- apply
+- cons
+- deref
+- drop
+- every?
+- first
+- future-call
+- identity
+- map
+- next
+- pmap
+- rest
+- seq
+pos-int?:
+- int?
+- pos?
+pos?:
+- ./S
+- concat
+- list
+- seq
+pr:
+- '*out*'
+- apply
+- first
+- next
+- pr
+- pr-on
+pr-on:
+- '*print-dup*'
+- print-dup
+- print-method
+pr-str:
+- apply
+- hash-map
+- pop-thread-bindings
+- pr
+- push-thread-bindings
+- str
+prep-hashes:
+- ==
+- case-map
+- count
+- fits-table?
+- identity
+- into1
+- map
+- maybe-min-hash
+- merge-hash-collisions
+- nth
+- prep-hashes
+- shift-mask
+- zero?
+prep-ints:
+- case-map
+- fits-table?
+- int
+- map
+- maybe-min-hash
+- nth
+- shift-mask
+- zero?
+prependss:
+- concat
+- cons
+- symbol?
+preserving-reduced:
+- reduced
+- reduced?
+print:
+- apply
+- hash-map
+- pop-thread-bindings
+- pr
+- push-thread-bindings
+print-ctor:
+- class
+print-dup:
+- '*verbose-defrecords*'
+- class
+- pr-on
+- print-ctor
+- print-dup
+- print-map
+- print-meta
+- print-method
+- print-sequential
+- str
+- vals
+print-map:
+- print-prefix-map
+print-meta:
+- '*print-dup*'
+- '*print-meta*'
+- '*print-readably*'
+- '='
+- count
+- meta
+- pos?
+- pr-on
+print-method:
+- '*print-dup*'
+- '*print-readably*'
+- <
+- '='
+- char-escape-string
+- char-name-string
+- class
+- count
+- deref-as-map
+- dissoc
+- first
+- get
+- instance?
+- keyword?
+- lift-ns
+- long
+- meta
+- next
+- not=
+- nth
+- pr-on
+- print-map
+- print-meta
+- print-method
+- print-object
+- print-prefix-map
+- print-sequential
+- print-simple
+- print-tagged-object
+- seq
+- str
+- unchecked-inc
+- vary-meta
+print-object:
+- print-tagged-object
+- str
+print-prefix-map:
+- nth
+- print-sequential
+- str
+print-sequential:
+- '*print-dup*'
+- '*print-length*'
+- '*print-level*'
+- dec
+- first
+- hash-map
+- neg?
+- next
+- not
+- pop-thread-bindings
+- push-thread-bindings
+- seq
+- zero?
+print-simple:
+- print-meta
+- str
+print-str:
+- apply
+- hash-map
+- pop-thread-bindings
+- print
+- push-thread-bindings
+- str
+print-tagged-object:
+- class
+- format
+- instance?
+- print-meta
+- print-method
+print-throwable:
+- <
+- Throwable->map
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- count
+- first
+- get
+- int
+- next
+- print-method
+- rest
+- seq
+- seq?
+- to-array
+- unchecked-inc
+printf:
+- apply
+- format
+- print
+println:
+- apply
+- hash-map
+- pop-thread-bindings
+- prn
+- push-thread-bindings
+println-str:
+- apply
+- hash-map
+- pop-thread-bindings
+- println
+- push-thread-bindings
+- str
+prn:
+- '*flush-on-newline*'
+- apply
+- flush
+- newline
+- pr
+prn-str:
+- apply
+- hash-map
+- pop-thread-bindings
+- prn
+- push-thread-bindings
+- str
+promise:
+- atom
+- compare-and-set!
+- deref
+- pos?
+- zero?
+protocol?:
+- boolean
+- deref
+- instance?
+pvalues/M:
+- concat
+- list
+- map
+- seq
+qualified-ident?:
+- boolean
+- ident?
+- namespace
+qualified-keyword?:
+- boolean
+- keyword?
+- namespace
+qualified-symbol?:
+- boolean
+- namespace
+- symbol?
+quot:
+- ./S
+- concat
+- list
+- seq
+rand:
+- '*'
+- rand
+rand-int:
+- int
+- rand
+rand-nth:
+- count
+- nth
+- rand-int
+random-sample:
+- <
+- filter
+- rand
+range:
+- inc'
+- int?
+- iterate
+ratio?:
+- instance?
+rational?:
+- decimal?
+- integer?
+- ratio?
+re-find:
+- re-find
+- re-groups
+- re-matcher
+re-groups:
+- <=
+- conj
+- inc
+- zero?
+re-matches:
+- re-groups
+- re-matcher
+re-pattern:
+- instance?
+re-seq:
+- cons
+- re-groups
+- re-matcher
+read:
+- '*in*'
+- boolean
+- read
+read+string:
+- '*in*'
+- read
+- read+string
+read-line:
+- '*in*'
+- instance?
+reader-conditional?:
+- instance?
+reduce:
+- DOT_protocols_coll-reduce
+- instance?
+reduce-kv:
+- DOT_protocols_kv-reduce
+reduce1:
+- chunk-first
+- chunk-next
+- chunked-seq?
+- first
+- next
+- reduce1
+- seq
+reduced?:
+- concat
+- list
+- seq
+reductions:
+- cons
+- deref
+- first
+- list
+- reduced?
+- reductions
+- rest
+- seq
+ref:
+- apply
+- hash-map
+- ref
+- setup-reference
+refer:
+- '*ns*'
+- <
+- '='
+- apply
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- count
+- find-ns
+- first
+- hash-map
+- instance?
+- int
+- keys
+- next
+- not
+- ns-publics
+- seq
+- set
+- str
+- unchecked-inc
+refer-clojure/M:
+- concat
+- list
+- quote/S
+- seq
+rem:
+- ./S
+- concat
+- list
+- seq
+remove:
+- complement
+- filter
+remove-tap:
+- disj
+- swap!
+- tapset
+repeatedly:
+- cons
+- repeatedly
+- take
+replace:
+- assoc
+- count
+- find
+- map
+- nth
+- range
+- reduce1
+- val
+- vector?
+replicate:
+- repeat
+- take
+require:
+- apply
+- load-libs
+requiring-resolve:
+- namespace
+- qualified-symbol?
+- resolve
+- serialized-require
+- str
+- symbol
+resolve:
+- '*ns*'
+- ns-resolve
+restart-agent:
+- apply
+- hash-map
+resultset-seq:
+- apply
+- comp
+- cons
+- create-struct
+- distinct?
+- inc
+- keyword
+- map
+- range
+- struct
+reverse:
+- conj
+- reduce1
+reversible?:
+- instance?
+root-directory:
+- root-resource
+- subs
+root-resource:
+- name
+- str
+rsubseq:
+- <
+- <=
+- mk-bound-fn
+- next
+- nth
+- take-while
+run!:
+- reduce
+second:
+- first
+- next
+select-keys:
+- conj
+- first
+- meta
+- next
+- seq
+- with-meta
+send:
+- apply
+- send-via
+send-off:
+- apply
+- send-via
+send-via:
+- binding-conveyor-fn
+- hash-map
+- pop-thread-bindings
+- push-thread-bindings
+seq-to-map-for-destructuring:
+- first
+- next
+- seq
+- to-array
+seq?:
+- instance?
+seque:
+- agent
+- cons
+- deref
+- first
+- identical?
+- instance?
+- int
+- next
+- nil?
+- release-pending-sends
+- send-off
+- seq
+- seque
+sequence:
+- cons
+- map
+- seq
+- seq?
+sequential?:
+- instance?
+serialized-require:
+- apply
+- require
+set:
+- conj!
+- instance?
+- persistent!
+- reduce1
+- set?
+- transient
+- with-meta
+set?:
+- instance?
+setup-reference:
+- apply
+- hash-map
+shift-mask:
+- bit-and
+- bit-shift-right
+short:
+- '*unchecked-math*'
+- ./S
+- concat
+- list
+- seq
+short-array:
+- ./S
+- concat
+- list
+- seq
+shorts:
+- ./S
+- concat
+- list
+- seq
+shuffle:
+- to-array
+sigs:
+- assert-valid-fdecl
+- assoc
+- conj
+- first
+- instance?
+- list
+- map?
+- meta
+- next
+- seq
+- seq?
+- with-meta
+simple-ident?:
+- ident?
+- namespace
+- nil?
+simple-keyword?:
+- keyword?
+- namespace
+- nil?
+simple-symbol?:
+- namespace
+- nil?
+- symbol?
+slurp:
+- apply
+- normalize-slurp-opts
+some:
+- first
+- next
+- seq
+some->/M:
+- apply
+- butlast
+- concat
+- empty?
+- gensym
+- if/S
+- interleave
+- last
+- list
+- map
+- repeat
+- seq
+- vector
+some->>/M:
+- apply
+- butlast
+- concat
+- empty?
+- gensym
+- if/S
+- interleave
+- last
+- list
+- map
+- repeat
+- seq
+- vector
+some-fn:
+- list*
+- some
+some?:
+- nil?
+- not
+sort:
+- compare
+- meta
+- seq
+- sort
+- to-array
+- with-meta
+sort-by:
+- compare
+- sort
+- sort-by
+sorted?:
+- instance?
+special-symbol?:
+- contains?
+spit:
+- apply
+- str
+split-at:
+- drop
+- take
+split-with:
+- drop-while
+- take-while
+splitv-at:
+- drop
+- into
+- take
+spread:
+- cons
+- first
+- next
+- nil?
+- seq
+- spread
+str:
+- cons
+- first
+- next
+- nil?
+- str
+stream-into!:
+- conj
+- conj!
+- instance?
+- meta
+- persistent!
+- stream-reduce!
+- stream-transduce!
+- transient
+- with-meta
+stream-seq!:
+- iterator-seq
+stream-transduce!:
+- stream-reduce!
+- stream-transduce!
+string?:
+- instance?
+strip-ns:
+- keyword
+- name
+- symbol
+- symbol?
+subseq:
+- '>'
+- '>='
+- mk-bound-fn
+- next
+- nth
+- take-while
+subvec:
+- count
+- subvec
+supers:
+- bases
+- disj
+- first
+- into1
+- not-empty
+- seq
+- set
+symbol:
+- instance?
+- symbol?
+symbol?:
+- instance?
+sync/M:
+- ./S
+- apply
+- concat
+- list
+- seq
+- vector
+tagged-literal?:
+- instance?
+take:
+- cons
+- dec
+- deref
+- ensure-reduced
+- first
+- not
+- pos?
+- rest
+- seq
+- take
+- volatile!
+take-last:
+- drop
+- next
+- seq
+take-nth:
+- cons
+- drop
+- first
+- inc
+- rem
+- seq
+- take-nth
+- volatile!
+- zero?
+take-while:
+- cons
+- first
+- reduced
+- rest
+- seq
+- take-while
+test:
+- meta
+the-ns:
+- find-ns
+- instance?
+- str
+thread-bound?:
+- every?
+throw-if:
+- '*file*'
+- apply
+- drop
+- drop-while
+- format
+- into-array
+- not=
+time/M:
+- apply
+- concat
+- list
+- seq
+- vector
+to-array-2d:
+- aset
+- first
+- inc
+- make-array
+- next
+- seq
+- to-array
+trampoline:
+- apply
+- fn?
+- trampoline
+transduce:
+- DOT_protocols_coll-reduce
+- instance?
+- transduce
+tree-seq:
+- cons
+- mapcat
+type:
+- class
+- get
+- meta
+unchecked-add:
+- ./S
+- concat
+- list
+- seq
+unchecked-add-int:
+- ./S
+- concat
+- list
+- seq
+unchecked-byte:
+- ./S
+- concat
+- list
+- seq
+unchecked-char:
+- ./S
+- concat
+- list
+- seq
+unchecked-dec:
+- ./S
+- concat
+- list
+- seq
+unchecked-dec-int:
+- ./S
+- concat
+- list
+- seq
+unchecked-divide-int:
+- ./S
+- concat
+- list
+- seq
+unchecked-double:
+- ./S
+- concat
+- list
+- seq
+unchecked-float:
+- ./S
+- concat
+- list
+- seq
+unchecked-inc:
+- ./S
+- concat
+- list
+- seq
+unchecked-inc-int:
+- ./S
+- concat
+- list
+- seq
+unchecked-int:
+- ./S
+- concat
+- list
+- seq
+unchecked-long:
+- ./S
+- concat
+- list
+- seq
+unchecked-multiply:
+- ./S
+- concat
+- list
+- seq
+unchecked-multiply-int:
+- ./S
+- concat
+- list
+- seq
+unchecked-negate:
+- ./S
+- concat
+- list
+- seq
+unchecked-negate-int:
+- ./S
+- concat
+- list
+- seq
+unchecked-remainder-int:
+- ./S
+- concat
+- list
+- seq
+unchecked-short:
+- ./S
+- concat
+- list
+- seq
+unchecked-subtract:
+- ./S
+- concat
+- list
+- seq
+unchecked-subtract-int:
+- ./S
+- concat
+- list
+- seq
+underive:
+- alter-var-root
+- apply
+- assoc
+- cons
+- contains?
+- derive
+- disj
+- dissoc
+- flatten
+- interpose
+- key
+- make-hierarchy
+- map
+- not-empty
+- partition
+- reduce1
+- seq
+- underive
+- val
+unreduced:
+- deref
+- reduced?
+unsigned-bit-shift-right:
+- ./S
+- concat
+- list
+- seq
+update:
+- apply
+- assoc
+- get
+update-in:
+- apply
+- assoc
+- first
+- get
+- next
+- seq
+update-keys:
+- assoc!
+- meta
+- persistent!
+- reduce-kv
+- transient
+- with-meta
+update-vals:
+- assoc!
+- instance?
+- meta
+- persistent!
+- reduce-kv
+- transient
+- with-meta
+uri?:
+- instance?
+use:
+- apply
+- load-libs
+uuid?:
+- instance?
+var?:
+- instance?
+vary-meta:
+- apply
+- meta
+- with-meta
+vec:
+- instance?
+- vector?
+- with-meta
+vector:
+- cons
+vector?:
+- instance?
+volatile?:
+- instance?
+vswap!/M:
+- concat
+- list
+- seq
+- with-meta
+when-first/M:
+- '*ns*'
+- '='
+- apply
+- concat
+- count
+- first
+- list
+- meta
+- nth
+- seq
+- str
+- vector
+- vector?
+when-let/M:
+- '*ns*'
+- '='
+- apply
+- concat
+- count
+- first
+- list
+- meta
+- seq
+- str
+- vector
+- vector?
+when-not/M:
+- cons
+- do/S
+- if/S
+- list
+when-some/M:
+- '*ns*'
+- '='
+- apply
+- concat
+- count
+- first
+- if/S
+- list
+- meta
+- seq
+- str
+- vector
+- vector?
+when/M:
+- cons
+- do/S
+- if/S
+- list
+while/M:
+- apply
+- concat
+- list
+- recur/S
+- seq
+- vector
+with-bindings*:
+- apply
+- pop-thread-bindings
+- push-thread-bindings
+with-bindings/M:
+- apply
+- concat
+- list
+- seq
+- vector
+with-in-str/M:
+- apply
+- concat
+- list
+- seq
+- vector
+with-loading-context/M:
+- apply
+- concat
+- finally/S
+- hash-map
+- list
+- seq
+- try/S
+- vector
+with-local-vars/M:
+- '*ns*'
+- apply
+- concat
+- count
+- even?
+- finally/S
+- first
+- hash-map
+- interleave
+- list
+- meta
+- repeat
+- seq
+- str
+- take-nth
+- try/S
+- vector
+- vector?
+with-open/M:
+- '*ns*'
+- ./S
+- '='
+- concat
+- count
+- do/S
+- even?
+- finally/S
+- first
+- list
+- meta
+- seq
+- str
+- subvec
+- symbol?
+- try/S
+- vector?
+with-out-str/M:
+- apply
+- concat
+- list
+- new/S
+- seq
+- vector
+with-precision/M:
+- ./S
+- '='
+- apply
+- concat
+- first
+- list
+- next
+- nth
+- second
+- seq
+- vector
+with-redefs-fn:
+- <
+- chunk-first
+- chunk-rest
+- chunked-seq?
+- count
+- first
+- int
+- keys
+- map
+- next
+- nth
+- seq
+- unchecked-inc
+- zipmap
+with-redefs/M:
+- apply
+- concat
+- list
+- map
+- next
+- seq
+- take-nth
+- var/S
+- vector
+- zipmap
+xml-seq:
+- comp
+- complement
+- seq
+- string?
+- tree-seq
+zero?:
+- ./S
+- concat
+- list
+- seq
+zipmap:
+- assoc!
+- first
+- next
+- persistent!
+- seq
+- transient

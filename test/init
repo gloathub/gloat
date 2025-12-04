@@ -1,0 +1,19 @@
+#!/bash
+
+# Use local BPAN libraries
+
+TEST_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+PROJECT_ROOT=$(cd "$TEST_ROOT/.." && pwd)
+
+source "$PROJECT_ROOT/.bpan/lib/bpan.bash" --
+
+bpan:source bashplus +cmd +sys
+bpan:source test-tap --
+
+export BPAN_TEST_RUNNING=1
+export PATH=$PWD/bin:$PWD/lib:$PATH
+
+# Add any custom initialization to a test/init-local file.
+if [[ -f test/init-local ]]; then
+  source test/init-local
+fi

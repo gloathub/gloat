@@ -280,9 +280,20 @@ ys-to-clj() (
 
   export body
 
-  # Use template with perl substitution for namespace and body
+  # Get absolute path and directory of source file
+  # Use GLOAT_SOURCE_FILE if set (from convert-file), otherwise use input
+  if [[ ${GLOAT_SOURCE_FILE:-} ]]; then
+    source_abs=$GLOAT_SOURCE_FILE
+  else
+    source_abs=$(realpath "$input")
+  fi
+  source_dir=$(dirname "$source_abs")
+
+  # Use template with perl substitution for namespace, body, and paths
   perl -pe '
     s/NAMESPACE/'"$namespace"'/;
+    s|SOURCE-FILE|'"$source_abs"'|;
+    s|SOURCE-DIR|'"$source_dir"'|;
     $_ = $ENV{body} . "\n" if /^BODY$/;
   ' "$TEMPLATE/clojure.clj" > "$output"
 )
@@ -352,9 +363,12 @@ convert-file() (
   # For formats that need directory build, delegate
   case $format in
     dir|bin|lib|wasm|js)
+      # Preserve original source path for FILE/DIR variables
+      original_source=$(realpath "$input")
       tmpdir=$(mktemp -d)
       cp "$input" "$tmpdir/$(basename "$input")"
-      convert-directory "$tmpdir" "$output" "$format" "$namespace" "$platform"
+      GLOAT_SOURCE_FILE="$original_source" \
+        convert-directory "$tmpdir" "$output" "$format" "$namespace" "$platform"
       rm -rf "$tmpdir"
       return
       ;;

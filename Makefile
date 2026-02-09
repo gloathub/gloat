@@ -80,10 +80,10 @@ clean:: local-chmod
 force:
 
 test/call: test/call.ys
-	gloat -f $< -o $@
+	gloat -qf $< -o $@
 
 test/call.clj: test/call.ys
-	gloat -f $< -o $@ -t bb
+	gloat -qf $< -o $@ -t bb
 
 # v0.clj is gloat-only, don't patch from upstream
 ys/src/ys/v0.clj:

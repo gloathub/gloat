@@ -68,6 +68,34 @@ defn main(fun *args):
     'bash-out':
       say: bash-out(args*)
 
+    # Global variables
+    'env-home':
+      say: ENV.HOME
+    'env-path-len':
+      say: len(ENV.PATH)
+    'ns':
+      say: str(NS)
+    'cwd':
+      say: CWD
+    'file':
+      say: FILE
+    'dir':
+      say: DIR
+    'run-pid':
+      say: RUN.pid
+    'run-args-empty':
+      say: RUN.args
+    'run-args-with':
+      say: RUN.args.rest()
+    'argv-empty':
+      say: ARGV
+    'argv-with':
+      say: ARGV.rest()
+    'args-empty':
+      say: ARGS
+    'args-with':
+      say: ARGS.rest()
+
     else:
       condp eq args.#:
         0: fun.call():say

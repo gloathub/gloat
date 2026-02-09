@@ -6,10 +6,14 @@
 
 (ns ys.v0
   (:require
+    [ys.fs]
     [ys.std :refer :all]
     [ys.dwim :refer :all]))
 
 (defn map-parse [args]
   (mapv
-    (fn [s] (let [x (read-string s)] (if (number? x) x s)))
+    (fn [s]
+      (if (re-matches #"^[+-]?[0-9]+\.?[0-9]*([eE][+-]?[0-9]+)?$" s)
+        (read-string s)
+        s))
     args))

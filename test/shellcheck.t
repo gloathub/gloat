@@ -9,6 +9,7 @@ skip=1064,1072,1073,1090,1091,2002,2030,2031,2034,2154,2207,2217
 
 while read -r file; do
   [[ -h $file ]] && continue
+  [[ -f $file ]] || continue
 
   shebang=$(head -n1 "$file")
 

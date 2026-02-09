@@ -399,6 +399,8 @@ convert-file() (
         # Output ys runtime (with ns declarations)
         cat "$GLOAT_ROOT/ys/src/yamlscript/util.clj"
         echo
+        cat "$GLOAT_ROOT/ys/bb/ys/fs.clj"
+        echo
         cat "$GLOAT_ROOT/ys/src/ys/std.clj"
         echo
         cat "$GLOAT_ROOT/ys/src/ys/dwim.clj"
@@ -714,6 +716,8 @@ convert-to-stdout() (
     bb)
       # Output ys runtime (with ns declarations)
       cat "$GLOAT_ROOT/ys/src/yamlscript/util.clj"
+      echo
+      cat "$GLOAT_ROOT/ys/bb/ys/fs.clj"
       echo
       cat "$GLOAT_ROOT/ys/src/ys/std.clj"
       echo

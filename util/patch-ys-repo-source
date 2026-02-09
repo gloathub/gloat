@@ -97,7 +97,8 @@ transform-std-replace-ns() {
 (ns ys.std
   (:require
    [clojure.string :as str]
-   [yamlscript.util :as util])
+   [yamlscript.util :as util]
+   [ys.fs :as fs])
   (:refer-clojure :exclude [atom read replace reverse set]))
 
 ;;------------------------------------------------------------------------------
@@ -176,7 +177,6 @@ transform-std-unavailable() {
     s{^(\(defn _\*\*)}{#_$1}gm;
     s{^(\(defn \+\+\+\*)}{#_$1}gm;
     s{^(\(defmacro \+\+\+)}{#_$1}gm;
-    s{^(\(intern .ys.std .fs-)}{#_$1}gm;
     s{^(\(intern .ys.std .floor)}{#_$1}gm;
     s{^(\(intern .ys.std .round)}{#_$1}gm;
     # s{^(\)}{#_$1}gm;
@@ -290,17 +290,11 @@ $1 (fn [& args] (apply slurp args)))   ; XXX}gm;
      {#_$1$2
 $1 (fn [& args] (apply spit args)))   ; XXX}gm;
 
-    s{^(\(intern .ys.std .sqrt\b)(.*)$}
-     {#_$1$2
-;; XXX
-(defn sqrt [x]
-  (let [epsilon 1e-15
-        abs-fn (fn [n] (if (< n 0) (- n) n))]
-    (loop [guess 1.0]
-      (let [next-guess (/ (+ guess (/ x guess)) 2)]
-        (if (< (abs-fn (- next-guess guess)) epsilon)
-          next-guess
-          (recur next-guess))))))}gm;
+    s/^(\(intern .ys.std .sqrt\b)(.*)$/#_$1$2\n;; XXX\n(defn sqrt [x]\n  (let [epsilon 1e-15\n        abs-fn (fn [n] (if (< n 0) (- n) n))]\n    (loop [guess 1.0]\n      (let [next-guess (\/ (+ guess (\/ x guess)) 2)]\n        (if (< (abs-fn (- next-guess guess)) epsilon)\n          next-guess\n          (recur next-guess))))))/gm;
+
+    s{^(\(intern .ys.std .fs-\S+) (fs/\S+)\)$}
+     {#_$1 $2)
+$1 (fn [& args] (apply $2 args)))   ; XXX}gm;
 
   '
 }

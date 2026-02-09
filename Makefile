@@ -75,6 +75,10 @@ force:
 ys/src/ys/v0.clj:
 	@true
 
+# fs.clj is gloat-only (Go interop, not babashka.fs)
+ys/src/ys/fs.clj:
+	@true
+
 ys/src/%.clj: force
 	@echo "Patching $@ from repo source"
 	util/patch-ys-repo-source $@ $(YS-REPO-URL) > $@
@@ -112,3 +116,6 @@ ys/pkg/%/loader.go: ys/glj/%.glj $(GLJ)
 	  cd - >/dev/null && \
 	  cp "$$tmpdir/$*/loader.go" $@ && \
 	  rm -rf "$$tmpdir"
+
+# std depends on fs being compiled first
+ys/pkg/ys/std/loader.go: ys/glj/ys/fs.glj

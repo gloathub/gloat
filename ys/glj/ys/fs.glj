@@ -1,0 +1,278 @@
+(ns ys.fs
+  (:require [clojure.string :as str]))
+
+;;------------------------------------------------------------------------------
+;; Helper functions
+;;------------------------------------------------------------------------------
+
+(defn- when-str [x]
+  "Convert to string or return nil"
+  (when x (str x)))
+
+(defn- multi [f]
+  "Wrap single-path function to support multiple paths"
+  (fn [& paths]
+    (if (= 1 (count paths))
+      (f (first paths))
+      (map f paths))))
+
+(defn- get-file-info [path]
+  "Get os.FileInfo for path, returns nil on error"
+  (try
+    (let [[info err] (os.Stat path)]
+      (when (nil? err) info))
+    (catch go/any _ nil)))
+
+(defn- get-link-info [path]
+  "Get os.FileInfo for symlink (don't follow), returns nil on error"
+  (try
+    (let [[info err] (os.Lstat path)]
+      (when (nil? err) info))
+    (catch go/any _ nil)))
+
+;;------------------------------------------------------------------------------
+;; Predicate functions (single char aliases: d e f l r s w x z)
+;;------------------------------------------------------------------------------
+
+(defn abs? [path]
+  "True if path is absolute"
+  (path:filepath.IsAbs path))
+
+(defn dir? [path]
+  "True if path is a directory"
+  (if-let [info (get-file-info path)]
+    (.IsDir info)
+    false))
+
+(defn empty? [path]
+  "True if file size is 0 or directory is empty"
+  (if-let [info (get-file-info path)]
+    (if (.IsDir info)
+      (let [entries (os.ReadDir path)]
+        (zero? (count entries)))
+      (zero? (.Size info)))
+    false))
+
+(defn exec? [path]
+  "True if path is executable"
+  (if-let [info (get-file-info path)]
+    (let [mode (.Mode info)
+          exec-bits (bit-and mode 0111)]
+      (not (zero? exec-bits)))
+    false))
+
+(defn exists? [path]
+  "True if path exists"
+  (not (nil? (get-file-info path))))
+
+(defn file? [path]
+  "True if path is a regular file"
+  (if-let [info (get-file-info path)]
+    (let [mode (.Mode info)]
+      (.IsRegular mode))
+    false))
+
+(defn link? [path]
+  "True if path is a symbolic link"
+  (if-let [info (get-link-info path)]
+    (let [mode (.Mode info)
+          link-bit (bit-and mode os.ModeSymlink)]
+      (not (zero? link-bit)))
+    false))
+
+(defn read? [path]
+  "True if path is readable"
+  (if-let [info (get-file-info path)]
+    (let [mode (.Mode info)
+          read-bits (bit-and mode 0444)]
+      (not (zero? read-bits)))
+    false))
+
+(defn rel? [path]
+  "True if path is relative"
+  (not (path:filepath.IsAbs path)))
+
+(defn size? [path]
+  "True if file size > 0"
+  (if-let [info (get-file-info path)]
+    (> (.Size info) 0)
+    false))
+
+(defn write? [path]
+  "True if path is writable"
+  (if-let [info (get-file-info path)]
+    (let [mode (.Mode info)
+          write-bits (bit-and mode 0222)]
+      (not (zero? write-bits)))
+    false))
+
+;; Single-char aliases
+(def d (multi dir?))
+(def e (multi exists?))
+(def f (multi file?))
+(def l (multi link?))
+(def r (multi read?))
+(def s (multi size?))
+(def w (multi write?))
+(def x (multi exec?))
+(def z (multi empty?))
+
+;;------------------------------------------------------------------------------
+;; Path manipulation functions
+;;------------------------------------------------------------------------------
+
+(defn abs [path]
+  "Return absolute path"
+  (let [[result err] (path:filepath.Abs path)]
+    (if (nil? err) result path)))
+
+(defn basename [path]
+  "Return basename of path (follows symlinks)"
+  (let [[real-path err] (path:filepath.EvalSymlinks path)]
+    (path:filepath.Base (if (nil? err) real-path path))))
+
+(defn ctime [path]
+  "Return creation time in milliseconds (same as mtime in Unix)"
+  (if-let [info (get-file-info path)]
+    (.UnixMilli (.ModTime info))
+    nil))
+
+(defn mtime [path]
+  "Return modification time in milliseconds"
+  (if-let [info (get-file-info path)]
+    (.UnixMilli (.ModTime info))
+    nil))
+
+(defn cwd []
+  "Return current working directory"
+  (let [[result err] (os.Getwd)]
+    (if (nil? err) result ".")))
+
+(defn dirname [path]
+  "Return directory name of path (follows symlinks)"
+  (let [[real-path err] (path:filepath.EvalSymlinks path)]
+    (path:filepath.Dir (if (nil? err) real-path path))))
+
+(defn filename [path]
+  "Return filename without extension"
+  (let [base (path:filepath.Base path)
+        ext (path:filepath.Ext base)]
+    (if (str/blank? ext)
+      base
+      (subs base 0 (- (count base) (count ext))))))
+
+(defn find [path & patterns]
+  "Walk directory tree and return matching paths"
+  (let [results (atom [])]
+    (path:filepath.Walk
+      path
+      (fn [p info err]
+        (when (nil? err)
+          (if (empty? patterns)
+            (swap! results conj p)
+            (doseq [pattern patterns]
+              (when (str/includes? p pattern)
+                (swap! results conj p)))))
+        nil))
+    @results))
+
+(defn glob [pattern]
+  "Return paths matching glob pattern"
+  (let [[result err] (path:filepath.Glob pattern)]
+    (if (nil? err) result [])))
+
+(defn ls [path]
+  "List directory contents"
+  (let [[entries err] (os.ReadDir path)]
+    (if (nil? err)
+      (loop [i 0, n (count entries), result []]
+        (if (< i n)
+          (recur (inc i) n (conj result (.Name (nth entries i))))
+          result))
+      [])))
+
+(defn path [p]
+  "Return canonical path (follows symlinks)"
+  (let [[result err] (path:filepath.EvalSymlinks p)]
+    (if (nil? err) result p)))
+
+(defn readlink [path]
+  "Read symbolic link target"
+  (let [[result err] (os.Readlink path)]
+    (if (nil? err) result nil)))
+
+(defn rel [path]
+  "Return path relative to current directory"
+  (let [cwd-path (cwd)
+        [result err] (path:filepath.Rel cwd-path path)]
+    (if (nil? err) result path)))
+
+(defn which [name]
+  "Find executable in PATH"
+  (let [[result err] (os:exec.LookPath name)]
+    (if (nil? err) result nil)))
+
+;;------------------------------------------------------------------------------
+;; File operation functions
+;;------------------------------------------------------------------------------
+
+(defn cp [src dst]
+  "Copy file from src to dst"
+  (let [[content err] (os.ReadFile src)]
+    (when (nil? err)
+      (os.WriteFile dst content 0644))))
+
+(defn cp-r [src dst]
+  "Recursively copy directory"
+  (path:filepath.Walk
+    src
+    (fn [p info err]
+      (when (nil? err)
+        (let [[rel-path _] (path:filepath.Rel src p)
+              dst-path (path:filepath.Join dst rel-path)]
+          (if (.IsDir info)
+            (os.MkdirAll dst-path 0755)
+            (let [[content read-err] (os.ReadFile p)]
+              (when (nil? read-err)
+                (os.WriteFile dst-path content (.Mode info)))))))
+      nil))
+  nil)
+
+(defn mkdir [path]
+  "Create directory"
+  (os.Mkdir path 0755))
+
+(defn mkdir-p [path]
+  "Create directory and parents"
+  (os.MkdirAll path 0755))
+
+(defn mv [src dst]
+  "Move/rename file or directory"
+  (os.Rename src dst))
+
+(defn rm [path]
+  "Remove file or empty directory"
+  (os.Remove path))
+
+(defn rm-f [path]
+  "Remove file, ignore errors"
+  (try
+    (os.Remove path)
+    (catch go/any _ nil)))
+
+(defn rm-r [path]
+  "Remove directory recursively"
+  (os.RemoveAll path))
+
+(defn rmdir [path]
+  "Remove empty directory"
+  (os.Remove path))
+
+(defn touch [path]
+  "Update file timestamp or create if doesn't exist"
+  (if (exists? path)
+    (let [now (time.Now)]
+      (os.Chtimes path now now))
+    (let [[f err] (os.Create path)]
+      (when (nil? err)
+        (.Close f)))))

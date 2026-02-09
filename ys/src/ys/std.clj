@@ -6,7 +6,8 @@
 (ns ys.std
   (:require
    [clojure.string :as str]
-   [yamlscript.util :as util])
+   [yamlscript.util :as util]
+   [ys.fs :as fs])
   (:refer-clojure :exclude [atom read replace reverse set]))
 
 ;;------------------------------------------------------------------------------
@@ -824,25 +825,45 @@
 ;; File system functions
 ;;------------------------------------------------------------------------------
 #_(intern 'ys.std 'fs-d fs/d)
+(intern 'ys.std 'fs-d (fn [& args] (apply fs/d args)))   ; XXX
 #_(intern 'ys.std 'fs-e fs/e)
+(intern 'ys.std 'fs-e (fn [& args] (apply fs/e args)))   ; XXX
 #_(intern 'ys.std 'fs-f fs/f)
+(intern 'ys.std 'fs-f (fn [& args] (apply fs/f args)))   ; XXX
 #_(intern 'ys.std 'fs-l fs/l)
+(intern 'ys.std 'fs-l (fn [& args] (apply fs/l args)))   ; XXX
 #_(intern 'ys.std 'fs-r fs/r)
+(intern 'ys.std 'fs-r (fn [& args] (apply fs/r args)))   ; XXX
 #_(intern 'ys.std 'fs-s fs/s)
+(intern 'ys.std 'fs-s (fn [& args] (apply fs/s args)))   ; XXX
 #_(intern 'ys.std 'fs-w fs/w)
+(intern 'ys.std 'fs-w (fn [& args] (apply fs/w args)))   ; XXX
 #_(intern 'ys.std 'fs-x fs/x)
+(intern 'ys.std 'fs-x (fn [& args] (apply fs/x args)))   ; XXX
 #_(intern 'ys.std 'fs-z fs/z)
+(intern 'ys.std 'fs-z (fn [& args] (apply fs/z args)))   ; XXX
 #_(intern 'ys.std 'fs-abs fs/abs)
+(intern 'ys.std 'fs-abs (fn [& args] (apply fs/abs args)))   ; XXX
 #_(intern 'ys.std 'fs-abs? fs/abs?)
+(intern 'ys.std 'fs-abs? (fn [& args] (apply fs/abs? args)))   ; XXX
 #_(intern 'ys.std 'fs-dirname fs/dirname)
+(intern 'ys.std 'fs-dirname (fn [& args] (apply fs/dirname args)))   ; XXX
 #_(intern 'ys.std 'fs-filename fs/filename)
+(intern 'ys.std 'fs-filename (fn [& args] (apply fs/filename args)))   ; XXX
 #_(intern 'ys.std 'fs-basename fs/basename)
+(intern 'ys.std 'fs-basename (fn [& args] (apply fs/basename args)))   ; XXX
 #_(intern 'ys.std 'fs-glob fs/glob)
+(intern 'ys.std 'fs-glob (fn [& args] (apply fs/glob args)))   ; XXX
 #_(intern 'ys.std 'fs-ls fs/ls)
+(intern 'ys.std 'fs-ls (fn [& args] (apply fs/ls args)))   ; XXX
 #_(intern 'ys.std 'fs-mtime fs/mtime)
+(intern 'ys.std 'fs-mtime (fn [& args] (apply fs/mtime args)))   ; XXX
 #_(intern 'ys.std 'fs-rel fs/rel)
+(intern 'ys.std 'fs-rel (fn [& args] (apply fs/rel args)))   ; XXX
 #_(intern 'ys.std 'fs-rel? fs/rel?)
+(intern 'ys.std 'fs-rel? (fn [& args] (apply fs/rel? args)))   ; XXX
 #_(intern 'ys.std 'fs-which fs/which)
+(intern 'ys.std 'fs-which (fn [& args] (apply fs/which args)))   ; XXX
 
 
 ;;------------------------------------------------------------------------------

@@ -74,12 +74,15 @@ func LoadNS() {
 	sym_V_PLUS_ := lang.NewSymbol("V+")
 	sym__ := lang.NewSymbol("_")
 	sym_a := lang.NewSymbol("a")
+	sym_abs := lang.NewSymbol("abs")
+	sym_abs_QMARK_ := lang.NewSymbol("abs?")
 	sym_add := lang.NewSymbol("add")
 	sym_add_PLUS_ := lang.NewSymbol("add+")
 	sym_and_QMARK_ := lang.NewSymbol("and?")
 	sym_apply := lang.NewSymbol("apply")
 	sym_atom := lang.NewSymbol("atom")
 	sym_atom_QMARK_ := lang.NewSymbol("atom?")
+	sym_basename := lang.NewSymbol("basename")
 	sym_bindings := lang.NewSymbol("bindings")
 	sym_blank_QMARK_ := lang.NewSymbol("blank?")
 	sym_body := lang.NewSymbol("body")
@@ -129,17 +132,20 @@ func LoadNS() {
 	sym_cons := lang.NewSymbol("cons")
 	sym_contains_QMARK_ := lang.NewSymbol("contains?")
 	sym_count := lang.NewSymbol("count")
+	sym_d := lang.NewSymbol("d")
 	sym_dec := lang.NewSymbol("dec")
 	sym_dec_PLUS_ := lang.NewSymbol("dec+")
 	sym_default := lang.NewSymbol("default")
 	sym_die := lang.NewSymbol("die")
 	sym_digits := lang.NewSymbol("digits")
+	sym_dirname := lang.NewSymbol("dirname")
 	sym_disj := lang.NewSymbol("disj")
 	sym_dissoc := lang.NewSymbol("dissoc")
 	sym_div := lang.NewSymbol("div")
 	sym_div_PLUS_ := lang.NewSymbol("div+")
 	sym_do := lang.NewSymbol("do")
 	sym_double := lang.NewSymbol("double")
+	sym_e := lang.NewSymbol("e")
 	sym_each := lang.NewSymbol("each")
 	sym_empty_QMARK_ := lang.NewSymbol("empty?")
 	sym_ends_DASH_with_QMARK_ := lang.NewSymbol("ends-with?")
@@ -149,6 +155,7 @@ func LoadNS() {
 	sym_f := lang.NewSymbol("f")
 	sym_f__0__auto__ := lang.NewSymbol("f__0__auto__")
 	sym_falsey_QMARK_ := lang.NewSymbol("falsey?")
+	sym_filename := lang.NewSymbol("filename")
 	sym_filter := lang.NewSymbol("filter")
 	sym_first := lang.NewSymbol("first")
 	sym_flat := lang.NewSymbol("flat")
@@ -157,9 +164,30 @@ func LoadNS() {
 	sym_float_QMARK_ := lang.NewSymbol("float?")
 	sym_fn_STAR_ := lang.NewSymbol("fn*")
 	sym_fn_QMARK_ := lang.NewSymbol("fn?")
+	sym_fs_DASH_abs := lang.NewSymbol("fs-abs")
+	sym_fs_DASH_abs_QMARK_ := lang.NewSymbol("fs-abs?")
+	sym_fs_DASH_basename := lang.NewSymbol("fs-basename")
+	sym_fs_DASH_d := lang.NewSymbol("fs-d")
+	sym_fs_DASH_dirname := lang.NewSymbol("fs-dirname")
+	sym_fs_DASH_e := lang.NewSymbol("fs-e")
+	sym_fs_DASH_f := lang.NewSymbol("fs-f")
+	sym_fs_DASH_filename := lang.NewSymbol("fs-filename")
+	sym_fs_DASH_glob := lang.NewSymbol("fs-glob")
+	sym_fs_DASH_l := lang.NewSymbol("fs-l")
+	sym_fs_DASH_ls := lang.NewSymbol("fs-ls")
+	sym_fs_DASH_mtime := lang.NewSymbol("fs-mtime")
+	sym_fs_DASH_r := lang.NewSymbol("fs-r")
+	sym_fs_DASH_rel := lang.NewSymbol("fs-rel")
+	sym_fs_DASH_rel_QMARK_ := lang.NewSymbol("fs-rel?")
+	sym_fs_DASH_s := lang.NewSymbol("fs-s")
+	sym_fs_DASH_w := lang.NewSymbol("fs-w")
+	sym_fs_DASH_which := lang.NewSymbol("fs-which")
+	sym_fs_DASH_x := lang.NewSymbol("fs-x")
+	sym_fs_DASH_z := lang.NewSymbol("fs-z")
 	sym_ge := lang.NewSymbol("ge")
 	sym_get := lang.NewSymbol("get")
 	sym_get_PLUS_ := lang.NewSymbol("get+")
+	sym_glob := lang.NewSymbol("glob")
 	sym_grep := lang.NewSymbol("grep")
 	sym_gt := lang.NewSymbol("gt")
 	sym_has_QMARK_ := lang.NewSymbol("has?")
@@ -181,6 +209,7 @@ func LoadNS() {
 	sym_keyword := lang.NewSymbol("keyword")
 	sym_keyword_QMARK_ := lang.NewSymbol("keyword?")
 	sym_ks := lang.NewSymbol("ks")
+	sym_l := lang.NewSymbol("l")
 	sym_last := lang.NewSymbol("last")
 	sym_last_DASH_index_DASH_of := lang.NewSymbol("last-index-of")
 	sym_lc := lang.NewSymbol("lc")
@@ -191,6 +220,7 @@ func LoadNS() {
 	sym_list_QMARK_ := lang.NewSymbol("list?")
 	sym_long := lang.NewSymbol("long")
 	sym_lower_DASH_case := lang.NewSymbol("lower-case")
+	sym_ls := lang.NewSymbol("ls")
 	sym_lt := lang.NewSymbol("lt")
 	sym_map := lang.NewSymbol("map")
 	sym_map_QMARK_ := lang.NewSymbol("map?")
@@ -198,6 +228,7 @@ func LoadNS() {
 	sym_max := lang.NewSymbol("max")
 	sym_merge := lang.NewSymbol("merge")
 	sym_merge_DASH_with := lang.NewSymbol("merge-with")
+	sym_mtime := lang.NewSymbol("mtime")
 	sym_mul := lang.NewSymbol("mul")
 	sym_mul_PLUS_ := lang.NewSymbol("mul+")
 	sym_n := lang.NewSymbol("n")
@@ -227,6 +258,7 @@ func LoadNS() {
 	sym_quote := lang.NewSymbol("quote")
 	sym_qv := lang.NewSymbol("qv")
 	sym_qw := lang.NewSymbol("qw")
+	sym_r := lang.NewSymbol("r")
 	sym_range := lang.NewSymbol("range")
 	sym_ratio_QMARK_ := lang.NewSymbol("ratio?")
 	sym_re_DASH_find := lang.NewSymbol("re-find")
@@ -237,6 +269,8 @@ func LoadNS() {
 	sym_reduce := lang.NewSymbol("reduce")
 	sym_reduce_DASH_kv := lang.NewSymbol("reduce-kv")
 	sym_regex_QMARK_ := lang.NewSymbol("regex?")
+	sym_rel := lang.NewSymbol("rel")
+	sym_rel_QMARK_ := lang.NewSymbol("rel?")
 	sym_remove := lang.NewSymbol("remove")
 	sym_repeat := lang.NewSymbol("repeat")
 	sym_replace := lang.NewSymbol("replace")
@@ -248,6 +282,7 @@ func LoadNS() {
 	sym_reverse := lang.NewSymbol("reverse")
 	sym_rindex := lang.NewSymbol("rindex")
 	sym_rng := lang.NewSymbol("rng")
+	sym_s := lang.NewSymbol("s")
 	sym_say := lang.NewSymbol("say")
 	sym_seq := lang.NewSymbol("seq")
 	sym_seq_QMARK_ := lang.NewSymbol("seq?")
@@ -306,8 +341,10 @@ func LoadNS() {
 	sym_vec := lang.NewSymbol("vec")
 	sym_vector := lang.NewSymbol("vector")
 	sym_vector_QMARK_ := lang.NewSymbol("vector?")
+	sym_w := lang.NewSymbol("w")
 	sym_when_PLUS_ := lang.NewSymbol("when+")
 	sym_when_DASH_let := lang.NewSymbol("when-let")
+	sym_which := lang.NewSymbol("which")
 	sym_words := lang.NewSymbol("words")
 	sym_write := lang.NewSymbol("write")
 	sym_x := lang.NewSymbol("x")
@@ -315,6 +352,7 @@ func LoadNS() {
 	sym_y := lang.NewSymbol("y")
 	sym_yamlscript_DOT_util := lang.NewSymbol("yamlscript.util")
 	sym_yamlscript_DOT_util_SLASH_die := lang.NewSymbol("yamlscript.util/die")
+	sym_ys_DOT_fs := lang.NewSymbol("ys.fs")
 	sym_ys_DOT_std := lang.NewSymbol("ys.std")
 	sym_ys_DOT_std_SLASH_and_QMARK_ := lang.NewSymbol("ys.std/and?")
 	sym_ys_DOT_std_SLASH_falsey_QMARK_ := lang.NewSymbol("ys.std/falsey?")
@@ -596,6 +634,46 @@ func LoadNS() {
 	var_yamlscript_DOT_util_atom_QMARK_ := lang.InternVarName(sym_yamlscript_DOT_util, sym_atom_QMARK_)
 	// var yamlscript.util/die
 	var_yamlscript_DOT_util_die := lang.InternVarName(sym_yamlscript_DOT_util, sym_die)
+	// var ys.fs/abs
+	var_ys_DOT_fs_abs := lang.InternVarName(sym_ys_DOT_fs, sym_abs)
+	// var ys.fs/abs?
+	var_ys_DOT_fs_abs_QMARK_ := lang.InternVarName(sym_ys_DOT_fs, sym_abs_QMARK_)
+	// var ys.fs/basename
+	var_ys_DOT_fs_basename := lang.InternVarName(sym_ys_DOT_fs, sym_basename)
+	// var ys.fs/d
+	var_ys_DOT_fs_d := lang.InternVarName(sym_ys_DOT_fs, sym_d)
+	// var ys.fs/dirname
+	var_ys_DOT_fs_dirname := lang.InternVarName(sym_ys_DOT_fs, sym_dirname)
+	// var ys.fs/e
+	var_ys_DOT_fs_e := lang.InternVarName(sym_ys_DOT_fs, sym_e)
+	// var ys.fs/f
+	var_ys_DOT_fs_f := lang.InternVarName(sym_ys_DOT_fs, sym_f)
+	// var ys.fs/filename
+	var_ys_DOT_fs_filename := lang.InternVarName(sym_ys_DOT_fs, sym_filename)
+	// var ys.fs/glob
+	var_ys_DOT_fs_glob := lang.InternVarName(sym_ys_DOT_fs, sym_glob)
+	// var ys.fs/l
+	var_ys_DOT_fs_l := lang.InternVarName(sym_ys_DOT_fs, sym_l)
+	// var ys.fs/ls
+	var_ys_DOT_fs_ls := lang.InternVarName(sym_ys_DOT_fs, sym_ls)
+	// var ys.fs/mtime
+	var_ys_DOT_fs_mtime := lang.InternVarName(sym_ys_DOT_fs, sym_mtime)
+	// var ys.fs/r
+	var_ys_DOT_fs_r := lang.InternVarName(sym_ys_DOT_fs, sym_r)
+	// var ys.fs/rel
+	var_ys_DOT_fs_rel := lang.InternVarName(sym_ys_DOT_fs, sym_rel)
+	// var ys.fs/rel?
+	var_ys_DOT_fs_rel_QMARK_ := lang.InternVarName(sym_ys_DOT_fs, sym_rel_QMARK_)
+	// var ys.fs/s
+	var_ys_DOT_fs_s := lang.InternVarName(sym_ys_DOT_fs, sym_s)
+	// var ys.fs/w
+	var_ys_DOT_fs_w := lang.InternVarName(sym_ys_DOT_fs, sym_w)
+	// var ys.fs/which
+	var_ys_DOT_fs_which := lang.InternVarName(sym_ys_DOT_fs, sym_which)
+	// var ys.fs/x
+	var_ys_DOT_fs_x := lang.InternVarName(sym_ys_DOT_fs, sym_x)
+	// var ys.fs/z
+	var_ys_DOT_fs_z := lang.InternVarName(sym_ys_DOT_fs, sym_z)
 	// var ys.std/B
 	var_ys_DOT_std_B := lang.InternVarName(sym_ys_DOT_std, sym_B)
 	// var ys.std/C
@@ -686,6 +764,46 @@ func LoadNS() {
 	var_ys_DOT_std_flat := lang.InternVarName(sym_ys_DOT_std, sym_flat)
 	// var ys.std/flip
 	var_ys_DOT_std_flip := lang.InternVarName(sym_ys_DOT_std, sym_flip)
+	// var ys.std/fs-abs
+	var_ys_DOT_std_fs_DASH_abs := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_abs)
+	// var ys.std/fs-abs?
+	var_ys_DOT_std_fs_DASH_abs_QMARK_ := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_abs_QMARK_)
+	// var ys.std/fs-basename
+	var_ys_DOT_std_fs_DASH_basename := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_basename)
+	// var ys.std/fs-d
+	var_ys_DOT_std_fs_DASH_d := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_d)
+	// var ys.std/fs-dirname
+	var_ys_DOT_std_fs_DASH_dirname := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_dirname)
+	// var ys.std/fs-e
+	var_ys_DOT_std_fs_DASH_e := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_e)
+	// var ys.std/fs-f
+	var_ys_DOT_std_fs_DASH_f := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_f)
+	// var ys.std/fs-filename
+	var_ys_DOT_std_fs_DASH_filename := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_filename)
+	// var ys.std/fs-glob
+	var_ys_DOT_std_fs_DASH_glob := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_glob)
+	// var ys.std/fs-l
+	var_ys_DOT_std_fs_DASH_l := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_l)
+	// var ys.std/fs-ls
+	var_ys_DOT_std_fs_DASH_ls := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_ls)
+	// var ys.std/fs-mtime
+	var_ys_DOT_std_fs_DASH_mtime := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_mtime)
+	// var ys.std/fs-r
+	var_ys_DOT_std_fs_DASH_r := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_r)
+	// var ys.std/fs-rel
+	var_ys_DOT_std_fs_DASH_rel := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_rel)
+	// var ys.std/fs-rel?
+	var_ys_DOT_std_fs_DASH_rel_QMARK_ := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_rel_QMARK_)
+	// var ys.std/fs-s
+	var_ys_DOT_std_fs_DASH_s := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_s)
+	// var ys.std/fs-w
+	var_ys_DOT_std_fs_DASH_w := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_w)
+	// var ys.std/fs-which
+	var_ys_DOT_std_fs_DASH_which := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_which)
+	// var ys.std/fs-x
+	var_ys_DOT_std_fs_DASH_x := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_x)
+	// var ys.std/fs-z
+	var_ys_DOT_std_fs_DASH_z := lang.InternVarName(sym_ys_DOT_std, sym_fs_DASH_z)
 	// var ys.std/ge
 	var_ys_DOT_std_ge := lang.InternVarName(sym_ys_DOT_std, sym_ge)
 	// var ys.std/get+
@@ -840,7 +958,7 @@ func LoadNS() {
 	_ = ns
 	// source
 	{
-		tmp0 := sym_source.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(1016), kw_column, int(11), kw_end_DASH_line, int(1016), kw_end_DASH_column, int(16), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_source.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(1037), kw_column, int(11), kw_end_DASH_line, int(1037), kw_end_DASH_column, int(16), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -867,7 +985,7 @@ func LoadNS() {
 	}
 	// B
 	{
-		tmp0 := sym_B.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(753), kw_column, int(18), kw_end_DASH_line, int(753), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_B.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(754), kw_column, int(18), kw_end_DASH_line, int(754), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -877,7 +995,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(753), kw_column, int(20), kw_end_DASH_line, int(753), kw_end_DASH_column, int(39))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(754), kw_column, int(20), kw_end_DASH_line, int(754), kw_end_DASH_column, int(39))).(lang.FnFunc)
 		var_ys_DOT_std_B = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_B.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -885,7 +1003,7 @@ func LoadNS() {
 	}
 	// C
 	{
-		tmp0 := sym_C.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(755), kw_column, int(18), kw_end_DASH_line, int(755), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_C.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(756), kw_column, int(18), kw_end_DASH_line, int(756), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -895,7 +1013,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(755), kw_column, int(20), kw_end_DASH_line, int(755), kw_end_DASH_column, int(39))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(756), kw_column, int(20), kw_end_DASH_line, int(756), kw_end_DASH_column, int(39))).(lang.FnFunc)
 		var_ys_DOT_std_C = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_C.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -903,7 +1021,7 @@ func LoadNS() {
 	}
 	// F
 	{
-		tmp0 := sym_F.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(757), kw_column, int(18), kw_end_DASH_line, int(757), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_F.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(758), kw_column, int(18), kw_end_DASH_line, int(758), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -913,7 +1031,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(757), kw_column, int(20), kw_end_DASH_line, int(757), kw_end_DASH_column, int(40))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(758), kw_column, int(20), kw_end_DASH_line, int(758), kw_end_DASH_column, int(40))).(lang.FnFunc)
 		var_ys_DOT_std_F = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_F.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -921,7 +1039,7 @@ func LoadNS() {
 	}
 	// F?
 	{
-		tmp0 := sym_F_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(797), kw_column, int(11), kw_end_DASH_line, int(797), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_F_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(798), kw_column, int(11), kw_end_DASH_line, int(798), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 3)
@@ -949,7 +1067,7 @@ func LoadNS() {
 	}
 	// I
 	{
-		tmp0 := sym_I.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(758), kw_column, int(18), kw_end_DASH_line, int(758), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_I.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(759), kw_column, int(18), kw_end_DASH_line, int(759), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -969,7 +1087,7 @@ func LoadNS() {
 	}
 	// K
 	{
-		tmp0 := sym_K.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(760), kw_column, int(18), kw_end_DASH_line, int(760), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_K.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(761), kw_column, int(18), kw_end_DASH_line, int(761), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -979,7 +1097,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(760), kw_column, int(20), kw_end_DASH_line, int(760), kw_end_DASH_column, int(39))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(761), kw_column, int(20), kw_end_DASH_line, int(761), kw_end_DASH_column, int(39))).(lang.FnFunc)
 		var_ys_DOT_std_K = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_K.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -987,7 +1105,7 @@ func LoadNS() {
 	}
 	// L
 	{
-		tmp0 := sym_L.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(762), kw_column, int(18), kw_end_DASH_line, int(762), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_L.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(763), kw_column, int(18), kw_end_DASH_line, int(763), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -997,7 +1115,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(762), kw_column, int(20), kw_end_DASH_line, int(762), kw_end_DASH_column, int(39))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(763), kw_column, int(20), kw_end_DASH_line, int(763), kw_end_DASH_column, int(39))).(lang.FnFunc)
 		var_ys_DOT_std_L = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_L.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -1005,7 +1123,7 @@ func LoadNS() {
 	}
 	// L+
 	{
-		tmp0 := sym_L_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(777), kw_column, int(18), kw_end_DASH_line, int(777), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_L_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(778), kw_column, int(18), kw_end_DASH_line, int(778), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -1023,7 +1141,7 @@ func LoadNS() {
 				return tmp5
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(777), kw_column, int(21), kw_end_DASH_line, int(777), kw_end_DASH_column, int(51))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(778), kw_column, int(21), kw_end_DASH_line, int(778), kw_end_DASH_column, int(51))).(lang.FnFunc)
 		var_ys_DOT_std_L_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_L_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -1031,7 +1149,7 @@ func LoadNS() {
 	}
 	// M
 	{
-		tmp0 := sym_M.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(764), kw_column, int(18), kw_end_DASH_line, int(764), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_M.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(765), kw_column, int(18), kw_end_DASH_line, int(765), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -1041,7 +1159,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(764), kw_column, int(20), kw_end_DASH_line, int(764), kw_end_DASH_column, int(38))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(765), kw_column, int(20), kw_end_DASH_line, int(765), kw_end_DASH_column, int(38))).(lang.FnFunc)
 		var_ys_DOT_std_M = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_M.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -1049,7 +1167,7 @@ func LoadNS() {
 	}
 	// M+
 	{
-		tmp0 := sym_M_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(779), kw_column, int(18), kw_end_DASH_line, int(779), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_M_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(780), kw_column, int(18), kw_end_DASH_line, int(780), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -1067,7 +1185,7 @@ func LoadNS() {
 				return tmp5
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(779), kw_column, int(21), kw_end_DASH_line, int(779), kw_end_DASH_column, int(55))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(780), kw_column, int(21), kw_end_DASH_line, int(780), kw_end_DASH_column, int(55))).(lang.FnFunc)
 		var_ys_DOT_std_M_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_M_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -1075,7 +1193,7 @@ func LoadNS() {
 	}
 	// N
 	{
-		tmp0 := sym_N.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(766), kw_column, int(18), kw_end_DASH_line, int(766), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_N.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(767), kw_column, int(18), kw_end_DASH_line, int(767), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -1093,7 +1211,7 @@ func LoadNS() {
 				return tmp5
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(766), kw_column, int(20), kw_end_DASH_line, int(766), kw_end_DASH_column, int(52))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(767), kw_column, int(20), kw_end_DASH_line, int(767), kw_end_DASH_column, int(52))).(lang.FnFunc)
 		var_ys_DOT_std_N = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_N.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -1101,7 +1219,7 @@ func LoadNS() {
 	}
 	// O
 	{
-		tmp0 := sym_O.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(768), kw_column, int(18), kw_end_DASH_line, int(768), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_O.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(769), kw_column, int(18), kw_end_DASH_line, int(769), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -1111,7 +1229,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(768), kw_column, int(20), kw_end_DASH_line, int(768), kw_end_DASH_column, int(39))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(769), kw_column, int(20), kw_end_DASH_line, int(769), kw_end_DASH_column, int(39))).(lang.FnFunc)
 		var_ys_DOT_std_O = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_O.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -1119,7 +1237,7 @@ func LoadNS() {
 	}
 	// O+
 	{
-		tmp0 := sym_O_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(781), kw_column, int(18), kw_end_DASH_line, int(781), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_O_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(782), kw_column, int(18), kw_end_DASH_line, int(782), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -1137,7 +1255,7 @@ func LoadNS() {
 				return tmp5
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(781), kw_column, int(21), kw_end_DASH_line, int(781), kw_end_DASH_column, int(51))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(782), kw_column, int(21), kw_end_DASH_line, int(782), kw_end_DASH_column, int(51))).(lang.FnFunc)
 		var_ys_DOT_std_O_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_O_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -1145,7 +1263,7 @@ func LoadNS() {
 	}
 	// S
 	{
-		tmp0 := sym_S.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(770), kw_column, int(18), kw_end_DASH_line, int(770), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_S.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(771), kw_column, int(18), kw_end_DASH_line, int(771), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -1155,7 +1273,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(770), kw_column, int(20), kw_end_DASH_line, int(770), kw_end_DASH_column, int(38))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(771), kw_column, int(20), kw_end_DASH_line, int(771), kw_end_DASH_column, int(38))).(lang.FnFunc)
 		var_ys_DOT_std_S = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_S.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -1163,7 +1281,7 @@ func LoadNS() {
 	}
 	// T
 	{
-		tmp0 := sym_T.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(772), kw_column, int(18), kw_end_DASH_line, int(772), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_T.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(773), kw_column, int(18), kw_end_DASH_line, int(773), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -1173,7 +1291,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(772), kw_column, int(20), kw_end_DASH_line, int(772), kw_end_DASH_column, int(39))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(773), kw_column, int(20), kw_end_DASH_line, int(773), kw_end_DASH_column, int(39))).(lang.FnFunc)
 		var_ys_DOT_std_T = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_T.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -1181,7 +1299,7 @@ func LoadNS() {
 	}
 	// T?
 	{
-		tmp0 := sym_T_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(802), kw_column, int(11), kw_end_DASH_line, int(802), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_T_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(803), kw_column, int(11), kw_end_DASH_line, int(803), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 3)
@@ -1209,7 +1327,7 @@ func LoadNS() {
 	}
 	// V
 	{
-		tmp0 := sym_V.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(774), kw_column, int(18), kw_end_DASH_line, int(774), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_V.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(775), kw_column, int(18), kw_end_DASH_line, int(775), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -1219,7 +1337,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(774), kw_column, int(20), kw_end_DASH_line, int(774), kw_end_DASH_column, int(38))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(775), kw_column, int(20), kw_end_DASH_line, int(775), kw_end_DASH_column, int(38))).(lang.FnFunc)
 		var_ys_DOT_std_V = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_V.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -1227,7 +1345,7 @@ func LoadNS() {
 	}
 	// V+
 	{
-		tmp0 := sym_V_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(783), kw_column, int(18), kw_end_DASH_line, int(783), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_V_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(784), kw_column, int(18), kw_end_DASH_line, int(784), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -1245,7 +1363,7 @@ func LoadNS() {
 				return tmp5
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(783), kw_column, int(21), kw_end_DASH_line, int(783), kw_end_DASH_column, int(53))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(784), kw_column, int(21), kw_end_DASH_line, int(784), kw_end_DASH_column, int(53))).(lang.FnFunc)
 		var_ys_DOT_std_V_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_V_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -1253,7 +1371,7 @@ func LoadNS() {
 	}
 	// &&&
 	{
-		tmp0 := sym__AMP__AMP__AMP_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(820), kw_column, int(11), kw_end_DASH_line, int(820), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym__AMP__AMP__AMP_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(821), kw_column, int(11), kw_end_DASH_line, int(821), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -1290,7 +1408,7 @@ func LoadNS() {
 	}
 	// !---
 	{
-		tmp0 := sym__BANG__DASH__DASH__DASH_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(536), kw_column, int(7), kw_end_DASH_line, int(536), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_S, sym_R)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym__BANG__DASH__DASH__DASH_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(537), kw_column, int(7), kw_end_DASH_line, int(537), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_S, sym_R)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 2)
@@ -1312,7 +1430,7 @@ func LoadNS() {
 	}
 	// =---
 	{
-		tmp0 := sym__EQ__DASH__DASH__DASH_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(533), kw_column, int(7), kw_end_DASH_line, int(533), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_S, sym_R)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym__EQ__DASH__DASH__DASH_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(534), kw_column, int(7), kw_end_DASH_line, int(534), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_S, sym_R)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 2)
@@ -1334,7 +1452,7 @@ func LoadNS() {
 	}
 	// %
 	{
-		tmp0 := sym__PCT_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(267), kw_column, int(7), kw_end_DASH_line, int(267), kw_end_DASH_column, int(7), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym__PCT_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(268), kw_column, int(7), kw_end_DASH_line, int(268), kw_end_DASH_column, int(7), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -1360,7 +1478,7 @@ func LoadNS() {
 	}
 	// +concat
 	{
-		tmp0 := sym__PLUS_concat.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(233), kw_column, int(7), kw_end_DASH_line, int(233), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_C)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym__PLUS_concat.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(234), kw_column, int(7), kw_end_DASH_line, int(234), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_C)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -1451,7 +1569,7 @@ func LoadNS() {
 						} // end let
 						if lang.IsTruthy(tmp12) {
 							tmp13 := lang.NewVector(v7)
-							tmp14 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(241), kw_column, int(38), kw_end_DASH_line, int(241), kw_end_DASH_column, int(41))
+							tmp14 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(242), kw_column, int(38), kw_end_DASH_line, int(242), kw_end_DASH_column, int(41))
 							tmp15, err := lang.WithMeta(tmp13, tmp14.(lang.IPersistentMap))
 							if err != nil {
 								panic(err)
@@ -1468,7 +1586,7 @@ func LoadNS() {
 					}
 					return tmp8
 				})
-				tmp7 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(234), kw_column, int(22), kw_end_DASH_line, int(242), kw_end_DASH_column, int(34))
+				tmp7 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(235), kw_column, int(22), kw_end_DASH_line, int(243), kw_end_DASH_column, int(34))
 				tmp8, err := lang.WithMeta(tmp6, tmp7.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -1486,7 +1604,7 @@ func LoadNS() {
 	}
 	// +merge
 	{
-		tmp0 := sym__PLUS_merge.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(244), kw_column, int(7), kw_end_DASH_line, int(244), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_M)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym__PLUS_merge.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(245), kw_column, int(7), kw_end_DASH_line, int(245), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_M)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -1544,7 +1662,7 @@ func LoadNS() {
 						_ = v29
 						return v28
 					})
-					tmp28 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(253), kw_column, int(31), kw_end_DASH_line, int(253), kw_end_DASH_column, int(42))
+					tmp28 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(254), kw_column, int(31), kw_end_DASH_line, int(254), kw_end_DASH_column, int(42))
 					tmp29, err := lang.WithMeta(tmp27, tmp28.(lang.IPersistentMap))
 					if err != nil {
 						panic(err)
@@ -1570,7 +1688,7 @@ func LoadNS() {
 	}
 	// |||
 	{
-		tmp0 := sym__U007C__U007C__U007C_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(811), kw_column, int(11), kw_end_DASH_line, int(811), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym__U007C__U007C__U007C_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(812), kw_column, int(11), kw_end_DASH_line, int(812), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -1607,7 +1725,7 @@ func LoadNS() {
 	}
 	// a
 	{
-		tmp0 := sym_a.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(575), kw_column, int(18), kw_end_DASH_line, int(575), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_a.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(576), kw_column, int(18), kw_end_DASH_line, int(576), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -1617,7 +1735,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(575), kw_column, int(20), kw_end_DASH_line, int(575), kw_end_DASH_column, int(40))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(576), kw_column, int(20), kw_end_DASH_line, int(576), kw_end_DASH_column, int(40))).(lang.FnFunc)
 		var_ys_DOT_std_a = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_a.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -1625,7 +1743,7 @@ func LoadNS() {
 	}
 	// add
 	{
-		tmp0 := sym_add.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(302), kw_column, int(7), kw_end_DASH_line, int(302), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_add.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(303), kw_column, int(7), kw_end_DASH_line, int(303), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -1643,7 +1761,7 @@ func LoadNS() {
 					tmp6 := lang.Apply(tmp5, []any{v4, v2})
 					return tmp6
 				})
-				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(304), kw_column, int(8), kw_end_DASH_line, int(304), kw_end_DASH_column, int(16))
+				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(305), kw_column, int(8), kw_end_DASH_line, int(305), kw_end_DASH_column, int(16))
 				tmp5, err := lang.WithMeta(tmp3, tmp4.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -1683,7 +1801,7 @@ func LoadNS() {
 	}
 	// add+
 	{
-		tmp0 := sym_add_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(393), kw_column, int(7), kw_end_DASH_line, int(393), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_add_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(394), kw_column, int(7), kw_end_DASH_line, int(394), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -1694,7 +1812,7 @@ func LoadNS() {
 				_ = v3
 				var tmp4 any
 				{ // let
-					// let binding "pred__44"
+					// let binding "pred__93"
 					var tmp5 lang.FnFunc
 					tmp5 = lang.NewFnFunc(func(args ...any) any {
 						checkArity(args, 2)
@@ -1707,7 +1825,7 @@ func LoadNS() {
 					})
 					var v6 any = tmp5
 					_ = v6
-					// let binding "expr__45"
+					// let binding "expr__94"
 					var v7 any = v2
 					_ = v7
 					var tmp8 any
@@ -1893,7 +2011,7 @@ func LoadNS() {
 	}
 	// and?
 	{
-		tmp0 := sym_and_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(813), kw_column, int(11), kw_end_DASH_line, int(813), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x), lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_and_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(814), kw_column, int(11), kw_end_DASH_line, int(814), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x), lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -1968,7 +2086,7 @@ func LoadNS() {
 	}
 	// atom
 	{
-		tmp0 := sym_atom.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(1000), kw_column, int(7), kw_end_DASH_line, int(1000), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_atom.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(1021), kw_column, int(7), kw_end_DASH_line, int(1021), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -1995,7 +2113,7 @@ func LoadNS() {
 	}
 	// blank?
 	{
-		tmp0 := sym_blank_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(65), kw_column, int(18), kw_end_DASH_line, int(65), kw_end_DASH_column, int(23), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_blank_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(66), kw_column, int(18), kw_end_DASH_line, int(66), kw_end_DASH_column, int(23), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -2005,7 +2123,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(65), kw_column, int(25), kw_end_DASH_line, int(65), kw_end_DASH_column, int(47))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(66), kw_column, int(25), kw_end_DASH_line, int(66), kw_end_DASH_column, int(47))).(lang.FnFunc)
 		var_ys_DOT_std_blank_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_blank_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -2013,7 +2131,7 @@ func LoadNS() {
 	}
 	// call
 	{
-		tmp0 := sym_call.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(468), kw_column, int(11), kw_end_DASH_line, int(468), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_call.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(469), kw_column, int(11), kw_end_DASH_line, int(469), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -2127,7 +2245,7 @@ func LoadNS() {
 	}
 	// chomp
 	{
-		tmp0 := sym_chomp.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(67), kw_column, int(18), kw_end_DASH_line, int(67), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_chomp.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(68), kw_column, int(18), kw_end_DASH_line, int(68), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -2137,7 +2255,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(67), kw_column, int(24), kw_end_DASH_line, int(67), kw_end_DASH_column, int(52))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(68), kw_column, int(24), kw_end_DASH_line, int(68), kw_end_DASH_column, int(52))).(lang.FnFunc)
 		var_ys_DOT_std_chomp = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_chomp.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -2145,7 +2263,7 @@ func LoadNS() {
 	}
 	// dec+
 	{
-		tmp0 := sym_dec_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(384), kw_column, int(7), kw_end_DASH_line, int(384), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_dec_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(385), kw_column, int(7), kw_end_DASH_line, int(385), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -2153,7 +2271,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__40"
+				// let binding "pred__89"
 				var tmp4 lang.FnFunc
 				tmp4 = lang.NewFnFunc(func(args ...any) any {
 					checkArity(args, 2)
@@ -2166,7 +2284,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__41"
+				// let binding "expr__90"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -2198,7 +2316,7 @@ func LoadNS() {
 							_ = v24
 							var tmp25 any
 							{ // let
-								// let binding "pred__42"
+								// let binding "pred__91"
 								var tmp26 lang.FnFunc
 								tmp26 = lang.NewFnFunc(func(args ...any) any {
 									checkArity(args, 2)
@@ -2211,7 +2329,7 @@ func LoadNS() {
 								})
 								var v27 any = tmp26
 								_ = v27
-								// let binding "expr__43"
+								// let binding "expr__92"
 								var v28 any = v24
 								_ = v28
 								var tmp29 any
@@ -2246,7 +2364,7 @@ func LoadNS() {
 	}
 	// die
 	{
-		tmp0 := sym_die.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(474), kw_column, int(18), kw_end_DASH_line, int(474), kw_end_DASH_column, int(20), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_die.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(475), kw_column, int(18), kw_end_DASH_line, int(475), kw_end_DASH_column, int(20), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -2264,7 +2382,7 @@ func LoadNS() {
 				return tmp5
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(474), kw_column, int(22), kw_end_DASH_line, int(474), kw_end_DASH_column, int(56))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(475), kw_column, int(22), kw_end_DASH_line, int(475), kw_end_DASH_column, int(56))).(lang.FnFunc)
 		var_ys_DOT_std_die = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_die.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -2272,7 +2390,7 @@ func LoadNS() {
 	}
 	// digits
 	{
-		tmp0 := sym_digits.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(329), kw_column, int(7), kw_end_DASH_line, int(329), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_n)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_digits.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(330), kw_column, int(7), kw_end_DASH_line, int(330), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_n)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -2293,7 +2411,7 @@ func LoadNS() {
 					{ // let
 						// let binding "iter__0__auto__"
 						var tmp11 lang.FnFunc
-						{ // function iter__32
+						{ // function iter__81
 							var v12 lang.FnFunc
 							tmp11 = lang.NewFnFunc(func(args ...any) any {
 								checkArity(args, 1)
@@ -2304,7 +2422,7 @@ func LoadNS() {
 									checkArity(args, 0)
 									var tmp15 any
 									{ // let
-										// let binding "s__33"
+										// let binding "s__82"
 										var v16 any = v13
 										_ = v16
 										for {
@@ -2319,7 +2437,7 @@ func LoadNS() {
 												if lang.IsTruthy(v20) {
 													var tmp22 any
 													{ // let
-														// let binding "s__33"
+														// let binding "s__82"
 														var v23 any = v20
 														_ = v23
 														var tmp24 any
@@ -2340,7 +2458,7 @@ func LoadNS() {
 																tmp34 := lang.Apply(tmp31, []any{tmp33})
 																var v35 any = tmp34
 																_ = v35
-																// let binding "b__35"
+																// let binding "b__84"
 																tmp36 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_buffer)
 																tmp37 := lang.Apply(tmp36, []any{v35})
 																var v38 any = tmp37
@@ -2348,7 +2466,7 @@ func LoadNS() {
 																var tmp39 any
 																var tmp40 any
 																{ // let
-																	// let binding "i__34"
+																	// let binding "i__83"
 																	tmp41 := checkDerefVar(var_clojure_DOT_core_int)
 																	tmp42 := lang.Apply(tmp41, []any{int64(0)})
 																	var v43 any = tmp42
@@ -2468,7 +2586,7 @@ func LoadNS() {
 	}
 	// div
 	{
-		tmp0 := sym_div.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(319), kw_column, int(7), kw_end_DASH_line, int(319), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_div.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(320), kw_column, int(7), kw_end_DASH_line, int(320), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -2484,7 +2602,7 @@ func LoadNS() {
 					tmp6 := lang.Apply(tmp5, []any{v4, v2})
 					return tmp6
 				})
-				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(320), kw_column, int(8), kw_end_DASH_line, int(320), kw_end_DASH_column, int(18))
+				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(321), kw_column, int(8), kw_end_DASH_line, int(321), kw_end_DASH_column, int(18))
 				tmp5, err := lang.WithMeta(tmp3, tmp4.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -2543,7 +2661,7 @@ func LoadNS() {
 	}
 	// div+
 	{
-		tmp0 := sym_div_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(418), kw_column, int(7), kw_end_DASH_line, int(418), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_div_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(419), kw_column, int(7), kw_end_DASH_line, int(419), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -2572,7 +2690,7 @@ func LoadNS() {
 	}
 	// each
 	{
-		tmp0 := sym_each.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(476), kw_column, int(11), kw_end_DASH_line, int(476), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_bindings, sym__AMP_, sym_body)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_each.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(477), kw_column, int(11), kw_end_DASH_line, int(477), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_bindings, sym__AMP_, sym_body)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -2625,7 +2743,7 @@ func LoadNS() {
 	}
 	// ends?
 	{
-		tmp0 := sym_ends_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(70), kw_column, int(18), kw_end_DASH_line, int(70), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_ends_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(71), kw_column, int(18), kw_end_DASH_line, int(71), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 2)
@@ -2637,7 +2755,7 @@ func LoadNS() {
 			tmp5 := lang.Apply(tmp4, []any{v2, v3})
 			return tmp5
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(70), kw_column, int(24), kw_end_DASH_line, int(70), kw_end_DASH_column, int(54))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(71), kw_column, int(24), kw_end_DASH_line, int(71), kw_end_DASH_column, int(54))).(lang.FnFunc)
 		var_ys_DOT_std_ends_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_ends_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -2645,7 +2763,7 @@ func LoadNS() {
 	}
 	// eq
 	{
-		tmp0 := sym_eq.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(606), kw_column, int(7), kw_end_DASH_line, int(606), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_eq.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(607), kw_column, int(7), kw_end_DASH_line, int(607), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -2661,7 +2779,7 @@ func LoadNS() {
 					tmp6 := lang.Apply(tmp5, []any{v4, v2})
 					return tmp6
 				})
-				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(607), kw_column, int(8), kw_end_DASH_line, int(607), kw_end_DASH_column, int(16))
+				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(608), kw_column, int(8), kw_end_DASH_line, int(608), kw_end_DASH_column, int(16))
 				tmp5, err := lang.WithMeta(tmp3, tmp4.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -2701,7 +2819,7 @@ func LoadNS() {
 	}
 	// escape
 	{
-		tmp0 := sym_escape.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(72), kw_column, int(18), kw_end_DASH_line, int(72), kw_end_DASH_column, int(23), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_escape.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(73), kw_column, int(18), kw_end_DASH_line, int(73), kw_end_DASH_column, int(23), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 2)
@@ -2713,7 +2831,7 @@ func LoadNS() {
 			tmp5 := lang.Apply(tmp4, []any{v2, v3})
 			return tmp5
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(72), kw_column, int(25), kw_end_DASH_line, int(72), kw_end_DASH_column, int(51))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(73), kw_column, int(25), kw_end_DASH_line, int(73), kw_end_DASH_column, int(51))).(lang.FnFunc)
 		var_ys_DOT_std_escape = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_escape.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -2721,7 +2839,7 @@ func LoadNS() {
 	}
 	// falsey?
 	{
-		tmp0 := sym_falsey_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(790), kw_column, int(7), kw_end_DASH_line, int(790), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_falsey_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(791), kw_column, int(7), kw_end_DASH_line, int(791), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -2729,7 +2847,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__68"
+				// let binding "pred__117"
 				var tmp4 lang.FnFunc
 				tmp4 = lang.NewFnFunc(func(args ...any) any {
 					checkArity(args, 2)
@@ -2742,7 +2860,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__69"
+				// let binding "expr__118"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -2785,7 +2903,7 @@ func LoadNS() {
 	}
 	// truey?
 	{
-		tmp0 := sym_truey_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(799), kw_column, int(7), kw_end_DASH_line, int(799), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_truey_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(800), kw_column, int(7), kw_end_DASH_line, int(800), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -2808,7 +2926,7 @@ func LoadNS() {
 	}
 	// flat
 	{
-		tmp0 := sym_flat.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(206), kw_column, int(7), kw_end_DASH_line, int(206), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_C)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_flat.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(207), kw_column, int(7), kw_end_DASH_line, int(207), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_C)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -2827,7 +2945,7 @@ func LoadNS() {
 					tmp6 = v5
 				} else {
 					tmp9 := lang.NewVector(v5)
-					tmp10 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(208), kw_column, int(32), kw_end_DASH_line, int(208), kw_end_DASH_column, int(34))
+					tmp10 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(209), kw_column, int(32), kw_end_DASH_line, int(209), kw_end_DASH_column, int(34))
 					tmp11, err := lang.WithMeta(tmp9, tmp10.(lang.IPersistentMap))
 					if err != nil {
 						panic(err)
@@ -2836,7 +2954,7 @@ func LoadNS() {
 				}
 				return tmp6
 			})
-			tmp5 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(208), kw_column, int(5), kw_end_DASH_line, int(208), kw_end_DASH_column, int(36))
+			tmp5 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(209), kw_column, int(5), kw_end_DASH_line, int(209), kw_end_DASH_column, int(36))
 			tmp6, err := lang.WithMeta(tmp4, tmp5.(lang.IPersistentMap))
 			if err != nil {
 				panic(err)
@@ -2852,7 +2970,7 @@ func LoadNS() {
 	}
 	// flip
 	{
-		tmp0 := sym_flip.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(508), kw_column, int(7), kw_end_DASH_line, int(508), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_f)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_flip.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(509), kw_column, int(7), kw_end_DASH_line, int(509), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_f)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -2917,7 +3035,7 @@ func LoadNS() {
 					tmp11 := checkDerefVar(var_clojure_DOT_core_conj)
 					tmp12 := checkDerefVar(var_clojure_DOT_core_concat)
 					tmp13 := lang.NewVector(v4, v5, v6, v7)
-					tmp14 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(516), kw_column, int(19), kw_end_DASH_line, int(516), kw_end_DASH_column, int(27))
+					tmp14 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(517), kw_column, int(19), kw_end_DASH_line, int(517), kw_end_DASH_column, int(27))
 					tmp15, err := lang.WithMeta(tmp13, tmp14.(lang.IPersistentMap))
 					if err != nil {
 						panic(err)
@@ -2928,7 +3046,7 @@ func LoadNS() {
 					return tmp18
 				}
 			})
-			tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(509), kw_column, int(3), kw_end_DASH_line, int(518), kw_end_DASH_column, int(19))
+			tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(510), kw_column, int(3), kw_end_DASH_line, int(519), kw_end_DASH_column, int(19))
 			tmp5, err := lang.WithMeta(tmp3, tmp4.(lang.IPersistentMap))
 			if err != nil {
 				panic(err)
@@ -2941,9 +3059,529 @@ func LoadNS() {
 			var_ys_DOT_std_flip.SetMeta(tmp0.Meta().(lang.IPersistentMap))
 		}
 	}
+	// fs-abs
+	{
+		tmp0 := sym_fs_DASH_abs.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(846), kw_column, int(18), kw_end_DASH_line, int(846), kw_end_DASH_column, int(23), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_abs)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(846), kw_column, int(25), kw_end_DASH_line, int(846), kw_end_DASH_column, int(57))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_abs = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_abs.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-abs?
+	{
+		tmp0 := sym_fs_DASH_abs_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(848), kw_column, int(18), kw_end_DASH_line, int(848), kw_end_DASH_column, int(24), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_abs_QMARK_)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(848), kw_column, int(26), kw_end_DASH_line, int(848), kw_end_DASH_column, int(59))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_abs_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_abs_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-basename
+	{
+		tmp0 := sym_fs_DASH_basename.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(854), kw_column, int(18), kw_end_DASH_line, int(854), kw_end_DASH_column, int(28), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_basename)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(854), kw_column, int(30), kw_end_DASH_line, int(854), kw_end_DASH_column, int(67))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_basename = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_basename.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-d
+	{
+		tmp0 := sym_fs_DASH_d.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(828), kw_column, int(18), kw_end_DASH_line, int(828), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_d)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(828), kw_column, int(23), kw_end_DASH_line, int(828), kw_end_DASH_column, int(53))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_d = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_d.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-dirname
+	{
+		tmp0 := sym_fs_DASH_dirname.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(850), kw_column, int(18), kw_end_DASH_line, int(850), kw_end_DASH_column, int(27), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_dirname)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(850), kw_column, int(29), kw_end_DASH_line, int(850), kw_end_DASH_column, int(65))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_dirname = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_dirname.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-e
+	{
+		tmp0 := sym_fs_DASH_e.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(830), kw_column, int(18), kw_end_DASH_line, int(830), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_e)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(830), kw_column, int(23), kw_end_DASH_line, int(830), kw_end_DASH_column, int(53))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_e = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_e.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-f
+	{
+		tmp0 := sym_fs_DASH_f.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(832), kw_column, int(18), kw_end_DASH_line, int(832), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_f)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(832), kw_column, int(23), kw_end_DASH_line, int(832), kw_end_DASH_column, int(53))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_f = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_f.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-filename
+	{
+		tmp0 := sym_fs_DASH_filename.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(852), kw_column, int(18), kw_end_DASH_line, int(852), kw_end_DASH_column, int(28), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_filename)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(852), kw_column, int(30), kw_end_DASH_line, int(852), kw_end_DASH_column, int(67))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_filename = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_filename.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-glob
+	{
+		tmp0 := sym_fs_DASH_glob.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(856), kw_column, int(18), kw_end_DASH_line, int(856), kw_end_DASH_column, int(24), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_glob)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(856), kw_column, int(26), kw_end_DASH_line, int(856), kw_end_DASH_column, int(59))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_glob = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_glob.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-l
+	{
+		tmp0 := sym_fs_DASH_l.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(834), kw_column, int(18), kw_end_DASH_line, int(834), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_l)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(834), kw_column, int(23), kw_end_DASH_line, int(834), kw_end_DASH_column, int(53))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_l = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_l.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-ls
+	{
+		tmp0 := sym_fs_DASH_ls.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(858), kw_column, int(18), kw_end_DASH_line, int(858), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_ls)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(858), kw_column, int(24), kw_end_DASH_line, int(858), kw_end_DASH_column, int(55))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_ls = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_ls.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-mtime
+	{
+		tmp0 := sym_fs_DASH_mtime.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(860), kw_column, int(18), kw_end_DASH_line, int(860), kw_end_DASH_column, int(25), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_mtime)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(860), kw_column, int(27), kw_end_DASH_line, int(860), kw_end_DASH_column, int(61))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_mtime = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_mtime.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-r
+	{
+		tmp0 := sym_fs_DASH_r.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(836), kw_column, int(18), kw_end_DASH_line, int(836), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_r)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(836), kw_column, int(23), kw_end_DASH_line, int(836), kw_end_DASH_column, int(53))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_r = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_r.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-rel
+	{
+		tmp0 := sym_fs_DASH_rel.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(862), kw_column, int(18), kw_end_DASH_line, int(862), kw_end_DASH_column, int(23), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_rel)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(862), kw_column, int(25), kw_end_DASH_line, int(862), kw_end_DASH_column, int(57))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_rel = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_rel.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-rel?
+	{
+		tmp0 := sym_fs_DASH_rel_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(864), kw_column, int(18), kw_end_DASH_line, int(864), kw_end_DASH_column, int(24), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_rel_QMARK_)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(864), kw_column, int(26), kw_end_DASH_line, int(864), kw_end_DASH_column, int(59))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_rel_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_rel_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-s
+	{
+		tmp0 := sym_fs_DASH_s.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(838), kw_column, int(18), kw_end_DASH_line, int(838), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_s)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(838), kw_column, int(23), kw_end_DASH_line, int(838), kw_end_DASH_column, int(53))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_s = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_s.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-w
+	{
+		tmp0 := sym_fs_DASH_w.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(840), kw_column, int(18), kw_end_DASH_line, int(840), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_w)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(840), kw_column, int(23), kw_end_DASH_line, int(840), kw_end_DASH_column, int(53))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_w = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_w.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-which
+	{
+		tmp0 := sym_fs_DASH_which.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(866), kw_column, int(18), kw_end_DASH_line, int(866), kw_end_DASH_column, int(25), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_which)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(866), kw_column, int(27), kw_end_DASH_line, int(866), kw_end_DASH_column, int(61))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_which = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_which.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-x
+	{
+		tmp0 := sym_fs_DASH_x.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(842), kw_column, int(18), kw_end_DASH_line, int(842), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_x)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(842), kw_column, int(23), kw_end_DASH_line, int(842), kw_end_DASH_column, int(53))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_x = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_x.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// fs-z
+	{
+		tmp0 := sym_fs_DASH_z.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(844), kw_column, int(18), kw_end_DASH_line, int(844), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			switch len(args) {
+			default:
+				checkArityGTE(args, 0)
+				restArgs := args[0:]
+				var v2 any
+				if len(restArgs) > 0 {
+					v2 = lang.NewList(restArgs...)
+				}
+				_ = v2
+				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
+				tmp4 := checkDerefVar(var_ys_DOT_fs_z)
+				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				return tmp5
+			}
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(844), kw_column, int(23), kw_end_DASH_line, int(844), kw_end_DASH_column, int(53))).(lang.FnFunc)
+		var_ys_DOT_std_fs_DASH_z = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_fs_DASH_z.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
 	// ge
 	{
-		tmp0 := sym_ge.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(621), kw_column, int(7), kw_end_DASH_line, int(621), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_ge.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(622), kw_column, int(7), kw_end_DASH_line, int(622), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -2959,7 +3597,7 @@ func LoadNS() {
 					tmp6 := lang.Apply(tmp5, []any{v4, v2})
 					return tmp6
 				})
-				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(622), kw_column, int(8), kw_end_DASH_line, int(622), kw_end_DASH_column, int(17))
+				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(623), kw_column, int(8), kw_end_DASH_line, int(623), kw_end_DASH_column, int(17))
 				tmp5, err := lang.WithMeta(tmp3, tmp4.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -2999,7 +3637,7 @@ func LoadNS() {
 	}
 	// get+
 	{
-		tmp0 := sym_get_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(181), kw_column, int(7), kw_end_DASH_line, int(181), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_C, sym_K)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_get_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(182), kw_column, int(7), kw_end_DASH_line, int(182), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_C, sym_K)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 2)
@@ -3009,7 +3647,7 @@ func LoadNS() {
 			_ = v3
 			var tmp4 any
 			{ // let
-				// let binding "pred__14"
+				// let binding "pred__63"
 				var tmp5 lang.FnFunc
 				tmp5 = lang.NewFnFunc(func(args ...any) any {
 					checkArity(args, 2)
@@ -3022,7 +3660,7 @@ func LoadNS() {
 				})
 				var v6 any = tmp5
 				_ = v6
-				// let binding "expr__15"
+				// let binding "expr__64"
 				var v7 any = v2
 				_ = v7
 				var tmp8 any
@@ -3142,7 +3780,7 @@ func LoadNS() {
 							if lang.IsTruthy(tmp31) {
 								var tmp32 any
 								{ // let
-									// let binding "pred__16"
+									// let binding "pred__65"
 									var tmp33 lang.FnFunc
 									tmp33 = lang.NewFnFunc(func(args ...any) any {
 										checkArity(args, 2)
@@ -3155,7 +3793,7 @@ func LoadNS() {
 									})
 									var v34 any = tmp33
 									_ = v34
-									// let binding "expr__17"
+									// let binding "expr__66"
 									var v35 any = v3
 									_ = v35
 									var tmp36 any
@@ -3197,7 +3835,7 @@ func LoadNS() {
 	}
 	// grep
 	{
-		tmp0 := sym_grep.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(211), kw_column, int(7), kw_end_DASH_line, int(211), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_P, sym_C)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_grep.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(212), kw_column, int(7), kw_end_DASH_line, int(212), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_P, sym_C)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 2)
@@ -3207,13 +3845,13 @@ func LoadNS() {
 			_ = v3
 			var tmp4 any
 			{ // let
-				// let binding "vec__18"
+				// let binding "vec__67"
 				var tmp5 any
 				tmp6 := checkDerefVar(var_clojure_DOT_core_seqable_QMARK_)
 				tmp7 := lang.Apply(tmp6, []any{v3})
 				if lang.IsTruthy(tmp7) {
 					tmp8 := lang.NewVector(v2, v3)
-					tmp9 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(212), kw_column, int(32), kw_end_DASH_line, int(212), kw_end_DASH_column, int(36))
+					tmp9 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(213), kw_column, int(32), kw_end_DASH_line, int(213), kw_end_DASH_column, int(36))
 					tmp10, err := lang.WithMeta(tmp8, tmp9.(lang.IPersistentMap))
 					if err != nil {
 						panic(err)
@@ -3221,7 +3859,7 @@ func LoadNS() {
 					tmp5 = tmp10
 				} else {
 					tmp11 := lang.NewVector(v3, v2)
-					tmp12 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(212), kw_column, int(38), kw_end_DASH_line, int(212), kw_end_DASH_column, int(42))
+					tmp12 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(213), kw_column, int(38), kw_end_DASH_line, int(213), kw_end_DASH_column, int(42))
 					tmp13, err := lang.WithMeta(tmp11, tmp12.(lang.IPersistentMap))
 					if err != nil {
 						panic(err)
@@ -3254,7 +3892,7 @@ func LoadNS() {
 				_ = v26
 				var tmp27 any
 				{ // let
-					// let binding "pred__21"
+					// let binding "pred__70"
 					var tmp28 lang.FnFunc
 					tmp28 = lang.NewFnFunc(func(args ...any) any {
 						checkArity(args, 2)
@@ -3267,7 +3905,7 @@ func LoadNS() {
 					})
 					var v29 any = tmp28
 					_ = v29
-					// let binding "expr__22"
+					// let binding "expr__71"
 					var v30 any = v17
 					_ = v30
 					var tmp31 any
@@ -3284,7 +3922,7 @@ func LoadNS() {
 							tmp38 := lang.Apply(tmp37, []any{v17, v36})
 							return tmp38
 						})
-						tmp36 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(216), kw_column, int(22), kw_end_DASH_line, int(216), kw_end_DASH_column, int(36))
+						tmp36 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(217), kw_column, int(22), kw_end_DASH_line, int(217), kw_end_DASH_column, int(36))
 						tmp37, err := lang.WithMeta(tmp35, tmp36.(lang.IPersistentMap))
 						if err != nil {
 							panic(err)
@@ -3310,7 +3948,7 @@ func LoadNS() {
 								tmp48 := lang.Apply(tmp47, []any{v17, v46})
 								return tmp48
 							})
-							tmp46 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(218), kw_column, int(15), kw_end_DASH_line, int(218), kw_end_DASH_column, int(23))
+							tmp46 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(219), kw_column, int(15), kw_end_DASH_line, int(219), kw_end_DASH_column, int(23))
 							tmp47, err := lang.WithMeta(tmp45, tmp46.(lang.IPersistentMap))
 							if err != nil {
 								panic(err)
@@ -3334,7 +3972,7 @@ func LoadNS() {
 	}
 	// gt
 	{
-		tmp0 := sym_gt.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(616), kw_column, int(7), kw_end_DASH_line, int(616), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_gt.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(617), kw_column, int(7), kw_end_DASH_line, int(617), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -3350,7 +3988,7 @@ func LoadNS() {
 					tmp6 := lang.Apply(tmp5, []any{v4, v2})
 					return tmp6
 				})
-				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(617), kw_column, int(8), kw_end_DASH_line, int(617), kw_end_DASH_column, int(16))
+				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(618), kw_column, int(8), kw_end_DASH_line, int(618), kw_end_DASH_column, int(16))
 				tmp5, err := lang.WithMeta(tmp3, tmp4.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -3390,7 +4028,7 @@ func LoadNS() {
 	}
 	// has?
 	{
-		tmp0 := sym_has_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(220), kw_column, int(7), kw_end_DASH_line, int(220), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_C), lang.NewVector(sym_C, sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_has_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(221), kw_column, int(7), kw_end_DASH_line, int(221), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_C), lang.NewVector(sym_C, sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -3406,7 +4044,7 @@ func LoadNS() {
 					tmp6 := lang.Apply(tmp5, []any{v2, v4})
 					return tmp6
 				})
-				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(221), kw_column, int(8), kw_end_DASH_line, int(221), kw_end_DASH_column, int(19))
+				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(222), kw_column, int(8), kw_end_DASH_line, int(222), kw_end_DASH_column, int(19))
 				tmp5, err := lang.WithMeta(tmp3, tmp4.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -3463,7 +4101,7 @@ func LoadNS() {
 								tmp21 := lang.Apply(tmp20, []any{v19, v3})
 								return tmp21
 							})
-							tmp19 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(227), kw_column, int(20), kw_end_DASH_line, int(227), kw_end_DASH_column, int(28))
+							tmp19 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(228), kw_column, int(20), kw_end_DASH_line, int(228), kw_end_DASH_column, int(28))
 							tmp20, err := lang.WithMeta(tmp18, tmp19.(lang.IPersistentMap))
 							if err != nil {
 								panic(err)
@@ -3491,7 +4129,7 @@ func LoadNS() {
 	}
 	// in?
 	{
-		tmp0 := sym_in_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(229), kw_column, int(7), kw_end_DASH_line, int(229), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_C), lang.NewVector(sym_x, sym_C)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_in_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(230), kw_column, int(7), kw_end_DASH_line, int(230), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_C), lang.NewVector(sym_x, sym_C)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -3507,7 +4145,7 @@ func LoadNS() {
 					tmp6 := lang.Apply(tmp5, []any{v2, v4})
 					return tmp6
 				})
-				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(230), kw_column, int(8), kw_end_DASH_line, int(230), kw_end_DASH_column, int(18))
+				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(231), kw_column, int(8), kw_end_DASH_line, int(231), kw_end_DASH_column, int(18))
 				tmp5, err := lang.WithMeta(tmp3, tmp4.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -3534,7 +4172,7 @@ func LoadNS() {
 	}
 	// inc+
 	{
-		tmp0 := sym_inc_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(375), kw_column, int(7), kw_end_DASH_line, int(375), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_inc_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(376), kw_column, int(7), kw_end_DASH_line, int(376), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -3542,7 +4180,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__36"
+				// let binding "pred__85"
 				var tmp4 lang.FnFunc
 				tmp4 = lang.NewFnFunc(func(args ...any) any {
 					checkArity(args, 2)
@@ -3555,7 +4193,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__37"
+				// let binding "expr__86"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -3587,7 +4225,7 @@ func LoadNS() {
 							_ = v24
 							var tmp25 any
 							{ // let
-								// let binding "pred__38"
+								// let binding "pred__87"
 								var tmp26 lang.FnFunc
 								tmp26 = lang.NewFnFunc(func(args ...any) any {
 									checkArity(args, 2)
@@ -3600,7 +4238,7 @@ func LoadNS() {
 								})
 								var v27 any = tmp26
 								_ = v27
-								// let binding "expr__39"
+								// let binding "expr__88"
 								var v28 any = v24
 								_ = v28
 								var tmp29 any
@@ -3635,7 +4273,7 @@ func LoadNS() {
 	}
 	// index
 	{
-		tmp0 := sym_index.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(74), kw_column, int(18), kw_end_DASH_line, int(74), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_index.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(75), kw_column, int(18), kw_end_DASH_line, int(75), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -3653,7 +4291,7 @@ func LoadNS() {
 				return tmp5
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(74), kw_column, int(24), kw_end_DASH_line, int(74), kw_end_DASH_column, int(62))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(75), kw_column, int(24), kw_end_DASH_line, int(75), kw_end_DASH_column, int(62))).(lang.FnFunc)
 		var_ys_DOT_std_index = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_index.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -3661,7 +4299,7 @@ func LoadNS() {
 	}
 	// join
 	{
-		tmp0 := sym_join.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(83), kw_column, int(7), kw_end_DASH_line, int(83), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_Ss), lang.NewVector(sym_S, sym_Ss), lang.NewVector(sym_S, sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_join.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(84), kw_column, int(7), kw_end_DASH_line, int(84), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_Ss), lang.NewVector(sym_S, sym_Ss), lang.NewVector(sym_S, sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -3716,7 +4354,7 @@ func LoadNS() {
 	}
 	// joins
 	{
-		tmp0 := sym_joins.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(92), kw_column, int(7), kw_end_DASH_line, int(92), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_Ss)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_joins.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(93), kw_column, int(7), kw_end_DASH_line, int(93), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_Ss)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -3734,7 +4372,7 @@ func LoadNS() {
 	}
 	// lc
 	{
-		tmp0 := sym_lc.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(95), kw_column, int(18), kw_end_DASH_line, int(95), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_lc.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(96), kw_column, int(18), kw_end_DASH_line, int(96), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -3744,7 +4382,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(95), kw_column, int(21), kw_end_DASH_line, int(95), kw_end_DASH_column, int(47))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(96), kw_column, int(21), kw_end_DASH_line, int(96), kw_end_DASH_column, int(47))).(lang.FnFunc)
 		var_ys_DOT_std_lc = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_lc.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -3752,7 +4390,7 @@ func LoadNS() {
 	}
 	// le
 	{
-		tmp0 := sym_le.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(631), kw_column, int(7), kw_end_DASH_line, int(631), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_le.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(632), kw_column, int(7), kw_end_DASH_line, int(632), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -3768,7 +4406,7 @@ func LoadNS() {
 					tmp6 := lang.Apply(tmp5, []any{v4, v2})
 					return tmp6
 				})
-				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(632), kw_column, int(8), kw_end_DASH_line, int(632), kw_end_DASH_column, int(17))
+				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(633), kw_column, int(8), kw_end_DASH_line, int(633), kw_end_DASH_column, int(17))
 				tmp5, err := lang.WithMeta(tmp3, tmp4.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -3808,7 +4446,7 @@ func LoadNS() {
 	}
 	// len
 	{
-		tmp0 := sym_len.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(578), kw_column, int(18), kw_end_DASH_line, int(578), kw_end_DASH_column, int(20), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_len.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(579), kw_column, int(18), kw_end_DASH_line, int(579), kw_end_DASH_column, int(20), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -3818,7 +4456,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(578), kw_column, int(22), kw_end_DASH_line, int(578), kw_end_DASH_column, int(39))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(579), kw_column, int(22), kw_end_DASH_line, int(579), kw_end_DASH_column, int(39))).(lang.FnFunc)
 		var_ys_DOT_std_len = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_len.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -3826,7 +4464,7 @@ func LoadNS() {
 	}
 	// lines
 	{
-		tmp0 := sym_lines.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(97), kw_column, int(7), kw_end_DASH_line, int(97), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_S)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_lines.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(98), kw_column, int(7), kw_end_DASH_line, int(98), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_S)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -3837,7 +4475,7 @@ func LoadNS() {
 			tmp5 := lang.Apply(tmp4, []any{v2})
 			if lang.IsTruthy(tmp5) {
 				tmp6 := lang.NewVector()
-				tmp7 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(99), kw_column, int(5), kw_end_DASH_line, int(99), kw_end_DASH_column, int(6))
+				tmp7 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(100), kw_column, int(5), kw_end_DASH_line, int(100), kw_end_DASH_column, int(6))
 				tmp8, err := lang.WithMeta(tmp6, tmp7.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -3881,7 +4519,7 @@ func LoadNS() {
 	}
 	// lt
 	{
-		tmp0 := sym_lt.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(626), kw_column, int(7), kw_end_DASH_line, int(626), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_lt.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(627), kw_column, int(7), kw_end_DASH_line, int(627), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -3897,7 +4535,7 @@ func LoadNS() {
 					tmp6 := lang.Apply(tmp5, []any{v4, v2})
 					return tmp6
 				})
-				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(627), kw_column, int(8), kw_end_DASH_line, int(627), kw_end_DASH_column, int(16))
+				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(628), kw_column, int(8), kw_end_DASH_line, int(628), kw_end_DASH_column, int(16))
 				tmp5, err := lang.WithMeta(tmp3, tmp4.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -3937,7 +4575,7 @@ func LoadNS() {
 	}
 	// mul
 	{
-		tmp0 := sym_mul.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(313), kw_column, int(7), kw_end_DASH_line, int(313), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_mul.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(314), kw_column, int(7), kw_end_DASH_line, int(314), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -3955,7 +4593,7 @@ func LoadNS() {
 					tmp6 := lang.Apply(tmp5, []any{v4, v2})
 					return tmp6
 				})
-				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(315), kw_column, int(8), kw_end_DASH_line, int(315), kw_end_DASH_column, int(16))
+				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(316), kw_column, int(8), kw_end_DASH_line, int(316), kw_end_DASH_column, int(16))
 				tmp5, err := lang.WithMeta(tmp3, tmp4.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -3995,7 +4633,7 @@ func LoadNS() {
 	}
 	// mul+
 	{
-		tmp0 := sym_mul_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(420), kw_column, int(7), kw_end_DASH_line, int(420), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_mul_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(421), kw_column, int(7), kw_end_DASH_line, int(421), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -4236,7 +4874,7 @@ func LoadNS() {
 	}
 	// ne
 	{
-		tmp0 := sym_ne.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(611), kw_column, int(7), kw_end_DASH_line, int(611), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_ne.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(612), kw_column, int(7), kw_end_DASH_line, int(612), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -4252,7 +4890,7 @@ func LoadNS() {
 					tmp6 := lang.Apply(tmp5, []any{v4, v2})
 					return tmp6
 				})
-				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(612), kw_column, int(8), kw_end_DASH_line, int(612), kw_end_DASH_column, int(19))
+				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(613), kw_column, int(8), kw_end_DASH_line, int(613), kw_end_DASH_column, int(19))
 				tmp5, err := lang.WithMeta(tmp3, tmp4.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -4292,7 +4930,7 @@ func LoadNS() {
 	}
 	// omap
 	{
-		tmp0 := sym_omap.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(264), kw_column, int(7), kw_end_DASH_line, int(264), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_omap.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(265), kw_column, int(7), kw_end_DASH_line, int(265), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -4318,7 +4956,7 @@ func LoadNS() {
 	}
 	// op-error
 	{
-		tmp0 := sym_op_DASH_error.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(369), kw_column, int(8), kw_end_DASH_line, int(369), kw_end_DASH_column, int(15), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_op, sym_x), lang.NewVector(sym_op, sym_x, sym_y)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_op_DASH_error.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(370), kw_column, int(8), kw_end_DASH_line, int(370), kw_end_DASH_column, int(15), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_op, sym_x), lang.NewVector(sym_op, sym_x, sym_y)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -4359,7 +4997,7 @@ func LoadNS() {
 	}
 	// or?
 	{
-		tmp0 := sym_or_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(804), kw_column, int(11), kw_end_DASH_line, int(804), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x), lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_or_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(805), kw_column, int(11), kw_end_DASH_line, int(805), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x), lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -4434,7 +5072,7 @@ func LoadNS() {
 	}
 	// q
 	{
-		tmp0 := sym_q.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(585), kw_column, int(11), kw_end_DASH_line, int(585), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_q.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(586), kw_column, int(11), kw_end_DASH_line, int(586), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -4493,7 +5131,7 @@ func LoadNS() {
 	}
 	// ql
 	{
-		tmp0 := sym_ql.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(589), kw_column, int(11), kw_end_DASH_line, int(589), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_ql.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(590), kw_column, int(11), kw_end_DASH_line, int(590), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -4526,7 +5164,7 @@ func LoadNS() {
 	}
 	// qm
 	{
-		tmp0 := sym_qm.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(590), kw_column, int(11), kw_end_DASH_line, int(590), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_qm.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(591), kw_column, int(11), kw_end_DASH_line, int(591), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -4559,7 +5197,7 @@ func LoadNS() {
 	}
 	// qo
 	{
-		tmp0 := sym_qo.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(591), kw_column, int(11), kw_end_DASH_line, int(591), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_qo.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(592), kw_column, int(11), kw_end_DASH_line, int(592), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -4592,7 +5230,7 @@ func LoadNS() {
 	}
 	// qr
 	{
-		tmp0 := sym_qr.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(596), kw_column, int(7), kw_end_DASH_line, int(596), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_S)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_qr.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(597), kw_column, int(7), kw_end_DASH_line, int(597), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_S)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -4610,7 +5248,7 @@ func LoadNS() {
 	}
 	// qs
 	{
-		tmp0 := sym_qs.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(592), kw_column, int(11), kw_end_DASH_line, int(592), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_qs.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(593), kw_column, int(11), kw_end_DASH_line, int(593), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -4659,7 +5297,7 @@ func LoadNS() {
 	}
 	// qv
 	{
-		tmp0 := sym_qv.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(594), kw_column, int(11), kw_end_DASH_line, int(594), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_qv.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(595), kw_column, int(11), kw_end_DASH_line, int(595), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -4692,7 +5330,7 @@ func LoadNS() {
 	}
 	// qw
 	{
-		tmp0 := sym_qw.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(598), kw_column, int(11), kw_end_DASH_line, int(598), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_qw.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(599), kw_column, int(11), kw_end_DASH_line, int(599), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -4729,7 +5367,7 @@ func LoadNS() {
 						}
 						return tmp9
 					})
-					tmp8 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(599), kw_column, int(18), kw_end_DASH_line, int(599), kw_end_DASH_column, int(47))
+					tmp8 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(600), kw_column, int(18), kw_end_DASH_line, int(600), kw_end_DASH_column, int(47))
 					tmp9, err := lang.WithMeta(tmp7, tmp8.(lang.IPersistentMap))
 					if err != nil {
 						panic(err)
@@ -4757,7 +5395,7 @@ func LoadNS() {
 	}
 	// read
 	{
-		tmp0 := sym_read.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(544), kw_column, int(18), kw_end_DASH_line, int(544), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_read.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(545), kw_column, int(18), kw_end_DASH_line, int(545), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -4775,7 +5413,7 @@ func LoadNS() {
 				return tmp5
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(544), kw_column, int(23), kw_end_DASH_line, int(544), kw_end_DASH_column, int(54))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(545), kw_column, int(23), kw_end_DASH_line, int(545), kw_end_DASH_column, int(54))).(lang.FnFunc)
 		var_ys_DOT_std_read = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_read.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -4783,7 +5421,7 @@ func LoadNS() {
 	}
 	// regex?
 	{
-		tmp0 := sym_regex_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(15), kw_column, int(8), kw_end_DASH_line, int(15), kw_end_DASH_column, int(13), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_regex_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(16), kw_column, int(8), kw_end_DASH_line, int(16), kw_end_DASH_column, int(13), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -4802,7 +5440,7 @@ func LoadNS() {
 	}
 	// replace
 	{
-		tmp0 := sym_replace.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(110), kw_column, int(7), kw_end_DASH_line, int(110), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym_z)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_replace.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(111), kw_column, int(7), kw_end_DASH_line, int(111), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym_z)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -4868,7 +5506,7 @@ func LoadNS() {
 	}
 	// replace1
 	{
-		tmp0 := sym_replace1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(118), kw_column, int(18), kw_end_DASH_line, int(118), kw_end_DASH_column, int(25), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_replace1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(119), kw_column, int(18), kw_end_DASH_line, int(119), kw_end_DASH_column, int(25), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -4886,7 +5524,7 @@ func LoadNS() {
 				return tmp5
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(118), kw_column, int(27), kw_end_DASH_line, int(118), kw_end_DASH_column, int(70))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(119), kw_column, int(27), kw_end_DASH_line, int(119), kw_end_DASH_column, int(70))).(lang.FnFunc)
 		var_ys_DOT_std_replace1 = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_replace1.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -4894,7 +5532,7 @@ func LoadNS() {
 	}
 	// reset
 	{
-		tmp0 := sym_reset.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(1004), kw_column, int(7), kw_end_DASH_line, int(1004), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym_y)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_reset.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(1025), kw_column, int(7), kw_end_DASH_line, int(1025), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym_y)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 2)
@@ -4914,7 +5552,7 @@ func LoadNS() {
 	}
 	// reverse
 	{
-		tmp0 := sym_reverse.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(271), kw_column, int(7), kw_end_DASH_line, int(271), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_reverse.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(272), kw_column, int(7), kw_end_DASH_line, int(272), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -4922,7 +5560,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__23"
+				// let binding "pred__72"
 				var tmp4 lang.FnFunc
 				tmp4 = lang.NewFnFunc(func(args ...any) any {
 					checkArity(args, 2)
@@ -4935,7 +5573,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__24"
+				// let binding "expr__73"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -4984,7 +5622,7 @@ func LoadNS() {
 	}
 	// rindex
 	{
-		tmp0 := sym_rindex.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(120), kw_column, int(18), kw_end_DASH_line, int(120), kw_end_DASH_column, int(23), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_rindex.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(121), kw_column, int(18), kw_end_DASH_line, int(121), kw_end_DASH_column, int(23), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -5002,7 +5640,7 @@ func LoadNS() {
 				return tmp5
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(120), kw_column, int(25), kw_end_DASH_line, int(120), kw_end_DASH_column, int(68))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(121), kw_column, int(25), kw_end_DASH_line, int(121), kw_end_DASH_column, int(68))).(lang.FnFunc)
 		var_ys_DOT_std_rindex = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_rindex.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5010,7 +5648,7 @@ func LoadNS() {
 	}
 	// rng
 	{
-		tmp0 := sym_rng.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(278), kw_column, int(7), kw_end_DASH_line, int(278), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym_y)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_rng.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(279), kw_column, int(7), kw_end_DASH_line, int(279), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym_y)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 2)
@@ -5020,12 +5658,12 @@ func LoadNS() {
 			_ = v3
 			var tmp4 any
 			{ // let
-				// let binding "vec__25"
+				// let binding "vec__74"
 				var tmp5 any
 				{ // let
 					// let binding "iter__0__auto__"
 					var tmp6 lang.FnFunc
-					{ // function iter__28
+					{ // function iter__77
 						var v7 lang.FnFunc
 						tmp6 = lang.NewFnFunc(func(args ...any) any {
 							checkArity(args, 1)
@@ -5036,7 +5674,7 @@ func LoadNS() {
 								checkArity(args, 0)
 								var tmp10 any
 								{ // let
-									// let binding "s__29"
+									// let binding "s__78"
 									var v11 any = v8
 									_ = v11
 									for {
@@ -5051,7 +5689,7 @@ func LoadNS() {
 											if lang.IsTruthy(v15) {
 												var tmp17 any
 												{ // let
-													// let binding "s__29"
+													// let binding "s__78"
 													var v18 any = v15
 													_ = v18
 													var tmp19 any
@@ -5072,7 +5710,7 @@ func LoadNS() {
 															tmp29 := lang.Apply(tmp26, []any{tmp28})
 															var v30 any = tmp29
 															_ = v30
-															// let binding "b__31"
+															// let binding "b__80"
 															tmp31 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_buffer)
 															tmp32 := lang.Apply(tmp31, []any{v30})
 															var v33 any = tmp32
@@ -5080,7 +5718,7 @@ func LoadNS() {
 															var tmp34 any
 															var tmp35 any
 															{ // let
-																// let binding "i__30"
+																// let binding "i__79"
 																tmp36 := checkDerefVar(var_clojure_DOT_core_int)
 																tmp37 := lang.Apply(tmp36, []any{int64(0)})
 																var v38 any = tmp37
@@ -5195,7 +5833,7 @@ func LoadNS() {
 					var v7 any = tmp6
 					_ = v7
 					tmp8 := lang.NewVector(v2, v3)
-					tmp9 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(279), kw_column, int(23), kw_end_DASH_line, int(279), kw_end_DASH_column, int(27))
+					tmp9 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(280), kw_column, int(23), kw_end_DASH_line, int(280), kw_end_DASH_column, int(27))
 					tmp10, err := lang.WithMeta(tmp8, tmp9.(lang.IPersistentMap))
 					if err != nil {
 						panic(err)
@@ -5322,7 +5960,7 @@ func LoadNS() {
 	}
 	// say
 	{
-		tmp0 := sym_say.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(561), kw_column, int(7), kw_end_DASH_line, int(561), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_say.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(562), kw_column, int(7), kw_end_DASH_line, int(562), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -5348,13 +5986,13 @@ func LoadNS() {
 	}
 	// set
 	{
-		tmp0 := sym_set.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(704), kw_column, int(7), kw_end_DASH_line, int(704), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_set.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(705), kw_column, int(7), kw_end_DASH_line, int(705), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
 			case 0:
 				tmp2 := lang.CreatePersistentTreeSet(lang.NewSliceSeq([]any{}))
-				tmp3 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(705), kw_column, int(7), kw_end_DASH_line, int(705), kw_end_DASH_column, int(9))
+				tmp3 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(706), kw_column, int(7), kw_end_DASH_line, int(706), kw_end_DASH_column, int(9))
 				tmp4, err := lang.WithMeta(tmp2, tmp3.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -5379,7 +6017,7 @@ func LoadNS() {
 	}
 	// slice
 	{
-		tmp0 := sym_slice.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(292), kw_column, int(7), kw_end_DASH_line, int(292), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_C, sym__AMP_, sym_ks)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_slice.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(293), kw_column, int(7), kw_end_DASH_line, int(293), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_C, sym__AMP_, sym_ks)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -5411,7 +6049,7 @@ func LoadNS() {
 						tmp13 := lang.Apply(tmp12, []any{v2, v11})
 						return tmp13
 					})
-					tmp11 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(294), kw_column, int(15), kw_end_DASH_line, int(294), kw_end_DASH_column, int(33))
+					tmp11 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(295), kw_column, int(15), kw_end_DASH_line, int(295), kw_end_DASH_column, int(33))
 					tmp12, err := lang.WithMeta(tmp10, tmp11.(lang.IPersistentMap))
 					if err != nil {
 						panic(err)
@@ -5431,7 +6069,7 @@ func LoadNS() {
 	}
 	// split
 	{
-		tmp0 := sym_split.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(122), kw_column, int(7), kw_end_DASH_line, int(122), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_S), lang.NewVector(sym_S, sym_R)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_split.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(123), kw_column, int(7), kw_end_DASH_line, int(123), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_S), lang.NewVector(sym_S, sym_R)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -5450,7 +6088,7 @@ func LoadNS() {
 					tmp9 := lang.Apply(tmp8, []any{v6})
 					if lang.IsTruthy(tmp9) {
 						tmp10 := lang.NewVector()
-						tmp11 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(126), kw_column, int(8), kw_end_DASH_line, int(126), kw_end_DASH_column, int(9))
+						tmp11 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(127), kw_column, int(8), kw_end_DASH_line, int(127), kw_end_DASH_column, int(9))
 						tmp12, err := lang.WithMeta(tmp10, tmp11.(lang.IPersistentMap))
 						if err != nil {
 							panic(err)
@@ -5471,13 +6109,13 @@ func LoadNS() {
 				_ = v3
 				var tmp4 any
 				{ // let
-					// let binding "vec__3"
+					// let binding "vec__52"
 					var tmp5 any
 					tmp6 := checkDerefVar(var_ys_DOT_std_regex_QMARK_)
 					tmp7 := lang.Apply(tmp6, []any{v2})
 					if lang.IsTruthy(tmp7) {
 						tmp8 := lang.NewVector(v3, v2)
-						tmp9 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(129), kw_column, int(31), kw_end_DASH_line, int(129), kw_end_DASH_column, int(35))
+						tmp9 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(130), kw_column, int(31), kw_end_DASH_line, int(130), kw_end_DASH_column, int(35))
 						tmp10, err := lang.WithMeta(tmp8, tmp9.(lang.IPersistentMap))
 						if err != nil {
 							panic(err)
@@ -5485,7 +6123,7 @@ func LoadNS() {
 						tmp5 = tmp10
 					} else {
 						tmp11 := lang.NewVector(v2, v3)
-						tmp12 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(129), kw_column, int(37), kw_end_DASH_line, int(129), kw_end_DASH_column, int(41))
+						tmp12 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(130), kw_column, int(37), kw_end_DASH_line, int(130), kw_end_DASH_column, int(41))
 						tmp13, err := lang.WithMeta(tmp11, tmp12.(lang.IPersistentMap))
 						if err != nil {
 							panic(err)
@@ -5540,7 +6178,7 @@ func LoadNS() {
 	}
 	// sqrt
 	{
-		tmp0 := sym_sqrt.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(360), kw_column, int(7), kw_end_DASH_line, int(360), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_sqrt.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(361), kw_column, int(7), kw_end_DASH_line, int(361), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -5569,7 +6207,7 @@ func LoadNS() {
 					}
 					return tmp7
 				})
-				tmp6 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(362), kw_column, int(16), kw_end_DASH_line, int(362), kw_end_DASH_column, int(44))
+				tmp6 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(363), kw_column, int(16), kw_end_DASH_line, int(363), kw_end_DASH_column, int(44))
 				tmp7, err := lang.WithMeta(tmp5, tmp6.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -5624,7 +6262,7 @@ func LoadNS() {
 	}
 	// starts?
 	{
-		tmp0 := sym_starts_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(135), kw_column, int(18), kw_end_DASH_line, int(135), kw_end_DASH_column, int(24), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_starts_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(136), kw_column, int(18), kw_end_DASH_line, int(136), kw_end_DASH_column, int(24), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 2)
@@ -5636,7 +6274,7 @@ func LoadNS() {
 			tmp5 := lang.Apply(tmp4, []any{v2, v3})
 			return tmp5
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(135), kw_column, int(26), kw_end_DASH_line, int(135), kw_end_DASH_column, int(58))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(136), kw_column, int(26), kw_end_DASH_line, int(136), kw_end_DASH_column, int(58))).(lang.FnFunc)
 		var_ys_DOT_std_starts_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_starts_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5644,7 +6282,7 @@ func LoadNS() {
 	}
 	// sub
 	{
-		tmp0 := sym_sub.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(308), kw_column, int(7), kw_end_DASH_line, int(308), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_sub.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(309), kw_column, int(7), kw_end_DASH_line, int(309), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -5660,7 +6298,7 @@ func LoadNS() {
 					tmp6 := lang.Apply(tmp5, []any{v4, v2})
 					return tmp6
 				})
-				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(309), kw_column, int(8), kw_end_DASH_line, int(309), kw_end_DASH_column, int(16))
+				tmp4 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(310), kw_column, int(8), kw_end_DASH_line, int(310), kw_end_DASH_column, int(16))
 				tmp5, err := lang.WithMeta(tmp3, tmp4.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -5700,7 +6338,7 @@ func LoadNS() {
 	}
 	// sub+
 	{
-		tmp0 := sym_sub_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(436), kw_column, int(7), kw_end_DASH_line, int(436), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_sub_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(437), kw_column, int(7), kw_end_DASH_line, int(437), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -5711,7 +6349,7 @@ func LoadNS() {
 				_ = v3
 				var tmp4 any
 				{ // let
-					// let binding "pred__46"
+					// let binding "pred__95"
 					var tmp5 lang.FnFunc
 					tmp5 = lang.NewFnFunc(func(args ...any) any {
 						checkArity(args, 2)
@@ -5724,7 +6362,7 @@ func LoadNS() {
 					})
 					var v6 any = tmp5
 					_ = v6
-					// let binding "expr__47"
+					// let binding "expr__96"
 					var v7 any = v2
 					_ = v7
 					var tmp8 any
@@ -5768,7 +6406,7 @@ func LoadNS() {
 										tmp33 := lang.Apply(tmp32, []any{v3, v31})
 										return tmp33
 									})
-									tmp31 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(442), kw_column, int(27), kw_end_DASH_line, int(442), kw_end_DASH_column, int(35))
+									tmp31 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(443), kw_column, int(27), kw_end_DASH_line, int(443), kw_end_DASH_column, int(35))
 									tmp32, err := lang.WithMeta(tmp30, tmp31.(lang.IPersistentMap))
 									if err != nil {
 										panic(err)
@@ -5793,7 +6431,7 @@ func LoadNS() {
 										if lang.IsTruthy(tmp44) {
 											var tmp45 any
 											{ // let
-												// let binding "pred__48"
+												// let binding "pred__97"
 												var tmp46 lang.FnFunc
 												tmp46 = lang.NewFnFunc(func(args ...any) any {
 													checkArity(args, 2)
@@ -5806,7 +6444,7 @@ func LoadNS() {
 												})
 												var v47 any = tmp46
 												_ = v47
-												// let binding "expr__49"
+												// let binding "expr__98"
 												var v48 any = v3
 												_ = v48
 												var tmp49 any
@@ -5865,7 +6503,7 @@ func LoadNS() {
 														tmp58 := lang.Apply(tmp57, []any{v3, v56})
 														return tmp58
 													})
-													tmp56 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(449), kw_column, int(23), kw_end_DASH_line, int(449), kw_end_DASH_column, int(31))
+													tmp56 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(450), kw_column, int(23), kw_end_DASH_line, int(450), kw_end_DASH_column, int(31))
 													tmp57, err := lang.WithMeta(tmp55, tmp56.(lang.IPersistentMap))
 													if err != nil {
 														panic(err)
@@ -5926,7 +6564,7 @@ func LoadNS() {
 	}
 	// substr
 	{
-		tmp0 := sym_substr.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(137), kw_column, int(7), kw_end_DASH_line, int(137), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_str, sym_off), lang.NewVector(sym_str, sym_off, sym_len)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_substr.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(138), kw_column, int(7), kw_end_DASH_line, int(138), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_str, sym_off), lang.NewVector(sym_str, sym_off, sym_len)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -5969,7 +6607,7 @@ func LoadNS() {
 					}
 					var v14 any = tmp9
 					_ = v14
-					// let binding "vec__6"
+					// let binding "vec__55"
 					var tmp15 any
 					tmp16 := checkDerefVar(var_clojure_DOT_core_neg_QMARK_)
 					tmp17 := lang.Apply(tmp16, []any{v4})
@@ -5984,7 +6622,7 @@ func LoadNS() {
 							var v23 any = tmp22
 							_ = v23
 							tmp24 := lang.NewVector(v23, v23)
-							tmp25 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(144), kw_column, int(25), kw_end_DASH_line, int(144), kw_end_DASH_column, int(33))
+							tmp25 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(145), kw_column, int(25), kw_end_DASH_line, int(145), kw_end_DASH_column, int(33))
 							tmp26, err := lang.WithMeta(tmp24, tmp25.(lang.IPersistentMap))
 							if err != nil {
 								panic(err)
@@ -5994,7 +6632,7 @@ func LoadNS() {
 						tmp15 = tmp18
 					} else {
 						tmp19 := lang.NewVector(v4, v8)
-						tmp20 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(145), kw_column, int(23), kw_end_DASH_line, int(145), kw_end_DASH_column, int(32))
+						tmp20 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(146), kw_column, int(23), kw_end_DASH_line, int(146), kw_end_DASH_column, int(32))
 						tmp21, err := lang.WithMeta(tmp19, tmp20.(lang.IPersistentMap))
 						if err != nil {
 							panic(err)
@@ -6015,13 +6653,13 @@ func LoadNS() {
 					_ = v28
 					var tmp29 any
 					{ // let
-						// let binding "pred__9"
+						// let binding "pred__58"
 						tmp30 := checkDerefVar(var_clojure_DOT_core_apply)
 						var v31 any = tmp30
 						_ = v31
-						// let binding "expr__10"
+						// let binding "expr__59"
 						tmp32 := lang.NewVector(v14, v28)
-						tmp33 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(146), kw_column, int(19), kw_end_DASH_line, int(146), kw_end_DASH_column, int(28))
+						tmp33 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(147), kw_column, int(19), kw_end_DASH_line, int(147), kw_end_DASH_column, int(28))
 						tmp34, err := lang.WithMeta(tmp32, tmp33.(lang.IPersistentMap))
 						if err != nil {
 							panic(err)
@@ -6040,7 +6678,7 @@ func LoadNS() {
 							if lang.IsTruthy(tmp43) {
 								var tmp44 any
 								{ // let
-									// let binding "vec__11"
+									// let binding "vec__60"
 									var tmp45 any
 									tmp46 := checkDerefVar(var_clojure_DOT_core_neg_QMARK_)
 									tmp47 := lang.Apply(tmp46, []any{v14})
@@ -6048,7 +6686,7 @@ func LoadNS() {
 										tmp48 := checkDerefVar(var_clojure_DOT_core__PLUS_)
 										tmp49 := lang.Apply(tmp48, []any{v14, v25})
 										tmp50 := lang.NewVector(int64(0), tmp49)
-										tmp51 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(149), kw_column, int(30), kw_end_DASH_line, int(149), kw_end_DASH_column, int(44))
+										tmp51 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(150), kw_column, int(30), kw_end_DASH_line, int(150), kw_end_DASH_column, int(44))
 										tmp52, err := lang.WithMeta(tmp50, tmp51.(lang.IPersistentMap))
 										if err != nil {
 											panic(err)
@@ -6056,7 +6694,7 @@ func LoadNS() {
 										tmp45 = tmp52
 									} else {
 										tmp53 := lang.NewVector(v14, v25)
-										tmp54 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(150), kw_column, int(30), kw_end_DASH_line, int(150), kw_end_DASH_column, int(38))
+										tmp54 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(151), kw_column, int(30), kw_end_DASH_line, int(151), kw_end_DASH_column, int(38))
 										tmp55, err := lang.WithMeta(tmp53, tmp54.(lang.IPersistentMap))
 										if err != nil {
 											panic(err)
@@ -6139,7 +6777,7 @@ func LoadNS() {
 	}
 	// sum
 	{
-		tmp0 := sym_sum.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(353), kw_column, int(7), kw_end_DASH_line, int(353), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_sum.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(354), kw_column, int(7), kw_end_DASH_line, int(354), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -6161,7 +6799,7 @@ func LoadNS() {
 	}
 	// swap
 	{
-		tmp0 := sym_swap.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(1007), kw_column, int(7), kw_end_DASH_line, int(1007), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_f, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_swap.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(1028), kw_column, int(7), kw_end_DASH_line, int(1028), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_f, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -6189,7 +6827,7 @@ func LoadNS() {
 	}
 	// text
 	{
-		tmp0 := sym_text.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(156), kw_column, int(7), kw_end_DASH_line, int(156), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_Ss)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_text.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(157), kw_column, int(7), kw_end_DASH_line, int(157), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_Ss)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -6219,7 +6857,7 @@ func LoadNS() {
 	}
 	// to-bool
 	{
-		tmp0 := sym_to_DASH_bool.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(642), kw_column, int(7), kw_end_DASH_line, int(642), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_to_DASH_bool.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(643), kw_column, int(7), kw_end_DASH_line, int(643), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -6237,7 +6875,7 @@ func LoadNS() {
 	}
 	// to-char
 	{
-		tmp0 := sym_to_DASH_char.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(644), kw_column, int(7), kw_end_DASH_line, int(644), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_to_DASH_char.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(645), kw_column, int(7), kw_end_DASH_line, int(645), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -6245,7 +6883,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__50"
+				// let binding "pred__99"
 				var tmp4 lang.FnFunc
 				tmp4 = lang.NewFnFunc(func(args ...any) any {
 					checkArity(args, 2)
@@ -6258,7 +6896,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__51"
+				// let binding "expr__100"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -6317,7 +6955,7 @@ func LoadNS() {
 	}
 	// to-float
 	{
-		tmp0 := sym_to_DASH_float.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(653), kw_column, int(7), kw_end_DASH_line, int(653), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_to_DASH_float.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(654), kw_column, int(7), kw_end_DASH_line, int(654), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -6337,7 +6975,7 @@ func LoadNS() {
 	}
 	// to-int
 	{
-		tmp0 := sym_to_DASH_int.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(655), kw_column, int(7), kw_end_DASH_line, int(655), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_to_DASH_int.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(656), kw_column, int(7), kw_end_DASH_line, int(656), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -6357,7 +6995,7 @@ func LoadNS() {
 	}
 	// to-keyw
 	{
-		tmp0 := sym_to_DASH_keyw.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(657), kw_column, int(7), kw_end_DASH_line, int(657), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_to_DASH_keyw.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(658), kw_column, int(7), kw_end_DASH_line, int(658), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -6375,7 +7013,7 @@ func LoadNS() {
 	}
 	// to-list
 	{
-		tmp0 := sym_to_DASH_list.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(659), kw_column, int(7), kw_end_DASH_line, int(659), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_to_DASH_list.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(660), kw_column, int(7), kw_end_DASH_line, int(660), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -6383,7 +7021,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__52"
+				// let binding "pred__101"
 				var tmp4 lang.FnFunc
 				tmp4 = lang.NewFnFunc(func(args ...any) any {
 					checkArity(args, 2)
@@ -6396,7 +7034,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__53"
+				// let binding "expr__102"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -6417,7 +7055,7 @@ func LoadNS() {
 						tmp16 := lang.Apply(tmp15, []any{v12, v14, v13})
 						return tmp16
 					})
-					tmp12 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(661), kw_column, int(21), kw_end_DASH_line, int(661), kw_end_DASH_column, int(49))
+					tmp12 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(662), kw_column, int(21), kw_end_DASH_line, int(662), kw_end_DASH_column, int(49))
 					tmp13, err := lang.WithMeta(tmp11, tmp12.(lang.IPersistentMap))
 					if err != nil {
 						panic(err)
@@ -6487,7 +7125,7 @@ func LoadNS() {
 	}
 	// to-map
 	{
-		tmp0 := sym_to_DASH_map.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(667), kw_column, int(7), kw_end_DASH_line, int(667), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_to_DASH_map.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(668), kw_column, int(7), kw_end_DASH_line, int(668), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -6495,7 +7133,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__54"
+				// let binding "pred__103"
 				var tmp4 lang.FnFunc
 				tmp4 = lang.NewFnFunc(func(args ...any) any {
 					checkArity(args, 2)
@@ -6508,7 +7146,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__55"
+				// let binding "expr__104"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -6556,7 +7194,7 @@ func LoadNS() {
 								tmp37 := lang.Apply(v5, []any{tmp36, v6})
 								if lang.IsTruthy(tmp37) {
 									tmp38 := lang.NewMap()
-									tmp39 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(673), kw_column, int(10), kw_end_DASH_line, int(673), kw_end_DASH_column, int(11))
+									tmp39 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(674), kw_column, int(10), kw_end_DASH_line, int(674), kw_end_DASH_column, int(11))
 									tmp40, err := lang.WithMeta(tmp38, tmp39.(lang.IPersistentMap))
 									if err != nil {
 										panic(err)
@@ -6589,7 +7227,7 @@ func LoadNS() {
 	}
 	// to-num
 	{
-		tmp0 := sym_to_DASH_num.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(676), kw_column, int(7), kw_end_DASH_line, int(676), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_default)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_to_DASH_num.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(677), kw_column, int(7), kw_end_DASH_line, int(677), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_default)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -6606,7 +7244,7 @@ func LoadNS() {
 				_ = v3
 				var tmp4 any
 				{ // let
-					// let binding "pred__56"
+					// let binding "pred__105"
 					var tmp5 lang.FnFunc
 					tmp5 = lang.NewFnFunc(func(args ...any) any {
 						checkArity(args, 2)
@@ -6619,7 +7257,7 @@ func LoadNS() {
 					})
 					var v6 any = tmp5
 					_ = v6
-					// let binding "expr__57"
+					// let binding "expr__106"
 					var v7 any = v2
 					_ = v7
 					var tmp8 any
@@ -6713,7 +7351,7 @@ func LoadNS() {
 	}
 	// to-omap
 	{
-		tmp0 := sym_to_DASH_omap.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(690), kw_column, int(7), kw_end_DASH_line, int(690), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_to_DASH_omap.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(691), kw_column, int(7), kw_end_DASH_line, int(691), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -6721,7 +7359,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__58"
+				// let binding "pred__107"
 				var tmp4 lang.FnFunc
 				tmp4 = lang.NewFnFunc(func(args ...any) any {
 					checkArity(args, 2)
@@ -6734,7 +7372,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__59"
+				// let binding "expr__108"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -6754,7 +7392,7 @@ func LoadNS() {
 						tmp17 := checkDerefVar(var_ys_DOT_std_omap)
 						tmp18 := checkDerefVar(var_clojure_DOT_core_into)
 						tmp19 := lang.NewVector()
-						tmp20 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(693), kw_column, int(28), kw_end_DASH_line, int(693), kw_end_DASH_column, int(29))
+						tmp20 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(694), kw_column, int(28), kw_end_DASH_line, int(694), kw_end_DASH_column, int(29))
 						tmp21, err := lang.WithMeta(tmp19, tmp20.(lang.IPersistentMap))
 						if err != nil {
 							panic(err)
@@ -6794,7 +7432,7 @@ func LoadNS() {
 	}
 	// to-set
 	{
-		tmp0 := sym_to_DASH_set.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(697), kw_column, int(7), kw_end_DASH_line, int(697), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_to_DASH_set.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(698), kw_column, int(7), kw_end_DASH_line, int(698), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -6802,7 +7440,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__60"
+				// let binding "pred__109"
 				var tmp4 lang.FnFunc
 				tmp4 = lang.NewFnFunc(func(args ...any) any {
 					checkArity(args, 2)
@@ -6815,7 +7453,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__61"
+				// let binding "expr__110"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -6868,7 +7506,7 @@ func LoadNS() {
 	}
 	// to-str
 	{
-		tmp0 := sym_to_DASH_str.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(708), kw_column, int(7), kw_end_DASH_line, int(708), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_to_DASH_str.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(709), kw_column, int(7), kw_end_DASH_line, int(709), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -6876,7 +7514,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__62"
+				// let binding "pred__111"
 				var tmp4 lang.FnFunc
 				tmp4 = lang.NewFnFunc(func(args ...any) any {
 					checkArity(args, 2)
@@ -6889,7 +7527,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__63"
+				// let binding "expr__112"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -6922,7 +7560,7 @@ func LoadNS() {
 	}
 	// to-type
 	{
-		tmp0 := sym_to_DASH_type.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(714), kw_column, int(7), kw_end_DASH_line, int(714), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_to_DASH_type.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(715), kw_column, int(7), kw_end_DASH_line, int(715), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -6930,7 +7568,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__64"
+				// let binding "pred__113"
 				var tmp4 lang.FnFunc
 				tmp4 = lang.NewFnFunc(func(args ...any) any {
 					checkArity(args, 2)
@@ -6943,7 +7581,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__65"
+				// let binding "expr__114"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -7114,7 +7752,7 @@ func LoadNS() {
 	}
 	// to-vec
 	{
-		tmp0 := sym_to_DASH_vec.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(744), kw_column, int(7), kw_end_DASH_line, int(744), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_to_DASH_vec.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(745), kw_column, int(7), kw_end_DASH_line, int(745), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -7122,7 +7760,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__66"
+				// let binding "pred__115"
 				var tmp4 lang.FnFunc
 				tmp4 = lang.NewFnFunc(func(args ...any) any {
 					checkArity(args, 2)
@@ -7135,7 +7773,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__67"
+				// let binding "expr__116"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -7156,13 +7794,13 @@ func LoadNS() {
 						tmp16 := lang.Apply(tmp15, []any{v12, v13, v14})
 						return tmp16
 					})
-					tmp12 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(746), kw_column, int(21), kw_end_DASH_line, int(746), kw_end_DASH_column, int(49))
+					tmp12 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(747), kw_column, int(21), kw_end_DASH_line, int(747), kw_end_DASH_column, int(49))
 					tmp13, err := lang.WithMeta(tmp11, tmp12.(lang.IPersistentMap))
 					if err != nil {
 						panic(err)
 					}
 					tmp14 := lang.NewVector()
-					tmp15 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(746), kw_column, int(51), kw_end_DASH_line, int(746), kw_end_DASH_column, int(52))
+					tmp15 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(747), kw_column, int(51), kw_end_DASH_line, int(747), kw_end_DASH_column, int(52))
 					tmp16, err := lang.WithMeta(tmp14, tmp15.(lang.IPersistentMap))
 					if err != nil {
 						panic(err)
@@ -7191,7 +7829,7 @@ func LoadNS() {
 							tmp30 := lang.Apply(v5, []any{tmp29, v6})
 							if lang.IsTruthy(tmp30) {
 								tmp31 := lang.NewVector()
-								tmp32 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(749), kw_column, int(10), kw_end_DASH_line, int(749), kw_end_DASH_column, int(11))
+								tmp32 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(750), kw_column, int(10), kw_end_DASH_line, int(750), kw_end_DASH_column, int(11))
 								tmp33, err := lang.WithMeta(tmp31, tmp32.(lang.IPersistentMap))
 								if err != nil {
 									panic(err)
@@ -7235,7 +7873,7 @@ func LoadNS() {
 	}
 	// trim
 	{
-		tmp0 := sym_trim.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(163), kw_column, int(18), kw_end_DASH_line, int(163), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_trim.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(164), kw_column, int(18), kw_end_DASH_line, int(164), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -7245,7 +7883,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(163), kw_column, int(23), kw_end_DASH_line, int(163), kw_end_DASH_column, int(43))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(164), kw_column, int(23), kw_end_DASH_line, int(164), kw_end_DASH_column, int(43))).(lang.FnFunc)
 		var_ys_DOT_std_trim = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_trim.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7253,7 +7891,7 @@ func LoadNS() {
 	}
 	// triml
 	{
-		tmp0 := sym_triml.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(165), kw_column, int(18), kw_end_DASH_line, int(165), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_triml.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(166), kw_column, int(18), kw_end_DASH_line, int(166), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -7263,7 +7901,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(165), kw_column, int(24), kw_end_DASH_line, int(165), kw_end_DASH_column, int(45))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(166), kw_column, int(24), kw_end_DASH_line, int(166), kw_end_DASH_column, int(45))).(lang.FnFunc)
 		var_ys_DOT_std_triml = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_triml.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7271,7 +7909,7 @@ func LoadNS() {
 	}
 	// trimr
 	{
-		tmp0 := sym_trimr.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(167), kw_column, int(18), kw_end_DASH_line, int(167), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_trimr.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(168), kw_column, int(18), kw_end_DASH_line, int(168), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -7281,7 +7919,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(167), kw_column, int(24), kw_end_DASH_line, int(167), kw_end_DASH_column, int(45))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(168), kw_column, int(24), kw_end_DASH_line, int(168), kw_end_DASH_column, int(45))).(lang.FnFunc)
 		var_ys_DOT_std_trimr = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_trimr.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7289,7 +7927,7 @@ func LoadNS() {
 	}
 	// uc
 	{
-		tmp0 := sym_uc.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(170), kw_column, int(18), kw_end_DASH_line, int(170), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_uc.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(171), kw_column, int(18), kw_end_DASH_line, int(171), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -7299,7 +7937,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(170), kw_column, int(21), kw_end_DASH_line, int(170), kw_end_DASH_column, int(47))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(171), kw_column, int(21), kw_end_DASH_line, int(171), kw_end_DASH_column, int(47))).(lang.FnFunc)
 		var_ys_DOT_std_uc = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_uc.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7307,7 +7945,7 @@ func LoadNS() {
 	}
 	// uc1
 	{
-		tmp0 := sym_uc1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(172), kw_column, int(18), kw_end_DASH_line, int(172), kw_end_DASH_column, int(20), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_uc1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(173), kw_column, int(18), kw_end_DASH_line, int(173), kw_end_DASH_column, int(20), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -7317,7 +7955,7 @@ func LoadNS() {
 			tmp4 := lang.Apply(tmp3, []any{v2})
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(172), kw_column, int(22), kw_end_DASH_line, int(172), kw_end_DASH_column, int(48))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(173), kw_column, int(22), kw_end_DASH_line, int(173), kw_end_DASH_column, int(48))).(lang.FnFunc)
 		var_ys_DOT_std_uc1 = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_uc1.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7325,7 +7963,7 @@ func LoadNS() {
 	}
 	// value
 	{
-		tmp0 := sym_value.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(460), kw_column, int(11), kw_end_DASH_line, int(460), kw_end_DASH_column, int(15), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_value.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(461), kw_column, int(11), kw_end_DASH_line, int(461), kw_end_DASH_column, int(15), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 3)
@@ -7465,7 +8103,7 @@ func LoadNS() {
 	}
 	// when+
 	{
-		tmp0 := sym_when_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(500), kw_column, int(11), kw_end_DASH_line, int(500), kw_end_DASH_column, int(15), kw_arglists, lang.NewList(lang.NewVector(sym_test, sym__AMP_, sym_body)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
+		tmp0 := sym_when_PLUS_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(501), kw_column, int(11), kw_end_DASH_line, int(501), kw_end_DASH_column, int(15), kw_arglists, lang.NewList(lang.NewVector(sym_test, sym__AMP_, sym_body)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std), kw_macro, true)).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -7485,7 +8123,7 @@ func LoadNS() {
 				_ = v5
 				tmp6 := checkDerefVar(var_clojure_DOT_core_list)
 				tmp7 := lang.NewVector(sym__, v4)
-				tmp8 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(501), kw_column, int(19), kw_end_DASH_line, int(501), kw_end_DASH_column, int(27))
+				tmp8 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(502), kw_column, int(19), kw_end_DASH_line, int(502), kw_end_DASH_column, int(27))
 				tmp9, err := lang.WithMeta(tmp7, tmp8.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -7504,7 +8142,7 @@ func LoadNS() {
 	}
 	// words
 	{
-		tmp0 := sym_words.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(174), kw_column, int(7), kw_end_DASH_line, int(174), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_S)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_words.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(175), kw_column, int(7), kw_end_DASH_line, int(175), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_S)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -7522,7 +8160,7 @@ func LoadNS() {
 	}
 	// write
 	{
-		tmp0 := sym_write.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(546), kw_column, int(18), kw_end_DASH_line, int(546), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_write.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(547), kw_column, int(18), kw_end_DASH_line, int(547), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
@@ -7540,7 +8178,7 @@ func LoadNS() {
 				return tmp5
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(546), kw_column, int(24), kw_end_DASH_line, int(546), kw_end_DASH_column, int(54))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(547), kw_column, int(24), kw_end_DASH_line, int(547), kw_end_DASH_column, int(54))).(lang.FnFunc)
 		var_ys_DOT_std_write = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_write.SetMeta(tmp0.Meta().(lang.IPersistentMap))

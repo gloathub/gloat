@@ -2,8 +2,11 @@
 /.cache/
 /.claude/
 /note/
+/*.bb
 /*.clj
 /*.glj
 /*.go
 /*.md
 /*.ys
+/a
+/app

@@ -7,6 +7,10 @@ PROJECT_ROOT=$(cd "$TEST_ROOT/.." && pwd)
 
 source "$PROJECT_ROOT/.bpan/lib/bpan.bash" --
 
+source .rc || bail-out "Cannot source .rc"
+PATH=$(make --no-print-directory path):$PATH
+export PATH
+
 bpan:source bashplus +cmd +sys
 bpan:source test-tap --
 
@@ -17,3 +21,6 @@ export PATH=$PWD/bin:$PWD/lib:$PATH
 if [[ -f test/init-local ]]; then
   source test/init-local
 fi
+
+TMP=$(mktemp -d)
+trap 'rm -rf "$TMP"' exit

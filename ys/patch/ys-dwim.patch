@@ -1,0 +1,35 @@
+--- ys/src/ys/dwim.clj	2026-02-10 07:50:13.099017038 -0800
++++ ys/src/ys/dwim.clj	2026-02-10 07:49:43.651712788 -0800
+@@ -3,14 +3,15 @@
+ 
+ (ns ys.dwim
+   (:require
+-   [clojure.string :refer [escape replace]]
+-   [yamlscript.common :as common :refer [chop re-find+ regex?]])
++   [clojure.string :refer [escape replace]])
+   (:refer-clojure :exclude [replace]))
+ 
+ 
+ ;;------------------------------------------------------------------------------
++(defn- regex? [x] (instance? java.util.regex.Pattern x))
++
+ (defn- regex-to-fn [a b f]
+-  (let [a (if (regex? a) #(re-find+ a %1) a)]
++  (let [a (if (regex? a) #(re-find a %1) a)]
+     (f a b)))
+ 
+ 
+@@ -71,12 +72,11 @@
+              (if (~idfn x#)
+                (apply ~name (concat xs# [x#]))
+                (apply ~name x# xs#)))
+-      (die "Bad dwim  type: " type))))
++      (throw (Exception. (str "Bad dwim  type: " type))))))
+ 
+ 
+ ;;------------------------------------------------------------------------------
+ (dwim 2.2 seqable? apply)
+-(dwim 2.2 seqable? chop)
+ (dwim 2.2 seqable? cons)
+ (dwim 2.1 seqable? contains?)
+ (dwim 2.2 seqable? drop)

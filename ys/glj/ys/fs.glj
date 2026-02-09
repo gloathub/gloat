@@ -276,3 +276,21 @@
     (let [[f err] (os.Create path)]
       (when (nil? err)
         (.Close f)))))
+
+(defn mktemp
+  "Create temporary file and return path"
+  ([] (mktemp "" "ys-"))
+  ([prefix] (mktemp "" prefix))
+  ([dir prefix]
+    (let [[f err] (os.CreateTemp dir prefix)]
+      (when (nil? err)
+        (.Close f)
+        (str (.Name f))))))
+
+(defn mktemp-d
+  "Create temporary directory and return path"
+  ([] (mktemp-d "" "ys-"))
+  ([prefix] (mktemp-d "" prefix))
+  ([dir prefix]
+    (let [[path err] (os.MkdirTemp dir prefix)]
+      (when (nil? err) path))))

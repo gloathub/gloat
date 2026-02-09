@@ -1,0 +1,48 @@
+--- ys/src/ys/std.clj	2026-02-10 08:04:07.115408560 -0800
++++ ys/bb/ys/std.clj	2026-02-10 08:04:07.154408359 -0800
+@@ -479,14 +479,15 @@
+   `(doall (for ~bindings (do ~@body))))
+ 
+ (defn err [& xs]
+-  (fmt.Fprint os.Stderr (str (apply str xs))))
++  (binding [*out* *err*]
++    (apply clojure.core/print xs)))
+ 
+ #_(defn eval [S]
+   (ys/eval (str "!ys-0\n" S)))
+ 
+ (defn exit
+   ([] (exit 0))
+-  ([I] (os.Exit I)))
++  ([I] (System/exit I)))
+ 
+ ;; `if` is a special form in Clojure, but we can make resolve with this for use
+ ;; in dot chaining.
+@@ -546,13 +547,15 @@
+ (intern 'ys.std 'write (fn [& args] (apply spit args)))   ; XXX
+ 
+ (defn out [& xs]
+-  (apply clojure.core/print xs))
++  (apply clojure.core/print xs)
++  (flush))
+ 
+ #_(defn pp [x]
+   (pp/pprint x))
+ 
+ (defn print [& xs]
+-  (apply clojure.core/print xs))
++  (apply clojure.core/print xs)
++  (flush))
+ 
+ #_(def _println (resolve 'println))
+ 
+@@ -560,7 +563,8 @@
+   (apply println xs))
+ 
+ (defn warn [& xs]
+-  (fmt.Fprintln os.Stderr (str (apply str (interpose " " xs)))))
++  (binding [*out* *err*]
++    (apply println xs)))
+ 
+ 
+ ;;------------------------------------------------------------------------------

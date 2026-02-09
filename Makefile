@@ -55,6 +55,20 @@ path:
 
 update: $(YS-GO-FILES)
 
+save-patches:
+	@for f in $(YS-CLJ-FILES); do \
+	  clj=$${f#ys/src/}; \
+	  name=$$(echo "$$clj" | tr '/' '-' | sed 's/\.clj$$//'); \
+	  diff -u <(curl -sL $(YS-REPO-URL)/$$clj) $$f \
+	    > ys/patch/$$name.patch 2>/dev/null || true; \
+	  if [ ! -s ys/patch/$$name.patch ]; then \
+	    rm -f ys/patch/$$name.patch; \
+	  else \
+	    echo "Saved ys/patch/$$name.patch"; \
+	  fi; \
+	done
+	@echo "Patches saved to ys/patch/"
+
 diff:
 ifndef FILE
 	@echo 'set FILE=...'
@@ -98,8 +112,13 @@ ys/src/ys/ipc.clj:
 	@true
 
 ys/src/%.clj: force
-	@echo "Patching $@ from repo source"
-	util/patch-ys-repo-source $@ $(YS-REPO-URL) > $@
+	@echo "Updating $@ from upstream"
+	@curl -sL $(YS-REPO-URL)/$*.clj -o $@
+	@patch_file=ys/patch/$$(echo "$*" | tr '/' '-').patch; \
+	  if [ -f "$$patch_file" ]; then \
+	    echo "Applying $$patch_file"; \
+	    patch --no-backup-if-mismatch -p0 < "$$patch_file"; \
+	  fi
 
 # Pattern rule: CLJ → GLJ conversion
 ys/glj/%.glj: ys/src/%.clj $(GLOJURE-DIR) $(BB)
@@ -120,7 +139,7 @@ ys/pkg/yamlscript/util/loader.go: ys/glj/yamlscript/util.glj $(GLJ)
 	  cp "$$tmpdir/yamlscript/util/loader.go" $@ && \
 	  rm -rf "$$tmpdir"
 	@echo "Applying seqable? patch to $@"
-	@patch -p1 < ys/patches/yamlscript-util-seqable.patch
+	@patch --no-backup-if-mismatch -p1 < ys/patch/yamlscript-util-seqable.patch
 
 # Pattern rule: GLJ → GO compilation
 ys/pkg/%/loader.go: ys/glj/%.glj $(GLJ)

@@ -112,8 +112,8 @@ main() (
     die "Input file/directory does not exist: $input"
 
   # Validate platform format
-  [[ ! $platform || $platform =~ ^[a-z]+/[a-z0-9]+$ ]] ||
-    die "Platform must be in format OS/ARCH (e.g., linux/amd64)"
+  [[ ! $platform || $platform =~ ^[a-z][a-z0-9]*/[a-z0-9]+$ ]] ||
+    die "Platform must be in format OS/ARCH (e.g., linux/amd64, wasip1/wasm)"
 
   # Handle -t .ext shorthand (e.g., -t .glj means -o input.glj)
   to=${option_to:-}
@@ -343,7 +343,7 @@ glj-to-go() (
 
   # Compile user namespace only
   echo "(compile (quote $namespace))" |
-    (cd "$output_dir" && "$glj") >/dev/null 2>&1 || true
+    (cd "$output_dir" && "$glj") || true
 
   timer_end "GLJ→GO"
 )
@@ -413,11 +413,11 @@ convert-file() (
         # Output ys runtime (with ns declarations)
         cat "$GLOAT_ROOT/ys/src/yamlscript/util.clj"
         echo
-        cat "$GLOAT_ROOT/ys/bb/ys/fs.clj"
+        cat-bb fs
         echo
-        cat "$GLOAT_ROOT/ys/bb/ys/ipc.clj"
+        cat-bb ipc
         echo
-        cat "$GLOAT_ROOT/ys/src/ys/std.clj"
+        cat-bb std
         echo
         cat "$GLOAT_ROOT/ys/src/ys/dwim.clj"
         echo
@@ -733,11 +733,11 @@ convert-to-stdout() (
       # Output ys runtime (with ns declarations)
       cat "$GLOAT_ROOT/ys/src/yamlscript/util.clj"
       echo
-      cat "$GLOAT_ROOT/ys/bb/ys/fs.clj"
+      cat-bb fs
       echo
-      cat "$GLOAT_ROOT/ys/bb/ys/ipc.clj"
+      cat-bb ipc
       echo
-      cat "$GLOAT_ROOT/ys/src/ys/std.clj"
+      cat-bb std
       echo
       cat "$GLOAT_ROOT/ys/src/ys/dwim.clj"
       echo
@@ -942,6 +942,18 @@ timer_end() {
     elapsed=$(( end - _timer_start ))
     echo "  $label... done (${elapsed}ms)" >&2
   fi
+}
+
+# Helper to cat a BB-patched version of a source file
+cat-bb() {
+  local src=$GLOAT_ROOT/ys/src/ys/$1.clj
+  local patch=$GLOAT_ROOT/ys/patch/ys-$1-bb.patch
+  local tmpfile
+  tmpfile=$(mktemp)
+  patch --no-backup-if-mismatch -p0 -o "$tmpfile" \
+    "$src" < "$patch" >/dev/null 2>&1
+  cat "$tmpfile"
+  rm -f "$tmpfile"
 }
 
 main "$@"

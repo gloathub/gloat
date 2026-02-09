@@ -2,50 +2,6 @@
 
 defn main(fun *args):
   case fun:
-    # Mutating operations
-    'fs/mkdir':
-      apply fs/mkdir: args
-    'fs/mkdir-p':
-      apply fs/mkdir-p: args
-    'fs/rmdir':
-      fs/rmdir: args*
-    'fs/touch':
-      apply fs/touch: args
-    'fs/cp':
-      fs/cp: args.0 args.1
-    'fs/mv':
-      fs/mv: args.0 args.1
-    'fs/rm':
-      fs/rm: args*
-    'fs/rm-r':
-      fs/rm-r: args*
-    'fs/rm-f':
-      fs/rm-f: args*
-
-    # Predicates
-    'fs-e':
-      say: fs-e(args.0):S
-    'fs/exists?':
-      say: fs/exists?(args.0):S
-    'fs/dir?':
-      say: fs/dir?(args.0):S
-    'fs/file?':
-      say: fs/file?(args.0):S
-
-    # Path operations
-    'fs/cwd':
-      say: fs/cwd()
-    'fs/abs':
-      say: fs/abs(args.0)
-    'fs/basename':
-      say: fs/basename(args.0)
-    'fs/dirname':
-      say: fs/dirname(args.0)
-
-    # Listing
-    'fs/ls':
-      say: join(fs/ls(args.0) "\n")
-
     # IPC: sh (direct exec) - field extraction
     'sh-exit':
       say: sh(args*).:exit

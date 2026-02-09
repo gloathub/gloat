@@ -9,7 +9,7 @@
    [yamlscript.util :as util]
    [ys.fs :as fs]
    [ys.ipc :as ipc])
-  (:refer-clojure :exclude [atom read replace reverse set]))
+  (:refer-clojure :exclude [atom print read replace reverse set]))
 
 ;;------------------------------------------------------------------------------
 ;; XXX - Helper functions
@@ -478,17 +478,15 @@
 (defmacro each [bindings & body]
   `(doall (for ~bindings (do ~@body))))
 
-#_(defn err [& xs]
-  (binding [*out* *err*]
-    (apply clojure.core/print xs)
-    (flush)))
+(defn err [& xs]
+  (fmt.Fprint os.Stderr (str (apply str xs))))
 
 #_(defn eval [S]
   (ys/eval (str "!ys-0\n" S)))
 
-#_(defn exit
+(defn exit
   ([] (exit 0))
-  ([I] (System/exit I)))
+  ([I] (os.Exit I)))
 
 ;; `if` is a special form in Clojure, but we can make resolve with this for use
 ;; in dot chaining.
@@ -547,26 +545,22 @@
 #_(intern 'ys.std 'write clojure.core/spit)
 (intern 'ys.std 'write (fn [& args] (apply spit args)))   ; XXX
 
-#_(defn out [& xs]
-  (apply clojure.core/print xs)
-  (flush))
+(defn out [& xs]
+  (apply clojure.core/print xs))
 
 #_(defn pp [x]
   (pp/pprint x))
 
-#_(defn print [& xs]
-  (apply clojure.core/print xs)
-  (flush))
+(defn print [& xs]
+  (apply clojure.core/print xs))
 
 #_(def _println (resolve 'println))
 
 (defn say [& xs]
   (apply println xs))
 
-#_(defn warn [& xs]
-  (binding [*out* *err*]
-    (apply _println xs)
-    (flush)))
+(defn warn [& xs]
+  (fmt.Fprintln os.Stderr (str (apply str (interpose " " xs)))))
 
 
 ;;------------------------------------------------------------------------------
@@ -865,6 +859,23 @@
 (intern 'ys.std 'fs-rel? (fn [& args] (apply fs/rel? args)))   ; XXX
 #_(intern 'ys.std 'fs-which fs/which)
 (intern 'ys.std 'fs-which (fn [& args] (apply fs/which args)))   ; XXX
+
+;; File operation aliases
+(intern 'ys.std 'fs-cp (fn [& args] (apply fs/cp args)))
+(intern 'ys.std 'fs-cp-r (fn [& args] (apply fs/cp-r args)))
+(intern 'ys.std 'fs-cwd (fn [] (fs/cwd)))
+(intern 'ys.std 'fs-find (fn [& args] (apply fs/find args)))
+(intern 'ys.std 'fs-mkdir (fn [& args] (apply fs/mkdir args)))
+(intern 'ys.std 'fs-mkdir-p (fn [& args] (apply fs/mkdir-p args)))
+(intern 'ys.std 'fs-mv (fn [& args] (apply fs/mv args)))
+(intern 'ys.std 'fs-path (fn [& args] (apply fs/path args)))
+(intern 'ys.std 'fs-readlink (fn [& args] (apply fs/readlink args)))
+(intern 'ys.std 'fs-rm (fn [& args] (apply fs/rm args)))
+(intern 'ys.std 'fs-rm-r (fn [& args] (apply fs/rm-r args)))
+(intern 'ys.std 'fs-rmdir (fn [& args] (apply fs/rmdir args)))
+(intern 'ys.std 'fs-touch (fn [& args] (apply fs/touch args)))
+(intern 'ys.std 'fs-mktemp (fn [& args] (apply fs/mktemp args)))
+(intern 'ys.std 'fs-mktemp-d (fn [& args] (apply fs/mktemp-d args)))
 
 
 ;;------------------------------------------------------------------------------

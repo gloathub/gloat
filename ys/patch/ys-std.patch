@@ -1,0 +1,721 @@
+--- ys/src/ys/std.clj	2026-02-10 07:50:04.881998159 -0800
++++ ys/src/ys/std.clj	2026-02-10 07:50:03.425685877 -0800
+@@ -5,6 +5,20 @@
+ 
+ (ns ys.std
+   (:require
++   [clojure.string :as str]
++   [yamlscript.util :as util]
++   [ys.fs :as fs]
++   [ys.ipc :as ipc])
++  (:refer-clojure :exclude [atom print read replace reverse set]))
++
++;;------------------------------------------------------------------------------
++;; XXX - Helper functions
++;;------------------------------------------------------------------------------
++(defn- regex? [x] (instance? java.util.regex.Pattern x))
++;;------------------------------------------------------------------------------
++
++#_(ns ys.std
++  (:require
+    [babashka.process :as process]
+    [clojure.data :as data]
+    [clojure.math :as math]
+@@ -35,28 +49,33 @@
+ 
+ 
+ ;; Guard against billion laughs style attacks
+-(def _max-alias-size (* 1024 1024))
++#_(def _max-alias-size (* 1024 1024))
+ 
+ 
+ ;;------------------------------------------------------------------------------
+ ;; String functions
+ ;;------------------------------------------------------------------------------
+-(defn base64-decode [S]
++#_(defn base64-decode [S]
+   (String. (.decode (Base64/getDecoder) ^String S)))
+-(defn base64-encode [S]
++#_(defn base64-encode [S]
+   (.encodeToString (Base64/getEncoder) (.getBytes ^String S)))
+-(defn base64-points [S]
++#_(defn base64-points [S]
+   (.encode (Base64/getEncoder) (.getBytes ^String S)))
+-(defn base64 [S] (base64-encode S))
++#_(defn base64 [S] (base64-encode S))
+ 
+-(intern 'ys.std 'blank? clojure.string/blank?)
+-(intern 'ys.std 'chomp clojure.string/trim-newline)
+-(intern 'ys.std 'chop common/chop)
+-(intern 'ys.std 'ends? clojure.string/ends-with?)
+-(intern 'ys.std 'escape clojure.string/escape)
+-(intern 'ys.std 'index clojure.string/index-of)
++#_(intern 'ys.std 'blank? clojure.string/blank?)
++(intern 'ys.std 'blank? (fn [s] (str/blank? s)))   ; XXX
++#_(intern 'ys.std 'chomp clojure.string/trim-newline)
++(intern 'ys.std 'chomp (fn [s] (str/trim-newline s)))   ; XXX
++#_(intern 'ys.std 'chop common/chop)
++#_(intern 'ys.std 'ends? clojure.string/ends-with?)
++(intern 'ys.std 'ends? (fn [s e] (str/ends-with? s e)))   ; XXX
++#_(intern 'ys.std 'escape clojure.string/escape)
++(intern 'ys.std 'escape (fn [s m] (str/escape s m)))   ; XXX
++#_(intern 'ys.std 'index clojure.string/index-of)
++(intern 'ys.std 'index (fn [& args] (apply str/index-of args)))   ; XXX
+ 
+-(defn index [C x]
++#_(defn index [C x]
+   (condf C
+     string? (clojure.string/index-of C x)
+     sequential? (let [i (.indexOf ^java.util.List C x)]
+@@ -74,7 +93,8 @@
+ 
+ (defn joins [Ss] (join " " Ss))
+ 
+-(intern 'ys.std 'lc clojure.string/lower-case)
++#_(intern 'ys.std 'lc clojure.string/lower-case)
++(intern 'ys.std 'lc (fn [s] (str/lower-case s)))   ; XXX
+ 
+ (defn lines [S]
+   (if (empty? S)
+@@ -84,7 +104,7 @@
+               S)]
+       (str/split S #"\n" -1))))
+ 
+-(defn pretty [x]
++#_(defn pretty [x]
+   (str/trim-newline
+     (with-out-str
+       (pp/pprint x))))
+@@ -96,8 +116,10 @@
+            (clojure.core/replace x y)))
+   ([x y z] (clojure.string/replace x y z)))
+ 
+-(intern 'ys.std 'replace1 clojure.string/replace-first)
+-(intern 'ys.std 'rindex clojure.string/last-index-of)
++#_(intern 'ys.std 'replace1 clojure.string/replace-first)
++(intern 'ys.std 'replace1 (fn [& args] (apply str/replace-first args)))   ; XXX
++#_(intern 'ys.std 'rindex clojure.string/last-index-of)
++(intern 'ys.std 'rindex (fn [& args] (apply str/last-index-of args)))   ; XXX
+ 
+ (defn split
+   ([S]
+@@ -111,7 +133,8 @@
+          R (if (string? R) (re-pattern R) R)]
+      (clojure.string/split S R))))
+ 
+-(intern 'ys.std 'starts? clojure.string/starts-with?)
++#_(intern 'ys.std 'starts? clojure.string/starts-with?)
++(intern 'ys.std 'starts? (fn [s p] (str/starts-with? s p)))   ; XXX
+ 
+ (defn substr
+   ([str off] (substr str off (- (count str) off)))
+@@ -138,12 +161,17 @@
+     (str/join "\n"
+       (concat Ss (list "")))))
+ 
+-(intern 'ys.std 'trim clojure.string/trim)
+-(intern 'ys.std 'triml clojure.string/triml)
+-(intern 'ys.std 'trimr clojure.string/trimr)
+-
+-(intern 'ys.std 'uc clojure.string/upper-case)
+-(intern 'ys.std 'uc1 clojure.string/capitalize)
++#_(intern 'ys.std 'trim clojure.string/trim)
++(intern 'ys.std 'trim (fn [s] (str/trim s)))   ; XXX
++#_(intern 'ys.std 'triml clojure.string/triml)
++(intern 'ys.std 'triml (fn [s] (str/triml s)))   ; XXX
++#_(intern 'ys.std 'trimr clojure.string/trimr)
++(intern 'ys.std 'trimr (fn [s] (str/trimr s)))   ; XXX
++
++#_(intern 'ys.std 'uc clojure.string/upper-case)
++(intern 'ys.std 'uc (fn [s] (str/upper-case s)))   ; XXX
++#_(intern 'ys.std 'uc1 clojure.string/capitalize)
++(intern 'ys.std 'uc1 (fn [s] (str/capitalize s)))   ; XXX
+ 
+ (defn words [S]
+   (clojure.string/split S #"\s+"))
+@@ -175,7 +203,7 @@
+                nil)
+     nil))
+ 
+-(defn diff [a b] (data/diff a b))
++#_(defn diff [a b] (data/diff a b))
+ 
+ (defn flat [C]
+   (mapcat
+@@ -200,7 +228,6 @@
+        (map? C) (get+ C (symbol x))
+        :else (some #(= %1 x) C)))))
+ 
+-#_{:clj-kondo/ignore [:syntax]}
+ (defn in?
+   ([C] #(in? C %1))
+   ([x C] (has? C x)))
+@@ -229,10 +256,19 @@
+       (+merge M))
+     M))
+ 
+-(defn omap [& xs]
++#_(defn omap [& xs]
+   (apply flatland.ordered.map/ordered-map xs))
+ 
+-(intern 'ys.std '% omap)
++#_(intern 'ys.std '% omap)
++
++;;------------------------------------------------------------------------------
++;; XXX - ordered map workarounds
++(defn omap [& xs]
++  (apply hash-map xs))
++
++(defn % [& xs]
++  (apply omap xs))
++;;------------------------------------------------------------------------------
+ 
+ (defn reverse [x]
+   (condf x
+@@ -298,9 +334,9 @@
+       (for [d n]
+         (- (byte d) 48)))))
+ 
+-(intern 'ys.std 'floor math/floor)
++#_(intern 'ys.std 'floor math/floor)
+ 
+-(defn pow
++#_(defn pow
+   ([x] #(pow %1 x))
+   ([x y]
+    (if (and (integer? x) (integer? y) (>= y 0))
+@@ -314,14 +350,23 @@
+    (let [[& xs] (clojure.core/reverse (conj xs y x))]
+      (reduce #(pow %2 %1) 1 xs))))
+ 
+-(intern 'ys.std 'round math/round)
++#_(intern 'ys.std 'round math/round)
+ 
+ (defn sum [xs]
+   (reduce + 0 (filter identity xs)))
+ 
+-(defn sqr  [N] (pow N 2))
+-(defn cube [N] (pow N 3))
+-(intern 'ys.std 'sqrt math/sqrt)
++#_(defn sqr  [N] (pow N 2))
++#_(defn cube [N] (pow N 3))
++#_(intern 'ys.std 'sqrt math/sqrt)
++;; XXX
++(defn sqrt [x]
++  (let [epsilon 1e-15
++        abs-fn (fn [n] (if (< n 0) (- n) n))]
++    (loop [guess 1.0]
++      (let [next-guess (/ (+ guess (/ x guess)) 2)]
++        (if (< (abs-fn (- next-guess guess)) epsilon)
++          next-guess
++          (recur next-guess))))))
+ 
+ (defn- op-error
+   ([op x]
+@@ -353,7 +398,7 @@
+      number? (+ (to-num x 0) (to-num y 0))
+      string? (str x y)
+      map? (merge (to-map x) (to-map y))
+-     set? (set/union (to-set x) (to-set y))
++     set? (into (to-set x) (to-set y))
+      vector? (vec (concat (to-vec x)
+                     (if (sequential? y)
+                       (to-list y)
+@@ -427,31 +472,30 @@
+      (when-not (ifn? f#) (util/die "Can't call(" (pr-str f#) ")"))
+      (f# ~@xs)))
+ 
+-(intern 'ys.std 'die yamlscript.util/die)
++#_(intern 'ys.std 'die yamlscript.util/die)
++(intern 'ys.std 'die (fn [& args] (apply util/die args)))   ; XXX
+ 
+ (defmacro each [bindings & body]
+   `(doall (for ~bindings (do ~@body))))
+ 
+ (defn err [& xs]
+-  (binding [*out* *err*]
+-    (apply clojure.core/print xs)
+-    (flush)))
++  (fmt.Fprint os.Stderr (str (apply str xs))))
+ 
+-(defn eval [S]
++#_(defn eval [S]
+   (ys/eval (str "!ys-0\n" S)))
+ 
+ (defn exit
+   ([] (exit 0))
+-  ([I] (System/exit I)))
++  ([I] (os.Exit I)))
+ 
+ ;; `if` is a special form in Clojure, but we can make resolve with this for use
+ ;; in dot chaining.
+-(defn if [cond then else] (if cond then else))
++#_(defn if [cond then else] (if cond then else))
+ 
+-(defn sleep [I]
++#_(defn sleep [I]
+   (Thread/sleep (int (* 1000 I))))
+ 
+-(defn throw [e] (throw e))
++#_(defn throw [e] (throw e))
+ 
+ (defmacro when+ [test & body]
+   (list 'when-let ['_ test] (cons 'do body)))
+@@ -469,9 +513,8 @@
+     ([a b c] (f c b a))
+     ([a b c d] (f d c b a))
+     ([a b c d & rest]
+-     (->> rest
+-       (concat [a b c d])
+-       clojure.core/reverse
++     (->> (concat [a b c d] rest)
++       (reduce conj ())
+        (apply f)))))
+ 
+ 
+@@ -481,10 +524,10 @@
+ 
+ ;; See: `qr` function above
+ 
+-(defn =-- [S R]
++#_(defn =-- [S R]
+   (re-find+ R S))
+ 
+-(defn !-- [S R]
++#_(defn !-- [S R]
+   (not (=-- S R)))
+ 
+ (defn =--- [S R]
+@@ -497,38 +540,38 @@
+ ;;------------------------------------------------------------------------------
+ ;; I/O functions
+ ;;------------------------------------------------------------------------------
+-(intern 'ys.std 'read clojure.core/slurp)
+-(intern 'ys.std 'write clojure.core/spit)
++#_(intern 'ys.std 'read clojure.core/slurp)
++(intern 'ys.std 'read (fn [& args] (apply slurp args)))   ; XXX
++#_(intern 'ys.std 'write clojure.core/spit)
++(intern 'ys.std 'write (fn [& args] (apply spit args)))   ; XXX
+ 
+ (defn out [& xs]
+-  (apply clojure.core/print xs)
+-  (flush))
++  (apply clojure.core/print xs))
+ 
+-(defn pp [x]
++#_(defn pp [x]
+   (pp/pprint x))
+ 
+ (defn print [& xs]
+-  (apply clojure.core/print xs)
+-  (flush))
++  (apply clojure.core/print xs))
+ 
+-(def _println (resolve 'println))
++#_(def _println (resolve 'println))
+ 
+ (defn say [& xs]
+-  (apply _println xs))
++  (apply println xs))
+ 
+ (defn warn [& xs]
+-  (binding [*out* *err*]
+-    (apply _println xs)
+-    (flush)))
++  (fmt.Fprintln os.Stderr (str (apply str (interpose " " xs)))))
+ 
+ 
+ ;;------------------------------------------------------------------------------
+ ;; Shorter named alias functions
+ ;;------------------------------------------------------------------------------
+ 
+-(intern 'ys.std 'a clojure.core/identity)
++#_(intern 'ys.std 'a clojure.core/identity)
++(intern 'ys.std 'a (fn [x] (identity x)))   ; XXX
+ 
+-(intern 'ys.std 'len clojure.core/count)
++#_(intern 'ys.std 'len clojure.core/count)
++(intern 'ys.std 'len (fn [x] (count x)))   ; XXX
+ 
+ 
+ ;;------------------------------------------------------------------------------
+@@ -631,7 +674,7 @@
+   ([x default]
+    (condf x
+      number? x
+-     string? (when (re-matches re/xnum x)
++     string? (when (re-matches #"^[+-]?[0-9]+\.?[0-9]*([eE][+-]?[0-9]+)?$" x)
+                (read-string x))
+      nil? (util/die "Can't convert a nil value to a number")
+      seqable? (count x)
+@@ -666,7 +709,7 @@
+ 
+ (defn to-type [x]
+   (condf x
+-    atom? "atom"
++    util/atom? "atom"
+     boolean? "bool"
+     char? "char"
+     class? "class"
+@@ -687,7 +730,7 @@
+     vector? "vec"
+     (util/die "Can't determine type of '" (type x) "' value")))
+ 
+-(defmacro to-vars
++#_(defmacro to-vars
+   ([m] `(ys/+def-vars *ns* ~m))
+   ([m force]
+    (when (and force (not= force :force))
+@@ -702,23 +745,38 @@
+     nil? []
+     (util/die "Can't convert " (or (type x) "nil") " to vector")))
+ 
+-(intern 'ys.std 'B to-bool)
+-(intern 'ys.std 'C to-char)
+-(intern 'ys.std 'F to-float)
++#_(intern 'ys.std 'B to-bool)
++(intern 'ys.std 'B (fn [x] (to-bool x)))   ; XXX
++#_(intern 'ys.std 'C to-char)
++(intern 'ys.std 'C (fn [x] (to-char x)))   ; XXX
++#_(intern 'ys.std 'F to-float)
++(intern 'ys.std 'F (fn [x] (to-float x)))   ; XXX
+ (intern 'ys.std 'I to-int)
+-(intern 'ys.std 'K to-keyw)
+-(intern 'ys.std 'L to-list)
+-(intern 'ys.std 'M to-map)
+-(intern 'ys.std 'N to-num)
+-(intern 'ys.std 'O to-omap)
+-(intern 'ys.std 'S to-str)
+-(intern 'ys.std 'T to-type)
+-(intern 'ys.std 'V to-vec)
+-
+-(intern 'ys.std 'L+ list)
+-(intern 'ys.std 'M+ hash-map)
+-(intern 'ys.std 'O+ omap)
+-(intern 'ys.std 'V+ vector)
++#_(intern 'ys.std 'K to-keyw)
++(intern 'ys.std 'K (fn [x] (to-keyw x)))   ; XXX
++#_(intern 'ys.std 'L to-list)
++(intern 'ys.std 'L (fn [x] (to-list x)))   ; XXX
++#_(intern 'ys.std 'M to-map)
++(intern 'ys.std 'M (fn [x] (to-map x)))   ; XXX
++#_(intern 'ys.std 'N to-num)
++(intern 'ys.std 'N (fn [& args] (apply to-num args)))   ; XXX
++#_(intern 'ys.std 'O to-omap)
++(intern 'ys.std 'O (fn [x] (to-omap x)))   ; XXX
++#_(intern 'ys.std 'S to-str)
++(intern 'ys.std 'S (fn [x] (to-str x)))   ; XXX
++#_(intern 'ys.std 'T to-type)
++(intern 'ys.std 'T (fn [x] (to-type x)))   ; XXX
++#_(intern 'ys.std 'V to-vec)
++(intern 'ys.std 'V (fn [x] (to-vec x)))   ; XXX
++
++#_(intern 'ys.std 'L+ list)
++(intern 'ys.std 'L+ (fn [& args] (apply list args)))   ; XXX
++#_(intern 'ys.std 'M+ hash-map)
++(intern 'ys.std 'M+ (fn [& args] (apply hash-map args)))   ; XXX
++#_(intern 'ys.std 'O+ omap)
++(intern 'ys.std 'O+ (fn [& args] (apply omap args)))   ; XXX
++#_(intern 'ys.std 'V+ vector)
++(intern 'ys.std 'V+ (fn [& args] (apply vector args)))   ; XXX
+ 
+ 
+ ;;------------------------------------------------------------------------------
+@@ -761,32 +819,69 @@
+ ;;------------------------------------------------------------------------------
+ ;; File system functions
+ ;;------------------------------------------------------------------------------
+-(intern 'ys.std 'fs-d fs/d)
+-(intern 'ys.std 'fs-e fs/e)
+-(intern 'ys.std 'fs-f fs/f)
+-(intern 'ys.std 'fs-l fs/l)
+-(intern 'ys.std 'fs-r fs/r)
+-(intern 'ys.std 'fs-s fs/s)
+-(intern 'ys.std 'fs-w fs/w)
+-(intern 'ys.std 'fs-x fs/x)
+-(intern 'ys.std 'fs-z fs/z)
+-(intern 'ys.std 'fs-abs fs/abs)
+-(intern 'ys.std 'fs-abs? fs/abs?)
+-(intern 'ys.std 'fs-dirname fs/dirname)
+-(intern 'ys.std 'fs-filename fs/filename)
+-(intern 'ys.std 'fs-basename fs/basename)
+-(intern 'ys.std 'fs-glob fs/glob)
+-(intern 'ys.std 'fs-ls fs/ls)
+-(intern 'ys.std 'fs-mtime fs/mtime)
+-(intern 'ys.std 'fs-rel fs/rel)
+-(intern 'ys.std 'fs-rel? fs/rel?)
+-(intern 'ys.std 'fs-which fs/which)
++#_(intern 'ys.std 'fs-d fs/d)
++(intern 'ys.std 'fs-d (fn [& args] (apply fs/d args)))   ; XXX
++#_(intern 'ys.std 'fs-e fs/e)
++(intern 'ys.std 'fs-e (fn [& args] (apply fs/e args)))   ; XXX
++#_(intern 'ys.std 'fs-f fs/f)
++(intern 'ys.std 'fs-f (fn [& args] (apply fs/f args)))   ; XXX
++#_(intern 'ys.std 'fs-l fs/l)
++(intern 'ys.std 'fs-l (fn [& args] (apply fs/l args)))   ; XXX
++#_(intern 'ys.std 'fs-r fs/r)
++(intern 'ys.std 'fs-r (fn [& args] (apply fs/r args)))   ; XXX
++#_(intern 'ys.std 'fs-s fs/s)
++(intern 'ys.std 'fs-s (fn [& args] (apply fs/s args)))   ; XXX
++#_(intern 'ys.std 'fs-w fs/w)
++(intern 'ys.std 'fs-w (fn [& args] (apply fs/w args)))   ; XXX
++#_(intern 'ys.std 'fs-x fs/x)
++(intern 'ys.std 'fs-x (fn [& args] (apply fs/x args)))   ; XXX
++#_(intern 'ys.std 'fs-z fs/z)
++(intern 'ys.std 'fs-z (fn [& args] (apply fs/z args)))   ; XXX
++#_(intern 'ys.std 'fs-abs fs/abs)
++(intern 'ys.std 'fs-abs (fn [& args] (apply fs/abs args)))   ; XXX
++#_(intern 'ys.std 'fs-abs? fs/abs?)
++(intern 'ys.std 'fs-abs? (fn [& args] (apply fs/abs? args)))   ; XXX
++#_(intern 'ys.std 'fs-dirname fs/dirname)
++(intern 'ys.std 'fs-dirname (fn [& args] (apply fs/dirname args)))   ; XXX
++#_(intern 'ys.std 'fs-filename fs/filename)
++(intern 'ys.std 'fs-filename (fn [& args] (apply fs/filename args)))   ; XXX
++#_(intern 'ys.std 'fs-basename fs/basename)
++(intern 'ys.std 'fs-basename (fn [& args] (apply fs/basename args)))   ; XXX
++#_(intern 'ys.std 'fs-glob fs/glob)
++(intern 'ys.std 'fs-glob (fn [& args] (apply fs/glob args)))   ; XXX
++#_(intern 'ys.std 'fs-ls fs/ls)
++(intern 'ys.std 'fs-ls (fn [& args] (apply fs/ls args)))   ; XXX
++#_(intern 'ys.std 'fs-mtime fs/mtime)
++(intern 'ys.std 'fs-mtime (fn [& args] (apply fs/mtime args)))   ; XXX
++#_(intern 'ys.std 'fs-rel fs/rel)
++(intern 'ys.std 'fs-rel (fn [& args] (apply fs/rel args)))   ; XXX
++#_(intern 'ys.std 'fs-rel? fs/rel?)
++(intern 'ys.std 'fs-rel? (fn [& args] (apply fs/rel? args)))   ; XXX
++#_(intern 'ys.std 'fs-which fs/which)
++(intern 'ys.std 'fs-which (fn [& args] (apply fs/which args)))   ; XXX
++
++;; File operation aliases
++(intern 'ys.std 'fs-cp (fn [& args] (apply fs/cp args)))
++(intern 'ys.std 'fs-cp-r (fn [& args] (apply fs/cp-r args)))
++(intern 'ys.std 'fs-cwd (fn [] (fs/cwd)))
++(intern 'ys.std 'fs-find (fn [& args] (apply fs/find args)))
++(intern 'ys.std 'fs-mkdir (fn [& args] (apply fs/mkdir args)))
++(intern 'ys.std 'fs-mkdir-p (fn [& args] (apply fs/mkdir-p args)))
++(intern 'ys.std 'fs-mv (fn [& args] (apply fs/mv args)))
++(intern 'ys.std 'fs-path (fn [& args] (apply fs/path args)))
++(intern 'ys.std 'fs-readlink (fn [& args] (apply fs/readlink args)))
++(intern 'ys.std 'fs-rm (fn [& args] (apply fs/rm args)))
++(intern 'ys.std 'fs-rm-r (fn [& args] (apply fs/rm-r args)))
++(intern 'ys.std 'fs-rmdir (fn [& args] (apply fs/rmdir args)))
++(intern 'ys.std 'fs-touch (fn [& args] (apply fs/touch args)))
++(intern 'ys.std 'fs-mktemp (fn [& args] (apply fs/mktemp args)))
++(intern 'ys.std 'fs-mktemp-d (fn [& args] (apply fs/mktemp-d args)))
+ 
+ 
+ ;;------------------------------------------------------------------------------
+ ;; Date/Time functions
+ ;;------------------------------------------------------------------------------
+-(defn now
++#_(defn now
+   ([] (jtime/instant))
+   ([f] (condp eq f
+          :local (jtime/local-date-time)
+@@ -794,25 +889,25 @@
+          :utc (jtime/instant)
+          (util/die "Unknown time format: '" f "'"))))
+ 
+-(defn instant [x] (jtime/instant x))
++#_(defn instant [x] (jtime/instant x))
+ 
+ 
+ ;;------------------------------------------------------------------------------
+ ;; YAML anchor and alias functions
+ ;;------------------------------------------------------------------------------
+-(defn _& [sym val]
++#_(defn _& [sym val]
+   (when (> (count (str val)) _max-alias-size)
+     (util/die "Anchored node &" sym " exceeds max size of " _max-alias-size))
+   (swap! global/stream-anchors_ assoc sym val)
+   (swap! global/doc-anchors_ assoc sym val)
+   val)
+ 
+-(defn _* [sym]
++#_(defn _* [sym]
+   (or
+     (+merge (get @global/doc-anchors_ sym))
+     (util/die "1 Anchor not found: &" sym)))
+ 
+-(defn _** [sym]
++#_(defn _** [sym]
+   (or
+     (+merge (get @global/stream-anchors_ sym))
+     (util/die "2 Anchor not found: &" sym)))
+@@ -821,7 +916,7 @@
+ ;;------------------------------------------------------------------------------
+ ;; Java interop functions
+ ;;------------------------------------------------------------------------------
+-(defn new [class & xs]
++#_(defn new [class & xs]
+   (clojure.lang.Reflector/invokeConstructor
+     class (into-array Object xs)))
+ 
+@@ -829,17 +924,17 @@
+ ;;------------------------------------------------------------------------------
+ ;; Security functions
+ ;;------------------------------------------------------------------------------
+-(defn md5 [^String string]
++#_(defn md5 [^String string]
+   (let [digest (.digest (MessageDigest/getInstance "MD5")
+                  (.getBytes string "UTF-8"))]
+     (apply str (map (partial format "%02x") digest))))
+ 
+-(defn sha1 [^String string]
++#_(defn sha1 [^String string]
+   (let [digest (.digest (MessageDigest/getInstance "SHA-1")
+                  (.getBytes string "UTF-8"))]
+     (apply str (map (partial format "%02x") digest))))
+ 
+-(defn sha256 [^String string]
++#_(defn sha256 [^String string]
+   (let [digest (.digest (MessageDigest/getInstance "SHA-256")
+                  (.getBytes string "UTF-8"))]
+     (apply str (map (partial format "%02x") digest))))
+@@ -848,7 +943,7 @@
+ ;;------------------------------------------------------------------------------
+ ;; IPC functions
+ ;;------------------------------------------------------------------------------
+-(defn- process-opts [[opts & xs]]
++#_(defn- process-opts [[opts & xs]]
+   (let [opts (if (map? opts)
+                (let [env (or (:env opts) global/env)
+                      opts (assoc opts :env env)]
+@@ -856,17 +951,17 @@
+                [{:env global/env} opts])]
+     (vec (concat opts xs))))
+ 
+-(defn exec [& xs]
++#_(defn exec [& xs]
+   (apply process/exec (process-opts xs)))
+ 
+ (defn process [& xs]
+-  (apply process/process (process-opts xs)))
++  (apply ipc/process xs))
+ 
+ (defn sh [& xs]
+-  (apply process/sh (process-opts xs)))
++  (apply ipc/sh xs))
+ 
+ (defn shell [& xs]
+-  (apply process/shell (process-opts xs)))
++  (apply ipc/shell xs))
+ 
+ (defn sh-out [& xs]
+   (let [ret (apply sh xs)]
+@@ -877,17 +972,17 @@
+ 
+ (defn bash [& xs]
+   (let [cmd (str/join " " xs)]
+-    (sh "bash -c" cmd)))
++    (sh "bash" "-c" cmd)))
+ 
+ (defn bash-out [& xs]
+   (let [cmd (str/join " " xs)]
+-    (sh-out "bash -c" cmd)))
++    (sh-out "bash" "-c" cmd)))
+ 
+ 
+ ;;------------------------------------------------------------------------------
+ ;; External library functions
+ ;;------------------------------------------------------------------------------
+-(defn use-pod [pod-name version]
++#_(defn use-pod [pod-name version]
+   (ys/load-pod pod-name version))
+ 
+ 
+@@ -895,13 +990,13 @@
+ ;; HTTP functions
+ ;;------------------------------------------------------------------------------
+ 
+-(defn get-url [url]
++#_(defn get-url [url]
+   (ext/convert-url url))
+ 
+-(defn load-url [url]
++#_(defn load-url [url]
+   (ext/load-url nil url))
+ 
+-(defn curl [url]
++#_(defn curl [url]
+   (let [url (get-url url)
+         resp (http/get url)]
+     (if-let [body (:body resp)]
+@@ -912,20 +1007,20 @@
+ ;;------------------------------------------------------------------------------
+ ;; YS document result stashing functions
+ ;;------------------------------------------------------------------------------
+-(defn +++* [value]
++#_(defn +++* [value]
+   (reset! global/doc-anchors_ {})
+   (when ((some-fn map? seqable? number? string?) value)
+     (global/set-underscore value)
+     (swap! global/stream-values conj value))
+   value)
+ 
+-(defmacro +++ [& xs]
++#_(defmacro +++ [& xs]
+   `(do
+      (intern '~'main '~'+value (+++* (do ~@xs)))
+      (~'in-ns '~'main)
+      ~'main/+value))
+ 
+-(defn stream
++#_(defn stream
+   ([] @global/stream-values)
+   ([values] (reset! global/stream-values values)
+             nil))
+@@ -936,7 +1031,7 @@
+ ;;------------------------------------------------------------------------------
+ 
+ (defn atom
+-  ([] (atom nil))
++  ([] (clojure.core/atom nil))
+   ([x] (clojure.core/atom x)))
+ 
+ (defn reset
+@@ -954,21 +1049,21 @@
+ (defmacro source [& xs])
+ 
+ ;; def destructuring
+-(declare +def-defn)
++#_(declare +def-defn)
+ 
+-(defn- destructure-vector [V idx]
++#_(defn- destructure-vector [V idx]
+   (map-indexed
+     (fn [i name]
+       (+def-defn name `(nth ~idx ~i nil)))
+     V))
+ 
+-(defn- destructure-map [M idx]
++#_(defn- destructure-map [M idx]
+   (map
+     (fn [[k v]]
+       (+def-defn k `(get ~idx ~v)))
+     M))
+ 
+-(defn- destructure-idx [x idx]
++#_(defn- destructure-idx [x idx]
+   (let [root (gensym)]
+     `(let [~root ~idx]
+        ~@(condf x
+@@ -976,15 +1071,15 @@
+            seqable? (destructure-vector x root)
+            []))))
+ 
+-(defn- +def-defn [x y]
++#_(defn- +def-defn [x y]
+   (if (symbol? x)
+     `(def ~x ~y)
+     (destructure-idx x y)))
+ 
+-(defmacro +def [x y]
++#_(defmacro +def [x y]
+   (+def-defn x y))
+ 
+-(defn env-update
++#_(defn env-update
+   ([m]
+    (let
+     [m (reduce-kv

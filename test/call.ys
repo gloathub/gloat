@@ -46,6 +46,28 @@ defn main(fun *args):
     'fs/ls':
       say: join(fs/ls(args.0) "\n")
 
+    # IPC: sh (direct exec) - field extraction
+    'sh-exit':
+      say: sh(args*).:exit
+    'sh-stdout':
+      say: trim(sh(args*).:out)
+    'sh-stderr':
+      say: trim(sh(args*).:err)
+
+    # IPC: shell (via /bin/sh -c) - field extraction
+    'shell-exit':
+      say: shell(args*).:exit
+    'shell-stdout':
+      say: trim(shell(args*).:out)
+    'shell-stderr':
+      say: trim(shell(args*).:err)
+
+    # IPC: string-returning wrappers
+    'sh-out':
+      say: sh-out(args*)
+    'bash-out':
+      say: bash-out(args*)
+
     else:
       condp eq args.#:
         0: fun.call():say

@@ -7,7 +7,8 @@
   (:require
    [clojure.string :as str]
    [yamlscript.util :as util]
-   [ys.fs :as fs])
+   [ys.fs :as fs]
+   [ys.ipc :as ipc])
   (:refer-clojure :exclude [atom read replace reverse set]))
 
 ;;------------------------------------------------------------------------------
@@ -942,29 +943,29 @@
 #_(defn exec [& xs]
   (apply process/exec (process-opts xs)))
 
-#_(defn process [& xs]
-  (apply process/process (process-opts xs)))
+(defn process [& xs]
+  (apply ipc/process xs))
 
-#_(defn sh [& xs]
-  (apply process/sh (process-opts xs)))
+(defn sh [& xs]
+  (apply ipc/sh xs))
 
-#_(defn shell [& xs]
-  (apply process/shell (process-opts xs)))
+(defn shell [& xs]
+  (apply ipc/shell xs))
 
-#_(defn sh-out [& xs]
+(defn sh-out [& xs]
   (let [ret (apply sh xs)]
     (when (not= 0 (:exit ret))
       (util/die (:err ret)))
     (str/trim-newline
       (:out ret))))
 
-#_(defn bash [& xs]
+(defn bash [& xs]
   (let [cmd (str/join " " xs)]
-    (sh "bash -c" cmd)))
+    (sh "bash" "-c" cmd)))
 
-#_(defn bash-out [& xs]
+(defn bash-out [& xs]
   (let [cmd (str/join " " xs)]
-    (sh-out "bash -c" cmd)))
+    (sh-out "bash" "-c" cmd)))
 
 
 ;;------------------------------------------------------------------------------

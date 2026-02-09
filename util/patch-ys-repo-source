@@ -98,7 +98,8 @@ transform-std-replace-ns() {
   (:require
    [clojure.string :as str]
    [yamlscript.util :as util]
-   [ys.fs :as fs])
+   [ys.fs :as fs]
+   [ys.ipc :as ipc])
   (:refer-clojure :exclude [atom read replace reverse set]))
 
 ;;------------------------------------------------------------------------------
@@ -120,7 +121,6 @@ transform-std-unavailable() {
       base64-decode
       base64-encode
       base64-points
-      bash
       cube
       curl
       destructure-
@@ -149,14 +149,10 @@ transform-std-unavailable() {
       pretty
       print
       _println
-      process
       process-opts
       round
-      sh
       sha1
       sha256
-      shell
-      sh-out
       sleep
       sqr
       stream
@@ -299,6 +295,27 @@ $1 (fn [& args] (apply $2 args)))   ; XXX}gm;
   '
 }
 
+transform-std-ipc() {
+  # Rewrite IPC functions to use ys.ipc
+  perl -0777 -pe '
+    # Remove process-opts usage - replace with direct ipc calls
+    s{\(apply ipc/sh \(process-opts xs\)\)}{(apply ipc/sh xs)}g;
+    s{\(apply ipc/shell \(process-opts xs\)\)}{(apply ipc/shell xs)}g;
+    s{\(apply ipc/process \(process-opts xs\)\)}{(apply ipc/process xs)}g;
+
+    # Also handle the case where process-opts is still with process/ namespace
+    s{\(apply process/sh \(process-opts xs\)\)}{(apply ipc/sh xs)}g;
+    s{\(apply process/shell \(process-opts xs\)\)}{(apply ipc/shell xs)}g;
+    s{\(apply process/process \(process-opts xs\)\)}{(apply ipc/process xs)}g;
+
+    # Rewrite bash functions to remove extra parens and fix shell invocation
+    s{\(\(sh "bash" "-c" cmd\)\)}{(sh "bash" "-c" cmd)}g;
+    s{\(\(sh-out "bash" "-c" cmd\)\)}{(sh-out "bash" "-c" cmd)}g;
+    s{\(sh "bash -c" cmd\)}{(sh "bash" "-c" cmd)}g;
+    s{\(sh-out "bash -c" cmd\)}{(sh-out "bash" "-c" cmd)}g;
+  '
+}
+
 transform-std-fix-omap() {
   # Replace flatland.ordered.map/ordered-map with hash-map workaround
   perl -0777 -pe '
@@ -364,6 +381,7 @@ transform-std() {
   transform-std-replace-ns |
   transform-std-unavailable |
   transform-std-intern |
+  transform-std-ipc |
   transform-std-fix-omap |
   transform-std-specific-functions
 }

@@ -6,7 +6,9 @@
 
 (ns ys.v0
   (:require
+    [yamlscript.util]
     [ys.fs]
+    [ys.ipc]
     [ys.std :refer :all]
     [ys.dwim :refer :all]))
 

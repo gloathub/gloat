@@ -33,6 +33,13 @@ PATH-DEPS := \
   $(GO) \
   $(YS) \
 
+TEST-CALLS := \
+  test/call \
+  test/call.clj \
+
+MAKES-CLEAN := \
+  $(TEST-CALLS) \
+
 override export PATH := $(GIT-REPO-DIR)/bin:$(PATH)
 
 test ?= test/*.t
@@ -57,8 +64,9 @@ endif
 
 test-all: test test-example
 
-test: $(SHELLCHECK)
+test: $(SHELLCHECK) $(TEST-CALLS)
 	prove$(if $v, -v) $(test)
+	$(RM) $(TEST-CALLS)
 
 test-example:
 	prove$(if $v, -v) test/example/*.t
@@ -71,12 +79,22 @@ clean:: local-chmod
 
 force:
 
+test/call: test/call.ys
+	gloat -f $< -o $@
+
+test/call.clj: test/call.ys
+	gloat -f $< -o $@ -t bb
+
 # v0.clj is gloat-only, don't patch from upstream
 ys/src/ys/v0.clj:
 	@true
 
 # fs.clj is gloat-only (Go interop, not babashka.fs)
 ys/src/ys/fs.clj:
+	@true
+
+# ipc.clj is gloat-only (Go interop, not babashka.process)
+ys/src/ys/ipc.clj:
 	@true
 
 ys/src/%.clj: force
@@ -117,5 +135,5 @@ ys/pkg/%/loader.go: ys/glj/%.glj $(GLJ)
 	  cp "$$tmpdir/$*/loader.go" $@ && \
 	  rm -rf "$$tmpdir"
 
-# std depends on fs being compiled first
-ys/pkg/ys/std/loader.go: ys/glj/ys/fs.glj
+# std depends on fs and ipc being compiled first
+ys/pkg/ys/std/loader.go: ys/glj/ys/fs.glj ys/glj/ys/ipc.glj

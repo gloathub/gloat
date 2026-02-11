@@ -11,5 +11,5 @@
 
 (defn -main [x y]
   (println
-    (str "gcd(" x " " y ") -> "
-         (gcd (parse-long x) (parse-long y)))))
+   (str "gcd(" x " " y ") -> "
+        (gcd (parse-long x) (parse-long y)))))

@@ -11,5 +11,5 @@
 
 (defn -main [s]
   (println
-    s "-"
-    (if (luhn? s) "valid" "invalid")))
+   s "-"
+   (if (luhn? s) "valid" "invalid")))

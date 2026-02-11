@@ -25,7 +25,7 @@
           (let [dir (i->dir i)
                 [nx ny] [(+ x (condp = dir 0 1 2 -1 0))
                          (+ y (condp = dir 1 1 3 -1 0))]
-                [ob ib] (nth [[8 4][2 1][4 8][1 2]] dir)
+                [ob ib] (nth [[8 4] [2 1] [4 8] [1 2]] dir)
                 out (-> (update-in out [y x] safe-bit-or ob)
                         (update-in [ny nx] safe-bit-or ib))
                 bbox [(min minx nx) (max maxx nx)

@@ -10,6 +10,6 @@
 (defn -main [& args]
   (let [year (parse-long (or (first args) "2024"))]
     (println
-      (str year " is "
-           (if (leap-year? year) "" "not ")
-           "a leap year"))))
+     (str year " is "
+          (if (leap-year? year) "" "not ")
+          "a leap year"))))

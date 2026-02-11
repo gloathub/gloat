@@ -10,12 +10,12 @@
       (filter #(and % (> % 1)) primes)
       (if (get primes i)
         (recur
-          (loop [p primes
-                 j (* i i)]
-            (if (< j n)
-              (recur (assoc p j nil) (+ j i))
-              p))
-          (inc i))
+         (loop [p primes
+                j (* i i)]
+           (if (< j n)
+             (recur (assoc p j nil) (+ j i))
+             p))
+         (inc i))
         (recur primes (inc i))))))
 
 (defn -main [& args]

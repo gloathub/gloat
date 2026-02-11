@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://gloathub.org/</loc>
+         <lastmod>2026-02-11</lastmod>
+    </url>
+    <url>
+         <loc>https://gloathub.org/demo/</loc>
+         <lastmod>2026-02-11</lastmod>
+    </url>
+    <url>
+         <loc>https://gloathub.org/examples/</loc>
+         <lastmod>2026-02-11</lastmod>
+    </url>
+    <url>
+         <loc>https://gloathub.org/getting-started/</loc>
+         <lastmod>2026-02-11</lastmod>
+    </url>
+</urlset>

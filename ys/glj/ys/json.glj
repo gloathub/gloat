@@ -1,0 +1,180 @@
+;; Copyright 2023-2025 Ingy dot Net
+;; This code is licensed under MIT license (See License for details)
+
+;; JSON encoding and decoding library for Gloat
+;; Pure Clojure implementation (avoids Go type conversion issues)
+
+(ns ys.json
+  (:require [clojure.string :as str]))
+
+;;------------------------------------------------------------------------------
+;; JSON encoding (dump)
+;;------------------------------------------------------------------------------
+
+(defn escape-string [s]
+  "Escape special characters in JSON strings"
+  (-> s
+      (str/replace "\\" "\\\\")
+      (str/replace "\"" "\\\"")
+      (str/replace "\n" "\\n")
+      (str/replace "\r" "\\r")
+      (str/replace "\t" "\\t")))
+
+(defn dump [x]
+  "Convert Clojure data to JSON string"
+  (cond
+    (nil? x) "null"
+    (true? x) "true"
+    (false? x) "false"
+    (keyword? x) (let [s (str x)]
+                   (str "\"" (if (= (first s) \:)
+                               (subs s 1)
+                               s) "\""))
+    (string? x) (str "\"" (escape-string x) "\"")
+    (number? x) (str x)
+    (map? x) (let [pairs (map (fn [[k v]]
+                                     (let [ks (str k)
+                                           key-str (if (= (first ks) \:)
+                                                     (subs ks 1)
+                                                     ks)]
+                                       (str "\"" (escape-string key-str) "\":"
+                                            (dump v))))
+                                   x)]
+                  (str "{" (str/join "," pairs) "}"))
+    (sequential? x) (str "["
+                         (str/join "," (map dump x))
+                         "]")
+    :else (throw (github.com:glojurelang:glojure:pkg:lang.NewError (str "Cannot encode " (type x) " to JSON")))))
+
+;;------------------------------------------------------------------------------
+;; JSON decoding (load)
+;;------------------------------------------------------------------------------
+
+(defn- skip-whitespace [s pos]
+  "Skip whitespace characters, return new position"
+  (loop [i pos]
+    (if (>= i (count s))
+      i
+      (let [c (nth s i)
+            cc (int c)]
+        (if (or (= cc 32) (= cc 10) (= cc 13) (= cc 9))  ; space, \n, \r, \t
+          (recur (inc i))
+          i)))))
+
+(defn- parse-string [s pos]
+  "Parse a JSON string starting at pos, return [value new-pos]"
+  (loop [i (inc pos)
+         chars []]
+    (if (>= i (count s))
+      (throw (github.com:glojurelang:glojure:pkg:lang.NewError "Unterminated string"))
+      (let [c (nth s i)]
+        (cond
+          (= c \") [(apply str chars) (inc i)]
+          (= c \\) (if (>= (inc i) (count s))
+                     (throw (github.com:glojurelang:glojure:pkg:lang.NewError "Unterminated escape sequence"))
+                     (let [next-c (nth s (inc i))]
+                       (recur (+ i 2)
+                              (conj chars
+                                    (case next-c
+                                      \n \newline
+                                      \r \return
+                                      \t \tab
+                                      \\ \\
+                                      \" \"
+                                      \/ \/
+                                      next-c)))))
+          :else (recur (inc i) (conj chars c)))))))
+
+(defn- is-digit? [c]
+  "Check if character is a digit"
+  (and (>= (int c) (int \0))
+       (<= (int c) (int \9))))
+
+(defn- parse-number [s pos]
+  "Parse a JSON number starting at pos, return [value new-pos]"
+  (loop [i pos
+         chars []]
+    (if (>= i (count s))
+      [(read-string (apply str chars)) i]
+      (let [c (nth s i)]
+        (if (or (is-digit? c) (= c \.) (= c \-) (= c \+) (= c \e) (= c \E))
+          (recur (inc i) (conj chars c))
+          [(read-string (apply str chars)) i])))))
+
+(declare parse-value)
+
+(defn- parse-array [s pos]
+  "Parse a JSON array starting at pos, return [value new-pos]"
+  (loop [i (skip-whitespace s (inc pos))
+         values []]
+    (if (>= i (count s))
+      (throw (github.com:glojurelang:glojure:pkg:lang.NewError "Unterminated array"))
+      (let [c (nth s i)]
+        (cond
+          (= c \]) [values (inc i)]
+          (and (empty? values) (not= c \,)) (let [[v new-pos] (parse-value s i)
+                                                  new-pos (skip-whitespace s new-pos)]
+                                              (recur new-pos (conj values v)))
+          (= c \,) (let [new-pos (skip-whitespace s (inc i))
+                         [v new-pos] (parse-value s new-pos)
+                         new-pos (skip-whitespace s new-pos)]
+                     (recur new-pos (conj values v)))
+          :else (throw (github.com:glojurelang:glojure:pkg:lang.NewError (str "Unexpected character in array: " c))))))))
+
+(defn- parse-object [s pos]
+  "Parse a JSON object starting at pos, return [value new-pos]"
+  (loop [i (skip-whitespace s (inc pos))
+         obj {}]
+    (if (>= i (count s))
+      (throw (github.com:glojurelang:glojure:pkg:lang.NewError "Unterminated object"))
+      (let [c (nth s i)]
+        (cond
+          (= c \}) [obj (inc i)]
+          (= c \") (let [[k new-pos] (parse-string s i)
+                         new-pos (skip-whitespace s new-pos)]
+                     (if (not= (nth s new-pos) \:)
+                       (throw (github.com:glojurelang:glojure:pkg:lang.NewError "Expected : after object key"))
+                       (let [new-pos (skip-whitespace s (inc new-pos))
+                             [v new-pos] (parse-value s new-pos)
+                             new-pos (skip-whitespace s new-pos)
+                             next-c (if (>= new-pos (count s)) nil (nth s new-pos))]
+                         (if (= next-c \,)
+                           (recur (skip-whitespace s (inc new-pos)) (assoc obj k v))
+                           (recur new-pos (assoc obj k v))))))
+          :else (throw (github.com:glojurelang:glojure:pkg:lang.NewError (str "Unexpected character in object: " c))))))))
+
+(defn- parse-value [s pos]
+  "Parse a JSON value starting at pos, return [value new-pos]"
+  (let [pos (skip-whitespace s pos)]
+    (if (>= pos (count s))
+      (throw (github.com:glojurelang:glojure:pkg:lang.NewError "Unexpected end of input"))
+      (let [c (nth s pos)]
+        (cond
+          (= c \") (parse-string s pos)
+          (= c \{) (parse-object s pos)
+          (= c \[) (parse-array s pos)
+          (or (is-digit? c) (= c \-)) (parse-number s pos)
+          (and (= c \t) (<= (+ pos 4) (count s))
+               (= (nth s (inc pos)) \r) (= (nth s (+ pos 2)) \u) (= (nth s (+ pos 3)) \e))
+          [true (+ pos 4)]
+          (and (= c \f) (<= (+ pos 5) (count s))
+               (= (nth s (inc pos)) \a) (= (nth s (+ pos 2)) \l)
+               (= (nth s (+ pos 3)) \s) (= (nth s (+ pos 4)) \e))
+          [false (+ pos 5)]
+          (and (= c \n) (<= (+ pos 4) (count s))
+               (= (nth s (inc pos)) \u) (= (nth s (+ pos 2)) \l) (= (nth s (+ pos 3)) \l))
+          [nil (+ pos 4)]
+          :else (throw (github.com:glojurelang:glojure:pkg:lang.NewError (str "Unexpected character: " c))))))))
+
+(defn load [s]
+  "Parse JSON string to Clojure data"
+  (let [[value _] (parse-value s 0)]
+    value))
+
+(comment
+  ;; Test examples
+  (dump {:name "Alice" :age 30 :active true})
+  (load "{\"name\":\"Alice\",\"age\":30,\"active\":true}")
+  (dump [1 2 3 "test" nil true])
+  (load "[1,2,3,\"test\",null,true]")
+  )

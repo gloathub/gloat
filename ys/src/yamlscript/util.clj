@@ -3,12 +3,6 @@
 
 (ns yamlscript.util)
 
-(defn atom?
-  "Returns true if x is an Atom"
-  [x]
-  (instance? clojure.lang.Atom x))
-
-
 (defn die
   "Throw a string as an exception"
   ([] (throw (Exception. "Died")))

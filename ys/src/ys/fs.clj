@@ -212,6 +212,20 @@
   (let [[result err] (os:exec.LookPath name)]
     (if (nil? err) result nil)))
 
+(defn read [path]
+  "Read file contents as string"
+  (let [[bytes err] (os.ReadFile path)]
+    (if (nil? err)
+      (fmt.Sprintf "%s" bytes)
+      (util/die "Failed to read file: " path))))
+
+(defn write [path content]
+  "Write string content to file"
+  (let [bytes (.getBytes content)
+        err (os.WriteFile path bytes 0644)]
+    (when-not (nil? err)
+      (util/die "Failed to write file: " path))))
+
 ;;------------------------------------------------------------------------------
 ;; File operation functions
 ;;------------------------------------------------------------------------------

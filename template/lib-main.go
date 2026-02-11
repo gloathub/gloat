@@ -8,9 +8,12 @@ import (
 	"github.com/glojurelang/glojure/pkg/glj"
 	"github.com/glojurelang/glojure/pkg/lang"
 	_ "build.yamlscript.org/MODULE-NAME/PACKAGE-PATH"
+	_ "build.yamlscript.org/MODULE-NAME/pkg/yamlscript/common"
 	_ "build.yamlscript.org/MODULE-NAME/pkg/yamlscript/util"
 	_ "build.yamlscript.org/MODULE-NAME/pkg/ys/fs"
+	_ "build.yamlscript.org/MODULE-NAME/pkg/ys/http"
 	_ "build.yamlscript.org/MODULE-NAME/pkg/ys/ipc"
+	_ "build.yamlscript.org/MODULE-NAME/pkg/ys/json"
 	_ "build.yamlscript.org/MODULE-NAME/ys/std"
 	_ "build.yamlscript.org/MODULE-NAME/ys/dwim"
 	_ "build.yamlscript.org/MODULE-NAME/ys/v0"
@@ -18,9 +21,12 @@ import (
 
 func init() {
 	require := glj.Var("clojure.core", "require")
+	require.Invoke(lang.NewSymbol("yamlscript.common"))
 	require.Invoke(lang.NewSymbol("yamlscript.util"))
 	require.Invoke(lang.NewSymbol("ys.fs"))
+	require.Invoke(lang.NewSymbol("ys.http"))
 	require.Invoke(lang.NewSymbol("ys.ipc"))
+	require.Invoke(lang.NewSymbol("ys.json"))
 	require.Invoke(lang.NewSymbol("ys.std"))
 	require.Invoke(lang.NewSymbol("ys.dwim"))
 	require.Invoke(lang.NewSymbol("ys.v0"))

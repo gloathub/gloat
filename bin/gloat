@@ -366,7 +366,18 @@ convert-file() (
       # Preserve original source path for FILE/DIR variables
       original_source=$(realpath "$input")
       tmpdir=$(mktemp -d)
-      cp "$input" "$tmpdir/$(basename "$input")"
+      # Ensure the file has an appropriate extension for directory conversion
+      basename=$(basename "$input")
+      if [[ ! $basename =~ \.(ys|clj|glj)$ ]]; then
+        # No extension - add .ys based on file type detection
+        local_input_type=$(get-file-type "$input")
+        case $local_input_type in
+          ys)  basename=$basename.ys ;;
+          clj) basename=$basename.clj ;;
+          glj) basename=$basename.glj ;;
+        esac
+      fi
+      cp "$input" "$tmpdir/$basename"
       GLOAT_SOURCE_FILE="$original_source" \
         convert-directory "$tmpdir" "$output" "$format" "$namespace" "$platform"
       rm -rf "$tmpdir"
@@ -741,7 +752,14 @@ convert-to-stdout() (
       echo
       cat "$GLOAT_ROOT/ys/src/ys/dwim.clj"
       echo
-      cat "$GLOAT_ROOT/ys/src/ys/v0.clj"
+      # Filter v0.clj to remove http/json requires
+      tmpv0=$(mktemp)
+      cp "$GLOAT_ROOT/ys/src/ys/v0.clj" "$tmpv0"
+      sed -i '/^\s*\[yamlscript\.common\]$/d' "$tmpv0"
+      sed -i '/^\s*\[ys\.http\]$/d' "$tmpv0"
+      sed -i '/^\s*\[ys\.json\]$/d' "$tmpv0"
+      cat "$tmpv0"
+      rm "$tmpv0"
       echo
       # Output generated CLJ (keep ns with :require intact)
       cat "$clj_file"
@@ -835,7 +853,14 @@ get-file-type() (
     *.so)     echo lib ;;
     *.dylib)  echo lib ;;
     */)       echo dir ;;
-    *)        echo unknown ;;
+    *)
+      # Check for YAMLScript shebang (#!/usr/bin/env ys-0 or similar)
+      if [[ -f $file ]] && head -n1 "$file" | grep -q '^#!/.*\bys-\?[0-9]'; then
+        echo ys
+      else
+        echo unknown
+      fi
+      ;;
   esac
 )
 

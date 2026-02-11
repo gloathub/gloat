@@ -1,0 +1,96 @@
+--- /home/ingy/src/yamlscript/core/src/yamlscript/common.clj	2026-02-01 05:39:36.693994260 -0800
++++ /home/ingy/src/gloat/ys/src/yamlscript/common.clj	2026-02-11 08:23:15.742806047 -0800
+@@ -3,11 +3,11 @@
+ 
+ (ns yamlscript.common
+   (:require
+-   [babashka.fs :refer [cwd]]
+-   [clojure.java.io :as io]
+-   [clojure.stacktrace]
+    [clojure.string :as str]
+-   [yamlscript.debug]
++   #_[babashka.fs :refer [cwd]]
++   #_[clojure.java.io :as io]
++   #_[clojure.stacktrace]
++   #_[yamlscript.debug]
+    [yamlscript.util :as util]))
+ 
+ ;; Use for error messages at some point
+@@ -19,7 +19,7 @@
+                      (identical? x @var)) all-the-vars))))
+ #_(time (prn (meta (find-var-by-value inc))))
+ 
+-(defn abspath
++#_(defn abspath
+   ([path] (abspath path (str (cwd))))
+   ([path base]
+    (if (-> path io/file .isAbsolute)
+@@ -37,35 +37,35 @@
+        (str/join "" lst)
+        lst))))
+ 
+-(defn dirname [path]
++#_(defn dirname [path]
+   (->
+     path
+     io/file
+     .getParent
+     (or ".")))
+ 
+-(defn get-process-handle []
++#_(defn get-process-handle []
+   (java.lang.ProcessHandle/current))
+ 
+-(defn get-process-info []
++#_(defn get-process-info []
+   (-> ^java.lang.ProcessHandle (get-process-handle) .info))
+ 
+-(defn get-cmd-path []
++#_(defn get-cmd-path []
+   (-> ^java.lang.ProcessHandle$Info (get-process-info) .command .get))
+ 
+-(defn get-cmd-bin []
++#_(defn get-cmd-bin []
+   (-> ^String (get-cmd-path) io/file .getParent))
+ 
+-(defn get-cmd-args []
++#_(defn get-cmd-args []
+   (-> ^java.lang.ProcessHandle$Info
+       (get-process-info)
+       .arguments
+       (.orElse (into-array String []))))
+ 
+-(defn get-cmd-pid []
++#_(defn get-cmd-pid []
+   (-> ^java.lang.ProcessHandle (get-process-handle) .pid))
+ 
+-(defn get-yspath [base]
++#_(defn get-yspath [base]
+   (let [yspath (or
+                  (get (System/getenv) "YSPATH")
+                  (when (re-matches #"/NO-NAME$" base) (str (cwd)))
+@@ -83,15 +83,15 @@
+ (defn regex? [x]
+   (= (type x) java.util.regex.Pattern))
+ 
+-(intern 'clojure.core (with-meta 'TTT {:macro true}) @#'yamlscript.debug/TTT)
+-(intern 'clojure.core 'YSC yamlscript.debug/YSC)
+-(intern 'clojure.core 'YSC0 yamlscript.debug/YSC0)
+-(intern 'clojure.core 'DBG yamlscript.debug/DBG)
+-(intern 'clojure.core 'PPP yamlscript.debug/PPP)
+-(intern 'clojure.core 'WWW yamlscript.debug/WWW)
+-(intern 'clojure.core 'XXX yamlscript.debug/XXX)
+-(intern 'clojure.core 'YYY yamlscript.debug/YYY)
+-(intern 'clojure.core 'ZZZ yamlscript.debug/ZZZ)
++#_(intern 'clojure.core (with-meta 'TTT {:macro true}) @#'yamlscript.debug/TTT)
++#_(intern 'clojure.core 'YSC yamlscript.debug/YSC)
++#_(intern 'clojure.core 'YSC0 yamlscript.debug/YSC0)
++#_(intern 'clojure.core 'DBG yamlscript.debug/DBG)
++#_(intern 'clojure.core 'PPP yamlscript.debug/PPP)
++#_(intern 'clojure.core 'WWW yamlscript.debug/WWW)
++#_(intern 'clojure.core 'XXX yamlscript.debug/XXX)
++#_(intern 'clojure.core 'YYY yamlscript.debug/YYY)
++#_(intern 'clojure.core 'ZZZ yamlscript.debug/ZZZ)
+ 
+ (comment
+   )

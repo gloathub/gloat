@@ -33,12 +33,16 @@ PATH-DEPS := \
   $(GO) \
   $(YS) \
 
-TEST-CALLS := \
+TEST-CALL := \
   test/call \
   test/call.clj \
 
+TEST-CALL-DEPS := \
+  test/call.ys \
+  bin/gloat \
+
 MAKES-CLEAN := \
-  $(TEST-CALLS) \
+  $(TEST-CALL) \
 
 override export PATH := $(GIT-REPO-DIR)/bin:$(PATH)
 
@@ -78,9 +82,8 @@ endif
 
 test-all: test test-example
 
-test: $(SHELLCHECK) $(TEST-CALLS)
+test: $(SHELLCHECK) $(TEST-CALL)
 	prove$(if $v, -v) $(test)
-	$(RM) $(TEST-CALLS)
 
 test-example:
 	prove$(if $v, -v) test/example/*.t
@@ -91,12 +94,10 @@ serve demo-server:
 clean:: local-chmod
 	$(MAKE) -C example $@
 
-force:
-
-test/call: test/call.ys
+test/call: $(TEST-CALL-DEPS)
 	gloat -qf $< -o $@
 
-test/call.clj: test/call.ys
+test/call.clj: $(TEST-CALL-DEPS)
 	gloat -qf $< -o $@ -t bb
 
 # v0.clj is gloat-only, don't patch from upstream
@@ -110,6 +111,8 @@ ys/src/ys/fs.clj:
 # ipc.clj is gloat-only (Go interop, not babashka.process)
 ys/src/ys/ipc.clj:
 	@true
+
+force:
 
 ys/src/%.clj: force
 	@echo "Updating $@ from upstream"

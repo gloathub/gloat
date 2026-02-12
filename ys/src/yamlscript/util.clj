@@ -37,6 +37,18 @@
   (binding [*out* *err*]
     (apply println xs)))
 
+(defn atom? [x]
+  "Check if x is an atom"
+  (= (type x) clojure.lang.Atom))
+
+(defn re-find+ [R S]
+  "Apply re-find after converting S to string"
+  (re-find R (str S)))
+
+(defn regex? [x]
+  "Check if x is a regex pattern"
+  (= (type x) java.util.regex.Pattern))
+
 (defmacro if-lets
   "Like if-let but with more than one binding"
   ([bindings then]

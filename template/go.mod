@@ -1,9 +1,5 @@
-module build.yamlscript.org/GLJ-MAIN-NAMESPACE
+module GO-MODULE
 
-go 1.19
+go 1.24
 
 require github.com/glojurelang/glojure v0.6.4
-
-replace github.com/glojurelang/glojure => GLOJURE-DIR
-
-replace build.yamlscript.org/GLJ-MAIN-NAMESPACE => ./

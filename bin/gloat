@@ -49,6 +49,7 @@ o,out=        Output file or directory
 p,platform=   Cross-compile (e.g., linux/amd64)
 
 ns=           Override namespace
+m,module=     Go module name (e.g., github.com/user/project)
 
 r,run         Compile and run (pass program args after --)
 f,force       Overwrite existing output files
@@ -79,6 +80,7 @@ main() (
   input=${args[0]:-}
   output=${option_out:-}
   namespace=${option_ns:-}
+  module=${option_module:-${GLOAT_MODULE:-}}
   platform=${option_platform:-}
 
   # --run implies quiet (don't mix progress messages with program output)
@@ -198,14 +200,14 @@ main() (
         ;;
     esac
   elif [[ -f $input ]]; then
-    convert-file "$input" "$output" "$format" "$namespace" "$platform"
+    convert-file "$input" "$output" "$format" "$namespace" "$module" "$platform"
   elif [[ -d $input ]]; then
-    convert-directory "$input" "$output" "$format" "$namespace" "$platform"
+    convert-directory "$input" "$output" "$format" "$namespace" "$module" "$platform"
   elif [[ $input == - ]]; then
     # Stdin - read to temp file
     tmpfile=$(mktemp --suffix=.ys)
     cat > "$tmpfile"
-    convert-file "$tmpfile" "$output" "$format" "$namespace" "$platform"
+    convert-file "$tmpfile" "$output" "$format" "$namespace" "$module" "$platform"
     rm -f "$tmpfile"
   else
     die "Invalid input: $input"
@@ -356,7 +358,8 @@ convert-file() (
   output=$2
   format=$3
   namespace=$4
-  platform=$5
+  module=$5
+  platform=$6
 
   input_type=$(get-file-type "$input")
 
@@ -379,7 +382,7 @@ convert-file() (
       fi
       cp "$input" "$tmpdir/$basename"
       GLOAT_SOURCE_FILE="$original_source" \
-        convert-directory "$tmpdir" "$output" "$format" "$namespace" "$platform"
+        convert-directory "$tmpdir" "$output" "$format" "$namespace" "$module" "$platform"
       rm -rf "$tmpdir"
       return
       ;;
@@ -432,10 +435,26 @@ convert-file() (
         echo
         cat "$GLOAT_ROOT/ys/src/ys/dwim.clj"
         echo
-        cat "$GLOAT_ROOT/ys/src/ys/v0.clj"
+        # Filter v0.clj to remove http/json requires
+        tmpv0=$(mktemp)
+        cp "$GLOAT_ROOT/ys/src/ys/v0.clj" "$tmpv0"
+        sed -i '/^\s*\[yamlscript\.common\]$/d' "$tmpv0"
+        sed -i '/^\s*\[ys\.http\]$/d' "$tmpv0"
+        sed -i '/^\s*\[ys\.json\]$/d' "$tmpv0"
+        cat "$tmpv0"
+        rm "$tmpv0"
         echo
         # Output generated CLJ (keep ns with :require intact)
-        cat "$clj_file"
+        # Remove requires for ys.http and ys.json which don't have BB versions
+        tmpclj=$(mktemp)
+        cp "$clj_file" "$tmpclj"
+        sed -i '/\[ys\.http :as http\]/d' "$tmpclj"
+        sed -i '/\[ys\.json :as json\]/d' "$tmpclj"
+        # Also remove standalone [ys.http] and [ys.json] in v0 namespace
+        sed -i '/^\s*\[ys\.http\]$/d' "$tmpclj"
+        sed -i '/^\s*\[ys\.json\]$/d' "$tmpclj"
+        cat "$tmpclj"
+        rm "$tmpclj"
         echo
         # Add main invocation
         echo '(apply -main *command-line-args*)'
@@ -478,7 +497,8 @@ convert-directory() (
   output=$2
   format=$3
   namespace=$4
-  platform=$5
+  module=$5
+  platform=$6
 
   is_dir_output=false is_binary=false
   output_dir='' binary_name='' build_mode='' goos='' goarch=''
@@ -626,12 +646,18 @@ convert-directory() (
 
   msg "Main namespace: $main_namespace"
 
+  # Determine Go module name
+  if [[ $module ]]; then
+    go_module=$module
+  else
+    dir_name=$(basename "$output_dir")
+    go_module=github.com/gloathub/$dir_name
+  fi
+  msg "Go module: $go_module"
+
   # Generate go.mod
-  module_name=${main_namespace//\//.}
-  glojure_dir=$(get-make-var GLOJURE-DIR)
   perl -p \
-    -e "s/GLJ-MAIN-NAMESPACE/$module_name/g;" \
-    -e "s|GLOJURE-DIR|$glojure_dir|g" \
+    -e "s|GO-MODULE|$go_module|g;" \
       "$TEMPLATE/go.mod" > "$output_dir/go.mod"
   msg "Generated: $output_dir/go.mod"
 
@@ -641,7 +667,7 @@ convert-directory() (
   [[ $format == lib ]] && template=$TEMPLATE/lib-main.go
 
   perl -p \
-    -e "s/MODULE-NAME/$module_name/g;" \
+    -e "s|GO-MODULE|$go_module|g;" \
     -e "s|PACKAGE-PATH|$package_path|g;" \
     -e "s/NAMESPACE/$main_namespace/g" \
       "$template" > "$output_dir/main.go"
@@ -649,7 +675,7 @@ convert-directory() (
 
   # Generate Makefile for directory output
   if $is_dir_output; then
-    bin_name=${binary_name:-app}
+    bin_name=${binary_name:-$(basename "$output_dir")}
     perl -pe "s/BINARY-NAME/$bin_name/g" \
       "$TEMPLATE/Makefile" > "$output_dir/Makefile"
     msg "Generated: $output_dir/Makefile"
@@ -762,7 +788,16 @@ convert-to-stdout() (
       rm "$tmpv0"
       echo
       # Output generated CLJ (keep ns with :require intact)
-      cat "$clj_file"
+      # Remove requires for ys.http and ys.json which don't have BB versions
+      tmpclj=$(mktemp)
+      cp "$clj_file" "$tmpclj"
+      sed -i '/\[ys\.http :as http\]/d' "$tmpclj"
+      sed -i '/\[ys\.json :as json\]/d' "$tmpclj"
+      # Also remove standalone [ys.http] and [ys.json] in v0 namespace
+      sed -i '/^\s*\[ys\.http\]$/d' "$tmpclj"
+      sed -i '/^\s*\[ys\.json\]$/d' "$tmpclj"
+      cat "$tmpclj"
+      rm "$tmpclj"
       # Add main invocation
       echo
       echo '(apply -main *command-line-args*)'
@@ -977,6 +1012,14 @@ cat-bb() {
   tmpfile=$(mktemp)
   patch --no-backup-if-mismatch -p0 -o "$tmpfile" \
     "$src" < "$patch" >/dev/null 2>&1
+
+  # Special handling for ys.fs: fix read/write functions to use slurp/spit
+  if [[ $1 == "fs" ]]; then
+    bash "$GLOAT_ROOT/ys/patch/fix-fs-bb.sh" "$tmpfile"
+  elif [[ $1 == "std" ]]; then
+    bash "$GLOAT_ROOT/ys/patch/fix-std-bb.sh" "$tmpfile"
+  fi
+
   cat "$tmpfile"
   rm -f "$tmpfile"
 }

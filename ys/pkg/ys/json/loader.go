@@ -4,8 +4,8 @@ package json
 
 import (
 	fmt "fmt"
-	lang "github.com/glojurelang/glojure/pkg/lang"
-	runtime "github.com/glojurelang/glojure/pkg/runtime"
+	lang "github.com/ingydotnet/glojure/pkg/lang"
+	runtime "github.com/ingydotnet/glojure/pkg/runtime"
 	reflect "reflect"
 )
 
@@ -5197,7 +5197,7 @@ func LoadNS() {
 	ns.AddAlias(sym_str, lang.FindOrCreateNamespace(sym_clojure_DOT_string))
 	// dump
 	{
-		tmp0 := sym_dump.WithMeta(lang.NewMap(kw_file, "json/core.glj", kw_line, int(23), kw_column, int(7), kw_end_DASH_line, int(23), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
+		tmp0 := sym_dump.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(23), kw_column, int(7), kw_end_DASH_line, int(23), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -5331,7 +5331,7 @@ func LoadNS() {
 												} // end let
 												return tmp35
 											})
-											tmp34 := lang.NewMap(kw_file, "json/core.glj", kw_line, int(35), kw_column, int(31), kw_end_DASH_line, int(41), kw_end_DASH_column, int(55))
+											tmp34 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(35), kw_column, int(31), kw_end_DASH_line, int(41), kw_end_DASH_column, int(55))
 											tmp35, err := lang.WithMeta(tmp33, tmp34.(lang.IPersistentMap))
 											if err != nil {
 												panic(err)
@@ -5396,7 +5396,7 @@ func LoadNS() {
 	}
 	// escape-string
 	{
-		tmp0 := sym_escape_DASH_string.WithMeta(lang.NewMap(kw_file, "json/core.glj", kw_line, int(14), kw_column, int(7), kw_end_DASH_line, int(14), kw_end_DASH_column, int(19), kw_arglists, lang.NewList(lang.NewVector(sym_s)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
+		tmp0 := sym_escape_DASH_string.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(14), kw_column, int(7), kw_end_DASH_line, int(14), kw_end_DASH_column, int(19), kw_arglists, lang.NewList(lang.NewVector(sym_s)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -5423,7 +5423,7 @@ func LoadNS() {
 	}
 	// is-digit?
 	{
-		tmp0 := sym_is_DASH_digit_QMARK_.WithMeta(lang.NewMap(kw_file, "json/core.glj", kw_line, int(88), kw_column, int(8), kw_end_DASH_line, int(88), kw_end_DASH_column, int(16), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_c)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
+		tmp0 := sym_is_DASH_digit_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(88), kw_column, int(8), kw_end_DASH_line, int(88), kw_end_DASH_column, int(16), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_c)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -5465,7 +5465,7 @@ func LoadNS() {
 	}
 	// load
 	{
-		tmp0 := sym_load.WithMeta(lang.NewMap(kw_file, "json/core.glj", kw_line, int(169), kw_column, int(7), kw_end_DASH_line, int(169), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_s)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
+		tmp0 := sym_load.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(169), kw_column, int(7), kw_end_DASH_line, int(169), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_s)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -5501,7 +5501,7 @@ func LoadNS() {
 	}
 	// parse-array
 	{
-		tmp0 := sym_parse_DASH_array.WithMeta(lang.NewMap(kw_file, "json/core.glj", kw_line, int(106), kw_column, int(8), kw_end_DASH_line, int(106), kw_end_DASH_column, int(18), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
+		tmp0 := sym_parse_DASH_array.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(106), kw_column, int(8), kw_end_DASH_line, int(106), kw_end_DASH_column, int(18), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 2)
@@ -5521,7 +5521,7 @@ func LoadNS() {
 				_ = v9
 				// let binding "values"
 				tmp10 := lang.NewVector()
-				tmp11 := lang.NewMap(kw_file, "json/core.glj", kw_line, int(109), kw_column, int(17), kw_end_DASH_line, int(109), kw_end_DASH_column, int(18))
+				tmp11 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(109), kw_column, int(17), kw_end_DASH_line, int(109), kw_end_DASH_column, int(18))
 				tmp12, err := lang.WithMeta(tmp10, tmp11.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -5552,7 +5552,7 @@ func LoadNS() {
 								tmp27 := checkDerefVar(var_clojure_DOT_core_inc)
 								tmp28 := lang.Apply(tmp27, []any{v9})
 								tmp29 := lang.NewVector(v13, tmp28)
-								tmp30 := lang.NewMap(kw_file, "json/core.glj", kw_line, int(114), kw_column, int(20), kw_end_DASH_line, int(114), kw_end_DASH_column, int(35))
+								tmp30 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(114), kw_column, int(20), kw_end_DASH_line, int(114), kw_end_DASH_column, int(35))
 								tmp31, err := lang.WithMeta(tmp29, tmp30.(lang.IPersistentMap))
 								if err != nil {
 									panic(err)
@@ -5685,7 +5685,7 @@ func LoadNS() {
 	}
 	// parse-number
 	{
-		tmp0 := sym_parse_DASH_number.WithMeta(lang.NewMap(kw_file, "json/core.glj", kw_line, int(93), kw_column, int(8), kw_end_DASH_line, int(93), kw_end_DASH_column, int(19), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
+		tmp0 := sym_parse_DASH_number.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(93), kw_column, int(8), kw_end_DASH_line, int(93), kw_end_DASH_column, int(19), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 2)
@@ -5701,7 +5701,7 @@ func LoadNS() {
 				_ = v5
 				// let binding "chars"
 				tmp6 := lang.NewVector()
-				tmp7 := lang.NewMap(kw_file, "json/core.glj", kw_line, int(96), kw_column, int(16), kw_end_DASH_line, int(96), kw_end_DASH_column, int(17))
+				tmp7 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(96), kw_column, int(16), kw_end_DASH_line, int(96), kw_end_DASH_column, int(17))
 				tmp8, err := lang.WithMeta(tmp6, tmp7.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -5721,7 +5721,7 @@ func LoadNS() {
 						tmp18 := lang.Apply(tmp16, []any{tmp17, v9})
 						tmp19 := lang.Apply(tmp15, []any{tmp18})
 						tmp20 := lang.NewVector(tmp19, v5)
-						tmp21 := lang.NewMap(kw_file, "json/core.glj", kw_line, int(98), kw_column, int(7), kw_end_DASH_line, int(98), kw_end_DASH_column, int(41))
+						tmp21 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(98), kw_column, int(7), kw_end_DASH_line, int(98), kw_end_DASH_column, int(41))
 						tmp22, err := lang.WithMeta(tmp20, tmp21.(lang.IPersistentMap))
 						if err != nil {
 							panic(err)
@@ -5830,7 +5830,7 @@ func LoadNS() {
 								tmp38 := lang.Apply(tmp36, []any{tmp37, v9})
 								tmp39 := lang.Apply(tmp35, []any{tmp38})
 								tmp40 := lang.NewVector(tmp39, v5)
-								tmp41 := lang.NewMap(kw_file, "json/core.glj", kw_line, int(102), kw_column, int(11), kw_end_DASH_line, int(102), kw_end_DASH_column, int(45))
+								tmp41 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(102), kw_column, int(11), kw_end_DASH_line, int(102), kw_end_DASH_column, int(45))
 								tmp42, err := lang.WithMeta(tmp40, tmp41.(lang.IPersistentMap))
 								if err != nil {
 									panic(err)
@@ -5855,7 +5855,7 @@ func LoadNS() {
 	}
 	// parse-object
 	{
-		tmp0 := sym_parse_DASH_object.WithMeta(lang.NewMap(kw_file, "json/core.glj", kw_line, int(124), kw_column, int(8), kw_end_DASH_line, int(124), kw_end_DASH_column, int(19), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
+		tmp0 := sym_parse_DASH_object.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(124), kw_column, int(8), kw_end_DASH_line, int(124), kw_end_DASH_column, int(19), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 2)
@@ -5875,7 +5875,7 @@ func LoadNS() {
 				_ = v9
 				// let binding "obj"
 				tmp10 := lang.NewMap()
-				tmp11 := lang.NewMap(kw_file, "json/core.glj", kw_line, int(127), kw_column, int(14), kw_end_DASH_line, int(127), kw_end_DASH_column, int(15))
+				tmp11 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(127), kw_column, int(14), kw_end_DASH_line, int(127), kw_end_DASH_column, int(15))
 				tmp12, err := lang.WithMeta(tmp10, tmp11.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -5906,7 +5906,7 @@ func LoadNS() {
 								tmp27 := checkDerefVar(var_clojure_DOT_core_inc)
 								tmp28 := lang.Apply(tmp27, []any{v9})
 								tmp29 := lang.NewVector(v13, tmp28)
-								tmp30 := lang.NewMap(kw_file, "json/core.glj", kw_line, int(132), kw_column, int(20), kw_end_DASH_line, int(132), kw_end_DASH_column, int(32))
+								tmp30 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(132), kw_column, int(20), kw_end_DASH_line, int(132), kw_end_DASH_column, int(32))
 								tmp31, err := lang.WithMeta(tmp29, tmp30.(lang.IPersistentMap))
 								if err != nil {
 									panic(err)
@@ -6053,7 +6053,7 @@ func LoadNS() {
 	}
 	// parse-string
 	{
-		tmp0 := sym_parse_DASH_string.WithMeta(lang.NewMap(kw_file, "json/core.glj", kw_line, int(64), kw_column, int(8), kw_end_DASH_line, int(64), kw_end_DASH_column, int(19), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
+		tmp0 := sym_parse_DASH_string.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(64), kw_column, int(8), kw_end_DASH_line, int(64), kw_end_DASH_column, int(19), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 2)
@@ -6071,7 +6071,7 @@ func LoadNS() {
 				_ = v7
 				// let binding "chars"
 				tmp8 := lang.NewVector()
-				tmp9 := lang.NewMap(kw_file, "json/core.glj", kw_line, int(67), kw_column, int(16), kw_end_DASH_line, int(67), kw_end_DASH_column, int(17))
+				tmp9 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(67), kw_column, int(16), kw_end_DASH_line, int(67), kw_end_DASH_column, int(17))
 				tmp10, err := lang.WithMeta(tmp8, tmp9.(lang.IPersistentMap))
 				if err != nil {
 					panic(err)
@@ -6105,7 +6105,7 @@ func LoadNS() {
 								tmp28 := checkDerefVar(var_clojure_DOT_core_inc)
 								tmp29 := lang.Apply(tmp28, []any{v7})
 								tmp30 := lang.NewVector(tmp27, tmp29)
-								tmp31 := lang.NewMap(kw_file, "json/core.glj", kw_line, int(72), kw_column, int(20), kw_end_DASH_line, int(72), kw_end_DASH_column, int(46))
+								tmp31 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(72), kw_column, int(20), kw_end_DASH_line, int(72), kw_end_DASH_column, int(46))
 								tmp32, err := lang.WithMeta(tmp30, tmp31.(lang.IPersistentMap))
 								if err != nil {
 									panic(err)
@@ -6241,7 +6241,7 @@ func LoadNS() {
 	}
 	// parse-value
 	{
-		tmp0 := sym_parse_DASH_value.WithMeta(lang.NewMap(kw_file, "json/core.glj", kw_line, int(146), kw_column, int(8), kw_end_DASH_line, int(146), kw_end_DASH_column, int(18), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
+		tmp0 := sym_parse_DASH_value.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(146), kw_column, int(8), kw_end_DASH_line, int(146), kw_end_DASH_column, int(18), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 2)
@@ -6403,7 +6403,7 @@ func LoadNS() {
 											tmp39 := checkDerefVar(var_clojure_DOT_core__PLUS_)
 											tmp40 := lang.Apply(tmp39, []any{v7, int64(4)})
 											tmp41 := lang.NewVector(true, tmp40)
-											tmp42 := lang.NewMap(kw_file, "json/core.glj", kw_line, int(159), kw_column, int(11), kw_end_DASH_line, int(159), kw_end_DASH_column, int(26))
+											tmp42 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(159), kw_column, int(11), kw_end_DASH_line, int(159), kw_end_DASH_column, int(26))
 											tmp43, err := lang.WithMeta(tmp41, tmp42.(lang.IPersistentMap))
 											if err != nil {
 												panic(err)
@@ -6512,7 +6512,7 @@ func LoadNS() {
 												tmp46 := checkDerefVar(var_clojure_DOT_core__PLUS_)
 												tmp47 := lang.Apply(tmp46, []any{v7, int64(5)})
 												tmp48 := lang.NewVector(false, tmp47)
-												tmp49 := lang.NewMap(kw_file, "json/core.glj", kw_line, int(163), kw_column, int(11), kw_end_DASH_line, int(163), kw_end_DASH_column, int(27))
+												tmp49 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(163), kw_column, int(11), kw_end_DASH_line, int(163), kw_end_DASH_column, int(27))
 												tmp50, err := lang.WithMeta(tmp48, tmp49.(lang.IPersistentMap))
 												if err != nil {
 													panic(err)
@@ -6602,7 +6602,7 @@ func LoadNS() {
 													tmp53 := checkDerefVar(var_clojure_DOT_core__PLUS_)
 													tmp54 := lang.Apply(tmp53, []any{v7, int64(4)})
 													tmp55 := lang.NewVector(nil, tmp54)
-													tmp56 := lang.NewMap(kw_file, "json/core.glj", kw_line, int(166), kw_column, int(11), kw_end_DASH_line, int(166), kw_end_DASH_column, int(25))
+													tmp56 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(166), kw_column, int(11), kw_end_DASH_line, int(166), kw_end_DASH_column, int(25))
 													tmp57, err := lang.WithMeta(tmp55, tmp56.(lang.IPersistentMap))
 													if err != nil {
 														panic(err)
@@ -6647,7 +6647,7 @@ func LoadNS() {
 	}
 	// skip-whitespace
 	{
-		tmp0 := sym_skip_DASH_whitespace.WithMeta(lang.NewMap(kw_file, "json/core.glj", kw_line, int(53), kw_column, int(8), kw_end_DASH_line, int(53), kw_end_DASH_column, int(22), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
+		tmp0 := sym_skip_DASH_whitespace.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(53), kw_column, int(8), kw_end_DASH_line, int(53), kw_end_DASH_column, int(22), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 2)

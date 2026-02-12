@@ -6,17 +6,12 @@
 (ns ys.std
   (:require
    [clojure.string :as str]
-   [yamlscript.common :as common :refer [atom? re-find+ regex?]]
-   [yamlscript.util :as util]
    [ys.fs :as fs]
+   [yamlscript.common :as common :refer
+    [atom? re-find+ regex?]]
+   [yamlscript.util :as util]
    [ys.ipc :as ipc])
   (:refer-clojure :exclude [atom print read replace reverse set]))
-
-;;------------------------------------------------------------------------------
-;; XXX - Helper functions
-;;------------------------------------------------------------------------------
-;; (regex? is now from yamlscript.common)
-;;------------------------------------------------------------------------------
 
 #_(ns ys.std
   (:require
@@ -525,10 +520,10 @@
 
 ;; See: `qr` function above
 
-(defn =-- [S R]
+#_(defn =-- [S R]
   (re-find+ R S))
 
-(defn !-- [S R]
+#_(defn !-- [S R]
   (not (=-- S R)))
 
 (defn =--- [S R]
@@ -542,9 +537,9 @@
 ;; I/O functions
 ;;------------------------------------------------------------------------------
 #_(intern 'ys.std 'read clojure.core/slurp)
-(intern 'ys.std 'read (fn [path] (fs/read path)))
+(intern 'ys.std 'read (fn [& args] (apply slurp args)))   ; XXX
 #_(intern 'ys.std 'write clojure.core/spit)
-(intern 'ys.std 'write (fn [path content] (fs/write path content)))
+(intern 'ys.std 'write (fn [& args] (apply spit args)))   ; XXX
 
 (defn out [& xs]
   (apply clojure.core/print xs))
@@ -710,7 +705,7 @@
 
 (defn to-type [x]
   (condf x
-    util/atom? "atom"
+    atom? "atom"
     boolean? "bool"
     char? "char"
     class? "class"
@@ -991,17 +986,15 @@
 ;; HTTP functions
 ;;------------------------------------------------------------------------------
 
-(defn get-url [url]
-  ;; Simple implementation - just return the URL as-is
-  ;; The upstream version uses ext/convert-url for URL normalization
-  (str url))
+#_(defn get-url [url]
+  (ext/convert-url url))
 
 #_(defn load-url [url]
   (ext/load-url nil url))
 
-(defn curl [url]
+#_(defn curl [url]
   (let [url (get-url url)
-        resp (ys.http/get url)]
+        resp (http/get url)]
     (if-let [body (:body resp)]
       (str body)
       (util/die resp))))

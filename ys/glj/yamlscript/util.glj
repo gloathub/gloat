@@ -5,8 +5,8 @@
 
 (defn die
   "Throw a string as an exception"
-  ([] (throw (github.com:glojurelang:glojure:pkg:lang.NewError "Died")))
-  ([msg] (throw (github.com:glojurelang:glojure:pkg:lang.NewError (str msg "\n"))))
+  ([] (throw (github.com:ingydotnet:glojure:pkg:lang.NewError "Died")))
+  ([msg] (throw (github.com:ingydotnet:glojure:pkg:lang.NewError (str msg "\n"))))
   ([x & xs] (die (apply str x xs))))
 
 (defmacro condf

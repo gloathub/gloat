@@ -1,27 +1,23 @@
---- ys/src/ys/std.clj	2026-02-10 07:50:04.881998159 -0800
-+++ ys/src/ys/std.clj	2026-02-10 07:50:03.425685877 -0800
-@@ -5,6 +5,20 @@
+--- /dev/fd/63	2026-02-12 10:22:58.829610067 -0800
++++ ys/src/ys/std.clj	2026-02-12 10:22:05.464524738 -0800
+@@ -5,6 +5,16 @@
  
  (ns ys.std
    (:require
 +   [clojure.string :as str]
-+   [yamlscript.util :as util]
 +   [ys.fs :as fs]
++   [yamlscript.common :as common :refer
++    [atom? re-find+ regex?]]
++   [yamlscript.util :as util]
 +   [ys.ipc :as ipc])
 +  (:refer-clojure :exclude [atom print read replace reverse set]))
-+
-+;;------------------------------------------------------------------------------
-+;; XXX - Helper functions
-+;;------------------------------------------------------------------------------
-+(defn- regex? [x] (instance? java.util.regex.Pattern x))
-+;;------------------------------------------------------------------------------
 +
 +#_(ns ys.std
 +  (:require
     [babashka.process :as process]
     [clojure.data :as data]
     [clojure.math :as math]
-@@ -35,28 +49,33 @@
+@@ -35,28 +45,33 @@
  
  
  ;; Guard against billion laughs style attacks
@@ -67,7 +63,7 @@
    (condf C
      string? (clojure.string/index-of C x)
      sequential? (let [i (.indexOf ^java.util.List C x)]
-@@ -74,7 +93,8 @@
+@@ -74,7 +89,8 @@
  
  (defn joins [Ss] (join " " Ss))
  
@@ -77,7 +73,7 @@
  
  (defn lines [S]
    (if (empty? S)
-@@ -84,7 +104,7 @@
+@@ -84,7 +100,7 @@
                S)]
        (str/split S #"\n" -1))))
  
@@ -86,7 +82,7 @@
    (str/trim-newline
      (with-out-str
        (pp/pprint x))))
-@@ -96,8 +116,10 @@
+@@ -96,8 +112,10 @@
             (clojure.core/replace x y)))
    ([x y z] (clojure.string/replace x y z)))
  
@@ -99,7 +95,7 @@
  
  (defn split
    ([S]
-@@ -111,7 +133,8 @@
+@@ -111,7 +129,8 @@
           R (if (string? R) (re-pattern R) R)]
       (clojure.string/split S R))))
  
@@ -109,7 +105,7 @@
  
  (defn substr
    ([str off] (substr str off (- (count str) off)))
-@@ -138,12 +161,17 @@
+@@ -138,12 +157,17 @@
      (str/join "\n"
        (concat Ss (list "")))))
  
@@ -133,7 +129,7 @@
  
  (defn words [S]
    (clojure.string/split S #"\s+"))
-@@ -175,7 +203,7 @@
+@@ -175,7 +199,7 @@
                 nil)
      nil))
  
@@ -142,7 +138,7 @@
  
  (defn flat [C]
    (mapcat
-@@ -200,7 +228,6 @@
+@@ -200,7 +224,6 @@
         (map? C) (get+ C (symbol x))
         :else (some #(= %1 x) C)))))
  
@@ -150,7 +146,7 @@
  (defn in?
    ([C] #(in? C %1))
    ([x C] (has? C x)))
-@@ -229,10 +256,19 @@
+@@ -229,10 +252,19 @@
        (+merge M))
      M))
  
@@ -172,7 +168,7 @@
  
  (defn reverse [x]
    (condf x
-@@ -298,9 +334,9 @@
+@@ -298,9 +330,9 @@
        (for [d n]
          (- (byte d) 48)))))
  
@@ -184,7 +180,7 @@
    ([x] #(pow %1 x))
    ([x y]
     (if (and (integer? x) (integer? y) (>= y 0))
-@@ -314,14 +350,23 @@
+@@ -314,14 +346,23 @@
     (let [[& xs] (clojure.core/reverse (conj xs y x))]
       (reduce #(pow %2 %1) 1 xs))))
  
@@ -212,7 +208,7 @@
  
  (defn- op-error
    ([op x]
-@@ -353,7 +398,7 @@
+@@ -353,7 +394,7 @@
       number? (+ (to-num x 0) (to-num y 0))
       string? (str x y)
       map? (merge (to-map x) (to-map y))
@@ -221,7 +217,7 @@
       vector? (vec (concat (to-vec x)
                      (if (sequential? y)
                        (to-list y)
-@@ -427,31 +472,30 @@
+@@ -427,31 +468,30 @@
       (when-not (ifn? f#) (util/die "Can't call(" (pr-str f#) ")"))
       (f# ~@xs)))
  
@@ -261,7 +257,7 @@
  
  (defmacro when+ [test & body]
    (list 'when-let ['_ test] (cons 'do body)))
-@@ -469,9 +513,8 @@
+@@ -469,9 +509,8 @@
      ([a b c] (f c b a))
      ([a b c d] (f d c b a))
      ([a b c d & rest]
@@ -273,7 +269,7 @@
         (apply f)))))
  
  
-@@ -481,10 +524,10 @@
+@@ -481,10 +520,10 @@
  
  ;; See: `qr` function above
  
@@ -286,7 +282,7 @@
    (not (=-- S R)))
  
  (defn =--- [S R]
-@@ -497,38 +540,38 @@
+@@ -497,38 +536,38 @@
  ;;------------------------------------------------------------------------------
  ;; I/O functions
  ;;------------------------------------------------------------------------------
@@ -339,7 +335,7 @@
  
  
  ;;------------------------------------------------------------------------------
-@@ -631,7 +674,7 @@
+@@ -631,7 +670,7 @@
    ([x default]
     (condf x
       number? x
@@ -348,16 +344,7 @@
                 (read-string x))
       nil? (util/die "Can't convert a nil value to a number")
       seqable? (count x)
-@@ -666,7 +709,7 @@
- 
- (defn to-type [x]
-   (condf x
--    atom? "atom"
-+    util/atom? "atom"
-     boolean? "bool"
-     char? "char"
-     class? "class"
-@@ -687,7 +730,7 @@
+@@ -687,7 +726,7 @@
      vector? "vec"
      (util/die "Can't determine type of '" (type x) "' value")))
  
@@ -366,7 +353,7 @@
    ([m] `(ys/+def-vars *ns* ~m))
    ([m force]
     (when (and force (not= force :force))
-@@ -702,23 +745,38 @@
+@@ -702,23 +741,38 @@
      nil? []
      (util/die "Can't convert " (or (type x) "nil") " to vector")))
  
@@ -421,7 +408,7 @@
  
  
  ;;------------------------------------------------------------------------------
-@@ -761,32 +819,69 @@
+@@ -761,32 +815,69 @@
  ;;------------------------------------------------------------------------------
  ;; File system functions
  ;;------------------------------------------------------------------------------
@@ -512,7 +499,7 @@
    ([] (jtime/instant))
    ([f] (condp eq f
           :local (jtime/local-date-time)
-@@ -794,25 +889,25 @@
+@@ -794,25 +885,25 @@
           :utc (jtime/instant)
           (util/die "Unknown time format: '" f "'"))))
  
@@ -542,7 +529,7 @@
    (or
      (+merge (get @global/stream-anchors_ sym))
      (util/die "2 Anchor not found: &" sym)))
-@@ -821,7 +916,7 @@
+@@ -821,7 +912,7 @@
  ;;------------------------------------------------------------------------------
  ;; Java interop functions
  ;;------------------------------------------------------------------------------
@@ -551,7 +538,7 @@
    (clojure.lang.Reflector/invokeConstructor
      class (into-array Object xs)))
  
-@@ -829,17 +924,17 @@
+@@ -829,17 +920,17 @@
  ;;------------------------------------------------------------------------------
  ;; Security functions
  ;;------------------------------------------------------------------------------
@@ -572,7 +559,7 @@
    (let [digest (.digest (MessageDigest/getInstance "SHA-256")
                   (.getBytes string "UTF-8"))]
      (apply str (map (partial format "%02x") digest))))
-@@ -848,7 +943,7 @@
+@@ -848,7 +939,7 @@
  ;;------------------------------------------------------------------------------
  ;; IPC functions
  ;;------------------------------------------------------------------------------
@@ -581,7 +568,7 @@
    (let [opts (if (map? opts)
                 (let [env (or (:env opts) global/env)
                       opts (assoc opts :env env)]
-@@ -856,17 +951,17 @@
+@@ -856,17 +947,17 @@
                 [{:env global/env} opts])]
      (vec (concat opts xs))))
  
@@ -603,7 +590,7 @@
  
  (defn sh-out [& xs]
    (let [ret (apply sh xs)]
-@@ -877,17 +972,17 @@
+@@ -877,17 +968,17 @@
  
  (defn bash [& xs]
    (let [cmd (str/join " " xs)]
@@ -624,7 +611,7 @@
    (ys/load-pod pod-name version))
  
  
-@@ -895,13 +990,13 @@
+@@ -895,13 +986,13 @@
  ;; HTTP functions
  ;;------------------------------------------------------------------------------
  
@@ -641,7 +628,7 @@
    (let [url (get-url url)
          resp (http/get url)]
      (if-let [body (:body resp)]
-@@ -912,20 +1007,20 @@
+@@ -912,20 +1003,20 @@
  ;;------------------------------------------------------------------------------
  ;; YS document result stashing functions
  ;;------------------------------------------------------------------------------
@@ -665,7 +652,7 @@
    ([] @global/stream-values)
    ([values] (reset! global/stream-values values)
              nil))
-@@ -936,7 +1031,7 @@
+@@ -936,7 +1027,7 @@
  ;;------------------------------------------------------------------------------
  
  (defn atom
@@ -674,7 +661,7 @@
    ([x] (clojure.core/atom x)))
  
  (defn reset
-@@ -954,21 +1049,21 @@
+@@ -954,21 +1045,21 @@
  (defmacro source [& xs])
  
  ;; def destructuring
@@ -700,7 +687,7 @@
    (let [root (gensym)]
      `(let [~root ~idx]
         ~@(condf x
-@@ -976,15 +1071,15 @@
+@@ -976,15 +1067,15 @@
             seqable? (destructure-vector x root)
             []))))
  

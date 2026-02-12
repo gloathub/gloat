@@ -427,6 +427,8 @@ convert-file() (
         # Output ys runtime (with ns declarations)
         cat "$GLOAT_ROOT/ys/src/yamlscript/util.clj"
         echo
+        cat "$GLOAT_ROOT/ys/src/yamlscript/common.clj"
+        echo
         cat-bb fs
         echo
         cat-bb ipc
@@ -618,10 +620,8 @@ convert-directory() (
     fi
   done
 
-  # Copy pre-compiled ys runtime and dependencies
+  # Copy pre-compiled ys runtime and dependencies (GLJ files for compilation)
   cp -r "$GLOAT_ROOT/ys/glj/"* "$shared_tmpdir/"
-  mkdir -p "$output_dir/pkg"
-  cp -r "$GLOAT_ROOT/ys/pkg/"* "$output_dir/pkg/"
 
   glj=$(get-make-var GLJ)
 
@@ -633,6 +633,7 @@ convert-directory() (
   done
 
   # Copy generated Go files to output directory under pkg/
+  mkdir -p "$output_dir/pkg"
   find "$shared_tmpdir" -name "*.go" -type f |
   while read -r gofile; do
     relpath="${gofile#"$shared_tmpdir"/}"
@@ -640,6 +641,9 @@ convert-directory() (
     mkdir -p "$(dirname "$target")"
     cp "$gofile" "$target"
   done
+
+  # Copy pre-compiled ys packages (with patches) over generated ones
+  cp -r "$GLOAT_ROOT/ys/pkg/"* "$output_dir/pkg/"
 
   [[ $main_namespace ]] ||
     die "Could not determine main namespace"
@@ -769,6 +773,8 @@ convert-to-stdout() (
     bb)
       # Output ys runtime (with ns declarations)
       cat "$GLOAT_ROOT/ys/src/yamlscript/util.clj"
+      echo
+      cat "$GLOAT_ROOT/ys/src/yamlscript/common.clj"
       echo
       cat-bb fs
       echo

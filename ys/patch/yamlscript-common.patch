@@ -1,5 +1,5 @@
---- /home/ingy/src/yamlscript/core/src/yamlscript/common.clj	2026-02-01 05:39:36.693994260 -0800
-+++ /home/ingy/src/gloat/ys/src/yamlscript/common.clj	2026-02-11 08:23:15.742806047 -0800
+--- /dev/fd/63	2026-02-12 10:22:57.899603951 -0800
++++ ys/src/yamlscript/common.clj	2026-02-12 10:20:56.446829414 -0800
 @@ -3,11 +3,11 @@
  
  (ns yamlscript.common

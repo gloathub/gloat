@@ -9,6 +9,8 @@
 /*.md
 /*.ys
 /a
+/a[1-9]
 /app
+/out*
 /test/call
 /test/call.clj

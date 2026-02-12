@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 	"strings"
-	"github.com/glojurelang/glojure/pkg/glj"
-	"github.com/glojurelang/glojure/pkg/lang"
+	"github.com/ingydotnet/glojure/pkg/glj"
+	"github.com/ingydotnet/glojure/pkg/lang"
 	_ "GO-MODULE/pkg/PACKAGE-PATH"
 	_ "GO-MODULE/pkg/yamlscript/common"
 	_ "GO-MODULE/pkg/yamlscript/util"

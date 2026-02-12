@@ -112,6 +112,14 @@ ys/src/ys/fs.clj:
 ys/src/ys/ipc.clj:
 	@true
 
+# json.clj is gloat-only (pure Clojure impl, not clojure.data.json)
+ys/src/ys/json.clj:
+	@true
+
+# http.clj is gloat-only (Go net/http, not babashka.http-client)
+ys/src/ys/http.clj:
+	@true
+
 force:
 
 ys/src/%.clj: force

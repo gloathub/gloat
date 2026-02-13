@@ -63,94 +63,15 @@ v,version     Show version
 main() (
   # When --run/-r is used, split args at -- to capture program arguments.
   # We must do this before getopt, which consumes --.
-  getargs "$@"
+  init "$@"
   set -- "${args[@]}"
-  setup "$@"
   getopt "$@"
 
-  if $option_version; then
-    echo "gloat version $VERSION"
-    glojure_version=$(get-make-var GLOJURE-VERSION)
-    if [[ $glojure_version ]]; then
-      echo "glojure version $glojure_version"
-    fi
+  if do-version; then
     exit 0
   fi
 
-  input=${args[0]:-}
-  output=${option_out:-}
-  namespace=${option_ns:-}
-  module=${option_module:-${GLOAT_MODULE:-}}
-  platform=${option_platform:-}
-
-  # --run implies quiet (don't mix progress messages with program output)
-  if $option_run; then
-    option_quiet=true
-
-    # --run only supports a single input file
-    [[ ${#args[@]} -le 1 ]] ||
-      die "--run does not support multiple input files." \
-	        "Use '--' for --run program arguments."
-  fi
-
-  # Validate input
-  if [[ -z $input ]]; then
-    [[ ${option_out:-} ]] ||
-      die "Missing input file"
-    input=-
-  fi
-
-  # Auto-detect file extension if file doesn't exist
-  if [[ $input != - && ! -e $input && $input != *.* ]]; then
-    for ext in ys clj glj; do
-      if [[ -e $input.$ext ]]; then
-        input=$input.$ext
-        break
-      fi
-    done
-  fi
-
-  [[ $input == - || -e $input ]] ||
-    die "Input file/directory does not exist: $input"
-
-  # Validate platform format
-  [[ ! $platform || $platform =~ ^[a-z][a-z0-9]*/[a-z0-9]+$ ]] ||
-    die "Platform must be in format OS/ARCH (e.g., linux/amd64, wasip1/wasm)"
-
-  # Handle -t .ext shorthand (e.g., -t .glj means -o input.glj)
-  to=${option_to:-}
-  if [[ $to == .* ]]; then
-    ext=${to#.}
-    basename=${input##*/}
-    basename=${basename%.*}
-    output=${output:-$basename.$ext}
-    to=$ext
-  fi
-
-  # --run without -o: compile to temp file (binary or bb)
-  if $option_run && [[ -z $output ]]; then
-    run_tmpdir=$(mktemp -d)
-    if [[ $to == bb ]]; then
-      output=$run_tmpdir/gloat-run.bb
-    elif [[ -z $to ]]; then
-      output=$run_tmpdir/gloat-run
-      to=bin
-    else
-      output=$run_tmpdir/gloat-run.$to
-    fi
-  fi
-
-  # Default: no -o and no -t means binary output with input basename
-  if [[ -z $output && -z $to ]]; then
-    if [[ $input == - ]]; then
-      basename=app
-    else
-      basename=${input##*/}
-      basename=${basename%.*}
-    fi
-    output=$basename
-    to=bin
-  fi
+  set-vars
 
   # Infer format
   format=$(infer-format "$output" "$to")
@@ -252,6 +173,16 @@ main() (
 #------------------------------------------------------------------------------
 # Conversion functions
 #------------------------------------------------------------------------------
+
+do-version() (
+  $option_version || return
+  echo "gloat version $VERSION"
+  glojure_version=$(get-make-var GLOJURE-VERSION)
+  if [[ $glojure_version ]]; then
+    echo "glojure version $glojure_version"
+  fi
+  exit 0
+)
 
 # Convert YAMLScript to Clojure
 ys-to-clj() (
@@ -835,7 +766,11 @@ convert-to-stdout() (
 # Helper functions
 #------------------------------------------------------------------------------
 
-getargs() {
+init() {
+  make --quiet --no-print-directory -C "$GLOAT_ROOT" path-deps
+  TEMPLATE=$GLOAT_ROOT/template
+  SRC=$GLOAT_ROOT/ys/src
+
   local has_run arg gloat_argv found_dd
 
   run_args=()
@@ -868,10 +803,81 @@ getargs() {
   args=("$@")
 }
 
-setup() {
-  make --quiet --no-print-directory -C "$GLOAT_ROOT" path-deps
-  TEMPLATE=$GLOAT_ROOT/template
-  SRC=$GLOAT_ROOT/ys/src
+set-vars() {
+  input=${args[0]:-}
+  output=${option_out:-}
+  namespace=${option_ns:-}
+  module=${option_module:-${GLOAT_MODULE:-}}
+  platform=${option_platform:-}
+
+  # --run implies quiet (don't mix progress messages with program output)
+  if $option_run; then
+    option_quiet=true
+
+    # --run only supports a single input file
+    [[ ${#args[@]} -le 1 ]] ||
+      die "--run does not support multiple input files." \
+	        "Use '--' for --run program arguments."
+  fi
+
+  # Validate input
+  if [[ -z $input ]]; then
+    [[ ${option_out:-} ]] ||
+      die "Missing input file"
+    input=-
+  fi
+
+  # Auto-detect file extension if file doesn't exist
+  if [[ $input != - && ! -e $input && $input != *.* ]]; then
+    for ext in ys clj glj; do
+      if [[ -e $input.$ext ]]; then
+        input=$input.$ext
+        break
+      fi
+    done
+  fi
+
+  [[ $input == - || -e $input ]] ||
+    die "Input file/directory does not exist: $input"
+
+  # Validate platform format
+  [[ ! $platform || $platform =~ ^[a-z][a-z0-9]*/[a-z0-9]+$ ]] ||
+    die "Platform must be in format OS/ARCH (e.g., linux/amd64, wasip1/wasm)"
+
+  # Handle -t .ext shorthand (e.g., -t .glj means -o input.glj)
+  to=${option_to:-}
+  if [[ $to == .* ]]; then
+    ext=${to#.}
+    basename=${input##*/}
+    basename=${basename%.*}
+    output=${output:-$basename.$ext}
+    to=$ext
+  fi
+
+  # --run without -o: compile to temp file (binary or bb)
+  if $option_run && [[ -z $output ]]; then
+    run_tmpdir=$(mktemp -d)
+    if [[ $to == bb ]]; then
+      output=$run_tmpdir/gloat-run.bb
+    elif [[ -z $to ]]; then
+      output=$run_tmpdir/gloat-run
+      to=bin
+    else
+      output=$run_tmpdir/gloat-run.$to
+    fi
+  fi
+
+  # Default: no -o and no -t means binary output with input basename
+  if [[ -z $output && -z $to ]]; then
+    if [[ $input == - ]]; then
+      basename=app
+    else
+      basename=${input##*/}
+      basename=${basename%.*}
+    fi
+    output=$basename
+    to=bin
+  fi
 }
 
 # Get a variable from the Makefile

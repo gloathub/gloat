@@ -88,6 +88,24 @@ test: $(SHELLCHECK) $(TEST-CALL)
 test-example:
 	prove$(if $v, -v) test/example/*.t
 
+test-docker:
+ifneq (,$(wildcard .cache/.local/bin/bb))
+	@echo 'Run first: make distclean'
+	@exit 1
+endif
+	docker run --rm -it \
+	  -w /work \
+	  -v $$PWD:/work \
+	  ubuntu:24.04 \
+	  bash -c ' \
+	    set -x && \
+	    apt update && \
+	    apt install -y curl git make xz-utils && \
+	    git config --global --add safe.directory /work && \
+	    export PERL_BADLANG=0 && \
+	    make test && \
+	    chown -R '"$$(id -u):$$(id -g) .cache"
+
 serve demo-server:
 	$(MAKE) -C example serve
 

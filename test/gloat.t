@@ -73,4 +73,12 @@ is "$rc" 1 "'gloat' fails when file exists where dir expected"
 has "$got" "Output already exists" "'gloat' shows error for file blocking dir"
 rm -f "$FIXTURES_DIR/exists-as-file"
 
+# Test multiple input files rejection
+try "$GLOAT_BIN hello.ys hello.ys"
+is "$rc" 1 "'gloat f1 f2' exits 1"
+has "$got" "Multiple input files not supported" \
+  "'gloat f1 f2' shows multiple files error"
+has "$got" "Did you mean" \
+  "'gloat f1 f2' suggests -o flag"
+
 done-testing

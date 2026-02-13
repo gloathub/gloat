@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # gloat - Glojure AOT Tool
-# Compiles YAMLScript/Clojure/Glojure to Go, binaries, or WASM
+# Compiles YAMLScript/Clojure/Glojure to Go, binaries, or Wasm
 
 # shellcheck disable=2034,2064,2154
 
@@ -34,8 +34,8 @@ or any of the other FORMATS listed below.
   FORMATS (-t):
     bin       Native binary
     lib       Shared library (.so .dylib .dll)
-    wasm      WASM wasip1
-    js        WASM js target
+    wasm      Wasm wasip1
+    js        Wasm js target
     clj       Clojure source file
     bb        Babashka-ready source file (self-contained)
     glj       Glojure source file
@@ -461,7 +461,7 @@ convert-directory() (
       ;;
   esac
 
-  # Set platform for WASM formats or parse from -p flag
+  # Set platform for Wasm formats or parse from -p flag
   if [[ $format == wasm ]]; then
     goos=wasip1
     goarch=wasm
@@ -826,6 +826,12 @@ set-vars() {
     [[ ${#args[@]} -le 1 ]] ||
       die "--run does not support multiple input files." \
 	        "Use '--' for --run program arguments."
+  fi
+
+  # Multiple input files not yet supported
+  if [[ ${#args[@]} -gt 1 ]]; then
+    die "Multiple input files not supported." \
+        "Did you mean: gloat ${args[0]} -o ${args[1]}"
   fi
 
   # Validate input

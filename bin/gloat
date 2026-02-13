@@ -8,6 +8,12 @@
 VERSION=0.1.0
 
 GLOAT_ROOT=$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
+
+# Set Go environment to keep everything under .cache
+export GOPATH="$GLOAT_ROOT/.cache/.local/go"
+export GOMODCACHE="$GOPATH/pkg/mod"
+export GOCACHE="$GLOAT_ROOT/.cache/.local/cache/go-build"
+
 source "$GLOAT_ROOT/.bpan/lib/bpan.bash" --
 source "$GLOAT_ROOT/.bpan/lib/getopt.bash" --
 
@@ -591,8 +597,10 @@ convert-directory() (
   msg "Go module: $go_module"
 
   # Generate go.mod
+  glojure_version=$(get-make-var GLOJURE-VERSION)
   perl -p \
     -e "s|GO-MODULE|$go_module|g;" \
+    -e "s|GLOJURE-VERSION|$glojure_version|g;" \
       "$TEMPLATE/go.mod" > "$output_dir/go.mod"
   msg "Generated: $output_dir/go.mod"
 

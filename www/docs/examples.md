@@ -5,7 +5,7 @@ These examples demonstrate the compilation pipeline and showcase what you can
 build.
 
 All examples are available in the [`example/`](
-https://github.com/ingydotnet/gloat/tree/main/example) directory of the
+https://github.com/gloathub/gloat/tree/main/example) directory of the
 repository.
 
 ## Running Examples
@@ -37,7 +37,7 @@ Or run them locally:
 
 ```bash
 # Clone the repository
-git clone https://github.com/ingydotnet/gloat
+git clone https://github.com/gloathub/gloat
 cd gloat
 source .rc
 
@@ -53,5 +53,5 @@ make run FILE=example/yamlscript/dragon-curve.ys
 Have an interesting example to share?
 Contributions are welcome!
 
-See the [GitHub repository](https://github.com/ingydotnet/gloat) to submit
+See the [GitHub repository](https://github.com/gloathub/gloat) to submit
 examples via pull request.

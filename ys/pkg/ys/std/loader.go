@@ -4,8 +4,8 @@ package std
 
 import (
 	fmt "fmt"
-	lang "github.com/ingydotnet/glojure/pkg/lang"
-	runtime "github.com/ingydotnet/glojure/pkg/runtime"
+	lang "github.com/gloathub/glojure/pkg/lang"
+	runtime "github.com/gloathub/glojure/pkg/runtime"
 	os5 "os"
 	reflect "reflect"
 	regexp4 "regexp"

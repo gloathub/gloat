@@ -1,4 +1,4 @@
-GLOJURE-VERSION := 0.6.5-rc3
+GLOJURE-VERSION := 0.6.5-rc4
 GLOJURE-COMMIT := gloat
-GLOJURE-REPO := https://github.com/ingydotnet/glojure
-GLOJURE-GET-URL := github.com/ingydotnet/glojure/cmd/glj
+GLOJURE-REPO := https://github.com/gloathub/glojure
+GLOJURE-GET-URL := github.com/gloathub/glojure/cmd/glj

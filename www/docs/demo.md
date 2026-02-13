@@ -5,7 +5,7 @@
 Click the badge below to launch an interactive Gloat demo in GitHub Codespaces:
 
 <div class="badge">
-  <a href="https://codespaces.new/ingydotnet/gloat?quickstart=1">
+  <a href="https://codespaces.new/gloathub/gloat?quickstart=1">
     <img src="https://img.shields.io/badge/Try_Gloat-Live_Demo-blue?logo=github" alt="Try Gloat Live Demo">
   </a>
 </div>
@@ -40,7 +40,7 @@ machine:
 
 ```bash
 # Clone and setup
-git clone https://github.com/ingydotnet/gloat
+git clone https://github.com/gloathub/gloat
 cd gloat
 source .rc
 
@@ -57,7 +57,7 @@ Once you've tried the demo, check out:
 
 - [Getting Started](getting-started.md) - Install Gloat locally
 - [Examples](examples.md) - Browse all example programs
-- [GitHub Repository](https://github.com/ingydotnet/gloat) - Source code and
+- [GitHub Repository](https://github.com/gloathub/gloat) - Source code and
   documentation
 
 ---

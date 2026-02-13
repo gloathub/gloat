@@ -2,4 +2,4 @@ module GO-MODULE
 
 go 1.24
 
-require github.com/ingydotnet/glojure GLOJURE-VERSION
+require github.com/gloathub/glojure GLOJURE-VERSION

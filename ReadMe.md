@@ -3,7 +3,7 @@ gloat - Glojure AOT Tool
 
 [![Try Gloat Live Demo](
 https://img.shields.io/badge/Try_Gloat-Live_Demo-blue?logo=github)](
-https://codespaces.new/ingydotnet/gloat?quickstart=1)
+https://codespaces.new/gloathub/gloat?quickstart=1)
 
 Compile Clojure or YS to Go code or native binaries
 
@@ -103,7 +103,7 @@ After a program compiles, you can run it with the **Run** button.
 At the top of this file, you may have noticed this badge:
 [![Gloat Live Demo](
 https://img.shields.io/badge/Try_Gloat-Live_Demo-blue?logo=github)](
-https://codespaces.new/ingydotnet/gloat?quickstart=1)
+https://codespaces.new/gloathub/gloat?quickstart=1)
 
 GitHub users can click that and see the demo without cloning this repository.
 It opens in a GitHub Codespaces session, which starts as an empty VScode editor
@@ -131,7 +131,7 @@ make run FILE=example/clojure/even-or-odd.clj a='7 42 31337'
 Clone this repository and source the `.rc` file:
 
 ```bash
-git clone https://github.com/ingydotnet/gloat
+git clone https://github.com/gloathub/gloat
 source gloat/.rc
 gloat --help
 ```

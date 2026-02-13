@@ -8,7 +8,7 @@ use.
 ### Clone and Setup
 
 ```bash
-git clone https://github.com/ingydotnet/gloat
+git clone https://github.com/gloathub/gloat
 cd gloat
 source .rc
 gloat --help
@@ -228,5 +228,5 @@ Press Ctrl-D or type `exit` to return to your normal shell.
 
 - [Try the Demo](demo.md) - Interactive browser-based demo
 - [Browse Examples](examples.md) - See what you can build
-- [GitHub Repository](https://github.com/ingydotnet/gloat) - Source and
+- [GitHub Repository](https://github.com/gloathub/gloat) - Source and
   documentation

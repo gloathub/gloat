@@ -3,8 +3,8 @@ site_url: https://gloathub.org
 site_description: Compile Clojure and YAMLScript to native binaries, WASM, and more
 site_author: Ingy dot Net
 
-repo_name: ingydotnet/gloat
-repo_url: https://github.com/ingydotnet/gloat
+repo_name: gloathub/gloat
+repo_url: https://github.com/gloathub/gloat
 edit_uri: ""
 
 theme:
@@ -82,7 +82,7 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.magiclink:
       repo_url_shorthand: true
-      user: ingydotnet
+      user: gloathub
       repo: gloat
   - pymdownx.mark
   - pymdownx.smartsymbols
@@ -104,5 +104,5 @@ plugins:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/ingydotnet/gloat
+      link: https://github.com/gloathub/gloat
       name: Gloat on GitHub

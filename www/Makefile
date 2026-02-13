@@ -1,4 +1,5 @@
 M := ../.cache/makes
+$(shell [ -d $M ] || (git clone -q https://github.com/makeplus/makes $M))
 include $M/init.mk
 include $M/clean.mk
 PYTHON-VENV := venv
@@ -9,7 +10,7 @@ include $M/shell.mk
 
 PYTHON-VENV-SETUP := pip install -r requirements.txt
 
-REPO ?= git@github.com:ingydotnet/gloathub
+REPO ?= git@github.com:gloathub/gloathub
 
 MAKES-CLEAN := site
 MAKES-REALCLEAN := $(PYTHON-VENV)

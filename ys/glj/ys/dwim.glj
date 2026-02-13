@@ -72,7 +72,7 @@
              (if (~idfn x#)
                (apply ~name (concat xs# [x#]))
                (apply ~name x# xs#)))
-      (throw (github.com:ingydotnet:glojure:pkg:lang.NewError (str "Bad dwim  type: " type))))))
+      (throw (github.com:gloathub:glojure:pkg:lang.NewError (str "Bad dwim  type: " type))))))
 
 
 ;;------------------------------------------------------------------------------

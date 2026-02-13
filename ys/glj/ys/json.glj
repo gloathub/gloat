@@ -44,7 +44,7 @@
     (sequential? x) (str "["
                          (str/join "," (map dump x))
                          "]")
-    :else (throw (github.com:ingydotnet:glojure:pkg:lang.NewError (str "Cannot encode " (type x) " to JSON")))))
+    :else (throw (github.com:gloathub:glojure:pkg:lang.NewError (str "Cannot encode " (type x) " to JSON")))))
 
 ;;------------------------------------------------------------------------------
 ;; JSON decoding (load)
@@ -66,12 +66,12 @@
   (loop [i (inc pos)
          chars []]
     (if (>= i (count s))
-      (throw (github.com:ingydotnet:glojure:pkg:lang.NewError "Unterminated string"))
+      (throw (github.com:gloathub:glojure:pkg:lang.NewError "Unterminated string"))
       (let [c (nth s i)]
         (cond
           (= c \") [(apply str chars) (inc i)]
           (= c \\) (if (>= (inc i) (count s))
-                     (throw (github.com:ingydotnet:glojure:pkg:lang.NewError "Unterminated escape sequence"))
+                     (throw (github.com:gloathub:glojure:pkg:lang.NewError "Unterminated escape sequence"))
                      (let [next-c (nth s (inc i))]
                        (recur (+ i 2)
                               (conj chars
@@ -108,7 +108,7 @@
   (loop [i (skip-whitespace s (inc pos))
          values []]
     (if (>= i (count s))
-      (throw (github.com:ingydotnet:glojure:pkg:lang.NewError "Unterminated array"))
+      (throw (github.com:gloathub:glojure:pkg:lang.NewError "Unterminated array"))
       (let [c (nth s i)]
         (cond
           (= c \]) [values (inc i)]
@@ -119,21 +119,21 @@
                          [v new-pos] (parse-value s new-pos)
                          new-pos (skip-whitespace s new-pos)]
                      (recur new-pos (conj values v)))
-          :else (throw (github.com:ingydotnet:glojure:pkg:lang.NewError (str "Unexpected character in array: " c))))))))
+          :else (throw (github.com:gloathub:glojure:pkg:lang.NewError (str "Unexpected character in array: " c))))))))
 
 (defn- parse-object [s pos]
   "Parse a JSON object starting at pos, return [value new-pos]"
   (loop [i (skip-whitespace s (inc pos))
          obj {}]
     (if (>= i (count s))
-      (throw (github.com:ingydotnet:glojure:pkg:lang.NewError "Unterminated object"))
+      (throw (github.com:gloathub:glojure:pkg:lang.NewError "Unterminated object"))
       (let [c (nth s i)]
         (cond
           (= c \}) [obj (inc i)]
           (= c \") (let [[k new-pos] (parse-string s i)
                          new-pos (skip-whitespace s new-pos)]
                      (if (not= (nth s new-pos) \:)
-                       (throw (github.com:ingydotnet:glojure:pkg:lang.NewError "Expected : after object key"))
+                       (throw (github.com:gloathub:glojure:pkg:lang.NewError "Expected : after object key"))
                        (let [new-pos (skip-whitespace s (inc new-pos))
                              [v new-pos] (parse-value s new-pos)
                              new-pos (skip-whitespace s new-pos)
@@ -141,13 +141,13 @@
                          (if (= next-c \,)
                            (recur (skip-whitespace s (inc new-pos)) (assoc obj k v))
                            (recur new-pos (assoc obj k v))))))
-          :else (throw (github.com:ingydotnet:glojure:pkg:lang.NewError (str "Unexpected character in object: " c))))))))
+          :else (throw (github.com:gloathub:glojure:pkg:lang.NewError (str "Unexpected character in object: " c))))))))
 
 (defn- parse-value [s pos]
   "Parse a JSON value starting at pos, return [value new-pos]"
   (let [pos (skip-whitespace s pos)]
     (if (>= pos (count s))
-      (throw (github.com:ingydotnet:glojure:pkg:lang.NewError "Unexpected end of input"))
+      (throw (github.com:gloathub:glojure:pkg:lang.NewError "Unexpected end of input"))
       (let [c (nth s pos)]
         (cond
           (= c \") (parse-string s pos)
@@ -164,7 +164,7 @@
           (and (= c \n) (<= (+ pos 4) (count s))
                (= (nth s (inc pos)) \u) (= (nth s (+ pos 2)) \l) (= (nth s (+ pos 3)) \l))
           [nil (+ pos 4)]
-          :else (throw (github.com:ingydotnet:glojure:pkg:lang.NewError (str "Unexpected character: " c))))))))
+          :else (throw (github.com:gloathub:glojure:pkg:lang.NewError (str "Unexpected character: " c))))))))
 
 (defn load [s]
   "Parse JSON string to Clojure data"

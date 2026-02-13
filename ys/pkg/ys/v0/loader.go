@@ -35,6 +35,7 @@ func checkArityGTE(args []any, min int) {
 
 // LoadNS initializes the namespace "ys.v0"
 func LoadNS() {
+	sym__BANG__DASH__DASH_ := lang.NewSymbol("!--")
 	sym__BANG__DASH__DASH__DASH_ := lang.NewSymbol("!---")
 	sym__PCT_ := lang.NewSymbol("%")
 	sym__AMP__AMP__AMP_ := lang.NewSymbol("&&&")
@@ -129,6 +130,7 @@ func LoadNS() {
 	sym__LT_ := lang.NewSymbol("<")
 	sym__LT__EQ_ := lang.NewSymbol("<=")
 	sym__EQ_ := lang.NewSymbol("=")
+	sym__EQ__DASH__DASH_ := lang.NewSymbol("=--")
 	sym__EQ__DASH__DASH__DASH_ := lang.NewSymbol("=---")
 	sym__EQ__EQ_ := lang.NewSymbol("==")
 	sym__GT_ := lang.NewSymbol(">")
@@ -3407,6 +3409,13 @@ func LoadNS() {
 			ns.Refer(sym_alter_DASH_meta_BANG_, vr)
 		}
 	}
+	{ // refer ys.std/!-- as !--
+		srcNS := lang.FindOrCreateNamespace(sym_ys_DOT_std)
+		v := srcNS.Mappings().ValAt(sym__BANG__DASH__DASH_)
+		if vr, ok := v.(*lang.Var); ok {
+			ns.Refer(sym__BANG__DASH__DASH_, vr)
+		}
+	}
 	{ // refer clojure.core/ns-name as ns-name
 		srcNS := lang.FindOrCreateNamespace(sym_clojure_DOT_core)
 		v := srcNS.Mappings().ValAt(sym_ns_DASH_name)
@@ -5596,6 +5605,13 @@ func LoadNS() {
 		v := srcNS.Mappings().ValAt(sym_deliver)
 		if vr, ok := v.(*lang.Var); ok {
 			ns.Refer(sym_deliver, vr)
+		}
+	}
+	{ // refer ys.std/=-- as =--
+		srcNS := lang.FindOrCreateNamespace(sym_ys_DOT_std)
+		v := srcNS.Mappings().ValAt(sym__EQ__DASH__DASH_)
+		if vr, ok := v.(*lang.Var); ok {
+			ns.Refer(sym__EQ__DASH__DASH_, vr)
 		}
 	}
 	{ // refer clojure.core/some? as some?

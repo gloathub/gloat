@@ -36,6 +36,7 @@ func checkArityGTE(args []any, min int) {
 
 // LoadNS initializes the namespace "ys.std"
 func LoadNS() {
+	sym__BANG__DASH__DASH_ := lang.NewSymbol("!--")
 	sym__BANG__DASH__DASH__DASH_ := lang.NewSymbol("!---")
 	sym__PCT_ := lang.NewSymbol("%")
 	sym__AMP_ := lang.NewSymbol("&")
@@ -88,6 +89,7 @@ func LoadNS() {
 	sym__LT_ := lang.NewSymbol("<")
 	sym__LT__EQ_ := lang.NewSymbol("<=")
 	sym__EQ_ := lang.NewSymbol("=")
+	sym__EQ__DASH__DASH_ := lang.NewSymbol("=--")
 	sym__EQ__DASH__DASH__DASH_ := lang.NewSymbol("=---")
 	sym__EQ__EQ_ := lang.NewSymbol("==")
 	sym__GT_ := lang.NewSymbol(">")
@@ -1210,6 +1212,8 @@ func LoadNS() {
 	var_clojure_DOT_string_upper_DASH_case := lang.InternVarName(sym_clojure_DOT_string, sym_upper_DASH_case)
 	// var yamlscript.common/atom?
 	var_yamlscript_DOT_common_atom_QMARK_ := lang.InternVarName(sym_yamlscript_DOT_common, sym_atom_QMARK_)
+	// var yamlscript.common/re-find+
+	var_yamlscript_DOT_common_re_DASH_find_PLUS_ := lang.InternVarName(sym_yamlscript_DOT_common, sym_re_DASH_find_PLUS_)
 	// var yamlscript.common/regex?
 	var_yamlscript_DOT_common_regex_QMARK_ := lang.InternVarName(sym_yamlscript_DOT_common, sym_regex_QMARK_)
 	// var yamlscript.util/die
@@ -1328,8 +1332,12 @@ func LoadNS() {
 	var_ys_DOT_std_V_PLUS_ := lang.InternVarName(sym_ys_DOT_std, sym_V_PLUS_)
 	// var ys.std/&&&
 	var_ys_DOT_std__AMP__AMP__AMP_ := lang.InternVarName(sym_ys_DOT_std, sym__AMP__AMP__AMP_)
+	// var ys.std/!--
+	var_ys_DOT_std__BANG__DASH__DASH_ := lang.InternVarName(sym_ys_DOT_std, sym__BANG__DASH__DASH_)
 	// var ys.std/!---
 	var_ys_DOT_std__BANG__DASH__DASH__DASH_ := lang.InternVarName(sym_ys_DOT_std, sym__BANG__DASH__DASH__DASH_)
+	// var ys.std/=--
+	var_ys_DOT_std__EQ__DASH__DASH_ := lang.InternVarName(sym_ys_DOT_std, sym__EQ__DASH__DASH_)
 	// var ys.std/=---
 	var_ys_DOT_std__EQ__DASH__DASH__DASH_ := lang.InternVarName(sym_ys_DOT_std, sym__EQ__DASH__DASH__DASH_)
 	// var ys.std/%
@@ -6548,6 +6556,28 @@ func LoadNS() {
 			var_ys_DOT_std__AMP__AMP__AMP_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
 		}
 	}
+	// !--
+	{
+		tmp0 := sym__BANG__DASH__DASH_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(526), kw_column, int(7), kw_end_DASH_line, int(526), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_S, sym_R)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			checkArity(args, 2)
+			v2 := args[0]
+			_ = v2
+			v3 := args[1]
+			_ = v3
+			tmp4 := checkDerefVar(var_clojure_DOT_core_not)
+			tmp5 := checkDerefVar(var_ys_DOT_std__EQ__DASH__DASH_)
+			tmp6 := lang.Apply(tmp5, []any{v2, v3})
+			tmp7 := lang.Apply(tmp4, []any{tmp6})
+			return tmp7
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		var_ys_DOT_std__BANG__DASH__DASH_ = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std__BANG__DASH__DASH_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
 	// !---
 	{
 		tmp0 := sym__BANG__DASH__DASH__DASH_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(532), kw_column, int(7), kw_end_DASH_line, int(532), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_S, sym_R)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
@@ -6568,6 +6598,26 @@ func LoadNS() {
 		var_ys_DOT_std__BANG__DASH__DASH__DASH_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std__BANG__DASH__DASH__DASH_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// =--
+	{
+		tmp0 := sym__EQ__DASH__DASH_.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(523), kw_column, int(7), kw_end_DASH_line, int(523), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_S, sym_R)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			checkArity(args, 2)
+			v2 := args[0]
+			_ = v2
+			v3 := args[1]
+			_ = v3
+			tmp4 := checkDerefVar(var_yamlscript_DOT_common_re_DASH_find_PLUS_)
+			tmp5 := lang.Apply(tmp4, []any{v3, v2})
+			return tmp5
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		var_ys_DOT_std__EQ__DASH__DASH_ = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std__EQ__DASH__DASH_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
 		}
 	}
 	// =---

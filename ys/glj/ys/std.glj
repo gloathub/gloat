@@ -520,10 +520,10 @@
 
 ;; See: `qr` function above
 
-#_(defn =-- [S R]
+(defn =-- [S R]
   (re-find+ R S))
 
-#_(defn !-- [S R]
+(defn !-- [S R]
   (not (=-- S R)))
 
 (defn =--- [S R]

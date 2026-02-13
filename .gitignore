@@ -11,6 +11,7 @@
 /a
 /a[1-9]
 /app
+/gloat*
 /out*
 /test/call
 /test/call.clj

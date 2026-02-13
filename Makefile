@@ -20,6 +20,14 @@ YS-NAMESPACES := $(patsubst ys/src/%.clj,%,$(YS-CLJ-FILES))
 YS-GLJ-FILES := $(YS-NAMESPACES:%=ys/glj/%.glj)
 YS-GO-FILES  := $(YS-NAMESPACES:%=ys/pkg/%/loader.go)
 
+# Gloat-only files with no upstream equivalents
+YS-GLOAT-ONLY := \
+  ys/src/ys/v0.clj \
+  ys/src/ys/fs.clj \
+  ys/src/ys/ipc.clj \
+  ys/src/ys/json.clj \
+  ys/src/ys/http.clj
+
 YS-REPO-URL := \
   https://raw.githubusercontent.com/yaml/yamlscript/v0/core/src
 
@@ -60,11 +68,11 @@ path:
 update: $(YS-GO-FILES)
 
 save-patches:
-	@for f in $(YS-CLJ-FILES); do \
+	@for f in $(filter-out $(YS-GLOAT-ONLY),$(YS-CLJ-FILES)); do \
 	  clj=$${f#ys/src/}; \
 	  name=$$(echo "$$clj" | tr '/' '-' | sed 's/\.clj$$//'); \
-	  diff -u <(curl -sL $(YS-REPO-URL)/$$clj) $$f \
-	    > ys/patch/$$name.patch 2>/dev/null || true; \
+	  diff -u <(curl -sL $(YS-REPO-URL)/$$clj) $$f 2>/dev/null \
+	    | sed '1,2s/\t.*//' > ys/patch/$$name.patch || true; \
 	  if [ ! -s ys/patch/$$name.patch ]; then \
 	    rm -f ys/patch/$$name.patch; \
 	  else \

@@ -1,5 +1,5 @@
---- /dev/fd/63	2026-02-13 09:41:07.768169411 -0800
-+++ ys/src/yamlscript/common.clj	2026-02-13 08:39:54.006105060 -0800
+--- /dev/fd/63
++++ ys/src/yamlscript/common.clj
 @@ -3,11 +3,11 @@
  
  (ns yamlscript.common

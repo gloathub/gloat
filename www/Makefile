@@ -10,7 +10,7 @@ include $M/shell.mk
 
 PYTHON-VENV-SETUP := pip install -r requirements.txt
 
-REPO ?= git@github.com:gloathub/gloathub
+REPO ?= git@github.com:gloathub/gloat
 
 MAKES-CLEAN := site
 MAKES-REALCLEAN := $(PYTHON-VENV)

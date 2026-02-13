@@ -114,7 +114,10 @@ endif
 	    make test && \
 	    chown -R '"$$(id -u):$$(id -g) .cache"
 
-serve demo-server:
+serve-www publish-www:
+	$(MAKE) -C www $(@:%-www=%)
+
+serve-example:
 	$(MAKE) -C example serve
 
 clean:: local-chmod

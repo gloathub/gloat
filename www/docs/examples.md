@@ -30,7 +30,7 @@ demo.md):
 1. Click the **Try Live Demo** badge
 2. Wait for Codespaces to initialize (1-2 minutes)
 3. Select any example from the dropdown
-4. Click **Compile** to build to WASM
+4. Click **Compile** to build to Wasm
 5. Click **Run** to execute in your browser
 
 Or run them locally:

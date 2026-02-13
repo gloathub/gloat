@@ -1,6 +1,6 @@
 site_name: GloatHub
 site_url: https://gloathub.org
-site_description: Compile Clojure and YAMLScript to native binaries, WASM, and more
+site_description: Compile Clojure and YAMLScript to native binaries, Wasm, and more
 site_author: Ingy dot Net
 
 repo_name: gloathub/gloat

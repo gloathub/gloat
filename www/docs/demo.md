@@ -27,10 +27,10 @@ The demo server provides:
 
 - **Interactive code editor** - Choose from 50+ example programs
 - **Compile button** - Converts your code to WebAssembly
-- **Run button** - Executes the WASM in your browser
+- **Run button** - Executes the Wasm in your browser
 - **Multi-format output** - View generated Glojure and Go code
 
-All compilation happens server-side, and the resulting WASM runs entirely in
+All compilation happens server-side, and the resulting Wasm runs entirely in
 your browser using the WebAssembly System Interface (WASI).
 
 ## Running the Demo Locally

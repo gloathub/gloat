@@ -166,7 +166,7 @@ gloat --run app.ys -- arg1 arg2
 
 ## WebAssembly Output
 
-Create WASM modules for browser or WASI environments:
+Create Wasm modules for browser or WASI environments:
 
 ```bash
 # WASI target (default for .wasm)

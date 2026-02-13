@@ -1,7 +1,7 @@
 <div class="hero">
   <div class="hero-icon">⚙️</div>
   <p class="hero-subtitle">
-    Gloat compiles Clojure & YAMLScript to native binaries and WASM
+    Gloat compiles Clojure & YAMLScript to native binaries and Wasm
   </p>
 </div>
 
@@ -46,7 +46,7 @@ Each intermediate format can be output for inspection or further processing.
     <span class="feature-icon">🕸️</span>
     <h3 class="feature-title">WebAssembly</h3>
     <p class="feature-desc">
-      Compile to WASM for browser or WASI environments.
+      Compile to Wasm for browser or WASI environments.
       Run your code anywhere.
     </p>
   </div>

@@ -56,7 +56,7 @@ endif
 MAKES-CLEAN := \
   $(TEST-CALL) \
 
-override export PATH := $(GIT-REPO-DIR)/bin:$(PATH)
+override export PATH := $(ROOT)/bin:$(ROOT)/util:$(PATH)
 
 test ?= test/*.t
 
@@ -72,22 +72,11 @@ path:
 update: $(YS-GO-FILES)
 
 save-patches:
-	@for f in $(filter-out $(YS-GLOAT-ONLY),$(YS-CLJ-FILES)); do \
-	  clj=$${f#ys/src/}; \
-	  name=$$(echo "$$clj" | tr '/' '-' | sed 's/\.clj$$//'); \
-	  diff -u <(curl -sL $(YS-REPO-URL)/$$clj) $$f 2>/dev/null \
-	    | sed '1,2s/\t.*//' > ys/patch/$$name.patch || true; \
-	  if [ ! -s ys/patch/$$name.patch ]; then \
-	    rm -f ys/patch/$$name.patch; \
-	  else \
-	    echo "Saved ys/patch/$$name.patch"; \
-	  fi; \
-	done
-	@echo "Patches saved to ys/patch/"
+	make-do save-patches $(YS-REPO-URL) "$(YS-GLOAT-ONLY)" $(YS-CLJ-FILES)
 
 diff:
 ifndef FILE
-	@echo 'set FILE=...'
+	@echo 'Needs FILE=...'
 	exit 1
 endif
 	@diff -u <(curl -sl $(YS-REPO-URL)/$(FILE:ys/src/%=%)) $(FILE)
@@ -105,18 +94,7 @@ ifneq (,$(wildcard .cache/.local/bin/bb))
 	@echo 'Run first: make distclean'
 	@exit 1
 endif
-	docker run --rm -it \
-	  -w /work \
-	  -v $$PWD:/work \
-	  ubuntu:24.04 \
-	  bash -c ' \
-	    set -x && \
-	    apt update && \
-	    apt install -y curl git make xz-utils && \
-	    git config --global --add safe.directory /work && \
-	    export PERL_BADLANG=0 && \
-	    make test && \
-	    chown -R '"$$(id -u):$$(id -g) .cache"
+	make-do test-docker
 
 serve-www publish-www:
 	$(MAKE) -C www $(@:%-www=%)
@@ -157,12 +135,7 @@ force:
 
 ys/src/%.clj: force
 	@echo "Updating $@ from upstream"
-	@curl -sL $(YS-REPO-URL)/$*.clj -o $@
-	@patch_file=ys/patch/$$(echo "$*" | tr '/' '-').patch; \
-	  if [ -f "$$patch_file" ]; then \
-	    echo "Applying $$patch_file"; \
-	    patch --no-backup-if-mismatch -p0 < "$$patch_file"; \
-	  fi
+	make-do update-clj $(YS-REPO-URL) $* $@
 
 # Pattern rule: CLJ → GLJ conversion
 ys/glj/%.glj: ys/src/%.clj $(GLOJURE-DIR) $(BB)
@@ -172,31 +145,14 @@ ys/glj/%.glj: ys/src/%.clj $(GLOJURE-DIR) $(BB)
 
 # Special rule for yamlscript/util: apply seqable? patch after compilation
 ys/pkg/yamlscript/util/loader.go: ys/glj/yamlscript/util.glj $(GLJ)
-	@mkdir -p $(dir $@)
 	@echo "Compiling $< to $@"
-	@tmpdir=$$(mktemp -d) && \
-	  cp -r ys/glj/* "$$tmpdir/" && \
-	  cd "$$tmpdir" && \
-	  ns=$$(echo "yamlscript/util" | tr '/' '.') && \
-	  echo "(compile (quote $$ns))" | glj >/dev/null 2>&1 || true && \
-	  cd - >/dev/null && \
-	  cp "$$tmpdir/yamlscript/util/loader.go" $@ && \
-	  rm -rf "$$tmpdir"
+	make-do compile-glj-patched $@
 	@echo "Applying seqable? patch to $@"
-	@patch --no-backup-if-mismatch -p1 < ys/patch/yamlscript-util-seqable.patch
 
 # Pattern rule: GLJ → GO compilation
 ys/pkg/%/loader.go: ys/glj/%.glj $(GLJ)
-	@mkdir -p $(dir $@)
 	@echo "Compiling $< to $@"
-	@tmpdir=$$(mktemp -d) && \
-	  cp -r ys/glj/* "$$tmpdir/" && \
-	  cd "$$tmpdir" && \
-	  ns=$$(echo "$*" | tr '/' '.') && \
-	  echo "(compile (quote $$ns))" | glj >/dev/null 2>&1 || true && \
-	  cd - >/dev/null && \
-	  cp "$$tmpdir/$*/loader.go" $@ && \
-	  rm -rf "$$tmpdir"
+	make-do compile-glj $* $@
 
 # std depends on fs and ipc being compiled first
 ys/pkg/ys/std/loader.go: ys/glj/ys/fs.glj ys/glj/ys/ipc.glj

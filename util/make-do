@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+
+# make-do — Helper functions for Makefile rules
+
+set -euo pipefail
+
+save-patches() (
+  repo_url=$1
+  shift
+  gloat_only=$1
+  shift
+  clj_files=("$@")
+
+  for f in "${clj_files[@]}"; do
+    # Skip gloat-only files
+    skip=false
+    for gloat_file in $gloat_only; do
+      if [[ $f == "$gloat_file" ]]; then
+        skip=true
+        break
+      fi
+    done
+    $skip && continue
+
+    clj=${f#ys/src/}
+    name=$(echo "$clj" | tr '/' '-' | sed 's/\.clj$//')
+    diff -u <(curl -sL "$repo_url/$clj") "$f" 2>/dev/null \
+      | sed '1,2s/\t.*//' > "ys/patch/$name.patch" || true
+    if [ ! -s "ys/patch/$name.patch" ]; then
+      rm -f "ys/patch/$name.patch"
+    else
+      echo "Saved ys/patch/$name.patch"
+    fi
+  done
+  echo "Patches saved to ys/patch/"
+)
+
+test-docker() (
+  if [[ -d .cache/.local/bin/bb ]]; then
+    echo 'Run first: make distclean'
+    exit 1
+  fi
+  docker run --rm -it \
+    -w /work \
+    -v "$PWD:/work" \
+    ubuntu:24.04 \
+    bash -c '
+      set -x &&
+      apt update &&
+      apt install -y curl git make xz-utils &&
+      git config --global --add safe.directory /work &&
+      export PERL_BADLANG=0 &&
+      make test &&
+      chown -R '"$(id -u):$(id -g) .cache"
+)
+
+update-clj() (
+  repo_url=$1
+  stem=$2
+  target=$3
+
+  curl -sL "$repo_url/$stem.clj" -o "$target"
+  patch_file=ys/patch/$(echo "$stem" | tr '/' '-').patch
+  if [ -f "$patch_file" ]; then
+    echo "Applying $patch_file"
+    patch --no-backup-if-mismatch -p0 < "$patch_file"
+  fi
+)
+
+compile-glj() (
+  stem=$1
+  target=$2
+
+  mkdir -p "$(dirname "$target")"
+  tmpdir=$(mktemp -d)
+  cp -r ys/glj/* "$tmpdir/"
+  cd "$tmpdir"
+  ns=$(echo "$stem" | tr '/' '.')
+  echo "(compile (quote $ns))" | glj >/dev/null 2>&1 || true
+  cd - >/dev/null
+  cp "$tmpdir/$stem/loader.go" "$target"
+  rm -rf "$tmpdir"
+)
+
+compile-glj-patched() (
+  target=$1
+
+  mkdir -p "$(dirname "$target")"
+  tmpdir=$(mktemp -d)
+  cp -r ys/glj/* "$tmpdir/"
+  cd "$tmpdir"
+  ns=$(echo "yamlscript/util" | tr '/' '.')
+  echo "(compile (quote $ns))" | glj >/dev/null 2>&1 || true
+  cd - >/dev/null
+  cp "$tmpdir/yamlscript/util/loader.go" "$target"
+  rm -rf "$tmpdir"
+
+  patch --no-backup-if-mismatch -p1 < ys/patch/yamlscript-util-seqable.patch
+)
+
+"$@"

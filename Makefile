@@ -47,7 +47,11 @@ TEST-CALL := \
 
 TEST-CALL-DEPS := \
   test/call.ys \
-  bin/gloat \
+  $(PATH-DEPS) \
+
+ifndef fast
+TEST-CALL-DEPS += bin/gloat
+endif
 
 MAKES-CLEAN := \
   $(TEST-CALL) \

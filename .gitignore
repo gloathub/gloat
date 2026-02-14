@@ -16,3 +16,4 @@
 /out*
 /test/call
 /test/call.clj
+/worktree/

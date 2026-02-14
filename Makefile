@@ -10,6 +10,7 @@ include $M/go.mk
 include $M/shellcheck.mk
 include $M/yamlscript.mk
 include $M/wasmtime.mk
+include $M/brotli.mk
 
 include $M/clean.mk
 include $M/shell.mk

@@ -168,7 +168,7 @@ do-ext-list() (
 Available processing extensions (use with -X/--ext):
 
   gzip      Compress with gzip (requires gzip command)
-  brotli    Compress with brotli (requires brotli command)
+  brotli    Compress with brotli (auto-installed if needed)
 
 The compression extensions are applied to WASM output formats (wasm, js).
 EOF
@@ -803,9 +803,10 @@ compress-wasm() (
         mv "$file.gz" "$file"
         ;;
       brotli)
-        command -v brotli >/dev/null 2>&1 ||
-          die "brotli not found (required by -Xbrotli)"
-        brotli -9 -f "$file"
+        brotli_bin=$(get-make-var BROTLI)
+        [[ -x $brotli_bin ]] ||
+          make --quiet --no-print-directory -C "$GLOAT_ROOT" "$brotli_bin"
+        "$brotli_bin" -9 -f "$file"
         mv "$file.br" "$file"
         ;;
     esac

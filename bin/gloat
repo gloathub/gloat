@@ -281,8 +281,13 @@ glj-to-go() (
   cp -r "$GLOAT_ROOT/ys/glj/"* "$output_dir/"
 
   # Compile user namespace only
-  echo "(compile (quote $namespace))" |
-    (cd "$output_dir" && "$glj") || true
+  if $option_quiet; then
+    echo "(compile (quote $namespace))" |
+      (cd "$output_dir" && "$glj") >/dev/null 2>&1 || true
+  else
+    echo "(compile (quote $namespace))" |
+      (cd "$output_dir" && "$glj") || true
+  fi
 
   timer_end "GLJ→GO"
 )

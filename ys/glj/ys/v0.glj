@@ -13,7 +13,8 @@
     [ys.ipc]
     [ys.json]
     [ys.std :refer :all]
-    [ys.dwim :refer :all]))
+    [ys.dwim :refer :all])
+  (:refer-clojure :exclude [atom die print read replace reverse set]))
 
 (defn map-parse [args]
   (mapv

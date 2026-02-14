@@ -5,7 +5,8 @@
             [ys.json :as json]
             [ys.std :refer :all]
             [ys.dwim :refer :all]
-            [ys.v0 :refer [map-parse]]))
+            [ys.v0 :refer [map-parse]])
+  (:refer-clojure :exclude [atom die print read replace reverse set]))
 
 (def ^:dynamic ARGV [])
 (def ^:dynamic ARGS [])

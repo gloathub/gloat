@@ -1,0 +1,4 @@
+*.wasm
+*.log
+tmp/
+.cache/

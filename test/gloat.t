@@ -17,9 +17,9 @@ try "$GLOAT_BIN -h"
 is "$rc" 129 "'gloat -h' exits 129"
 has "$got" "usage:" "'gloat -h' shows usage"
 
-try "$GLOAT_BIN -v"
-is "$rc" 0 "'gloat -v' exits 0"
-has "$got" "version" "'gloat -v' shows version"
+try "$GLOAT_BIN --version"
+is "$rc" 0 "'gloat --version' exits 0"
+has "$got" "version" "'gloat --version' shows version"
 
 # Test stdout modes
 cd "$FIXTURES_DIR" || bail-out "Cannot cd to fixtures"

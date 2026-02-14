@@ -5,8 +5,7 @@
 ;; Uses Go's net/http package
 
 (ns ys.http
-  (:require [clojure.string :as str])
-  (:refer-clojure :exclude [get]))
+  (:require [clojure.string :as str]))
 
 ;;------------------------------------------------------------------------------
 ;; Helper functions

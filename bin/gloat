@@ -59,11 +59,11 @@ module=       Go module name (e.g., github.com/user/project)
 
 r,run         Compile and run (pass program args after --)
 f,force       Overwrite existing output files
-V,verbose     Print timing for each compilation step
+v,verbose     Print timing for each compilation step
 q,quiet       Suppress progress messages
 
 h,help        Show this help
-v,version     Show version
+version       Show version
 "
 
 main() (
@@ -82,6 +82,8 @@ main() (
   # Infer format
   format=$(infer-format "$output" "$to")
 
+  check-exists
+
   # Fail fast if output already exists (unless --force)
   if [[ $output ]] && ! $option_force; then
     # Check exact path (covers both files and directories)
@@ -92,28 +94,7 @@ main() (
       die "Output already exists: ${output%/} (use --force to overwrite)"
   fi
 
-  # Remove existing output if --force
-  if $option_force && [[ $output ]]; then
-    if [[ -e $output ]]; then
-      if [[ -d $output ]]; then
-        msg "Removing $output/..."
-      else
-        msg "Removing $output..."
-      fi
-      rm -rf "$output"
-    fi
-    if [[ $output == */ && -e ${output%/} ]]; then
-      msg "Removing ${output%/}/..."
-      rm -rf "${output%/}"
-    fi
-  fi
-
-  # Print verbose header
-  if $option_verbose && [[ $output ]] && ! $option_quiet; then
-    input_name=$(basename "$input")
-    echo "Compiling $input_name to $format..." >&2
-    _compile_start=$(date +%s%3N)
-  fi
+  print-verbose-header
 
   # Dispatch based on input/output
   if [[ -z $output ]]; then
@@ -168,12 +149,7 @@ main() (
     exit "$rc"
   fi
 
-  # Print verbose total time
-  if $option_verbose && [[ $output ]] && ! $option_quiet; then
-    compile_end=$(date +%s%3N)
-    total_time=$(( compile_end - _compile_start ))
-    echo "done (${total_time}ms)" >&2
-  fi
+  print-verbose-footer
 )
 
 #------------------------------------------------------------------------------
@@ -198,7 +174,7 @@ ys-to-clj() (
 
   ys=$(get-make-var YS)
 
-  timer_start
+  timer-start
 
   # Format the output:
   # 1. Join defn/name that are split across lines
@@ -215,7 +191,7 @@ ys-to-clj() (
     '
   )
 
-  timer_end "YS→CLJ"
+  timer-end "YS→CLJ"
 
   export body
 
@@ -255,9 +231,9 @@ clj-to-glj() (
     label=$name
   fi
 
-  timer_start
+  timer-start
   "$bb" "$rewrite_script" "$input" > "$output"
-  timer_end "CLJ→GLJ ($label)"
+  timer-end "CLJ→GLJ ($label)"
 )
 
 # Compile Glojure to Go
@@ -271,7 +247,7 @@ glj-to-go() (
   ns_dir=${ns_path%/*}
   ns_file=${ns_path##*/}.glj
 
-  timer_start
+  timer-start
 
   # Copy input to namespace structure
   mkdir -p "$output_dir/$ns_dir"
@@ -289,7 +265,7 @@ glj-to-go() (
       (cd "$output_dir" && "$glj") || true
   fi
 
-  timer_end "GLJ→GO"
+  timer-end "GLJ→GO"
 )
 
 #------------------------------------------------------------------------------
@@ -365,44 +341,7 @@ convert-file() (
       msg "Generated: $output"
       ;;
     bb)
-      (
-        # Output ys runtime (with ns declarations)
-        cat "$GLOAT_ROOT/ys/src/yamlscript/util.clj"
-        echo
-        cat "$GLOAT_ROOT/ys/src/yamlscript/common.clj"
-        echo
-        cat-bb fs
-        echo
-        cat-bb ipc
-        echo
-        cat-bb std
-        echo
-        cat "$GLOAT_ROOT/ys/src/ys/dwim.clj"
-        echo
-        # Filter v0.clj to remove http/json requires
-        tmpv0=$(mktemp)
-        cp "$GLOAT_ROOT/ys/src/ys/v0.clj" "$tmpv0"
-        sed -i '/^\s*\[yamlscript\.common\]$/d' "$tmpv0"
-        sed -i '/^\s*\[ys\.http\]$/d' "$tmpv0"
-        sed -i '/^\s*\[ys\.json\]$/d' "$tmpv0"
-        cat "$tmpv0"
-        rm "$tmpv0"
-        echo
-        # Output generated CLJ (keep ns with :require intact)
-        # Remove requires for ys.http and ys.json which don't have BB versions
-        tmpclj=$(mktemp)
-        cp "$clj_file" "$tmpclj"
-        sed -i '/\[ys\.http :as http\]/d' "$tmpclj"
-        sed -i '/\[ys\.json :as json\]/d' "$tmpclj"
-        # Also remove standalone [ys.http] and [ys.json] in v0 namespace
-        sed -i '/^\s*\[ys\.http\]$/d' "$tmpclj"
-        sed -i '/^\s*\[ys\.json\]$/d' "$tmpclj"
-        cat "$tmpclj"
-        rm "$tmpclj"
-        echo
-        # Add main invocation
-        echo '(apply -main *command-line-args*)'
-      ) > "$output"
+      generate-bb > "$output"
       msg "Generated: $output"
       ;;
     glj)
@@ -644,13 +583,13 @@ convert-directory() (
     [[ $build_mode ]] && build_cmd+=("$build_mode")
     build_cmd+=(main.go)
 
-    timer_start
+    timer-start
     if [[ ${#build_env[@]} -gt 0 ]]; then
       (cd "$output_dir" && env "${build_env[@]}" "${build_cmd[@]}")
     else
       (cd "$output_dir" && "${build_cmd[@]}")
     fi
-    timer_end "GO→BIN"
+    timer-end "GO→BIN"
 
     if [[ -f $output_dir/$binary_name ]]; then
       cp "$output_dir/$binary_name" "$output"
@@ -680,6 +619,60 @@ convert-directory() (
     msg "Generated Go module in: $output_dir"
     msg "To build: cd $output_dir && go build"
   fi
+)
+
+generate-bb() (
+  # Output ys runtime (with ns declarations)
+  cat "$GLOAT_ROOT/ys/src/yamlscript/util.clj"
+  echo
+  cat "$GLOAT_ROOT/ys/src/yamlscript/common.clj"
+  echo
+  cat-bb fs
+  echo
+  cat-bb ipc
+  echo
+  cat-bb std
+  echo
+  cat "$GLOAT_ROOT/ys/src/ys/dwim.clj"
+  echo
+  # Filter v0.clj to remove http/json requires
+  perl -p \
+    -e 'undef $_ if /^\s*\[yamlscript\.common\]$/;' \
+    -e 'undef $_ if /^\s*\[ys\.http\]$/;' \
+    -e 'undef $_ if /^\s*\[ys\.json\]$/;' \
+    < "$GLOAT_ROOT/ys/src/ys/v0.clj"
+  echo
+  # Output generated CLJ (keep ns with :require intact)
+  # Remove requires for ys.http and ys.json which don't have BB versions
+  perl -p \
+    -e 'undef $_ if /\[ys\.http :as http\]/;' \
+    -e 'undef $_ if /\[ys\.json :as json\]/;' \
+    -e 'undef $_ if /^\s*\[ys\.http\]$/;' \
+    -e 'undef $_ if /^\s*\[ys\.json\]$/;' \
+    < "$clj_file"
+  echo
+  # Add main invocation
+  echo '(apply -main *command-line-args*)'
+)
+
+# Helper to cat a BB-patched version of a source file
+cat-bb() (
+  src=$GLOAT_ROOT/ys/src/ys/$1.clj
+  patch=$GLOAT_ROOT/ys/patch/ys-$1-bb.patch
+  tmpfile=$(mktemp)
+
+  patch --no-backup-if-mismatch -p0 -o "$tmpfile" \
+    "$src" < "$patch" >/dev/null 2>&1
+
+  # Special handling for ys.fs: fix read/write functions to use slurp/spit
+  if [[ $1 == "fs" ]]; then
+    bash "$GLOAT_ROOT/ys/patch/fix-fs-bb.sh" "$tmpfile"
+  elif [[ $1 == "std" ]]; then
+    bash "$GLOAT_ROOT/ys/patch/fix-std-bb.sh" "$tmpfile"
+  fi
+
+  cat "$tmpfile"
+  rm -f "$tmpfile"
 )
 
 #------------------------------------------------------------------------------
@@ -715,42 +708,7 @@ convert-to-stdout() (
       cat "$clj_file"
       ;;
     bb)
-      # Output ys runtime (with ns declarations)
-      cat "$GLOAT_ROOT/ys/src/yamlscript/util.clj"
-      echo
-      cat "$GLOAT_ROOT/ys/src/yamlscript/common.clj"
-      echo
-      cat-bb fs
-      echo
-      cat-bb ipc
-      echo
-      cat-bb std
-      echo
-      cat "$GLOAT_ROOT/ys/src/ys/dwim.clj"
-      echo
-      # Filter v0.clj to remove http/json requires
-      tmpv0=$(mktemp)
-      cp "$GLOAT_ROOT/ys/src/ys/v0.clj" "$tmpv0"
-      sed -i '/^\s*\[yamlscript\.common\]$/d' "$tmpv0"
-      sed -i '/^\s*\[ys\.http\]$/d' "$tmpv0"
-      sed -i '/^\s*\[ys\.json\]$/d' "$tmpv0"
-      cat "$tmpv0"
-      rm "$tmpv0"
-      echo
-      # Output generated CLJ (keep ns with :require intact)
-      # Remove requires for ys.http and ys.json which don't have BB versions
-      tmpclj=$(mktemp)
-      cp "$clj_file" "$tmpclj"
-      sed -i '/\[ys\.http :as http\]/d' "$tmpclj"
-      sed -i '/\[ys\.json :as json\]/d' "$tmpclj"
-      # Also remove standalone [ys.http] and [ys.json] in v0 namespace
-      sed -i '/^\s*\[ys\.http\]$/d' "$tmpclj"
-      sed -i '/^\s*\[ys\.json\]$/d' "$tmpclj"
-      cat "$tmpclj"
-      rm "$tmpclj"
-      # Add main invocation
-      echo
-      echo '(apply -main *command-line-args*)'
+      generate-bb
       ;;
     glj)
       if [[ -f $clj_file ]]; then
@@ -899,6 +857,24 @@ set-vars() {
   fi
 }
 
+check-exists() (
+  # Remove existing output if --force
+  if $option_force && [[ $output ]]; then
+    if [[ -e $output ]]; then
+      if [[ -d $output ]]; then
+        msg "Removing $output/..."
+      else
+        msg "Removing $output..."
+      fi
+      rm -rf "$output"
+    fi
+    if [[ $output == */ && -e ${output%/} ]]; then
+      msg "Removing ${output%/}/..."
+      rm -rf "${output%/}"
+    fi
+  fi
+)
+
 # Get a variable from the Makefile
 get-make-var() (
   var=$1
@@ -1010,49 +986,44 @@ resolve-namespace() (
   fi
 )
 
-# Helper to print messages (respects quiet mode)
-msg() {
-  if ! $option_quiet; then
-    echo "$@"
+print-verbose-header() {
+  # Print verbose header
+  if $option_verbose && [[ $output ]] && ! $option_quiet; then
+    input_name=$(basename "$input")
+    echo "Compiling $input_name to $format..." >&2
+    _compile_start=$(date +%s%3N)
   fi
 }
 
+print-verbose-footer() (
+  # Print verbose total time
+  if $option_verbose && [[ $output ]] && ! $option_quiet; then
+    compile_end=$(date +%s%3N)
+    total_time=$(( compile_end - _compile_start ))
+    echo "done (${total_time}ms)" >&2
+  fi
+)
+
+# Helper to print messages (respects quiet mode)
+msg() (
+  $option_quiet ||
+    echo "$@"
+)
+
 # Timer for verbose mode
-timer_start() {
+timer-start() {
   if $option_verbose && ! $option_quiet; then
     _timer_start=$(date +%s%3N)
   fi
 }
 
-timer_end() {
+timer-end() (
   if $option_verbose && ! $option_quiet; then
-    local label=$1
-    local end
-    local elapsed
+    label=$1
     end=$(date +%s%3N)
     elapsed=$(( end - _timer_start ))
     echo "  $label... done (${elapsed}ms)" >&2
   fi
-}
-
-# Helper to cat a BB-patched version of a source file
-cat-bb() {
-  local src=$GLOAT_ROOT/ys/src/ys/$1.clj
-  local patch=$GLOAT_ROOT/ys/patch/ys-$1-bb.patch
-  local tmpfile
-  tmpfile=$(mktemp)
-  patch --no-backup-if-mismatch -p0 -o "$tmpfile" \
-    "$src" < "$patch" >/dev/null 2>&1
-
-  # Special handling for ys.fs: fix read/write functions to use slurp/spit
-  if [[ $1 == "fs" ]]; then
-    bash "$GLOAT_ROOT/ys/patch/fix-fs-bb.sh" "$tmpfile"
-  elif [[ $1 == "std" ]]; then
-    bash "$GLOAT_ROOT/ys/patch/fix-std-bb.sh" "$tmpfile"
-  fi
-
-  cat "$tmpfile"
-  rm -f "$tmpfile"
-}
+)
 
 main "$@"

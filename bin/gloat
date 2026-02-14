@@ -52,10 +52,10 @@ or any of the other FORMATS listed below.
 --
 t,to=         Output format (inferred from -o)
 o,out=        Output file or directory
-p,platform=   Cross-compile (e.g., linux/amd64)
+platform=     Cross-compile (e.g., linux/amd64)
 
 ns=           Override namespace
-m,module=     Go module name (e.g., github.com/user/project)
+module=       Go module name (e.g., github.com/user/project)
 
 r,run         Compile and run (pass program args after --)
 f,force       Overwrite existing output files

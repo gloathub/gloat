@@ -24,38 +24,30 @@ gloat [<options>] <file>...
 
 Glojure AOT Tool - version $VERSION
 
-Compiles Clojure or YAMLScript code to Go code
-or any of the other FORMATS listed below.
+Compiles Clojure or YAMLScript code to Go code, binaries, or Wasm.
 
   FILE:
     path      Source file (.ys, .clj, .glj) or directory
     -         Read from stdin
-
-  FORMATS (-t):
-    bin       Native binary
-    lib       Shared library (.so .dylib .dll)
-    wasm      Wasm wasip1
-    js        Wasm js target
-    clj       Clojure source file
-    bb        Babashka-ready source file (self-contained)
-    glj       Glojure source file
-    go        Go source (default for stdout)
-    dir       Go project directory
 
   Examples:
     gloat foo.ys                        Go code to stdout
     gloat foo.ys -t clj                 Clojure code to stdout
     gloat foo.ys -o foo.go              Go source file
     gloat foo.ys -o foo                 Native binary
-    gloat foo.ys -o foo -p linux/amd64  Cross-compile
+    gloat foo.ys -o foo --platform=linux/amd64  Cross-compile
     gloat --run foo.ys -- arg1 arg2     Compile and run
 --
-t,to=         Output format (inferred from -o)
+t,to=         Output format (inferred from -o; see --fmt-list)
 o,out=        Output file or directory
 platform=     Cross-compile (e.g., linux/amd64)
 
 ns=           Override namespace
 module=       Go module name (e.g., github.com/user/project)
+X,ext=        Enable a processing extension (see --ext-list)
+
+fmt-list      List available output formats
+ext-list      List available processing extensions
 
 r,run         Compile and run (pass program args after --)
 f,force       Overwrite existing output files
@@ -73,9 +65,13 @@ main() (
   set -- "${args[@]}"
   getopt "$@"
 
-  if do-version; then
-    exit 0
-  fi
+  do-version && exit
+
+  do-ext-list && exit
+
+  do-fmt-list && exit
+
+  validate-extensions
 
   set-vars
 
@@ -164,6 +160,59 @@ do-version() (
     echo "glojure version $glojure_version"
   fi
   exit 0
+)
+
+do-ext-list() (
+  $option_ext_list || return
+  cat <<EOF
+Available processing extensions (use with -X/--ext):
+
+  gzip      Compress with gzip (requires gzip command)
+  brotli    Compress with brotli (requires brotli command)
+
+The compression extensions are applied to WASM output formats (wasm, js).
+EOF
+  exit 0
+)
+
+do-fmt-list() (
+  $option_fmt_list || return
+  cat <<EOF
+Available output formats (use with -t/--to):
+
+Source formats:
+  clj       Clojure source file
+  bb        Babashka-ready source file (self-contained)
+  glj       Glojure source file
+  go        Go source (default for stdout)
+  dir       Go project directory
+
+Binary formats:
+  bin       Native binary (default when -o has no extension)
+  lib       Shared library (.so .dylib .dll)
+  wasm      WebAssembly wasip1 target
+  js        WebAssembly js target
+
+Format can usually be inferred from -o extension:
+  .clj → clj      .glj → glj    .go → go
+   .so → lib    .dylib → lib   .dll → lib
+   .js → js     .wasm → wasm
+     / → dir    <none> → bin   .exe → bin
+EOF
+  exit 0
+)
+
+# List of valid extensions (space-separated)
+VALID_EXTENSIONS="gzip brotli"
+
+validate-extensions() (
+  [[ ${option_ext[0]:-} ]] || return 0
+
+  for ext in "${option_ext[@]}"; do
+    if [[ " $VALID_EXTENSIONS " != *\ $ext\ * ]]; then
+      die "Unknown extension: $ext (see --ext-list for available extensions)"
+    fi
+  done
 )
 
 # Convert YAMLScript to Clojure
@@ -595,6 +644,11 @@ convert-directory() (
       cp "$output_dir/$binary_name" "$output"
       msg "Generated: $output"
 
+      if [[ ($format == wasm || $format == js) &&
+            ${option_ext[0]:-} ]]; then
+        compress-wasm "$output" "${option_ext[@]}"
+      fi
+
       # Copy .h file for shared libraries
       if [[ $format == lib ]]; then
         h_file=${binary_name%.so}
@@ -736,6 +790,27 @@ convert-to-stdout() (
 #------------------------------------------------------------------------------
 # Helper functions
 #------------------------------------------------------------------------------
+
+compress-wasm() (
+  file=$1
+  shift
+  for ext in "$@"; do
+    case $ext in
+      gzip)
+        command -v gzip >/dev/null 2>&1 ||
+          die "gzip not found (required by -Xgzip)"
+        gzip -9 -f "$file"
+        mv "$file.gz" "$file"
+        ;;
+      brotli)
+        command -v brotli >/dev/null 2>&1 ||
+          die "brotli not found (required by -Xbrotli)"
+        brotli -9 -f "$file"
+        mv "$file.br" "$file"
+        ;;
+    esac
+  done
+)
 
 init() {
   make --quiet --no-print-directory -C "$GLOAT_ROOT" path-deps

@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+
+# util/getopt - Bash option parser wrapper that outputs EDN
+# Used by bin/gloat to preserve git rev-parse --parseopt behavior
+
+# shellcheck disable=2034,2154
+
+GLOAT_ROOT=$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
+
+source "$GLOAT_ROOT/.bpan/lib/bpan.bash" --
+source "$GLOAT_ROOT/.bpan/lib/getopt.bash" --
+
+# Read getopt spec from stdin
+getopt_spec=$(cat)
+
+main() (
+  init "$@"
+  set -- "${args[@]}"
+
+  # Redirect getopt output (which uses pager) to stderr so stdout stays clean
+  # for EDN.
+  # If getopt failed (help shown, parse error), exit with same code.
+  getopt "$@" >&2 || exit
+
+  # Generate EDN output
+  cat <<...
+{
+ :to       $(value-to-edn option_to)
+ :out      $(value-to-edn option_out)
+ :platform $(value-to-edn option_platform)
+ :ns       $(value-to-edn option_ns)
+ :module   $(value-to-edn option_module)
+ :ext      $(array-to-edn option_ext)
+ :formats    $(bool-to-edn "${option_formats:-false}")
+ :extensions $(bool-to-edn "${option_extensions:-false}")
+ :platforms  $(bool-to-edn "${option_platforms:-false}")
+ :run      $(bool-to-edn "${option_run:-false}")
+ :force    $(bool-to-edn "${option_force:-false}")
+ :verbose  $(bool-to-edn "${option_verbose:-false}")
+ :quiet    $(bool-to-edn "${option_quiet:-false}")
+ :version  $(bool-to-edn "${option_version:-false}")
+ :args     $(array-to-edn args)
+ :run-args $(array-to-edn run_args)
+}
+...
+)
+
+# Always split args at -- to separate gloat args from run args
+init() {
+  local arg
+
+  run_args=()
+  local gloat_argv=()
+  local found_dd=false
+
+  for arg; do
+    if ! $found_dd && [[ $arg == -- ]]; then
+      found_dd=true
+      continue
+    fi
+    if $found_dd; then
+      run_args+=("$arg")
+    else
+      gloat_argv+=("$arg")
+    fi
+  done
+
+  args=("${gloat_argv[@]}")
+}
+
+# Helper to escape strings for EDN
+escape-edn() (
+  str=$1
+  # Escape backslashes first
+  str=${str//\\/\\\\}
+  # Escape double quotes
+  str=${str//\"/\\\"}
+  echo "$str"
+)
+
+# Helper to convert bash array to EDN vector
+array-to-edn() (
+  declare -n arr=$1
+  # Filter out empty strings
+  result=()
+  for item in "${arr[@]}"; do
+    if [[ -n $item ]]; then
+      result+=("\"$(escape-edn "$item")\"")
+    fi
+  done
+  echo "[$(IFS=' '; echo "${result[*]}")]"
+)
+
+# Helper to convert single value to EDN (nil or string)
+value-to-edn() (
+  set +o nounset
+  declare -n arr=$1 2>/dev/null || {
+    echo "nil"
+    return
+  }
+  if [[ ${#arr[@]} -eq 0 || -z ${arr[0]:-} ]]; then
+    echo "nil"
+  else
+    echo "\"$(escape-edn "${arr[0]}")\""
+  fi
+)
+
+# Helper to convert bool to EDN
+bool-to-edn() (
+  if $1; then
+    echo "true"
+  else
+    echo "false"
+  fi
+)
+
+main "$@"

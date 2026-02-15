@@ -5,7 +5,11 @@ gloat - Glojure AOT Tool
 https://img.shields.io/badge/Try_Gloat-Live_Demo-blue?logo=github)](
 https://codespaces.new/gloathub/gloat?quickstart=1)
 
-Compile Clojure or YS to Go code or native binaries
+[Gloat](https://gloathub.org) compiles [Clojure](https://clojure.org) or
+[YAMLScript](https://yamlscript.org) to [Go](https://go.dev) code or native
+binaries
+
+> Cross-compiles to 20+ platforms including [Wasm](https://webassembly.org/).
 
 
 ## Synopsis
@@ -29,15 +33,15 @@ gloat app.ys -t .glj            # Creates app.glj
 gloat app.ys -t .go             # Creates app.go
 
 # Create a portable Go project directory
-gloat app.ys -o build/          # Creates build/ with Makefile
+gloat app.ys -o build/          # Creates build/ directory
 
 # Cross-compile
-gloat app.ys -o app-linux -p linux/amd64
-gloat app.ys -o app.exe -p windows/amd64
+gloat app.ys -o app-linux --platform=linux/amd64
+gloat app.ys -o app.exe --platform=windows/amd64
 
 # Compile and run
 gloat --run app.ys              # Compile and run (no binary kept)
-gloat --run app.ys -- arg1 arg2 # Pass arguments to program
+gloat --run app.ys -- <args...> # Pass arguments to program
 
 # WebAssembly targets
 gloat app.ys -o app.wasm        # WASI target
@@ -70,19 +74,22 @@ Gloat compiles Clojure or YAMLScript source files to any of these forms:
 ```
 
 The tool has **zero external dependencies**.
-All required tools (go, glj, ys, bb) are automatically installed on first use
-via the [Makes](https://github.com/makeplus/makes) build system.
+All required tools (bb, glj, go, ys) are installed the first time you run
+`gloat` via the [Makes](https://github.com/makeplus/makes) build system.
+
+All of these tools will be installed local to the gloat repository under
+`/path/to/gloat/.cache/.local/` and you will be prompted about it first.
 
 
 ## Gloat Live Demo
 
 The gloat repository comes with a lot of example programs.
-You can find them in the `example/clojure`, and `example/yamlscript`
+You can find them in the `example/clojure/`, and `example/yamlscript/`
 directories.
 
 A great way to view the demos is to start the Gloat Demo Webpage Server with:
 ```
-$ make demo-server
+$ make serve-example
 ...some output...
 Starting server on http://localhost:8080
 Press Ctrl+C to stop
@@ -108,7 +115,8 @@ https://codespaces.new/gloathub/gloat?quickstart=1)
 GitHub users can click that and see the demo without cloning this repository.
 It opens in a GitHub Codespaces session, which starts as an empty VScode editor
 session.
-If you wait a couple minutes (literally) the demo will start in an editor pane.
+If you **wait a couple minutes (literally)** the demo will start in an editor
+pane.
 
 > **Notes:**
 > The demo page **literally takes 1-2 minutes to start**.
@@ -117,13 +125,15 @@ If you wait a couple minutes (literally) the demo will start in an editor pane.
 > pane.
 
 
-### Using `make` to run examples
+### Using `gloat --run` to run examples
 
 Try these:
 ```
-make run FILE=example/yamlscript/dragon-curve.ys
-make run FILE=example/clojure/even-or-odd.clj a='7 42 31337'
+gloat --run example/yamlscript/dragon-curve.ys
+gloat -r example/clojure/even-or-odd.clj -- 7 42 31337
 ```
+
+To pass options to a program run with `gloat --run`, put the after a `--` arg.
 
 
 ## Installation
@@ -131,13 +141,18 @@ make run FILE=example/clojure/even-or-odd.clj a='7 42 31337'
 Clone this repository and source the `.rc` file:
 
 ```bash
-git clone https://github.com/gloathub/gloat
-source gloat/.rc
-gloat --help
+$ git clone https://github.com/gloathub/gloat
+$ source gloat/.rc
+$ gloat --help
+==> Installing gloat dependencies (bb, glj, go, ys) locally into:
+
+    /home/ingy/src/gloat/worktree/clojure-rewrite/.cache/.local/
+
+Press Enter to continue (or Ctrl-C to cancel)...
 ```
 
 The first time you run the `gloat` command, all its dependencies will be
-installed under the `gloat/.cache/.local/` directory.
+installed under the `/pat/to/gloat/.cache/.local/` directory.
 
 To make `gloat` a permanent install, add this to your shell's rc file:
 
@@ -187,55 +202,71 @@ Anyone can build it with just `make` - Go is automatically installed.
 
 ## Cross-Compilation
 
-Use `-p OS/ARCH` to cross-compile for different platforms:
+Use `--platform=OS/ARCH` to cross-compile for different platforms:
 
 ```bash
 # Linux targets
-gloat app.ys -o app-linux-amd64 -p linux/amd64
-gloat app.ys -o app-linux-arm64 -p linux/arm64
+gloat app.ys -o app-linux-amd64 --platform=linux/amd64
+gloat app.ys -o app-linux-arm64 --platform=linux/arm64
 
 # macOS targets
-gloat app.ys -o app-darwin-amd64 -p darwin/amd64
-gloat app.ys -o app-darwin-arm64 -p darwin/arm64
+gloat app.ys -o app-darwin-amd64 --platform=darwin/amd64
+gloat app.ys -o app-darwin-arm64 --platform=darwin/arm64
 
 # Windows targets
-gloat app.ys -o app.exe -p windows/amd64
-gloat app.ys -o app-win-arm64.exe -p windows/arm64
+gloat app.ys -o app.exe --platform=windows/amd64
+gloat app.ys -o app-win-arm64.exe --platform=windows/arm64
 
 # WebAssembly targets
-gloat app.ys -o app.wasm -p wasip1/wasm    # WASI
-gloat app.ys -o app.wasm -p js/wasm        # JavaScript
+gloat app.ys -o app.wasm --platform=wasip1/wasm    # WASI
+gloat app.ys -o app.wasm --platform=js/wasm        # JavaScript
 ```
 
 Common platform targets:
 
-| OS | Architectures |
-|----|---------------|
-| `linux` | `amd64`, `arm64`, `386`, `arm` |
-| `darwin` | `amd64`, `arm64` |
-| `windows` | `amd64`, `arm64`, `386` |
-| `freebsd` | `amd64`, `arm64`, `386` |
-| `wasip1` | `wasm` |
-| `js` | `wasm` |
+| OS        | Architectures                  |
+|-----------|--------------------------------|
+| `linux`   | `amd64`, `arm64`, `386`, `arm` |
+| `darwin`  | `amd64`, `arm64`               |
+| `windows` | `amd64`, `arm64`, `arm`, `386` |
+| `freebsd` | `amd64`, `arm64`, `386`        |
+| `openbsd` | `amd64`, `arm64`               |
+| `netbsd`  | `amd64`, `arm64`               |
+| `wasip1`  | `wasm`                         |
+| `js`      | `wasm`                         |
 
-Run `go tool dist list` to see all supported targets.
+Less common platform architectures:
+
+| OS          | Architectures                              |
+|-------------|--------------------------------------------|
+| `linux`     | `ppc64le`, `s390x`, `riscv64`, `mips64le`  |
+| `dragonfly` | `amd64`                                    |
+
 
 
 ## Options
 
 ```
--t, --to=FORMAT     Output format (inferred from -o)
--o, --out=FILE      Output file or directory
--p, --platform=OS/ARCH  Cross-compile target
---ns=NAMESPACE      Override namespace
--r, --run           Compile to temp binary and run it
+-t, --to=FORMAT         Output format (inferred from -o; see --formats)
+-o, --out=FILE          Output file or directory
 
--f, --force         Overwrite existing output files
--v, --verbose       Print timing for each compilation step
--q, --quiet         Suppress progress messages
+    --platform=OS/ARCH  Cross-compile (e.g., linux/amd64; see --platforms)
+-X, --ext=EXT           Enable a processing extension (see --extensions)
 
--h, --help          Show help
---version           Show version
+    --ns=NAMESPACE      Override namespace
+    --module=NAME       Go module name (e.g., github.com/user/project)
+
+    --formats           List available output formats
+    --extensions        List available processing extensions
+    --platforms         List available cross-compilation platforms
+
+-r, --run               Compile and run (pass program args after --)
+-f, --force             Overwrite existing output files
+-v, --verbose           Print timing for each compilation step
+-q, --quiet             Suppress progress messages
+
+-h, --help              Show help
+    --version           Show version
 ```
 
 
@@ -245,8 +276,9 @@ The Makefile is set up so that you don't need to install any dependencies.
 They get installed the first time they are needed by a rule invoked by a `make`
 command that you run.
 
-However, these tools are only accessible to Makefile rules.
-They are not availabe for you to run directly in your shell.
+However, these tools are only accessible to the Makefile rules that get run
+when you use `make` commands.
+In other words, they are NOT available for you to run directly in your shell.
 
 Sometimes you want to run these commands like `go`, `ys` and `bb` directly in
 your shell.

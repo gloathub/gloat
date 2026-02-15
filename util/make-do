@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-save-patches() (
+save-patch() (
   repo_url=$1
   shift
   gloat_only=$1

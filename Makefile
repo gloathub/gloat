@@ -51,7 +51,10 @@ TEST-CALL-DEPS := \
   $(PATH-DEPS) \
 
 ifndef fast
-TEST-CALL-DEPS += bin/gloat
+TEST-CALL-DEPS += \
+  bin/gloat \
+  bin/gloat.clj \
+
 endif
 
 MAKES-CLEAN := \
@@ -70,10 +73,13 @@ path-deps: $(PATH-DEPS)
 path:
 	@echo "$(PATH)"
 
+env:
+	@echo 'export PATH="$(PATH)"'
+
 update: $(YS-GO-FILES)
 
-save-patches:
-	make-do save-patches $(YS-REPO-URL) "$(YS-GLOAT-ONLY)" $(YS-CLJ-FILES)
+save-patch:
+	make-do $@ $(YS-REPO-URL) "$(YS-GLOAT-ONLY)" $(YS-CLJ-FILES)
 
 diff:
 ifndef FILE
@@ -95,7 +101,7 @@ ifneq (,$(wildcard .cache/.local/bin/bb))
 	@echo 'Run first: make distclean'
 	@exit 1
 endif
-	make-do test-docker
+	make-do $@
 
 serve-www publish-www:
 	$(MAKE) -C www $(@:%-www=%)

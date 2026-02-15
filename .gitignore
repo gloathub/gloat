@@ -1,6 +1,8 @@
 /CLAUDE.md
 /.cache/
 /.claude/
+/.clj-kondo/
+/.lsp/
 /demo-assets
 /note/
 /*.bb

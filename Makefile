@@ -19,7 +19,7 @@ include $M/shell.mk
 YS-CLJ-FILES := $(wildcard ys/src/*/*.clj ys/src/*/*/*.clj)
 YS-NAMESPACES := $(patsubst ys/src/%.clj,%,$(YS-CLJ-FILES))
 YS-GLJ-FILES := $(YS-NAMESPACES:%=ys/glj/%.glj)
-YS-GO-FILES  := $(YS-NAMESPACES:%=ys/pkg/%/loader.go)
+YS-GO-FILES  := $(YS-NAMESPACES:%=ys/go/%/loader.go)
 
 # Gloat-only files with no upstream equivalents
 YS-GLOAT-ONLY := \
@@ -31,6 +31,8 @@ YS-GLOAT-ONLY := \
 
 YS-REPO-URL := \
   https://raw.githubusercontent.com/yaml/yamlscript/v0/core/src
+
+YS-PKG-VERSION ?= v0.1.0
 
 # Mark GLJ files as precious (don't auto-delete intermediate files)
 .PRECIOUS: $(YS-CLJ-FILES) $(YS-GLJ-FILES)
@@ -77,6 +79,17 @@ env:
 	@echo 'export PATH="$(PATH)"'
 
 update: $(YS-GO-FILES)
+
+ys-pkg: $(YS-GO-FILES)
+	@echo "Syncing ys/go/ to ys/pkg/"
+	@mkdir -p ys/pkg
+	@rsync -a --delete --exclude='all/' --exclude='go.mod' --exclude='go.sum' ys/go/ ys/pkg/
+	@echo "Running go mod tidy in ys/pkg/"
+	@cd ys/pkg && go mod tidy
+
+tag-ys-pkg:
+	@echo "Tagging ys/pkg/v$(YS-PKG-VERSION)"
+	@git tag -a ys/pkg/v$(YS-PKG-VERSION) -m "Release ys/pkg v$(YS-PKG-VERSION)"
 
 save-patch:
 	make-do $@ $(YS-REPO-URL) "$(YS-GLOAT-ONLY)" $(YS-CLJ-FILES)
@@ -151,15 +164,15 @@ ys/glj/%.glj: ys/src/%.clj $(GLOJURE-DIR) $(BB)
 	bb $(GLOJURE-DIR)/scripts/rewrite-core/rewrite.clj $< > $@
 
 # Special rule for yamlscript/util: apply seqable? patch after compilation
-ys/pkg/yamlscript/util/loader.go: ys/glj/yamlscript/util.glj $(GLJ)
+ys/go/yamlscript/util/loader.go: ys/glj/yamlscript/util.glj $(GLJ)
 	@echo "Compiling $< to $@"
 	make-do compile-glj-patched $@
 	@echo "Applying seqable? patch to $@"
 
 # Pattern rule: GLJ → GO compilation
-ys/pkg/%/loader.go: ys/glj/%.glj $(GLJ)
+ys/go/%/loader.go: ys/glj/%.glj $(GLJ)
 	@echo "Compiling $< to $@"
 	make-do compile-glj $* $@
 
 # std depends on fs and ipc being compiled first
-ys/pkg/ys/std/loader.go: ys/glj/ys/fs.glj ys/glj/ys/ipc.glj
+ys/go/ys/std/loader.go: ys/glj/ys/fs.glj ys/glj/ys/ipc.glj

@@ -7,16 +7,8 @@ import (
 	"strings"
 	"github.com/gloathub/glojure/pkg/glj"
 	"github.com/gloathub/glojure/pkg/lang"
-	_ "GO-MODULE/PACKAGE-PATH"
-	_ "GO-MODULE/pkg/yamlscript/common"
-	_ "GO-MODULE/pkg/yamlscript/util"
-	_ "GO-MODULE/pkg/ys/fs"
-	_ "GO-MODULE/pkg/ys/http"
-	_ "GO-MODULE/pkg/ys/ipc"
-	_ "GO-MODULE/pkg/ys/json"
-	_ "GO-MODULE/ys/std"
-	_ "GO-MODULE/ys/dwim"
-	_ "GO-MODULE/ys/v0"
+	_ "GO-MODULE/pkg/PACKAGE-PATH"
+	_ "github.com/gloathub/gloat/ys/pkg/all"
 )
 
 func init() {

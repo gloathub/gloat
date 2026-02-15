@@ -1,7 +1,7 @@
-diff --git a/ys/pkg/yamlscript/util/loader.go b/ys/pkg/yamlscript/util/loader.go
+diff --git a/ys/go/yamlscript/util/loader.go b/ys/go/yamlscript/util/loader.go
 index a342edd..e3024de 100644
---- a/ys/pkg/yamlscript/util/loader.go
-+++ b/ys/pkg/yamlscript/util/loader.go
+--- a/ys/go/yamlscript/util/loader.go
++++ b/ys/go/yamlscript/util/loader.go
 @@ -779,4 +779,20 @@ func LoadNS() {
  			var_yamlscript_DOT_util_when_DASH_lets.SetMeta(tmp0.Meta().(lang.IPersistentMap))
  		}

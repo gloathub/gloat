@@ -719,21 +719,17 @@ Less common:
                   (catch Exception _ nil)))))
 
           ;; Copy generated Go files to output directory under pkg/
+          ;; Exclude YS stdlib files (they come from ys/pkg module)
           (fs/create-dirs (str output-dir "/pkg"))
           (doseq [gofile (fs/glob shared-tmpdir "**/*.go")]
             (let [rel-path (str (fs/relativize shared-tmpdir gofile))
-                  target (str output-dir "/pkg/" rel-path)]
-              (fs/create-dirs (fs/parent target))
-              (fs/copy gofile target {:replace-existing true})))
-
-          ;; Copy pre-compiled ys packages over generated ones
-          (let [ys-pkg-dir (str GLOAT-ROOT "/ys/pkg")]
-            (doseq [file (fs/glob ys-pkg-dir "**/*")]
-              (when (fs/regular-file? file)
-                (let [rel-path (str (fs/relativize ys-pkg-dir file))
-                      target (str output-dir "/pkg/" rel-path)]
+                  ;; Skip YS stdlib files - they're provided by ys/pkg module
+                  stdlib-paths ["yamlscript/" "ys/"]
+                  is-stdlib? (some #(str/starts-with? rel-path %) stdlib-paths)]
+              (when-not is-stdlib?
+                (let [target (str output-dir "/pkg/" rel-path)]
                   (fs/create-dirs (fs/parent target))
-                  (fs/copy file target {:replace-existing true})))))
+                  (fs/copy gofile target {:replace-existing true})))))
 
           (when-not @main-namespace
             (die "Could not determine main namespace"))
@@ -749,11 +745,14 @@ Less common:
 
             ;; Generate go.mod
             (let [glojure-version (get-make-var "GLOJURE-VERSION")
+                  ys-pkg-version (get-make-var "YS-PKG-VERSION")
                   template-content (slurp (str TEMPLATE "/go.mod"))
                   result (render-template
                           template-content
                           [["GO-MODULE" go-module]
-                           ["GLOJURE-VERSION" glojure-version]])]
+                           ["GLOJURE-VERSION" glojure-version]
+                           ["YS-PKG-VERSION" ys-pkg-version]
+                           ["GLOAT-ROOT" GLOAT-ROOT]])]
               (spit (str output-dir "/go.mod") result)
               (msg "Generated:" (str output-dir "/go.mod")))
 

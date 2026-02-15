@@ -6,15 +6,7 @@ import (
 	"github.com/gloathub/glojure/pkg/glj"
 	"github.com/gloathub/glojure/pkg/lang"
 	_ "GO-MODULE/pkg/PACKAGE-PATH"
-	_ "GO-MODULE/pkg/yamlscript/common"
-	_ "GO-MODULE/pkg/yamlscript/util"
-	_ "GO-MODULE/pkg/ys/fs"
-	_ "GO-MODULE/pkg/ys/http"
-	_ "GO-MODULE/pkg/ys/ipc"
-	_ "GO-MODULE/pkg/ys/json"
-	_ "GO-MODULE/pkg/ys/std"
-	_ "GO-MODULE/pkg/ys/dwim"
-	_ "GO-MODULE/pkg/ys/v0"
+	_ "github.com/gloathub/gloat/ys/pkg/all"
 )
 
 func main() {

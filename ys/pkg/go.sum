@@ -2,8 +2,8 @@ bitbucket.org/pcastools/hash v1.0.5 h1:Z26b2PcLdC64C07KbGkxZRYOyvkEmxOc8o+wCQ2Bm
 bitbucket.org/pcastools/hash v1.0.5/go.mod h1:PwZDvsw1oSN5uo9+r3ztepeAPUekYPBaaxh0pmUaXDo=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/gloathub/glojure v0.6.5-rc4 h1:wBgr0NztJADfJWgKnobjWZNPSt1W1kZ88mroDIZ/KAQ=
-github.com/gloathub/glojure v0.6.5-rc4/go.mod h1:TVbRUl+wade8ra18CYyDn90JOy3eUoiaLqXrLnN2zJE=
+github.com/gloathub/glojure v0.6.5-rc5 h1:7Q/IGDOGDUzVOgh7waW0n4RxH5zq5PdiQ5jZpEViKrA=
+github.com/gloathub/glojure v0.6.5-rc5/go.mod h1:TVbRUl+wade8ra18CYyDn90JOy3eUoiaLqXrLnN2zJE=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/kylelemons/godebug v1.1.0 h1:RPNrshWIDI6G2gRW9EHilWtl7Z6Sb1BR0xunSBf0SNc=

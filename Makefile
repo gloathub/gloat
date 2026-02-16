@@ -32,7 +32,7 @@ YS-GLOAT-ONLY := \
 YS-REPO-URL := \
   https://raw.githubusercontent.com/yaml/yamlscript/v0/core/src
 
-YS-PKG-VERSION ?= v0.1.0
+YS-PKG-VERSION ?= v0.1.1
 
 # Mark GLJ files as precious (don't auto-delete intermediate files)
 .PRECIOUS: $(YS-CLJ-FILES) $(YS-GLJ-FILES)
@@ -80,7 +80,7 @@ env:
 
 update: $(YS-GO-FILES)
 
-ys-pkg: $(YS-GO-FILES)
+ys-pkg: $(YS-GO-FILES) $(GO)
 	@echo "Syncing ys/go/ to ys/pkg/"
 	@mkdir -p ys/pkg
 	@rsync -a --delete --exclude='all/' --exclude='go.mod' --exclude='go.sum' ys/go/ ys/pkg/

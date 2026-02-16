@@ -69,7 +69,7 @@ Compiles Clojure or YAMLScript code to Go code, binaries or Wasm.
     gloat foo.ys -t clj                 Clojure code to stdout
     gloat foo.ys -o foo.go              Go source file
     gloat foo.ys -o foo                 Native binary
-    gloat foo.ys -o foo --platform=linux/amd64  Cross-compile
+    gloat foo.ys -o foo --platform=freebsd/amd64  Cross-compile
     gloat --run foo.ys -- arg1 arg2     Compile and run
 --
 t,to=         Output format (inferred from -o; see --formats)

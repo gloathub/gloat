@@ -16,6 +16,7 @@ include $M/gh.mk
 
 include $M/clean.mk
 include $M/shell.mk
+include common/path.mk
 
 # Auto-discover YS standard library source files
 YS-CLJ-FILES := $(wildcard ys/src/*/*.clj ys/src/*/*/*.clj)
@@ -159,6 +160,14 @@ release: $(GH)
 	  $(error VERSION is required on the command line))
 	$(eval RELEASE_VER := $(patsubst v%,%,$(VERSION)))
 	make-do $@ $(RELEASE_VER) "$(MESSAGE)"
+
+build-glj-from-source: $(GO) $(GLOJURE-DIR)
+	cd $(GLOJURE-DIR) && \
+	  git checkout gloat 2>/dev/null; \
+	  git pull origin gloat
+	cd $(GLOJURE-DIR)/cmd/glj && \
+	  GOBIN=$(LOCAL-BIN) go install .
+	@echo "Built $(GLJ) from source"
 
 force:
 

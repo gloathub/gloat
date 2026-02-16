@@ -17,6 +17,7 @@ include $M/gh.mk
 include $M/clean.mk
 include $M/shell.mk
 include common/path.mk
+include common/gloat-vars.mk
 
 # Auto-discover YS standard library source files
 YS-CLJ-FILES := $(wildcard ys/src/*/*.clj ys/src/*/*/*.clj)

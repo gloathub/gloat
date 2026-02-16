@@ -122,27 +122,17 @@ version       Show version
         (println (str "  " label "... done (" elapsed "ms)")))))
   (alter-var-root #'*timer-start* (constantly nil)))
 
-(def get-make-var
-  (memoize
-   (fn [var-name]
-     (try
-       (let [result (process/shell
-                     {:out :string
-                      :dir GLOAT-ROOT
-                      :extra-env go-env}
-                     "make" "--no-print-directory"
-                     (str "--eval=print-" var-name ": ; @echo $(" var-name ")")
-                     (str "print-" var-name))]
-         (str/trim (:out result)))
-       (catch Exception _ "")))))
+(def make-vars nil)
 
 (defn setup []
-  (process/shell
-   {:dir GLOAT-ROOT
-    :extra-env go-env
-    :out :inherit
-    :err :inherit}
-   "make" "--quiet" "--no-print-directory" "path-deps"))
+  (let [result (process/shell
+                 {:out :string
+                  :dir GLOAT-ROOT
+                  :extra-env go-env}
+                 "make" "--quiet" "--no-print-directory"
+                 "gloat-vars")]
+    (alter-var-root #'make-vars
+      (constantly (edn/read-string (str/trim (:out result)))))))
 
 ;;------------------------------------------------------------------------------
 ;; Option Parsing
@@ -266,7 +256,7 @@ version       Show version
 (defn do-version []
   (when (:version *opts*)
     (println (str "gloat version " VERSION))
-    (let [glojure-version (get-make-var "GLOJURE-VERSION")]
+    (let [glojure-version (:GLOJURE-VERSION make-vars)]
       (when (seq glojure-version)
         (println (str "glojure version " glojure-version))))
     (System/exit 0)))
@@ -355,7 +345,7 @@ Less common:
 (declare convert-directory)
 
 (defn ys-to-clj [input output namespace]
-  (let [ys (get-make-var "YS")]
+  (let [ys (:YS make-vars)]
     (timer-start)
 
     ;; Compile YS to Clojure
@@ -389,8 +379,8 @@ Less common:
         (spit output result-content)))))
 
 (defn clj-to-glj [input output]
-  (let [bb (get-make-var "BB")
-        glojure-dir (get-make-var "GLOJURE-DIR")
+  (let [bb (:BB make-vars)
+        glojure-dir (:GLOJURE-DIR make-vars)
         rewrite-script (str glojure-dir "/scripts/rewrite-core/rewrite.clj")
         name (-> (fs/file-name input) (str/replace #"\.clj$" ""))
         parent (fs/file-name (fs/parent input))
@@ -406,7 +396,7 @@ Less common:
     (timer-end (str "CLJ→GLJ (" label ")"))))
 
 (defn glj-to-go [input namespace output-dir]
-  (let [glj (get-make-var "GLJ")
+  (let [glj (:GLJ make-vars)
         ns-path (str/replace namespace #"\." "/")
         ns-dir (if (str/includes? ns-path "/")
                  (subs ns-path 0 (str/last-index-of ns-path "/"))
@@ -455,7 +445,7 @@ Less common:
         (fs/move (str file ".gz") file {:replace-existing true}))
 
       "brotli"
-      (let [brotli-bin (get-make-var "BROTLI")]
+      (let [brotli-bin (:BROTLI make-vars)]
         (when-not (fs/exists? brotli-bin)
           (process/shell
            {:dir GLOAT-ROOT
@@ -724,7 +714,7 @@ Less common:
                   (fs/create-dirs (fs/parent target))
                   (fs/copy file target {:replace-existing true})))))
 
-          (let [glj (get-make-var "GLJ")]
+          (let [glj (:GLJ make-vars)]
             ;; Compile all user namespaces
             (doseq [ns @all-namespaces]
               (msg "  Compiling" ns "...")
@@ -770,8 +760,8 @@ Less common:
             (msg "Go module:" go-module)
 
             ;; Generate go.mod
-            (let [glojure-version (get-make-var "GLOJURE-VERSION")
-                  ys-pkg-version (get-make-var "YS-PKG-VERSION")
+            (let [glojure-version (:GLOJURE-VERSION make-vars)
+                  ys-pkg-version (:YS-PKG-VERSION make-vars)
                   template-content (slurp (str TEMPLATE "/go.mod"))
                   result (render-template
                           template-content
@@ -806,7 +796,7 @@ Less common:
 
             ;; Build binary if needed
             (if is-binary
-              (let [go-bin (get-make-var "GO")
+              (let [go-bin (:GO make-vars)
                     build-env (merge go-env
                                      {"GONOSUMCHECK" "*"}
                                      (when goos {"GOOS" goos})
@@ -1082,7 +1072,7 @@ Less common:
             (let [rc
                   (case format
                     "bb"
-                    (let [bb (get-make-var "BB")]
+                    (let [bb (:BB make-vars)]
                       (when-not (fs/executable? bb)
                         (die (str
                               "Babashka not found"

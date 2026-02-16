@@ -1,0 +1,11 @@
+gloat-vars: $(PATH-DEPS)
+	@echo '{'
+	@echo '  :BB "$(abspath $(BB))"'
+	@echo '  :BROTLI "$(abspath $(BROTLI))"'
+	@echo '  :GLJ "$(abspath $(GLJ))"'
+	@echo '  :GLOJURE-DIR "$(abspath $(GLOJURE-DIR))"'
+	@echo '  :GLOJURE-VERSION "$(GLOJURE-VERSION)"'
+	@echo '  :GO "$(abspath $(GO))"'
+	@echo '  :YS "$(abspath $(YS))"'
+	@echo '  :YS-PKG-VERSION "$(YS-PKG-VERSION)"'
+	@echo '}'

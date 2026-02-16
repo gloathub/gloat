@@ -12,6 +12,7 @@ include $M/shellcheck.mk
 include $M/yamlscript.mk
 include $M/wasmtime.mk
 include $M/brotli.mk
+include $M/gh.mk
 
 include $M/clean.mk
 include $M/shell.mk
@@ -84,13 +85,14 @@ update: $(YS-GO-FILES)
 ys-pkg: $(YS-GO-FILES) $(GO)
 	@echo "Syncing ys/go/ to ys/pkg/"
 	@mkdir -p ys/pkg
-	@rsync -a --delete --exclude='all/' --exclude='go.mod' --exclude='go.sum' ys/go/ ys/pkg/
+	rsync -a --delete --exclude='all/' --exclude='go.mod' --exclude='go.sum' ys/go/ ys/pkg/
 	@echo "Running go mod tidy in ys/pkg/"
-	@cd ys/pkg && go mod tidy
+	cd ys/pkg && go mod tidy
 
 tag-ys-pkg:
-	@echo "Tagging ys/pkg/v$(YS-PKG-VERSION)"
-	@git tag -a ys/pkg/v$(YS-PKG-VERSION) -m "Release ys/pkg v$(YS-PKG-VERSION)"
+	$(eval YS-PKG-VER := $(patsubst v%,%,$(YS-PKG-VERSION)))
+	@echo "Tagging ys/pkg/v$(YS-PKG-VER)"
+	git tag -a ys/pkg/v$(YS-PKG-VER) -m "Release ys/pkg v$(YS-PKG-VER)"
 
 save-patch:
 	make-do $@ $(YS-REPO-URL) "$(YS-GLOAT-ONLY)" $(YS-CLJ-FILES)
@@ -151,6 +153,12 @@ ys/src/ys/json.clj:
 # http.clj is gloat-only (Go net/http, not babashka.http-client)
 ys/src/ys/http.clj:
 	@true
+
+release: $(GH)
+	@$(if $(filter command line,$(origin VERSION)),,\
+	  $(error VERSION is required on the command line))
+	$(eval RELEASE_VER := $(patsubst v%,%,$(VERSION)))
+	make-do $@ $(RELEASE_VER) "$(MESSAGE)"
 
 force:
 

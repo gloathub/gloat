@@ -98,4 +98,53 @@ compile-glj-patched() (
   patch --no-backup-if-mismatch -p1 < ys/patch/yamlscript-util-seqable.patch
 )
 
+release() (
+  version=$1
+  message=${2:-Release v$version}
+
+  # --- Update version in all files ---
+  sed -i "s/^YS-PKG-VERSION .*/YS-PKG-VERSION ?= v$version/" Makefile
+  sed -i "s/^export GLOAT_VERSION=.*/export GLOAT_VERSION=$version/" \
+    bin/gloat
+
+  { echo "- version: $version"
+    echo "  date:    $(date)"
+    echo "  changes:"
+    echo "  - $message"
+    echo ""
+    cat Changes
+  } > Changes.tmp && mv Changes.tmp Changes
+
+  # --- Rebuild and test ---
+  make update ys-pkg
+  make test
+
+  # --- Commit and tag ys/pkg ---
+  git add Makefile bin/gloat Changes ys/
+  git commit -m "Version $version"
+  git tag -a "ys/pkg/v$version" -m "Release ys/pkg v$version"
+  git push origin main
+  git push origin "ys/pkg/v$version"
+
+  # --- Wait for Go proxy ---
+  echo "Waiting for Go proxy to index ys/pkg v$version..."
+  for i in $(seq 1 30); do
+    if go list -m \
+      "github.com/gloathub/gloat/ys/pkg@v$version" \
+      2>/dev/null; then
+      echo "  ys/pkg v$version is live on Go proxy"
+      break
+    fi
+    echo "  Attempt $i/30, retrying in 10s..."
+    sleep 10
+  done
+
+  # --- Tag and release gloat ---
+  git tag -a "v$version" -m "Release v$version"
+  git push origin "v$version"
+  gh release create "v$version" \
+    --title "gloat v$version" \
+    --generate-notes
+)
+
 "$@"

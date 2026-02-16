@@ -21,7 +21,7 @@ override export PATH := $(GIT-REPO-DIR)/bin:$(PATH)
 ifndef FILE
 FILE := $(DEFAULT-FILE)
 endif
-override FILE := $(FILE:example/%=%)
+override FILE := $(FILE:demo/%=%)
 
 SRC-FILE := $(FILE)
 NAME := $(notdir $(basename $(FILE)))

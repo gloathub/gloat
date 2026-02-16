@@ -7,7 +7,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/init"
 TEST_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 PROJECT_ROOT=$(cd "$TEST_DIR/.." && pwd)
 GLOAT_BIN=$PROJECT_ROOT/bin/gloat
-EXAMPLE_DIR=$PROJECT_ROOT/example/yamlscript
+EXAMPLE_DIR=$PROJECT_ROOT/demo/yamlscript
 
 cd "$PROJECT_ROOT" || bail-out "Cannot cd to project root"
 source .rc || bail-out "Cannot source .rc"

@@ -6,7 +6,7 @@
   "hostRequirements": {
     "cpus": 4
   },
-  "postStartCommand": "make -C example starting-this-demo-might-take-120-seconds-but-it-is-worth-it 2>&1",
+  "postStartCommand": "make -C demo starting-this-demo-might-take-120-seconds-but-it-is-worth-it 2>&1",
   "forwardPorts": [8080],
   "portsAttributes": {
     "8080": {

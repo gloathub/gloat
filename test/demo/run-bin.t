@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-# Tests for compiling and running all example programs as native binaries
+# Tests for compiling and running all demo programs as native binaries
 
 source "$(dirname "${BASH_SOURCE[0]}")/../init"
 
 source .rc
-cd example/ || bail-out "Cannot cd to example/"
+cd demo/ || bail-out "Cannot cd to demo/"
 
 # Clean up binaries on exit
 trap 'make -s clean >/dev/null' EXIT

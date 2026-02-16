@@ -1,24 +1,24 @@
 # Examples
 
-Gloat includes over **50 example programs** in both Clojure and YAMLScript.
+Gloat includes over **50 demo programs** in both Clojure and YAMLScript.
 These examples demonstrate the compilation pipeline and showcase what you can
 build.
 
-All examples are available in the [`example/`](
-https://github.com/gloathub/gloat/tree/main/example) directory of the
+All examples are available in the [`demo/`](
+https://github.com/gloathub/gloat/tree/main/demo) directory of the
 repository.
 
 ## Running Examples
 
 ```bash
 # Run a YAMLScript example
-make run FILE=example/yamlscript/fizzbuzz.ys
+make run FILE=demo/yamlscript/fizzbuzz.ys
 
 # Run a Clojure example with arguments
-make run FILE=example/clojure/factorial.clj a='10'
+make run FILE=demo/clojure/factorial.clj a='10'
 
 # Compile an example to binary
-gloat example/yamlscript/dragon-curve.ys -o dragon
+gloat demo/yamlscript/dragon-curve.ys -o dragon
 ./dragon
 ```
 
@@ -45,7 +45,7 @@ source .rc
 make demo-server
 
 # Or run individual examples
-make run FILE=example/yamlscript/dragon-curve.ys
+make run FILE=demo/yamlscript/dragon-curve.ys
 ```
 
 ## Contributing Examples

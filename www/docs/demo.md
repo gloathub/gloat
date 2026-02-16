@@ -12,7 +12,7 @@ Click the badge below to launch an interactive Gloat demo in GitHub Codespaces:
 
 The demo will open in a VS Code environment and automatically start a web-based
 demo server.
-You can compile and run example programs directly in your browser!
+You can compile and run demo programs directly in your browser!
 
 !!! warning "Startup Time"
     The Codespaces environment takes **1-2 minutes** to fully initialize.
@@ -25,7 +25,7 @@ You can compile and run example programs directly in your browser!
 
 The demo server provides:
 
-- **Interactive code editor** - Choose from 50+ example programs
+- **Interactive code editor** - Choose from 50+ demo programs
 - **Compile button** - Converts your code to WebAssembly
 - **Run button** - Executes the Wasm in your browser
 - **Multi-format output** - View generated Glojure and Go code
@@ -56,7 +56,7 @@ interactive interface as the Codespaces version.
 Once you've tried the demo, check out:
 
 - [Getting Started](getting-started.md) - Install Gloat locally
-- [Examples](examples.md) - Browse all example programs
+- [Examples](examples.md) - Browse all demo programs
 - [GitHub Repository](https://github.com/gloathub/gloat) - Source code and
   documentation
 

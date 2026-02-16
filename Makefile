@@ -72,7 +72,7 @@ test ?= test/*.t
 
 
 run:
-	$(MAKE) --no-p -C example run-bin$(if $(FILE), FILE=$(FILE:example/%=%))$(if $a, a=$a)
+	$(MAKE) --no-p -C demo run-bin$(if $(FILE), FILE=$(FILE:demo/%=%))$(if $a, a=$a)
 
 path-deps: $(PATH-DEPS)
 
@@ -106,13 +106,13 @@ ifndef FILE
 endif
 	@diff -u <(curl -sl $(YS-REPO-URL)/$(FILE:ys/src/%=%)) $(FILE)
 
-test-all: test test-example
+test-all: test test-demo
 
 test: $(SHELLCHECK) $(TEST-CALL)
 	prove$(if $v, -v) $(test)
 
-test-example:
-	prove$(if $v, -v) test/example/*.t
+test-demo:
+	prove$(if $v, -v) test/demo/*.t
 
 test-docker:
 ifneq (,$(wildcard .cache/.local/bin/bb))
@@ -124,11 +124,11 @@ endif
 serve-www publish-www:
 	$(MAKE) -C www $(@:%-www=%)
 
-serve-example:
-	$(MAKE) -C example serve
+serve-demo:
+	$(MAKE) -C demo serve
 
 clean:: local-chmod
-	$(MAKE) -C example $@
+	$(MAKE) -C demo $@
 
 test/call: $(TEST-CALL-DEPS)
 	gloat -qf $< -o $@

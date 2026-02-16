@@ -693,7 +693,7 @@ git commit -m "Improve ys.std documentation"
 
 1. **Make changes** to gloat source (`bin/gloat.clj`) or stdlib (`ys/src/`)
 2. **Run tests** to verify: `make test`
-3. **Test with example** project: `make run FILE=example/foo.ys`
+3. **Test with example** project: `make run FILE=demo/foo.ys`
 4. **Update stdlib** if needed: `make update && make ys-pkg`
 5. **Commit changes**
 

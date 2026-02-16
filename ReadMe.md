@@ -54,14 +54,15 @@ gloat app.ys -o app.wasm -t js  # JavaScript target
 Gloat compiles Clojure or YAMLScript source files to any of these forms:
 
 * Native binaries
-  * Cross compile to many OS/Arch environments
+  * Cross compile to 20+ OS/Arch environments
 * Web Assembly
-  * Wasi P1
-  * JS Wasm
+  * Wasi P1 - Run on server
+  * JS Wasm - Run in browser
 * Shared libraries (`.so`, `.dylib`, `.dll`)
   * With `.h` header files for FFI binding
 * Go source files
 * Standalone Go build directories
+* Standalone Babashka (Clojure) files
 
 ```
 .ys  →  ys -c   →  .clj
@@ -83,13 +84,13 @@ All of these tools will be installed local to the gloat repository under
 
 ## Gloat Live Demo
 
-The gloat repository comes with a lot of example programs.
-You can find them in the `example/clojure/`, and `example/yamlscript/`
+The gloat repository comes with a lot of demo programs.
+You can find them in the `demo/clojure/`, and `demo/yamlscript/`
 directories.
 
 A great way to view the demos is to start the Gloat Demo Webpage Server with:
 ```
-$ make serve-example
+$ make serve-demo
 ...some output...
 Starting server on http://localhost:8080
 Press Ctrl+C to stop
@@ -129,8 +130,8 @@ pane.
 
 Try these:
 ```
-gloat --run example/yamlscript/dragon-curve.ys
-gloat -r example/clojure/even-or-odd.clj -- 7 42 31337
+gloat --run demo/yamlscript/dragon-curve.ys
+gloat -r demo/clojure/even-or-odd.clj -- 7 42 31337
 ```
 
 To pass options to a program run with `gloat --run`, put the after a `--` arg.

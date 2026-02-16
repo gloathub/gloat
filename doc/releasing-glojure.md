@@ -123,6 +123,10 @@ Builds binaries for all platforms in `GO-PLATFORMS`:
 - `bin/wasip1_wasm/glj.wasm`
 - Plus many more platforms
 
+**Note**: For releases, `make release` only builds two platforms
+(`linux_amd64` and `darwin_arm64`) to speed up the release process.
+Use `make all` to build all platforms.
+
 ### Full Build
 
 Run everything:
@@ -222,7 +226,10 @@ git status
 git commit -m "Description of changes"
 ```
 
-### Step 6: Tag the Release
+### Step 6: Create Release
+
+The `make release` target automates building binaries, creating tarballs,
+tagging, pushing, and creating a GitHub release.
 
 Choose a version number.
 The fork uses the same versioning scheme as upstream, with optional suffixes:
@@ -239,32 +246,32 @@ Check the latest tag:
 git tag | tail -5
 ```
 
-Create an annotated tag:
+Create the release (builds binaries, tags, pushes, and creates GitHub release):
 
 ```bash
-git tag -a v0.6.5-rc5 -m "Release v0.6.5-rc5
-
-Glojure fork for gloat with the following changes:
-- Description of patches
-- Extended cross-compilation support (15-20 additional platforms)
-- Bug fixes
-"
+make release VERSION=0.6.5-rc5
 ```
 
-### Step 7: Push to Fork
+**This will**:
+1. Build binaries for `linux_amd64` and `darwin_arm64`
+2. Create tarballs in `dist/` directory
+3. Create annotated tag `v0.6.5-rc5`
+4. Push `gloat` branch to `gloathub` remote
+5. Push tag to `gloathub` remote
+6. Create GitHub release with binary tarballs attached
 
-Push the `gloat` branch and tags to the fork:
+**Alternative**: To just build tarballs without releasing (for testing):
 
 ```bash
-git push gloathub gloat
-git push gloathub v0.6.5-rc5
+make release-dist VERSION=0.6.5-rc5
 ```
 
 **Verify**:
 - [ ] Code is on GitHub: https://github.com/gloathub/glojure/tree/gloat
 - [ ] Tag is visible: https://github.com/gloathub/glojure/tags
+- [ ] Release exists with binaries: https://github.com/gloathub/glojure/releases
 
-### Step 8: Verify Go Module Proxy
+### Step 7: Verify Go Module Proxy
 
 Wait a few minutes, then verify the module is fetchable:
 
@@ -281,21 +288,38 @@ github.com/gloathub/glojure v0.6.5-rc5
 - [ ] Module is fetchable from Go proxy
 - [ ] Version matches expected
 
-### Step 9: Update Gloat to Use New Version
+### Step 8: Update Gloat to Use New Version
 
-Update gloat's `common/common.mk` to reference the new glojure version:
+Update gloat's `common/common.mk` to reference the new glojure version.
+
+**For releases** (using pre-built binaries):
 
 ```bash
 cd /path/to/gloat
 vim common/common.mk
 ```
 
-Update:
+Update to use the new version WITHOUT `GLOJURE-COMMIT`:
 ```makefile
-GLOJURE-VERSION := v0.6.5-rc5
+GLOJURE-VERSION := 0.6.5-rc5
+GLOJURE-REPO := https://github.com/gloathub/glojure
+```
+
+This will download pre-built binaries from the GitHub release, speeding up
+installation significantly.
+
+**For development** (building from source):
+
+If you need to test unreleased changes on the `gloat` branch, add
+`GLOJURE-COMMIT`:
+```makefile
+GLOJURE-VERSION := 0.6.5-rc5
 GLOJURE-COMMIT := gloat
 GLOJURE-REPO := https://github.com/gloathub/glojure
 ```
+
+This will clone the repo and build from source (slower, but gets latest
+changes).
 
 Also update `ys/pkg/go.mod`:
 ```bash
@@ -310,14 +334,13 @@ require github.com/gloathub/glojure v0.6.5-rc5
 Test with gloat:
 ```bash
 cd /path/to/gloat
-make clean
-make update
-make ys-pkg
+make distclean    # Force clean reinstall to test pre-built binaries
 make test
 ```
 
 **Verify**:
 - [ ] Gloat builds successfully with new glojure version
+- [ ] Pre-built binary was downloaded (fast install, no `go install`)
 - [ ] All gloat tests pass
 - [ ] Generated code works correctly
 
@@ -368,6 +391,26 @@ git commit -m "Update to glojure v0.6.5-rc5"
 2. Check if patches need updating
 3. Verify stdlib rewrites still work: `make stdlib-targets force=1`
 4. May need to rebase or adjust patches
+
+### Pre-built binary not available for my platform
+
+**Cause**: `make release` only builds binaries for `linux_amd64` and
+`darwin_arm64`.
+
+**Solution**:
+In gloat's `common/common.mk`, force building from source:
+```makefile
+GLOJURE-VERSION := 0.6.5-rc5
+GLOJURE-FROM-SOURCE := true
+GLOJURE-REPO := https://github.com/gloathub/glojure
+```
+
+Or use `GLOJURE-COMMIT` to trigger auto-detection:
+```makefile
+GLOJURE-VERSION := 0.6.5-rc5
+GLOJURE-COMMIT := gloat
+GLOJURE-REPO := https://github.com/gloathub/glojure
+```
 
 ## Understanding the Fork
 
@@ -427,11 +470,12 @@ Release a new version with fixes instead.
 - [ ] Run `make clean && make all`
 - [ ] Run `make test`
 - [ ] Commit any code changes
-- [ ] Tag release: `git tag -a vX.Y.Z-rcN -m "..."`
-- [ ] Push: `git push gloathub gloat && git push gloathub vX.Y.Z-rcN`
+- [ ] Create release: `make release VERSION=X.Y.Z-rcN`
 - [ ] Verify on Go proxy: `go list -m github.com/gloathub/glojure@vX.Y.Z-rcN`
-- [ ] Update gloat's `common/common.mk` and `ys/pkg/go.mod`
-- [ ] Test gloat with new version: `make test`
+- [ ] Verify GitHub release exists with binaries
+- [ ] Update gloat's `common/common.mk` (remove `GLOJURE-COMMIT`) and
+  `ys/pkg/go.mod`
+- [ ] Test gloat with new version: `make distclean && make test`
 - [ ] Commit gloat changes
 
 ---
@@ -443,6 +487,16 @@ Release a new version with fixes instead.
 make clean
 make all
 make test
+```
+
+**Create release** (build, tag, push, GitHub release):
+```bash
+make release VERSION=0.6.5-rc5
+```
+
+**Build tarballs only** (for testing):
+```bash
+make release-dist VERSION=0.6.5-rc5
 ```
 
 **AOT only** (after changing core libs):

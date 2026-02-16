@@ -735,8 +735,14 @@ Less common:
                           :out :string
                           :err :string}]
                 (try
-                  (process/shell opts glj)
-                  (catch Exception _ nil)))))
+                  (let [result (process/shell (assoc opts :continue true) glj)]
+                    (when-not (zero? (:exit result))
+                      (die "glj compile failed for " ns ":\n"
+                           (or (not-empty (:err result))
+                               (:out result)))))
+                  (catch Exception e
+                    (die "glj compile failed for " ns ":\n"
+                         (.getMessage e)))))))
 
           ;; Copy generated Go files to output directory under pkg/
           ;; Exclude YS stdlib files (they come from ys/pkg module)

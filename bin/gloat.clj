@@ -31,6 +31,14 @@
    "GOCACHE"    (str GLOAT-ROOT "/.cache/.local/cache/go-build")})
 
 ;;------------------------------------------------------------------------------
+;; Shell Completion Scripts
+;;------------------------------------------------------------------------------
+
+(def bash-completion-script (slurp (str TEMPLATE "/completion.bash")))
+(def zsh-completion-script (slurp (str TEMPLATE "/completion.zsh")))
+(def fish-completion-script (slurp (str TEMPLATE "/completion.fish")))
+
+;;------------------------------------------------------------------------------
 ;; Dynamic State
 ;;------------------------------------------------------------------------------
 
@@ -76,6 +84,7 @@ module=       Go module name (e.g., github.com/user/project)
 formats       List available output formats
 extensions    List available processing extensions
 platforms     List available cross-compilation platforms
+complete=     Generate shell completion script (bash, zsh, fish)
 
 r,run         Compile and run (pass program args after --)
 f,force       Overwrite existing output files
@@ -318,6 +327,17 @@ Less common:
   linux      ppc64le, s390x, riscv64, mips64le
   dragonfly  amd64
 ")
+    (System/exit 0)))
+
+(defn do-complete []
+  (when-let [shell (:complete *opts*)]
+    (case shell
+      "bash" (print bash-completion-script)
+      "zsh"  (print zsh-completion-script)
+      "fish" (print fish-completion-script)
+      (die "Unknown shell for --complete: " shell
+           " (use bash, zsh, or fish)"))
+    (flush)
     (System/exit 0)))
 
 (defn validate-extensions []
@@ -985,6 +1005,7 @@ Less common:
       (do-formats)
       (do-extensions)
       (do-platforms)
+      (do-complete)
       (validate-extensions)
 
       (let [opts (set-vars parsed-opts)

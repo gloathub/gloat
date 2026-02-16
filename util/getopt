@@ -30,6 +30,7 @@ main() (
  :platform $(value-to-edn option_platform)
  :ns       $(value-to-edn option_ns)
  :module   $(value-to-edn option_module)
+ :complete $(value-to-edn option_complete)
  :ext      $(array-to-edn option_ext)
  :formats    $(bool-to-edn "${option_formats:-false}")
  :extensions $(bool-to-edn "${option_extensions:-false}")

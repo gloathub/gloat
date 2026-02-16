@@ -5,3 +5,10 @@
 PATH=$(cd -P "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd -P)/bin:$PATH
 
 export PATH
+
+# Auto-load shell completions
+if [ -n "$BASH_VERSION" ]; then
+  eval "$(gloat --complete=bash)"
+elif [ -n "$ZSH_VERSION" ]; then
+  eval "$(gloat --complete=zsh)"
+fi

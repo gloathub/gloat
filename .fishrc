@@ -1,0 +1,6 @@
+# Fish shell configuration for gloat
+
+set -gx PATH (cd (dirname (status -f)); and pwd)/bin $PATH
+
+# Auto-load shell completions
+gloat --complete=fish | source

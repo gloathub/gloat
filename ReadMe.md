@@ -138,11 +138,17 @@ To pass options to a program run with `gloat --run`, put the after a `--` arg.
 
 ## Installation
 
-Clone this repository and source the `.rc` file:
+Clone this repository and source the appropriate rc file for your shell:
 
 ```bash
 $ git clone https://github.com/gloathub/gloat
+
+# For Bash or Zsh
 $ source gloat/.rc
+
+# For Fish
+$ source gloat/.fishrc
+
 $ gloat --help
 ==> Installing gloat dependencies (bb, glj, go, ys) locally into:
 
@@ -152,12 +158,20 @@ Press Enter to continue (or Ctrl-C to cancel)...
 ```
 
 The first time you run the `gloat` command, all its dependencies will be
-installed under the `/pat/to/gloat/.cache/.local/` directory.
+installed under the `/path/to/gloat/.cache/.local/` directory.
+
+Sourcing the rc file adds `gloat` to your PATH and automatically loads shell
+completions for your shell.
 
 To make `gloat` a permanent install, add this to your shell's rc file:
 
-```
+```bash
+# For Bash: add to ~/.bashrc
+# For Zsh: add to ~/.zshrc
 source /absolute/path/to/gloat/.rc
+
+# For Fish: add to ~/.config/fish/config.fish
+source /absolute/path/to/gloat/.fishrc
 ```
 
 
@@ -267,7 +281,36 @@ Less common platform architectures:
 
 -h, --help              Show help
     --version           Show version
+    --complete=SHELL    Generate shell completion script (bash, zsh, fish)
 ```
+
+
+## Shell Completion
+
+Gloat provides tab completion for all shells.
+Completions are automatically loaded when you source `.rc` (bash/zsh) or
+`.fishrc` (fish).
+
+To manually generate or reload completions:
+
+```bash
+# Bash
+eval "$(gloat --complete=bash)"
+
+# Zsh
+eval "$(gloat --complete=zsh)"
+
+# Fish
+gloat --complete=fish | source
+```
+
+Completions provide:
+- All command-line options (short and long forms)
+- Available values for `--to` (output formats)
+- Available values for `--platform` (cross-compilation targets)
+- Available values for `--ext` (processing extensions)
+- File completion for source files (`.ys`, `.clj`, `.glj`)
+- File completion for `--out` output paths
 
 
 ## The Make Shell

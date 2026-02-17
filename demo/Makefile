@@ -90,7 +90,7 @@ test:
 dev-container-setup: $(DEV-CONTAINER-SETUP-DEPS)
 
 clean::
-	git clean -dxf .
+	@$(MAKE) -C so-bindings $@
 
 go:   $(GO-FILE)
 clj:  $(CLJ-FILE)
@@ -137,11 +137,11 @@ $(WASM-EXEC-JS): $(GO)
 	cp $(GO-LOCAL)/lib/wasm/wasm_exec.js $@
 
 $(TARGETS): $(SRC-FILE) $(BUILD-DEPS)
-	gloat $< -o $@
+	</dev/null gloat $< -o $@
 
 # Custom rule to extract Go source from directory build
 $(GO-FILE): $(SRC-FILE) $(BUILD-DEPS)
 	@$(RM) -rf $(NAME)
-	@gloat $< -o $(GO-DIR) > /dev/null
+	@</dev/null gloat $< -o $(GO-DIR) > /dev/null
 	@cat $(GO-DIR)/pkg/*/core/loader.go > $@
 	@$(RM) -rf $(GO-DIR)

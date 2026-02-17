@@ -1,0 +1,36 @@
+!ys-0
+
+EXPORT =::
+  factorial: [int, int]
+  greet: [str, str]
+  repeat-string: [str, int, str]
+  shout-it: [str, null]
+  maybe: [bool]
+  sort-json-array: [str, str]
+
+defn factorial(x):
+  if x <= 1:
+    then: 1
+    else: x * x.--:factorial
+
+defn greet(name):
+  "Hello, $name!"
+
+defn repeat-string(s n):
+  s * n
+
+defn shout-it(s):
+  say: uc(s)
+
+defn maybe():
+  rand-nth:: [true, false]
+
+defn sort-json-array(json-str):
+  json-dump: sort(json/load(json-str))
+
+# Non-EXPORTed helper functions:
+defn json-load(s):
+  json/load: s
+
+defn json-dump(o):
+  json/dump: o

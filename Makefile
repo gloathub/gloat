@@ -124,6 +124,9 @@ endif
 test: $(TEST-DEPS)
 	prove$(if $v, -v) $(test)
 
+test-so-bindings:
+	$(MAKE) --no-p -C demo/so-bindings test
+
 test-docker:
 ifneq (,$(wildcard .cache/.local/bin/bb))
 	@echo 'Run first: make distclean'
@@ -146,10 +149,10 @@ realclean:: local-chmod
 	$(MAKE) -C www $@
 
 test/call: $(TEST-CALL-DEPS)
-	gloat -qf $< -o $@
+	</dev/null gloat -qf $< -o $@
 
 test/call.clj: $(TEST-CALL-DEPS)
-	gloat -qf $< -o $@ -t bb
+	</dev/null gloat -qf $< -o $@ -t bb
 
 # v0.clj is gloat-only, don't patch from upstream
 ys/src/ys/v0.clj:

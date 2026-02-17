@@ -52,6 +52,49 @@ make run FILE=demo/yamlscript/dragon-curve.ys
 ```
 
 
+## Shared Library Bindings
+
+Gloat can compile YAMLScript to shared libraries (`.so`/`.dylib`/`.dll`)
+with auto-generated C header files, enabling FFI (Foreign Function Interface)
+bindings from **23 programming languages**.
+
+The [`demo/so-bindings/`](
+https://github.com/gloathub/gloat/tree/main/demo/so-bindings) directory
+contains working examples for every supported language, all calling the same
+shared library compiled from a single YAMLScript source file.
+
+### Exported Functions
+
+The source file [`demo/so-bindings/example.ys`](
+https://github.com/gloathub/gloat/tree/main/demo/so-bindings/example.ys)
+defines 6 exported functions:
+
+| Function | Signature |
+|----------|-----------|
+| `factorial` | `int → int` |
+| `greet` | `str → str` |
+| `repeat_string` | `str, int → str` |
+| `shout_it` | `str → void` |
+| `maybe` | `→ bool` |
+| `sort_json_array` | `str → str` |
+
+### Supported Languages
+
+Ada, C, C++, C#, Crystal, D, Dart, Delphi, Fortran, Go, Haskell,
+Java, Julia, Lua, Nim, Node.js, Perl, Python, Raku, Ruby, Rust, V,
+Zig
+
+### Building and Running
+
+```bash
+# Build the shared library and run all 23 language bindings
+make test-so-bindings
+
+# Run a single language binding
+make -C demo/so-bindings/python run
+```
+
+
 ## Contributing Examples
 
 Have an interesting example to share?

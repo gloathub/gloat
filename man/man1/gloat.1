@@ -153,6 +153,35 @@ gloat -r demo/clojure/even-or-odd.clj -- 7 42 31337
 .PP
 To pass options to a program run with \fBgloat --run\fR, put the after a \fB--\fR arg.
 
+.SH Shared Library Bindings
+Gloat can compile YAMLScript to shared libraries (\fB.so\fR/\fB.dylib\fR/\fB.dll\fR)
+with auto-generated C header files, enabling FFI (Foreign Function Interface)
+bindings from \fB23 programming languages\fR.
+
+.PP
+The \fBdemo/so-bindings/\fR directory contains working examples for every
+supported language, all calling the same shared library compiled from a single
+YAMLScript source file (\fBdemo/so-bindings/example.ys\fR).
+
+.PP
+The library exports 6 functions: \fBfactorial\fR, \fBgreet\fR,
+\fBrepeat_string\fR, \fBshout_it\fR, \fBmaybe\fR, and
+\fBsort_json_array\fR.
+
+.PP
+Supported languages:
+Ada, C, C++, C#, Crystal, D, Dart, Delphi, Fortran, Go, Haskell,
+Java, Julia, Lua, Nim, Node.js, Perl, Python, Raku, Ruby, Rust, V,
+Zig
+
+.EX
+# Build the shared library and run all 23 language bindings
+make test-so-bindings
+
+# Run a single language binding
+make -C demo/so-bindings/python run
+.EE
+
 .SH Installation
 Clone this repository and source the appropriate rc file for your shell:
 

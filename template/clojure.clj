@@ -18,10 +18,5 @@
 (def ^:dynamic CWD "")
 
 BODY
-
-(defn -main [& argv]
-  (let [args (map-parse argv)]
-    (alter-var-root #'ARGV (constantly argv))
-    (alter-var-root #'ARGS (constantly args))
-    (apply main args)))
+MAIN-FN
   

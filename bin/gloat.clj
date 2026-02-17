@@ -249,6 +249,137 @@ version       Show version
           template-str
           replacements))
 
+(defn has-main-fn? [clj-content]
+  "Check if Clojure code contains a (defn main ...) definition."
+  (boolean (re-find #"\(defn\s+main\b" clj-content)))
+
+(defn extract-export [clj-content]
+  "Extract EXPORT map from Clojure code. Returns nil if not found.
+  Handles both standard map literals and YAMLScript's (% ...) format."
+  (when-let [match (re-find #"(?s)\(def\s+EXPORT\s+(.+?)\)\s*\n" clj-content)]
+    (try
+      (let [content (str/trim (second match))]
+        (if (str/starts-with? content "(%")
+          ;; Parse YAMLScript (% "key1" val1 "key2" val2 ...) format
+          (let [inner (-> content
+                          (str/replace #"^\(%\s*" "")
+                          (str/replace #"\s*\)$" ""))
+                ;; Read as EDN sequence
+                items (edn/read-string (str "[" inner "]"))
+                ;; Convert to map (pairs of key, value)
+                pairs (partition 2 items)
+                ;; Build map with keyword keys and normalized types
+                result (into {}
+                             (map (fn [[k v]]
+                                    (let [key (keyword k)
+                                          ;; Convert string types to keywords
+                                          val (if (vector? v)
+                                                (mapv #(if (nil? %)
+                                                         :null
+                                                         (keyword %))
+                                                      v)
+                                                (if (nil? v)
+                                                  :null
+                                                  (keyword v)))]
+                                      [key val]))
+                                  pairs))]
+            result)
+          ;; Try standard EDN map format
+          (edn/read-string content)))
+      (catch Exception e
+        (binding [*out* *err*]
+          (println "Warning: Failed to parse EXPORT:" (.getMessage e)))
+        nil))))
+
+(defn kebab-to-snake [s]
+  "Convert kebab-case to snake_case."
+  (str/replace s #"-" "_"))
+
+(def type-mappings
+  "Map type keywords to Go cgo type info."
+  {:int    {:go-type "C.longlong"
+            :go-to-clj "int64(arg)"
+            :clj-to-go "C.longlong(result.(int64))"}
+   :float  {:go-type "C.double"
+            :go-to-clj "float64(arg)"
+            :clj-to-go "C.double(result.(float64))"}
+   :str    {:go-type "*C.char"
+            :go-to-clj "C.GoString(arg)"
+            :clj-to-go "C.CString(result.(string))"}
+   :bool   {:go-type "C.int"
+            :go-to-clj "arg != 0"
+            :clj-to-go-special true}
+   :null   {:no-return true}})
+
+(defn generate-export-function [fn-name type-spec namespace]
+  "Generate a single //export Go function wrapper.
+  type-spec is a vector like [arg-types... return-type]."
+  (let [type-vec (if (vector? type-spec) type-spec [type-spec])
+        return-type (last type-vec)
+        arg-types (if (> (count type-vec) 1)
+                    (butlast type-vec)
+                    [])
+        return-info (get type-mappings return-type)
+        c-fn-name (kebab-to-snake fn-name)
+
+        ;; Generate parameter list
+        params (str/join ", "
+                         (map-indexed
+                          (fn [idx arg-type]
+                            (let [type-info (get type-mappings arg-type)]
+                              (str "arg" idx " " (:go-type type-info))))
+                          arg-types))
+
+        ;; Generate argument conversions
+        arg-conversions (map-indexed
+                         (fn [idx arg-type]
+                           (let [type-info (get type-mappings arg-type)
+                                 conversion (:go-to-clj type-info)]
+                             (str/replace conversion "arg" (str "arg" idx))))
+                         arg-types)
+
+        ;; Generate function signature
+        signature (if (:no-return return-info)
+                    (str "func " c-fn-name "(" params ")")
+                    (str "func " c-fn-name "(" params ") "
+                         (:go-type return-info)))
+
+        ;; Generate function body
+        invoke-args (if (seq arg-conversions)
+                      (str/join ", " arg-conversions)
+                      "")
+        invoke-line (if (seq arg-conversions)
+                      (str "\tfn.Invoke(" invoke-args ")")
+                      "\tfn.Invoke()")
+
+        body (if (:no-return return-info)
+               ;; Void return
+               (str "\tfn := glj.Var(\"" namespace "\", \"" fn-name "\")\n"
+                    invoke-line "\n")
+               ;; Has return value
+               (str "\tfn := glj.Var(\"" namespace "\", \"" fn-name "\")\n"
+                    "\tresult := " invoke-line "\n"
+                    (if (:clj-to-go-special return-info)
+                      ;; Special handling for bool
+                      "\tif result.(bool) {\n\t\treturn 1\n\t}\n\treturn 0\n"
+                      ;; Standard type conversion
+                      (str "\treturn " (:clj-to-go return-info) "\n"))))]
+
+    (str "//export " c-fn-name "\n"
+         signature " {\n"
+         body
+         "}\n")))
+
+(defn generate-export-functions [export-map namespace]
+  "Generate all //export function wrappers from EXPORT map."
+  (if (empty? export-map)
+    ""
+    (str/join "\n"
+              (map (fn [[fn-name type-spec]]
+                     (generate-export-function
+                      (name fn-name) type-spec namespace))
+                   export-map))))
+
 ;;------------------------------------------------------------------------------
 ;; Info Commands
 ;;------------------------------------------------------------------------------
@@ -297,7 +428,8 @@ The compression extensions are applied to WASM output formats (wasm, js).")
 
 (defn do-platforms []
   (when (:platforms *opts*)
-    (println "Available cross-compilation platforms (use with --platform=OS/ARCH):
+    (println
+     "Available cross-compilation platforms (use with --platform=OS/ARCH):
 
 Common platforms:
   OS         ARCH
@@ -370,12 +502,23 @@ Less common:
                          *source-file*
                          (str (fs/canonicalize input)))
             source-dir (str (fs/parent source-abs))
+            ;; Check if body has main function
+            main-fn (if (has-main-fn? body)
+                      "
+(defn -main [& argv]
+  (let [args (map-parse argv)]
+    (alter-var-root #'ARGV (constantly argv))
+    (alter-var-root #'ARGS (constantly args))
+    (apply main args)))
+"
+                      "")
             template-content (slurp (str TEMPLATE "/clojure.clj"))
             result-content (render-template template-content
                                             [["NAMESPACE" namespace]
                                              ["SOURCE-FILE" source-abs]
                                              ["SOURCE-DIR" source-dir]
-                                             ["BODY\n" (str body "\n")]])]
+                                             ["BODY\n" (str body "\n")]
+                                             ["MAIN-FN" main-fn]])]
         (spit output result-content)))))
 
 (defn clj-to-glj [input output]
@@ -656,7 +799,9 @@ Less common:
 
       (let [shared-tmpdir (str (fs/create-temp-dir))
             all-namespaces (atom [])
-            main-namespace (atom nil)]
+            main-namespace (atom nil)
+            export-map (atom nil)
+            has-main (atom false)]
 
         (try
           ;; Convert each file
@@ -677,6 +822,14 @@ Less common:
                 "clj" (fs/copy source-file clj-file {:replace-existing true})
                 "glj" (fs/copy source-file glj-file {:replace-existing true})
                 (die "Unknown file type: " basename))
+
+              ;; Extract EXPORT and check for main function
+              (when (fs/exists? clj-file)
+                (let [clj-content (slurp clj-file)]
+                  (when-let [exports (extract-export clj-content)]
+                    (reset! export-map exports))
+                  (when (has-main-fn? clj-content)
+                    (reset! has-main true))))
 
               ;; Clojure to Glojure
               (when (fs/exists? clj-file)
@@ -752,6 +905,15 @@ Less common:
 
           (msg "Main namespace:" @main-namespace)
 
+          ;; Validate lib format requirements
+          (when (= format "lib")
+            (when-not @export-map
+              (die "Library format requires EXPORT declaration.\n"
+                   "Add (def EXPORT {...}) with exported function signatures."))
+            (when @has-main
+              (die "Library format cannot have a main function.\n"
+                   "Libraries use EXPORT declaration, binaries use main.")))
+
           ;; Determine Go module name
           (let [go-module (or module
                               (System/getenv "GLOAT_MODULE")
@@ -778,10 +940,17 @@ Less common:
                              (str TEMPLATE "/lib-main.go")
                              (str TEMPLATE "/main.go"))
                   template-content (slurp template)
-                  result (render-template template-content
-                                          [["GO-MODULE" go-module]
-                                           ["PACKAGE-PATH" package-path]
-                                           ["NAMESPACE" @main-namespace]])]
+                  ;; Generate export functions for lib format
+                  export-functions (if (= format "lib")
+                                     (generate-export-functions
+                                      @export-map @main-namespace)
+                                     "")
+                  result (render-template
+                          template-content
+                          [["GO-MODULE" go-module]
+                           ["PACKAGE-PATH" package-path]
+                           ["NAMESPACE" @main-namespace]
+                           ["EXPORT-FUNCTIONS" export-functions]])]
               (spit (str output-dir "/main.go") result)
               (msg "Generated:" (str output-dir "/main.go")))
 

@@ -63,15 +63,7 @@ func init() {
 	alterVarRoot.Invoke(runVar, constantly.Invoke(runMap))
 }
 
-// Export functions will be added here by code inspection
-// For now, just export the -main function as an example
-
-//export Main
-func Main(argc C.int, argv **C.char) {
-	// TODO: Parse C args and call -main
-	myMain := glj.Var("NAMESPACE", "-main")
-	myMain.Invoke()
-}
+EXPORT-FUNCTIONS
 
 func main() {
 	// Required for c-shared build mode

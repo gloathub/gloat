@@ -73,6 +73,16 @@ override export PATH := $(ROOT)/bin:$(ROOT)/util:$(PATH)
 
 test ?= test/*.t
 
+tests := $(wildcard $(test))
+
+TEST-DEPS :=
+ifneq (,$(filter test/shellcheck.t,$(tests)))
+TEST-DEPS += $(SHELLCHECK)
+endif
+ifneq (,$(filter %-bb.t %-bin.t,$(tests)))
+TEST-DEPS += $(TEST-CALL)
+endif
+
 
 run:
 	$(MAKE) --no-p -C demo run-bin$(if $(FILE), FILE=$(FILE:demo/%=%))$(if $a, a=$a)
@@ -111,7 +121,7 @@ ifndef FILE
 endif
 	@diff -u <(curl -sl $(YS-REPO-URL)/$(FILE:ys/src/%=%)) $(FILE)
 
-test: $(SHELLCHECK) $(TEST-CALL)
+test: $(TEST-DEPS)
 	prove$(if $v, -v) $(test)
 
 test-docker:

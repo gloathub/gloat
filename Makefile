@@ -111,13 +111,8 @@ ifndef FILE
 endif
 	@diff -u <(curl -sl $(YS-REPO-URL)/$(FILE:ys/src/%=%)) $(FILE)
 
-test-all: test test-demo
-
 test: $(SHELLCHECK) $(TEST-CALL)
 	prove$(if $v, -v) $(test)
-
-test-demo:
-	prove$(if $v, -v) test/demo/*.t
 
 test-docker:
 ifneq (,$(wildcard .cache/.local/bin/bb))

@@ -1,5 +1,5 @@
-gloat - Glojure AOT Tool
-========================
+gloat - [Glojure](https://github.com/glojurelang/glojure) AOT Tool
+==================================================================
 
 [![Try Gloat Live Demo](
 https://img.shields.io/badge/Try_Gloat-Live_Demo-blue?logo=github)](

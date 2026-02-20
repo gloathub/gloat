@@ -129,6 +129,11 @@ serve-demo:
 
 clean:: local-chmod
 	$(MAKE) -C demo $@
+	$(MAKE) -C www $@
+
+realclean:: local-chmod
+	$(MAKE) -C demo $@
+	$(MAKE) -C www $@
 
 test/call: $(TEST-CALL-DEPS)
 	gloat -qf $< -o $@

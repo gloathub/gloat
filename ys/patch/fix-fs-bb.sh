@@ -2,21 +2,25 @@
 # Fix read and write functions in ys.fs for Babashka compatibility
 tmpfile=$1
 
-# Use sed to replace the functions
+# Use perl to replace the functions
 # Fix read function
-sed -i '/^(defn read \[path\]/,/^      (util\/die/c\
-(defn read [path]\
-  "Read file contents as string"\
-  (try\
-    (slurp path)\
-    (catch Exception e\
-      (die "Failed to read file: " path))))' "$tmpfile"
+perl -i -pe '
+  if (/^\(defn read \[path\]/ .. /^      \(util\/die/) {
+    if (/^      \(util\/die/) {
+      $_ = qq{(defn read [path]\n  "Read file contents as string"\n  (try\n    (slurp path)\n    (catch Exception e\n      (die "Failed to read file: " path))))\n};
+    } else {
+      $_ = "";
+    }
+  }
+' "$tmpfile"
 
 # Fix write function
-sed -i '/^(defn write \[path content\]/,/^      (util\/die/c\
-(defn write [path content]\
-  "Write string content to file"\
-  (try\
-    (spit path content)\
-    (catch Exception e\
-      (die "Failed to write file: " path))))' "$tmpfile"
+perl -i -pe '
+  if (/^\(defn write \[path content\]/ .. /^      \(util\/die/) {
+    if (/^      \(util\/die/) {
+      $_ = qq{(defn write [path content]\n  "Write string content to file"\n  (try\n    (spit path content)\n    (catch Exception e\n      (die "Failed to write file: " path))))\n};
+    } else {
+      $_ = "";
+    }
+  }
+' "$tmpfile"

@@ -23,9 +23,9 @@ save-patch() (
     $skip && continue
 
     clj=${f#ys/src/}
-    name=$(echo "$clj" | tr '/' '-' | sed 's/\.clj$//')
+    name=$(echo "$clj" | tr '/' '-' | perl -pe 's/\.clj$//')
     diff -u <(curl -sL "$repo_url/$clj") "$f" 2>/dev/null \
-      | sed '1,2s/\t.*//' > "ys/patch/$name.patch" || true
+      | perl -pe 's/\t.*// if 1..2' > "ys/patch/$name.patch" || true
     if [ ! -s "ys/patch/$name.patch" ]; then
       rm -f "ys/patch/$name.patch"
     else
@@ -103,8 +103,8 @@ release() (
   message=${2:-Release v$version}
 
   # --- Update version in all files ---
-  sed -i "s/^YS-PKG-VERSION .*/YS-PKG-VERSION ?= v$version/" Makefile
-  sed -i "s/^export GLOAT_VERSION=.*/export GLOAT_VERSION=$version/" \
+  perl -i -pe "s/^YS-PKG-VERSION .*/YS-PKG-VERSION ?= v$version/" Makefile
+  perl -i -pe "s/^export GLOAT_VERSION=.*/export GLOAT_VERSION=$version/" \
     bin/gloat
 
   { echo "- version: $version"

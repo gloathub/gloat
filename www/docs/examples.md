@@ -1,4 +1,5 @@
-# Examples
+Examples
+========
 
 Gloat includes over **50 demo programs** in both Clojure and YAMLScript.
 These examples demonstrate the compilation pipeline and showcase what you can
@@ -7,6 +8,7 @@ build.
 All examples are available in the [`demo/`](
 https://github.com/gloathub/gloat/tree/main/demo) directory of the
 repository.
+
 
 ## Running Examples
 
@@ -21,6 +23,7 @@ make run FILE=demo/clojure/factorial.clj a='10'
 gloat demo/yamlscript/dragon-curve.ys -o dragon
 ./dragon
 ```
+
 
 ## Try Them
 
@@ -47,6 +50,7 @@ make demo-server
 # Or run individual examples
 make run FILE=demo/yamlscript/dragon-curve.ys
 ```
+
 
 ## Contributing Examples
 

@@ -1,34 +1,43 @@
-# Getting Started
+Getting Started
+===============
+
 
 ## Installation
 
 Gloat has **zero dependencies** - everything installs automatically on first
 use.
 
+
 ### Clone and Setup
+
+For Bash, Fish or Zsh:
 
 ```bash
 git clone https://github.com/gloathub/gloat
-cd gloat
-source .rc
+source gloat/.rc
 gloat --help
 ```
 
-The `source .rc` command adds the `gloat` command to your PATH.
+The `source gloat/.rc` command adds the `gloat` command to your PATH, enables
+the `man gloat` help and sets up `gloat` tab completion.
 
 On first run, Gloat will automatically install all required tools (Go, Glojure,
-YAMLScript, Babashka) to `.cache/.local/` within the project directory.
+YAMLScript, Babashka, etc) to `.cache/.local/` within the project directory.
+Just run `gloat --help` once to complete the setup.
+
 
 ### Permanent Installation
 
 To make Gloat available in all terminal sessions, add this to your shell's rc
-file (`~/.bashrc`, `~/.zshrc`, etc.):
+file (`~/.bashrc`, `~/.fishrc` or `~/.zshrc`):
 
 ```bash
-source /absolute/path/to/gloat/.rc
+source /path/to/gloat/.rc
 ```
 
+
 ## Basic Usage
+
 
 ### Compile to Binary
 
@@ -45,6 +54,7 @@ gloat app.clj -o myapp
 gloat program.ys -o program
 ```
 
+
 ### View Intermediate Formats
 
 Output any stage of the compilation pipeline:
@@ -59,6 +69,7 @@ gloat code.ys -t glj
 # View generated Go
 gloat code.ys -t go
 ```
+
 
 ### Save to Files
 
@@ -79,6 +90,7 @@ gloat app.ys -t .glj       # Creates app.glj
 gloat app.ys -t .go        # Creates app.go
 ```
 
+
 ## Output Formats
 
 Gloat supports multiple output formats:
@@ -95,6 +107,7 @@ Gloat supports multiple output formats:
 | `wasm` | `.wasm` | WebAssembly (WASI) |
 | `js`   | `-t js` with `.wasm` | WebAssembly (JavaScript) |
 
+
 ## Directory Output
 
 Create a self-contained Go project directory:
@@ -110,13 +123,11 @@ build/
 ├── Makefile           # Makes-based build (auto-installs Go)
 ├── go.mod             # Go module definition
 ├── main.go            # Entry point
-└── pkg/               # Compiled namespaces
-    ├── app/core/
-    ├── ys/std/
-    └── ys/v0/
+└── pkg/app/core/      # Glojure runtime code
 ```
 
 Anyone can build it with just `make` - Go is automatically installed.
+
 
 ## Cross-Compilation
 
@@ -139,6 +150,7 @@ gloat app.ys -o app.wasm -p wasip1/wasm    # WASI
 gloat app.ys -o app.wasm -p js/wasm        # JavaScript
 ```
 
+
 ### Supported Platforms
 
 | OS | Architectures |
@@ -152,6 +164,7 @@ gloat app.ys -o app.wasm -p js/wasm        # JavaScript
 
 Run `go tool dist list` to see all supported targets.
 
+
 ## Compile and Run
 
 Use `--run` to compile to a temporary binary and execute it:
@@ -164,6 +177,7 @@ gloat --run app.ys
 gloat --run app.ys -- arg1 arg2
 ```
 
+
 ## WebAssembly Output
 
 Create Wasm modules for browser or WASI environments:
@@ -175,6 +189,7 @@ gloat app.ys -o app.wasm
 # JavaScript target (for browsers)
 gloat app.ys -o app.wasm -t js
 ```
+
 
 ## Shared Libraries
 
@@ -193,6 +208,7 @@ gloat lib.clj -o mylib.dll -p windows/amd64
 
 This generates both the library file and a `.h` header file for C bindings.
 
+
 ## The Make Shell
 
 All Gloat dependencies are only accessible to Makefile rules, not your normal
@@ -206,6 +222,7 @@ make shell
 This starts a subshell with all tools in your PATH.
 Your prompt will change to indicate you're in the Make shell.
 Press Ctrl-D or type `exit` to return to your normal shell.
+
 
 ## Command-Line Options
 
@@ -223,6 +240,7 @@ Press Ctrl-D or type `exit` to return to your normal shell.
 -h, --help             Show help
 --version              Show version
 ```
+
 
 ## Next Steps
 

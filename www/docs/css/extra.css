@@ -19,11 +19,18 @@
   --gl-code-border: var(--gl-green-dark);
 }
 
-/* Logo gear styling */
-.logo-gear {
-  font-size: 2em;
-  display: inline-block;
-  line-height: 1;
+/* Logo mascot styling */
+.logo-mascot {
+  height: 28px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+/* Hero mascot styling */
+.mascot-img {
+  width: 400px;
+  border-radius: 50%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 /* Make site title clickable */
@@ -50,7 +57,7 @@ article > h1:first-of-type {
 /* Hero Section */
 .hero {
   text-align: center;
-  padding: 4rem 2rem;
+  padding: 2rem 2rem 0.05rem;
   background: linear-gradient(135deg, var(--gl-green) 0%, var(--gl-green-deep) 100%);
   color: white;
   margin: 0 1rem 3rem 0;
@@ -65,10 +72,8 @@ article > h1:first-of-type {
 }
 
 .hero-icon {
-  font-size: 4rem;
   margin-bottom: 1rem;
   display: inline-block;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
 .hero-subtitle {

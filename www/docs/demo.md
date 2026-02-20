@@ -1,4 +1,6 @@
-# Live Demo
+Live Demo
+=========
+
 
 ## Try Gloat in Your Browser
 
@@ -21,6 +23,7 @@ You can compile and run demo programs directly in your browser!
     You can use **Cmd/Ctrl + Shift + P → View Creation Log** to see the full
     initialization progress.
 
+
 ## What the Demo Does
 
 The demo server provides:
@@ -32,6 +35,7 @@ The demo server provides:
 
 All compilation happens server-side, and the resulting Wasm runs entirely in
 your browser using the WebAssembly System Interface (WASI).
+
 
 ## Running the Demo Locally
 
@@ -50,6 +54,7 @@ make demo-server
 
 This will start a local server at `http://localhost:8080` with the same
 interactive interface as the Codespaces version.
+
 
 ## After the Demo
 

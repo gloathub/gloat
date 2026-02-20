@@ -1,9 +1,12 @@
 <div class="hero">
-  <div class="hero-icon">⚙️</div>
+  <div class="hero-icon">
+    <img src="img/gloat.jpeg" alt="Gloat Mascot" class="mascot-img">
+  </div>
   <p class="hero-subtitle">
-    Gloat compiles Clojure & YAMLScript to native binaries and Wasm
+    Gloat compiles Clojure & YAMLScript to Go code, native binaries and Wasm
   </p>
 </div>
+
 
 ## The Compilation Pipeline
 
@@ -17,9 +20,10 @@
 
 Gloat takes your **Clojure** or **YAMLScript** source code and compiles it
 through multiple stages to produce standalone executables, WebAssembly modules,
-or shared libraries.
+or shared libraries; for 20+ OS/Architecture combinations.
 
 Each intermediate format can be output for inspection or further processing.
+
 
 ## Key Features
 
@@ -28,7 +32,8 @@ Each intermediate format can be output for inspection or further processing.
     <span class="feature-icon">🚀</span>
     <h3 class="feature-title">Zero Dependencies</h3>
     <p class="feature-desc">
-      All tools (Go, Glojure, YAMLScript) auto-install on first use.
+      All tools (Go, Glojure, YAMLScript, Babashka, etc) auto-install on first
+      use.
       No manual setup required.
     </p>
   </div>
@@ -56,7 +61,7 @@ Each intermediate format can be output for inspection or further processing.
     <h3 class="feature-title">Shared Libraries</h3>
     <p class="feature-desc">
       Create .so/.dylib/.dll files with C headers.
-      Integrate with any language via FFI.
+      Integrate with nearly any programming language via FFI.
     </p>
   </div>
 
@@ -79,6 +84,7 @@ Each intermediate format can be output for inspection or further processing.
   </div>
 </div>
 
+
 ## Quick Example
 
 ```bash
@@ -95,7 +101,12 @@ gloat program.ys -o program.wasm
 gloat code.ys -t clj   # See generated Clojure
 gloat code.ys -t glj   # See generated Glojure
 gloat code.ys -t go    # See generated Go
+
+# Create a Go build directory
+gloat code.ys -o code/
+make -C code/ build     # Compile to binary
 ```
+
 
 ## Get Started
 

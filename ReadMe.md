@@ -1,6 +1,10 @@
 gloat - Glojure AOT Tool
 ========================
 
+<p align="center">
+  <img src="www/docs/img/gloat.jpeg" alt="Gloat Mascot" width="200">
+</p>
+
 [![Try Gloat Live Demo](
 https://img.shields.io/badge/Try_Gloat-Live_Demo-blue?logo=github)](
 https://codespaces.new/gloathub/gloat?quickstart=1)

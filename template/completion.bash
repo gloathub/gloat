@@ -45,11 +45,9 @@ _gloat() {
         return 0
     fi
 
-    # Complete source files (.ys, .clj, .glj)
-    COMPREPLY=( $(compgen -f -X '!*.@(ys|clj|glj)' -- "${cur}") )
-    if [[ ${#COMPREPLY[@]} -eq 0 ]]; then
-        COMPREPLY=( $(compgen -d -- "${cur}") )
-    fi
+    # Complete source files (.ys, .clj, .glj) and directories
+    COMPREPLY=( $(compgen -f -X '!*.@(ys|clj|glj)' -- "${cur}")
+                $(compgen -d -- "${cur}") )
 }
 
-complete -F _gloat gloat
+complete -o filenames -F _gloat gloat

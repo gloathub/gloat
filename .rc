@@ -1,14 +1,42 @@
 # shellcheck shell=bash disable=2086
 
-# Works for bash and zsh.
+# Works for bash, fish and zsh.
 
-PATH=$(cd -P "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd -P)/bin:$PATH
-
-export PATH
-
-# Auto-load shell completions
-if [ -n "$BASH_VERSION" ]; then
-  eval "$(gloat --complete=bash)"
-elif [ -n "$ZSH_VERSION" ]; then
-  eval "$(gloat --complete=zsh)"
+# bash
+test -n "$BASH_VERSION" && eval '
+GLOAT_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+PATH=$GLOAT_ROOT/bin:$PATH
+MANPATH=$GLOAT_ROOT/man:$(manpath 2>/dev/null)
+export PATH MANPATH
+if [[ -d $GLOAT_ROOT/.cache/.local ]]; then
+  source <(gloat --complete bash)
 fi
+return
+'
+
+# fish
+test -n "$FISH_VERSION" && eval '
+set GLOAT_ROOT (cd (dirname (status filename)) && pwd -P)
+set PATH $GLOAT_ROOT/bin:$PATH
+set MANPATH $GLOAT_ROOT/man:(manpath 2>/dev/null)
+export PATH MANPATH
+gloat --complete fish | source
+exit
+'
+
+# zsh
+test -n "$ZSH_VERSION" && eval '
+GLOAT_ROOT=$(cd "$(dirname "$0")" && pwd -P)
+PATH=$GLOAT_ROOT/bin:$GLOAT_ROOT/local/bin:$PATH
+MANPATH=$GLOAT_ROOT/man:$GLOAT_ROOT/local/man:$(manpath 2>/dev/null)
+export PATH MANPATH
+if [[ -d $GLOAT_ROOT/.cache/.local ]]; then
+  eval "$(gloat --complete zsh)"
+fi
+return
+'
+
+echo "ERROR: gloat/.rc is not set up to work for shell '$0'"
+false
+
+# vim: ft=sh:

@@ -1,5 +1,3 @@
-#compdef gloat
-
 _gloat() {
     local -a formats platforms shells
 
@@ -56,4 +54,4 @@ _gloat() {
     esac
 }
 
-_gloat "$@"
+compdef _gloat gloat

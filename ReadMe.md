@@ -1,13 +1,11 @@
 gloat - Glojure AOT Tool
 ========================
 
-<p align="center">
-  <img src="www/docs/img/gloat.jpeg" alt="Gloat Mascot" width="200">
-</p>
-
 [![Try Gloat Live Demo](
 https://img.shields.io/badge/Try_Gloat-Live_Demo-blue?logo=github)](
 https://codespaces.new/gloathub/gloat?quickstart=1)
+
+<img src="www/docs/img/gloat.jpeg" alt="Gloat Mascot" width="400">
 
 [Gloat](https://gloathub.org) compiles [Clojure](https://clojure.org) or
 [YAMLScript](https://yamlscript.org) to [Go](https://go.dev) code or native
@@ -205,15 +203,10 @@ Go project that builds with zero pre-installed dependencies:
 
 ```
 build/
-├── Makefile
-├── go.mod
-├── main.go
-└── pkg/
-    ├── app/core/loader.go
-    ├── yamlscript/util/loader.go
-    ├── ys/dwim/loader.go
-    ├── ys/std/loader.go
-    └── ys/v0/loader.go
+├── Makefile           # Makes-based build (auto-installs Go)
+├── go.mod             # Go module definition
+├── main.go            # Entry point
+└── pkg/app/core/      # Glojure runtime code
 ```
 
 Anyone can build it with just `make` - Go is automatically installed.
@@ -324,8 +317,8 @@ The Makefile is set up so that you don't need to install any dependencies.
 They get installed the first time they are needed by a rule invoked by a `make`
 command that you run.
 
-However, these tools are only accessible to the Makefile rules that get run
-when you use `make` commands.
+However, these tools are only accessible inside the Makefile; to the rules that
+get run when you use `make` commands.
 In other words, they are NOT available for you to run directly in your shell.
 
 Sometimes you want to run these commands like `go`, `ys` and `bb` directly in

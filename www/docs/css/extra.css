@@ -284,3 +284,340 @@ table tr:hover {
   opacity: 0.7;
   font-size: 0.9rem;
 }
+
+/* ===== Demo Page ===== */
+
+/* Hide navigation tabs on demo page */
+body:has(#demo-intro) .md-tabs {
+  display: none;
+}
+
+/* Reduce top whitespace on demo page (no sidebars) */
+.md-main__inner > .md-content > .md-content__inner > #demo-intro:first-child {
+  margin-top: 0;
+}
+
+#demo-intro {
+  margin-bottom: 0.5rem;
+}
+
+/* Tighten demo page vertical spacing */
+.md-main:has(#demo-intro) {
+  padding-top: 0;
+}
+
+.md-main:has(#demo-intro) .md-main__inner {
+  margin-top: 0;
+}
+
+.md-content__inner:has(#demo-intro) {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.demo-selector {
+  margin-bottom: 0.75rem;
+}
+
+.demo-code-panel {
+  margin-bottom: 0.5rem;
+}
+
+.demo-controls {
+  margin-bottom: 0.5rem;
+}
+
+/* Two-column layout: source on left, output on right */
+.demo-layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.demo-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.demo-right {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Selector bar: program dropdown + language toggle */
+.demo-selector {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--gl-code-bg);
+  border: 2px solid var(--gl-code-border);
+  border-radius: 8px;
+}
+
+.demo-selector label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.demo-selector select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--gl-code-border);
+  border-radius: 4px;
+  background: var(--md-default-bg-color, #fff);
+  color: var(--md-default-fg-color, #333);
+  font-family: inherit;
+  font-size: 0.9rem;
+  min-width: 200px;
+}
+
+/* Language radio toggle */
+.demo-lang-toggle {
+  display: flex;
+  gap: 0.25rem;
+  border: 1px solid var(--gl-code-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.demo-lang-toggle input[type="radio"] {
+  display: none;
+}
+
+.demo-lang-toggle label {
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: none;
+}
+
+.demo-lang-toggle input[type="radio"]:checked + label {
+  background: var(--gl-green);
+  color: white;
+}
+
+/* Code panels */
+.demo-code-panel {
+  margin-bottom: 1rem;
+  border: 2px solid var(--gl-code-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.demo-code-panel .demo-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background: var(--gl-green);
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: default;
+}
+
+.demo-code-panel.demo-collapsible .demo-panel-header {
+  cursor: pointer;
+  user-select: none;
+}
+
+.demo-code-panel .demo-panel-header .demo-toggle-icon::after {
+  content: '\25BC';
+  font-size: 0.7rem;
+  margin-left: 0.5rem;
+}
+
+.demo-code-panel.demo-collapsed .demo-panel-header .demo-toggle-icon::after {
+  content: '\25B6';
+}
+
+.demo-pre-wrap {
+  position: relative;
+}
+
+.demo-copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--gl-code-border);
+  border-radius: 4px;
+  padding: 0.2rem 0.4rem;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  color: var(--md-default-fg-color, #333);
+}
+
+.demo-pre-wrap:hover .demo-copy-btn {
+  opacity: 0.7;
+}
+
+.demo-copy-btn:hover {
+  opacity: 1 !important;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+[data-md-color-scheme="slate"] .demo-copy-btn {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+[data-md-color-scheme="slate"] .demo-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.demo-code-panel pre {
+  margin: 0;
+  max-height: 400px;
+  overflow: auto;
+  background: var(--gl-code-bg);
+}
+
+.demo-code-panel.demo-collapsed pre {
+  display: none;
+}
+
+.demo-code-panel pre code {
+  display: block;
+  padding: 1rem;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  white-space: pre;
+  background: none;
+}
+
+/* Controls bar: args + run button */
+.demo-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.demo-controls select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--gl-code-border);
+  border-radius: 4px;
+  background: var(--md-default-bg-color, #fff);
+  color: var(--md-default-fg-color, #333);
+  font-family: inherit;
+  font-size: 0.9rem;
+  min-width: 180px;
+}
+
+.demo-run-btn {
+  padding: 0.5rem 1.5rem;
+  background: var(--gl-green);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.demo-run-btn:hover:not(:disabled) {
+  background: var(--gl-green-deep);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px var(--gl-glow);
+}
+
+.demo-run-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Output panel */
+.demo-output-panel {
+  border: 2px solid var(--gl-code-border);
+  border-radius: 8px;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-output-panel .demo-panel-header {
+  padding: 0.5rem 1rem;
+  background: var(--gl-green-dark);
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.demo-output-text {
+  min-height: 400px;
+  max-height: 600px;
+  flex: 1;
+  overflow: auto;
+  padding: 1rem;
+  background: var(--gl-code-bg);
+  color: var(--md-default-fg-color, #333);
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+.demo-feedback {
+  color: var(--gl-accent);
+  font-style: italic;
+}
+
+/* Loading indicator */
+.demo-loading {
+  display: none;
+  padding: 0.5rem 1rem;
+  background: var(--gl-green-dark);
+  color: var(--gl-green-light);
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.8rem;
+  text-align: center;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+/* Dark mode overrides for demo */
+[data-md-color-scheme="slate"] .demo-selector select,
+[data-md-color-scheme="slate"] .demo-controls select {
+  background: #37474f;
+  color: #e0e0e0;
+  border-color: var(--gl-green-dark);
+}
+
+
+/* Responsive demo: stack columns on narrow screens */
+@media (max-width: 960px) {
+  .demo-layout {
+    flex-direction: column;
+  }
+
+  .demo-selector {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .demo-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .demo-controls select,
+  .demo-run-btn {
+    width: 100%;
+  }
+}

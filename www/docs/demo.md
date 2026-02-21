@@ -1,73 +1,122 @@
-Live Demo
-=========
+---
+title: Live Demo
+hide:
+- navigation
+- toc
+---
 
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+  media="(prefers-color-scheme: light)">
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+  media="(prefers-color-scheme: dark)">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/clojure.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="../demo-assets/wasm_exec.js"></script>
+<script src="../javascripts/demo.js"></script>
 
-## Try Gloat in Your Browser
+<p id="demo-intro">Run pre-compiled Wasm programs.
+Select a program, view the Source/Glojure/Go, click <strong>Run</strong>.</p>
 
-Click the badge below to launch an interactive Gloat demo in GitHub Codespaces:
-
-<div class="badge">
-  <a href="https://codespaces.new/gloathub/gloat?quickstart=1">
-    <img src="https://img.shields.io/badge/Try_Gloat-Live_Demo-blue?logo=github" alt="Try Gloat Live Demo">
-  </a>
+<!-- Program selector + language toggle -->
+<div class="demo-selector">
+  <div class="demo-lang-toggle">
+    <input type="radio" name="demo-lang" id="lang-ys"
+           value="yamlscript" checked>
+    <label for="lang-ys">YAMLScript</label>
+    <input type="radio" name="demo-lang" id="lang-clj"
+           value="clojure">
+    <label for="lang-clj">Clojure</label>
+  </div>
+  <select id="demo-program"></select>
 </div>
 
-The demo will open in a VS Code environment and automatically start a web-based
-demo server.
-You can compile and run demo programs directly in your browser!
+<div class="demo-layout">
 
-!!! warning "Startup Time"
-    The Codespaces environment takes **1-2 minutes** to fully initialize.
-    You'll see a VS Code editor first, then the demo page will appear in a pane.
+<!-- Left column: source + intermediates -->
+<div class="demo-left">
 
-    You can use **Cmd/Ctrl + Shift + P → View Creation Log** to see the full
-    initialization progress.
+<!-- Source code panel -->
+<div class="demo-code-panel demo-collapsible" id="demo-source">
+  <div class="demo-panel-header" onclick="demoAccordion(this)">
+    <span class="demo-source-title">YAMLScript Source</span>
+    <span class="demo-toggle-icon"></span>
+  </div>
+  <div class="demo-pre-wrap">
+    <button class="demo-copy-btn" onclick="demoCopy(this)" title="Copy">&#x2398;</button>
+    <pre><code></code></pre>
+  </div>
+</div>
 
+<!-- Glojure intermediate -->
+<div class="demo-code-panel demo-collapsible demo-collapsed" id="demo-glj">
+  <div class="demo-panel-header" onclick="demoAccordion(this)">
+    <span>Glojure (intermediate)</span>
+    <span class="demo-toggle-icon"></span>
+  </div>
+  <div class="demo-pre-wrap">
+    <button class="demo-copy-btn" onclick="demoCopy(this)" title="Copy">&#x2398;</button>
+    <pre><code></code></pre>
+  </div>
+</div>
 
-## What the Demo Does
+<!-- Go intermediate -->
+<div class="demo-code-panel demo-collapsible demo-collapsed" id="demo-go">
+  <div class="demo-panel-header" onclick="demoAccordion(this)">
+    <span>Go (intermediate)</span>
+    <span class="demo-toggle-icon"></span>
+  </div>
+  <div class="demo-pre-wrap">
+    <button class="demo-copy-btn" onclick="demoCopy(this)" title="Copy">&#x2398;</button>
+    <pre><code></code></pre>
+  </div>
+</div>
 
-The demo server provides:
+</div>
 
-- **Interactive code editor** - Choose from 50+ demo programs
-- **Compile button** - Converts your code to WebAssembly
-- **Run button** - Executes the Wasm in your browser
-- **Multi-format output** - View generated Glojure and Go code
+<!-- Right column: controls + output -->
+<div class="demo-right">
 
-All compilation happens server-side, and the resulting Wasm runs entirely in
-your browser using the WebAssembly System Interface (WASI).
+<div class="demo-controls">
+  <button id="demo-run" class="demo-run-btn">Run</button>
+  <select id="demo-args"></select>
+</div>
 
+<div id="demo-loading" class="demo-loading"></div>
 
-## Running the Demo Locally
+<div class="demo-output-panel" id="demo-output">
+  <div class="demo-panel-header">
+    <span>Output</span>
+  </div>
+  <pre class="demo-output-text"></pre>
+</div>
 
-If you've cloned the Gloat repository, you can run the demo on your local
-machine:
+</div>
 
-```bash
-# Clone and setup
-git clone https://github.com/gloathub/gloat
-cd gloat
-source .rc
-
-# Start the demo server
-make demo-server
-```
-
-This will start a local server at `http://localhost:8080` with the same
-interactive interface as the Codespaces version.
-
-
-## After the Demo
-
-Once you've tried the demo, check out:
-
-- [Getting Started](getting-started.md) - Install Gloat locally
-- [Examples](examples.md) - Browse all demo programs
-- [GitHub Repository](https://github.com/gloathub/gloat) - Source code and
-  documentation
+</div>
 
 ---
 
-!!! note "Future Plans"
-    We're working on a **fully static demo** that will run without requiring a
-    server. This will enable instant experimentation without the Codespaces
-    startup delay.
+## Want more programs?
+
+This static demo includes 4 programs pre-compiled to Glojure, Go and Wasm.
+
+For the full 25+ program experience with live editing and compilation, try the
+[Codespaces demo](https://codespaces.new/gloathub/gloat?quickstart=1).
+
+Or run it locally:
+
+```bash
+git clone https://github.com/gloathub/gloat
+cd gloat
+make serve-demo
+```
+
+> **Note** Running locally is much faster, as **it takes the Codespaces demo up
+> to 2 minutes to fully warm up**.
+>
+> On the other hand, the Codespaces demo allows you to do everything without
+> running any code locally.

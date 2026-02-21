@@ -12,7 +12,7 @@ PYTHON-VENV-SETUP := pip install -r requirements.txt
 
 REPO ?= git@github.com:gloathub/gloat
 
-MAKES-CLEAN := site
+MAKES-CLEAN := site docs/demo-assets
 MAKES-REALCLEAN := $(PYTHON-VENV)
 MAKES-DISTCLEAN := .cache/
 
@@ -20,14 +20,25 @@ DEPS := \
   $(PYTHON-VENV) \
 
 
+DEMO-PROGRAMS := \
+  99-bottles-of-beer \
+  dragon-curve \
+  fizzbuzz \
+  floyds-triangle \
+
+DEMO-LANGS := yamlscript clojure
+DEMO-STAGES := glj go js
+DEMO-ASSETS := docs/demo-assets
+DEMO-BRANCH := demo-assets
+
 default::
 
 # Build main site (production)
-site: $(DEPS)
+site: $(DEPS) demo-assets
 	mkdocs build -d $@
 
 # Serve locally with MkDocs
-serve: $(DEPS)
+serve: $(DEPS) demo-assets
 	mkdocs serve --livereload
 
 # Build alias for backwards compatibility
@@ -45,3 +56,41 @@ publish: site
 	  git commit -m 'Deploy to production' && \
 	  git push -f $(REPO) HEAD:gh-pages
 	$(RM) -r $<
+
+# Extract pre-compiled demo assets from demo-assets branch and source
+# files from demo/ for the static WASM demo page
+demo-assets: $(DEPS) $(DEMO-ASSETS)/.built
+
+$(DEMO-ASSETS)/.built:
+	@echo "Extracting demo assets..."
+	@$(RM) -r $(DEMO-ASSETS)
+	@mkdir -p $(DEMO-ASSETS)
+	@# Extract wasm_exec.js
+	git show $(DEMO-BRANCH):wasm_exec.js > $(DEMO-ASSETS)/wasm_exec.js
+	@# Extract compiled files for each language/program/stage
+	@for lang in $(DEMO-LANGS); do \
+	  for stage in $(DEMO-STAGES); do \
+	    mkdir -p $(DEMO-ASSETS)/$$lang/$$stage; \
+	    for prog in $(DEMO-PROGRAMS); do \
+	      git show $(DEMO-BRANCH):$$lang/$$stage/$$prog.$$stage \
+	        > $(DEMO-ASSETS)/$$lang/$$stage/$$prog.$$stage; \
+	    done; \
+	  done; \
+	done
+	@# Copy source files from demo/
+	@for prog in $(DEMO-PROGRAMS); do \
+	  mkdir -p $(DEMO-ASSETS)/yamlscript/src; \
+	  cp ../demo/yamlscript/$$prog.ys $(DEMO-ASSETS)/yamlscript/src/; \
+	  mkdir -p $(DEMO-ASSETS)/clojure/src; \
+	  cp ../demo/clojure/$$prog.clj $(DEMO-ASSETS)/clojure/src/; \
+	done
+	@# Generate config.json filtered to demo programs
+	$(PYTHON-VENV)/bin/python3 -c " \
+	import yaml, json, sys; \
+	config = yaml.safe_load(open('../demo/config.yaml')); \
+	programs = '$(DEMO-PROGRAMS)'.split(); \
+	filtered = {k: v for k, v in config.items() if k in programs}; \
+	json.dump(filtered, sys.stdout, indent=2)" \
+	  > $(DEMO-ASSETS)/config.json
+	@touch $@
+	@echo "Demo assets ready in $(DEMO-ASSETS)/"

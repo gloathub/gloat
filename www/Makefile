@@ -8,7 +8,16 @@ include $M/typos.mk
 SHELL-DEPS += $(PYTHON-VENV)
 include $M/shell.mk
 
-PYTHON-VENV-SETUP := pip install -r requirements.txt
+export UV_LINK_MODE := copy
+
+# Override venv creation: use uv venv by Python name so uv uses its own
+# installation metadata rather than probing the binary (which hangs with
+# uv-managed standalone Python builds due to ensurepip).
+$(PYTHON-VENV): $(PYTHON)
+	@echo '+++ Installing a Python virtualenv in $@'
+	uv venv --python $(PYTHON-NAME) $@
+	$(if $(wildcard requirements.txt),uv pip install -r requirements.txt,true)
+	@echo
 
 REPO ?= git@github.com:gloathub/gloat
 

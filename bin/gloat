@@ -5,7 +5,9 @@ set -euo pipefail
 export GLOAT_VERSION=0.1.1
 
 main() (
-  root=$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
+  self=${BASH_SOURCE[0]}
+  [[ -L $self ]] && self=$(readlink -f "$self")
+  root=$(cd -P "$(dirname "$self")/.." && pwd -P)
 
   PATH=$(make --quiet --no-print-directory -C "$root" path)
   export PATH

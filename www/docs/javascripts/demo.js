@@ -3,12 +3,43 @@
 
 // Copy code to clipboard
 function demoCopy(btn) {
-  var code = btn.parentElement.querySelector('code');
+  event.stopPropagation();
+  var panel = btn.closest('.demo-code-panel');
+  if (!panel) return;
+  var code = panel.querySelector('code');
   if (!code) return;
   navigator.clipboard.writeText(code.textContent).then(function() {
-    btn.textContent = '\u2713';
-    setTimeout(function() { btn.innerHTML = '\u2398'; }, 1500);
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+    setTimeout(function() { btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>'; }, 1500);
   });
+}
+
+// Easter egg: triple-click the home arrow to clear demo localStorage
+function demoResetCheck(e) {
+  if (e.detail === 3) {
+    e.preventDefault();
+    Object.keys(localStorage).forEach(function(k) {
+      if (k.startsWith('demo-')) localStorage.removeItem(k);
+    });
+    location.reload();
+  }
+}
+
+// Open code panel content in a new tab as plain text
+function demoViewCode(e, panelId) {
+  e.stopPropagation();
+  var code = document.getElementById(panelId).querySelector('code');
+  if (!code) return;
+  var blob = new Blob([code.textContent], { type: 'text/plain' });
+  var url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+}
+
+// Scroll output pane to top or bottom
+function demoScrollOutput(dir) {
+  var el = document.querySelector('.demo-output-text');
+  if (!el) return;
+  el.scrollTo({ top: dir === 'top' ? 0 : el.scrollHeight, behavior: 'smooth' });
 }
 
 // Accordion: expanding one panel collapses the other two
@@ -32,7 +63,7 @@ function demoAccordion(header) {
 
   let config = {};
   let cachedModules = {};  // lang/prog -> compiled WebAssembly.Module
-  let currentLang = 'yamlscript';
+  let currentLang = 'clojure';
   let currentProg = '';
 
   // DOM elements (resolved after DOMContentLoaded)
@@ -148,9 +179,15 @@ function demoAccordion(header) {
     const gljPath = `${currentLang}/glj/${currentProg}.glj`;
     const goPath = `${currentLang}/go/${currentProg}.go`;
 
-    // Update source panel title
+    // Update source panel title and raw links
     var titleEl = sourcePanel.querySelector('.demo-source-title');
     if (titleEl) titleEl.textContent = langName[currentLang] + ' Source';
+    var srcLink = document.getElementById('demo-source-link');
+    var gljLink = document.getElementById('demo-glj-link');
+    var goLink = document.getElementById('demo-go-link');
+    if (srcLink) srcLink.href = ASSETS + '/' + srcPath;
+    if (gljLink) gljLink.href = ASSETS + '/' + gljPath;
+    if (goLink) goLink.href = ASSETS + '/' + goPath;
 
     // Clear output
     outputPanel.querySelector('.demo-output-text').textContent = '';
@@ -182,6 +219,14 @@ function demoAccordion(header) {
   // Get the cache key for current selection
   function cacheKey() {
     return currentLang + '/' + currentProg;
+  }
+
+  // Show/hide output scroll buttons based on scrollability
+  function updateScrollBtns() {
+    var el = outputPanel ? outputPanel.querySelector('.demo-output-text') : null;
+    var btns = document.getElementById('demo-output-scroll-btns');
+    if (!el || !btns) return;
+    btns.style.display = el.scrollHeight > el.clientHeight ? 'inline-flex' : 'none';
   }
 
   // Run the selected program
@@ -303,13 +348,16 @@ function demoAccordion(header) {
         cachedModules[key], go.importObject
       );
 
+      const runStart = performance.now();
       await go.run(instance);
+      const runMs = Math.round(performance.now() - runStart);
 
       // Render buffered output
       const escaped = outputBuffer.map(escapeHtml).join('\n');
       outputText.innerHTML += escaped + '\n';
       outputText.innerHTML +=
-        '<span class="demo-feedback">Program complete.</span>';
+        '<span class="demo-feedback">Program complete (' + runMs + 'ms).</span>';
+      setTimeout(updateScrollBtns, 50);
 
     } catch (err) {
       outputText.innerHTML +=
@@ -345,7 +393,7 @@ function demoAccordion(header) {
       return;
     }
 
-    currentLang = localStorage.getItem('demo-lang') || 'yamlscript';
+    currentLang = localStorage.getItem('demo-lang') || 'clojure';
     currentProg = localStorage.getItem('demo-prog') || '';
 
     populatePrograms();
@@ -386,6 +434,29 @@ function demoAccordion(header) {
     // Event: run button
     runBtn.addEventListener('click', runProgram);
 
+    // Size panes to fill to bottom of viewport
+    function fitOutputPane() {
+      var el = outputPanel.querySelector('.demo-output-text');
+      var layout = document.querySelector('.demo-layout');
+      if (!el || !layout) return;
+      var layoutTop = layout.getBoundingClientRect().top;
+      var margin = 16;
+      var totalH = Math.max(window.innerHeight - layoutTop - margin, 300);
+      // Set the layout height so both columns are equal via CSS stretch
+      layout.style.height = totalH + 'px';
+      // Output text fills whatever remains in right column
+      var rightTop = document.querySelector('.demo-right').getBoundingClientRect().top;
+      var textTop = el.getBoundingClientRect().top;
+      var textH = Math.max(totalH - (textTop - rightTop), 200);
+      el.style.minHeight = textH + 'px';
+      el.style.maxHeight = textH + 'px';
+      setTimeout(updateScrollBtns, 0);
+    }
+    requestAnimationFrame(function() {
+      fitOutputPane();
+    });
+    window.addEventListener('resize', fitOutputPane);
+
     // Load first program
     await loadProgram();
 
@@ -404,8 +475,20 @@ function demoAccordion(header) {
   }
 
   // Support both full page loads and MkDocs instant navigation
-  document.addEventListener('DOMContentLoaded', initDemo);
+  // Use document$ if available (instant nav), otherwise DOMContentLoaded
+  var initialized = false;
+  async function initOnce() {
+    if (initialized && document.getElementById('demo-program')) return;
+    initialized = true;
+    await initDemo();
+  }
+
   if (typeof document$ !== 'undefined') {
-    document$.subscribe(initDemo);
+    document$.subscribe(function() {
+      initialized = false;
+      initOnce();
+    });
+  } else {
+    document.addEventListener('DOMContentLoaded', initOnce);
   }
 })();

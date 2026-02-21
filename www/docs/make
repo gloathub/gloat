@@ -12,7 +12,7 @@ $(shell git clone -q https://github.com/makeplus/makes $M)
 include $M/init.mk
 
 # Configure glojure to use gloat's custom fork
-GLOJURE-VERSION := 0.6.5-rc5
+GLOJURE-VERSION := 0.6.5-rc6
 GLOJURE-REPO := https://github.com/gloathub/glojure
 
 include $M/glojure.mk

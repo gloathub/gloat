@@ -154,19 +154,19 @@ gloat -r demo/clojure/even-or-odd.clj -- 7 42 31337
 To pass options to a program run with \fBgloat --run\fR, put the after a \fB--\fR arg.
 
 .SH Shared Library Bindings
-Gloat can compile YAMLScript to shared libraries (\fB.so\fR/\fB.dylib\fR/\fB.dll\fR)
+Gloat can compile YAMLScript to shared libraries (\fB\&.so\fR/\fB\&.dylib\fR/\fB\&.dll\fR)
 with auto-generated C header files, enabling FFI (Foreign Function Interface)
-bindings from \fB23 programming languages\fR.
+bindings from \fB23 programming languages\fP\&.
 
 .PP
-The \fBdemo/so-bindings/\fR directory contains working examples for every
-supported language, all calling the same shared library compiled from a single
-YAMLScript source file (\fBdemo/so-bindings/example.ys\fR).
+The \fBdemo/so-bindings/\fR directory
+contains working examples for every supported language, all calling the same
+shared library compiled from a single YAMLScript source file
+(\fBdemo/so-bindings/example.ys\fR).
 
 .PP
-The library exports 6 functions: \fBfactorial\fR, \fBgreet\fR,
-\fBrepeat_string\fR, \fBshout_it\fR, \fBmaybe\fR, and
-\fBsort_json_array\fR.
+The library exports 6 functions: \fBfactorial\fR, \fBgreet\fR, \fBrepeat_string\fR,
+\fBshout_it\fR, \fBmaybe\fR, and \fBsort_json_array\fR\&.
 
 .PP
 Supported languages:
@@ -188,11 +188,8 @@ Clone this repository and source the appropriate rc file for your shell:
 .EX
 $ git clone https://github.com/gloathub/gloat
 
-# For Bash or Zsh
+# For Bash, Fish or Zsh
 $ source gloat/.rc
-
-# For Fish
-$ source gloat/.fishrc
 
 $ gloat --help
 ==> Installing gloat dependencies (bb, glj, go, ys) locally into:
@@ -200,6 +197,9 @@ $ gloat --help
     /home/ingy/src/gloat/worktree/clojure-rewrite/.cache/.local/
 
 Press Enter to continue (or Ctrl-C to cancel)...
+\&...installs stuff within the gloat repo dir...
+
+$ man gloat
 .EE
 
 .PP

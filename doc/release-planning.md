@@ -103,8 +103,10 @@ ingydotnet/gist (downstream project)
 # 1. Release glojure
 cd /path/to/glojure
 make clean && make all && make test
-git tag -a v0.6.6 -m "Release v0.6.6"
-git push gloathub gloat && git push gloathub v0.6.6
+make release-dist VERSION=v0.6.5-rc6
+
+# git tag -a v0.6.6 -m "Release v0.6.6"
+# git push gloathub gloat && git push gloathub v0.6.6
 
 # 2. Update gloat to use new glojure
 cd /path/to/gloat

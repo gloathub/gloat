@@ -229,7 +229,7 @@ version       Show version
     (try
       (with-open [rdr (io/reader (str file))]
         (let [content (slurp rdr)
-              match (re-find #"^\(ns\s+([^\s)]+)" content)]
+              match (re-find #"(?m)^\(ns\s+([^\s)]+)" content)]
           (when match (second match))))
       (catch Exception _ nil))))
 

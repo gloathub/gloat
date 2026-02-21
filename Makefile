@@ -12,6 +12,7 @@ include $M/shellcheck.mk
 include $M/yamlscript.mk
 include $M/wasmtime.mk
 include $M/brotli.mk
+include $M/md2man.mk
 include $M/gh.mk
 
 include $M/clean.mk
@@ -40,6 +41,8 @@ YS-PKG-VERSION ?= v0.1.1
 
 # Mark GLJ files as precious (don't auto-delete intermediate files)
 .PRECIOUS: $(YS-CLJ-FILES) $(YS-GLJ-FILES)
+
+MAN-PAGE := man/man1/gloat.1
 
 PATH-DEPS := \
   $(BB) \
@@ -82,7 +85,9 @@ path:
 env:
 	@echo 'export PATH="$(PATH)"'
 
-update: $(YS-GO-FILES)
+man: $(MAN-PAGE)
+
+update: $(YS-GO-FILES) $(MAN-PAGE)
 
 ys-pkg: $(YS-GO-FILES) $(GO)
 	@echo "Syncing ys/go/ to ys/pkg/"
@@ -197,6 +202,14 @@ ys/go/yamlscript/util/loader.go: ys/glj/yamlscript/util.glj $(GLJ)
 ys/go/%/loader.go: ys/glj/%.glj $(GLJ)
 	@echo "Compiling $< to $@"
 	make-do compile-glj $* $@
+
+$(MAN-PAGE): ReadMe.md $(MD2MAN)
+	@mkdir -p man/man1
+	perl -0777 -pe \
+	    's/^\[!\[.*?\)\n\n//msg; s/\[([^\]]+)\]\([^)]+\)/$$1/g' \
+	    ReadMe.md | \
+	  grep -v '^<img ' | \
+	  $(MD2MAN) > $@
 
 # std depends on fs and ipc being compiled first
 ys/go/ys/std/loader.go: ys/glj/ys/fs.glj ys/glj/ys/ipc.glj

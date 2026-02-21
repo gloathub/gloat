@@ -22,5 +22,8 @@ path-shellcheck: $(SHELLCHECK)
 path-wasmtime: $(WASMTIME)
 	@echo "$(abspath $<)"
 
+path-md2man: $(MD2MAN)
+	@echo "$(abspath $<)"
+
 path-ys: $(YS)
 	@echo "$(abspath $<)"

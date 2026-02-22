@@ -8,6 +8,38 @@ Gloat has **zero dependencies** - everything installs automatically on first
 use.
 
 
+### One-Line Installer
+
+Install gloat to `~/.local` with a single command:
+
+```bash
+make -f <(curl -sL gloathub.org/make) install
+```
+
+This clones the gloat repository to `~/.local/share/gloat`, creates a symlink
+at `~/.local/bin/gloat`, and installs all dependencies automatically.
+
+Make sure `~/.local/bin` is in your `PATH`, then run `gloat --help`.
+
+Run `make -f <(curl -sL gloathub.org/make) help` to see all available targets.
+
+**Options:**
+
+```bash
+# Install to a custom prefix
+make -f <(curl -sL gloathub.org/make) install PREFIX=~/mytools
+
+# Install a specific version
+make -f <(curl -sL gloathub.org/make) install VERSION=v0.1.2
+
+# Also install the glj compiler
+make -f <(curl -sL gloathub.org/make) install-glj
+
+# Uninstall
+make -f <(curl -sL gloathub.org/make) uninstall
+```
+
+
 ### Clone and Setup
 
 For Bash, Fish or Zsh:

@@ -183,6 +183,38 @@ make -C demo/so-bindings/python run
 .EE
 
 .SH Installation
+.SS One-Line Installer
+Install gloat to \fB~/.local\fR with a single command:
+
+.EX
+make -f <(curl -sL gloathub.org/make) install
+.EE
+
+.PP
+This clones the gloat repository to \fB~/.local/share/gloat\fR, creates a symlink
+at \fB~/.local/bin/gloat\fR, and installs all dependencies automatically.
+
+.PP
+Make sure \fB~/.local/bin\fR is in your \fBPATH\fR, then run \fBgloat --help\fR\&.
+
+.PP
+Run \fBmake -f <(curl -sL gloathub.org/make) help\fR to see all available targets.
+
+.EX
+# Install to a custom prefix
+make -f <(curl -sL gloathub.org/make) install PREFIX=~/mytools
+
+# Install a specific version
+make -f <(curl -sL gloathub.org/make) install VERSION=v0.1.2
+
+# Also install the glj compiler
+make -f <(curl -sL gloathub.org/make) install-glj
+
+# Uninstall
+make -f <(curl -sL gloathub.org/make) uninstall
+.EE
+
+.SS Clone and Setup
 Clone this repository and source the appropriate rc file for your shell:
 
 .EX

@@ -83,6 +83,10 @@ ifneq (,$(filter %-bb.t %-bin.t,$(tests)))
 TEST-DEPS += $(TEST-CALL)
 endif
 
+ifdef slow
+  export RUN_SLOW_TESTS := true
+endif
+
 
 run:
 	$(MAKE) --no-p -C demo run-bin$(if $(FILE), FILE=$(FILE:demo/%=%))$(if $a, a=$a)

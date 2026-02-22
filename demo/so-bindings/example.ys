@@ -1,5 +1,8 @@
 !ys-0
 
+require:
+  ys::json: => json
+
 EXPORT =::
   factorial: [int, int]
   greet: [str, str]

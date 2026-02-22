@@ -22,3 +22,10 @@
         (read-string s)
         s))
     args))
+
+(doseq [[sym var] (ns-publics 'ys.std)]
+  (let [v (intern 'ys.v0 sym (fn [& args] (apply @var args)))]
+    (alter-meta! v merge (meta var))))
+(doseq [[sym var] (ns-publics 'ys.dwim)]
+  (let [v (intern 'ys.v0 sym (fn [& args] (apply @var args)))]
+    (alter-meta! v merge (meta var))))

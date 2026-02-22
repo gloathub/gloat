@@ -1,5 +1,5 @@
 ---
-title: Live Demo
+title: Gloat Web Assembly Demo
 hide:
 - navigation
 - toc

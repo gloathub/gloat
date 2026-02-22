@@ -8,7 +8,7 @@ source .rc
 cd demo/ || bail-out "Cannot cd to demo/"
 
 # Clean up binaries on exit
-trap 'make -s clean >/dev/null' EXIT
+trap 'make -s clean &>/dev/null' EXIT
 
 # Helper function to test a binary
 test-bin() {

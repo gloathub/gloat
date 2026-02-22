@@ -1,3 +1,5 @@
+unexport PERL5OPT PERL5LIB
+
 BINDING := perl
 include ../../../common/so-bindings.mk
 

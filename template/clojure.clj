@@ -1,11 +1,5 @@
 (ns NAMESPACE
-  (:require [ys.fs :as fs]
-            [ys.http :as http]
-            [ys.ipc :as ipc]
-            [ys.json :as json]
-            [ys.std :refer :all]
-            [ys.dwim :refer :all]
-            [ys.v0 :refer [map-parse]])
+  (:require [ys.v0 :refer :all])
   (:refer-clojure :exclude [atom die print read replace reverse set]))
 
 (def ^:dynamic ARGV [])

@@ -1,5 +1,8 @@
 !ys-0
 
+require:
+  ys::fs: => fs
+
 defn main(fun *args):
   case fun:
     # IPC: sh (direct exec) - field extraction

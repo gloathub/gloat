@@ -53,6 +53,10 @@ WASM-EXEC-JS := wasm_exec.js
 CONFIG-YAML := config.yaml
 CONFIG-JSON := config.json
 
+BINARIES := $(wildcard yamlscript/*.ys)
+BINARIES := $(BINARIES:yamlscript/%.ys=%)
+WASMS := $(BINARIES:%=%.wasm)
+
 SERVE-DEPS := \
   $(BB) \
   $(CONFIG-JSON) \
@@ -70,22 +74,27 @@ BUILD-DEPS := \
 
 MAKE := $(MAKE) --no-pr
 
+MAKES-CLEAN := \
+  $(BINARIES) \
+  $(WASMS) \
+
+MAKEN := &>/dev/null $(MAKE)
+
 
 serve starting-this-demo-might-take-120-seconds-but-it-is-worth-it: $(SERVE-DEPS)
 	python bin/server.py
 
 first-wasm:
 	$(MAKE) factorial.js FILE=yamlscript/factorial.ys
-	$(RM) factorial.js
 
 test:
-	@$(MAKE) clean
+	@$(MAKEN) clean
 	$(MAKE) run-bin a=3
-	@$(MAKE) clean
+	@$(MAKEN) clean
 	# $(MAKE) run-clj a=3
-	@$(MAKE) clean
+	@$(MAKEN) clean
 	$(MAKE) run-wasm a=3
-	@$(MAKE) clean
+	@$(MAKEN) clean
 
 dev-container-setup: $(DEV-CONTAINER-SETUP-DEPS)
 

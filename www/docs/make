@@ -3,7 +3,11 @@
 # Usage:
 #   make -f <(curl -sL gloathub.org/make) install
 #   make -f <(curl -sL gloathub.org/make) install PREFIX=~/.mydir
+#   make -f <(curl -sL gloathub.org/make) install-gloat
+#   make -f <(curl -sL gloathub.org/make) install-glj
 #   make -f <(curl -sL gloathub.org/make) uninstall
+#   make -f <(curl -sL gloathub.org/make) uninstall-gloat
+#   make -f <(curl -sL gloathub.org/make) uninstall-glj
 
 # Clone makes to temporary directory
 T := $(shell mktemp -d)
@@ -32,6 +36,20 @@ VERSION ?= $(shell \
 INSTALL-DIR := $(PREFIX)/share/gloat
 BIN-DIR := $(PREFIX)/bin
 GLOAT-BIN := $(BIN-DIR)/gloat
+
+help:
+	@echo "Gloat Installer Makefile targets:"
+	@echo ""
+	@echo "  install          Alias for install-gloat"
+	@echo "  install-gloat    Install gloat"
+	@echo "  install-glj      Install glj"
+	@echo "  uninstall        Alias for uninstall-gloat"
+	@echo "  uninstall-gloat  Uninstall gloat"
+	@echo "  uninstall-glj    Uninstall glj"
+	@echo ""
+	@echo "Options:"
+	@echo "  PREFIX=<path>    Installation prefix (default: ~/.local)"
+	@echo "  VERSION=<tag>    Version to install (default: latest tag)"
 
 install:
 	@echo "Installing Gloat to $(PREFIX)..."
@@ -67,7 +85,9 @@ install:
 	fi
 	@echo "Run 'gloat --help' to get started."
 
-uninstall:
+uninstall: uninstall-gloat
+
+uninstall-gloat:
 	@echo "Uninstalling Gloat from $(PREFIX)..."
 	@# Remove symlink
 	@if [ -L "$(GLOAT-BIN)" ]; then \
@@ -81,6 +101,15 @@ uninstall:
 	fi
 	@echo ""
 	@echo "✓ Gloat uninstalled successfully!"
+
+uninstall-glj:
+	@echo "Uninstalling glj from $(PREFIX)..."
+	@if [ -f "$(BIN-DIR)/glj" ]; then \
+		rm -f "$(BIN-DIR)/glj"; \
+		echo "✓ Removed: $(BIN-DIR)/glj"; \
+	fi
+	@echo ""
+	@echo "✓ glj uninstalled successfully!"
 
 install-gloat: install
 

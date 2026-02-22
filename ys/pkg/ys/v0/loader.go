@@ -136,10 +136,16 @@ func LoadNS() {
 	sym__EQ__EQ_ := lang.NewSymbol("==")
 	sym__GT_ := lang.NewSymbol(">")
 	sym__GT__EQ_ := lang.NewSymbol(">=")
+	sym_ARGS := lang.NewSymbol("ARGS")
+	sym_ARGV := lang.NewSymbol("ARGV")
 	sym_B := lang.NewSymbol("B")
 	sym_C := lang.NewSymbol("C")
+	sym_CWD := lang.NewSymbol("CWD")
+	sym_DIR := lang.NewSymbol("DIR")
+	sym_ENV := lang.NewSymbol("ENV")
 	sym_F := lang.NewSymbol("F")
 	sym_F_QMARK_ := lang.NewSymbol("F?")
+	sym_FILE := lang.NewSymbol("FILE")
 	sym_I := lang.NewSymbol("I")
 	sym_K := lang.NewSymbol("K")
 	sym_L := lang.NewSymbol("L")
@@ -147,11 +153,13 @@ func LoadNS() {
 	sym_M := lang.NewSymbol("M")
 	sym_M_PLUS_ := lang.NewSymbol("M+")
 	sym_N := lang.NewSymbol("N")
+	sym_NS := lang.NewSymbol("NS")
 	sym_NaN_QMARK_ := lang.NewSymbol("NaN?")
 	sym_O := lang.NewSymbol("O")
 	sym_O_PLUS_ := lang.NewSymbol("O+")
 	sym_P := lang.NewSymbol("P")
 	sym_R := lang.NewSymbol("R")
+	sym_RUN := lang.NewSymbol("RUN")
 	sym_S := lang.NewSymbol("S")
 	sym_Ss := lang.NewSymbol("Ss")
 	sym_StackTraceElement_DASH__GT_vec := lang.NewSymbol("StackTraceElement->vec")
@@ -899,6 +907,7 @@ func LoadNS() {
 	kw_arglists := lang.NewKeyword("arglists")
 	kw_column := lang.NewKeyword("column")
 	kw_declared := lang.NewKeyword("declared")
+	kw_dynamic := lang.NewKeyword("dynamic")
 	kw_end_DASH_column := lang.NewKeyword("end-column")
 	kw_end_DASH_line := lang.NewKeyword("end-line")
 	kw_file := lang.NewKeyword("file")
@@ -916,12 +925,24 @@ func LoadNS() {
 	var_clojure_DOT_core_re_DASH_matches := lang.InternVarName(sym_clojure_DOT_core, sym_re_DASH_matches)
 	// var clojure.core/read-string
 	var_clojure_DOT_core_read_DASH_string := lang.InternVarName(sym_clojure_DOT_core, sym_read_DASH_string)
+	// var ys.v0/ARGS
+	var_ys_DOT_v0_ARGS := lang.InternVarName(sym_ys_DOT_v0, sym_ARGS)
+	// var ys.v0/ARGV
+	var_ys_DOT_v0_ARGV := lang.InternVarName(sym_ys_DOT_v0, sym_ARGV)
 	// var ys.v0/B
 	var_ys_DOT_v0_B := lang.InternVarName(sym_ys_DOT_v0, sym_B)
 	// var ys.v0/C
 	var_ys_DOT_v0_C := lang.InternVarName(sym_ys_DOT_v0, sym_C)
+	// var ys.v0/CWD
+	var_ys_DOT_v0_CWD := lang.InternVarName(sym_ys_DOT_v0, sym_CWD)
+	// var ys.v0/DIR
+	var_ys_DOT_v0_DIR := lang.InternVarName(sym_ys_DOT_v0, sym_DIR)
+	// var ys.v0/ENV
+	var_ys_DOT_v0_ENV := lang.InternVarName(sym_ys_DOT_v0, sym_ENV)
 	// var ys.v0/F
 	var_ys_DOT_v0_F := lang.InternVarName(sym_ys_DOT_v0, sym_F)
+	// var ys.v0/FILE
+	var_ys_DOT_v0_FILE := lang.InternVarName(sym_ys_DOT_v0, sym_FILE)
 	// var ys.v0/F?
 	var_ys_DOT_v0_F_QMARK_ := lang.InternVarName(sym_ys_DOT_v0, sym_F_QMARK_)
 	// var ys.v0/I
@@ -938,10 +959,14 @@ func LoadNS() {
 	var_ys_DOT_v0_M_PLUS_ := lang.InternVarName(sym_ys_DOT_v0, sym_M_PLUS_)
 	// var ys.v0/N
 	var_ys_DOT_v0_N := lang.InternVarName(sym_ys_DOT_v0, sym_N)
+	// var ys.v0/NS
+	var_ys_DOT_v0_NS := lang.InternVarName(sym_ys_DOT_v0, sym_NS)
 	// var ys.v0/O
 	var_ys_DOT_v0_O := lang.InternVarName(sym_ys_DOT_v0, sym_O)
 	// var ys.v0/O+
 	var_ys_DOT_v0_O_PLUS_ := lang.InternVarName(sym_ys_DOT_v0, sym_O_PLUS_)
+	// var ys.v0/RUN
+	var_ys_DOT_v0_RUN := lang.InternVarName(sym_ys_DOT_v0, sym_RUN)
 	// var ys.v0/S
 	var_ys_DOT_v0_S := lang.InternVarName(sym_ys_DOT_v0, sym_S)
 	// var ys.v0/T
@@ -6548,6 +6573,78 @@ func LoadNS() {
 	{
 		closed99 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_d)
 	}
+	// ARGS
+	{
+		tmp0 := sym_ARGS.WithMeta(lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(19), kw_column, int(6), kw_end_DASH_line, int(19), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))).(*lang.Symbol)
+		var_ys_DOT_v0_ARGS = ns.InternWithValue(tmp0, lang.NewVector(), true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_v0_ARGS.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+		var_ys_DOT_v0_ARGS.SetDynamic()
+	}
+	// ARGV
+	{
+		tmp0 := sym_ARGV.WithMeta(lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(18), kw_column, int(6), kw_end_DASH_line, int(18), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))).(*lang.Symbol)
+		var_ys_DOT_v0_ARGV = ns.InternWithValue(tmp0, lang.NewVector(), true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_v0_ARGV.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+		var_ys_DOT_v0_ARGV.SetDynamic()
+	}
+	// CWD
+	{
+		tmp0 := sym_CWD.WithMeta(lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(25), kw_column, int(6), kw_end_DASH_line, int(25), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))).(*lang.Symbol)
+		var_ys_DOT_v0_CWD = ns.InternWithValue(tmp0, "", true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_v0_CWD.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+		var_ys_DOT_v0_CWD.SetDynamic()
+	}
+	// DIR
+	{
+		tmp0 := sym_DIR.WithMeta(lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(24), kw_column, int(6), kw_end_DASH_line, int(24), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))).(*lang.Symbol)
+		var_ys_DOT_v0_DIR = ns.InternWithValue(tmp0, "", true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_v0_DIR.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+		var_ys_DOT_v0_DIR.SetDynamic()
+	}
+	// ENV
+	{
+		tmp0 := sym_ENV.WithMeta(lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(20), kw_column, int(6), kw_end_DASH_line, int(20), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))).(*lang.Symbol)
+		var_ys_DOT_v0_ENV = ns.InternWithValue(tmp0, lang.NewMap(), true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_v0_ENV.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+		var_ys_DOT_v0_ENV.SetDynamic()
+	}
+	// FILE
+	{
+		tmp0 := sym_FILE.WithMeta(lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(23), kw_column, int(6), kw_end_DASH_line, int(23), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))).(*lang.Symbol)
+		var_ys_DOT_v0_FILE = ns.InternWithValue(tmp0, "", true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_v0_FILE.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+		var_ys_DOT_v0_FILE.SetDynamic()
+	}
+	// NS
+	{
+		tmp0 := sym_NS.WithMeta(lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(21), kw_column, int(6), kw_end_DASH_line, int(21), kw_end_DASH_column, int(17), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))).(*lang.Symbol)
+		var_ys_DOT_v0_NS = ns.InternWithValue(tmp0, nil, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_v0_NS.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+		var_ys_DOT_v0_NS.SetDynamic()
+	}
+	// RUN
+	{
+		tmp0 := sym_RUN.WithMeta(lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(22), kw_column, int(6), kw_end_DASH_line, int(22), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))).(*lang.Symbol)
+		var_ys_DOT_v0_RUN = ns.InternWithValue(tmp0, lang.NewMap(), true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_v0_RUN.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+		var_ys_DOT_v0_RUN.SetDynamic()
+	}
 	// B
 	{
 		tmp0 := sym_B.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(745), kw_column, int(18), kw_end_DASH_line, int(745), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))).(*lang.Symbol)
@@ -6569,7 +6666,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_B = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_B.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6596,7 +6693,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_C = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_C.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6623,7 +6720,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_F = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_F.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6650,7 +6747,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_F_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_F_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6677,7 +6774,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_I = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_I.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6704,7 +6801,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_K = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_K.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6731,7 +6828,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_L = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_L.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6758,7 +6855,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_L_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_L_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6785,7 +6882,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_M = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_M.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6812,7 +6909,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_M_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_M_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6839,7 +6936,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_N = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_N.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6866,7 +6963,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_O = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_O.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6893,7 +6990,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_O_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_O_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6920,7 +7017,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_S = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_S.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6947,7 +7044,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_T = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_T.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6974,7 +7071,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_T_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_T_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7001,7 +7098,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_V = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_V.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7028,7 +7125,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_V_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_V_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7055,7 +7152,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__AMP__AMP__AMP_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__AMP__AMP__AMP_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7082,7 +7179,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__BANG__DASH__DASH_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__BANG__DASH__DASH_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7109,7 +7206,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__BANG__DASH__DASH__DASH_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__BANG__DASH__DASH__DASH_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7136,7 +7233,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__EQ__DASH__DASH_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__EQ__DASH__DASH_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7163,7 +7260,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__EQ__DASH__DASH__DASH_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__EQ__DASH__DASH__DASH_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7190,7 +7287,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PCT_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PCT_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7217,7 +7314,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS__PLUS_filter = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS__PLUS_filter.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7244,7 +7341,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS__PLUS_filterv = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS__PLUS_filterv.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7271,7 +7368,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS__PLUS_keep = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS__PLUS_keep.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7298,7 +7395,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS__PLUS_map = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS__PLUS_map.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7325,7 +7422,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS__PLUS_mapv = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS__PLUS_mapv.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7352,7 +7449,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS__PLUS_remove = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS__PLUS_remove.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7379,7 +7476,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS__PLUS_replace = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS__PLUS_replace.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7406,7 +7503,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS__PLUS_take_DASH_while = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS__PLUS_take_DASH_while.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7433,7 +7530,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_apply = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_apply.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7460,7 +7557,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_concat = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_concat.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7487,7 +7584,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_cons = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_cons.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7514,7 +7611,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_contains_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_contains_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7541,7 +7638,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_drop = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_drop.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7568,7 +7665,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_drop_DASH_last = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_drop_DASH_last.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7595,7 +7692,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_drop_DASH_while = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_drop_DASH_while.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7622,7 +7719,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_escape = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_escape.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7649,7 +7746,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_every_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_every_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7676,7 +7773,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_filter = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_filter.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7703,7 +7800,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_filterv = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_filterv.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7730,7 +7827,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_format = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_format.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7757,7 +7854,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_interpose = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_interpose.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7784,7 +7881,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_keep = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_keep.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7811,7 +7908,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_map = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_map.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7838,7 +7935,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_mapcat = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_mapcat.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7865,7 +7962,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_mapv = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_mapv.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7892,7 +7989,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_merge = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_merge.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7919,7 +8016,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_not_DASH_any_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_not_DASH_any_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7946,7 +8043,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_nth = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_nth.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7973,7 +8070,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_partition = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_partition.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8000,7 +8097,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_random_DASH_sample = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_random_DASH_sample.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8027,7 +8124,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_re_DASH_find = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_re_DASH_find.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8054,7 +8151,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_re_DASH_matches = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_re_DASH_matches.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8081,7 +8178,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_re_DASH_seq = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_re_DASH_seq.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8108,7 +8205,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_reduce = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_reduce.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8135,7 +8232,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_remove = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_remove.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8162,7 +8259,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_repeat = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_repeat.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8189,7 +8286,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_replace = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_replace.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8216,7 +8313,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_some = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_some.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8243,7 +8340,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_sort = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_sort.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8270,7 +8367,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_sort_DASH_by = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_sort_DASH_by.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8297,7 +8394,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_split_DASH_at = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_split_DASH_at.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8324,7 +8421,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_split_DASH_with = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_split_DASH_with.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8351,7 +8448,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_take = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_take.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8378,7 +8475,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_take_DASH_last = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_take_DASH_last.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8405,7 +8502,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(30), kw_column, int(30), kw_end_DASH_line, int(30), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(39), kw_column, int(30), kw_end_DASH_line, int(39), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__PLUS_take_DASH_while = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__PLUS_take_DASH_while.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8432,7 +8529,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0__U007C__U007C__U007C_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0__U007C__U007C__U007C_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8459,7 +8556,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_a = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_a.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8486,7 +8583,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_add = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_add.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8513,7 +8610,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_add_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_add_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8540,7 +8637,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_and_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_and_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8567,7 +8664,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_atom = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_atom.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8594,7 +8691,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_bash = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_bash.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8621,7 +8718,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_bash_DASH_out = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_bash_DASH_out.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8648,7 +8745,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_blank_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_blank_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8675,7 +8772,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_call = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_call.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8702,7 +8799,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_chomp = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_chomp.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8729,7 +8826,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_dec_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_dec_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8756,7 +8853,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_die = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_die.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8783,7 +8880,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_digits = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_digits.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8810,7 +8907,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_div = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_div.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8837,7 +8934,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_div_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_div_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8864,7 +8961,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_each = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_each.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8891,7 +8988,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_ends_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_ends_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8918,7 +9015,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_eq = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_eq.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8945,7 +9042,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_err = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_err.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8972,7 +9069,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_escape = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_escape.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8999,7 +9096,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_exit = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_exit.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9026,7 +9123,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_falsey_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_falsey_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9053,7 +9150,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_flat = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_flat.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9080,7 +9177,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_flip = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_flip.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9107,7 +9204,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_abs = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_abs.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9134,7 +9231,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_abs_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_abs_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9161,7 +9258,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_basename = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_basename.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9188,7 +9285,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_cp = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_cp.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9215,7 +9312,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_cp_DASH_r = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_cp_DASH_r.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9242,7 +9339,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_cwd = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_cwd.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9269,7 +9366,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_d = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_d.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9296,7 +9393,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_dirname = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_dirname.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9323,7 +9420,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_e = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_e.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9350,7 +9447,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_f = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_f.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9377,7 +9474,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_filename = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_filename.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9404,7 +9501,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_find = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_find.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9431,7 +9528,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_glob = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_glob.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9458,7 +9555,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_l = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_l.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9485,7 +9582,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_ls = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_ls.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9512,7 +9609,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_mkdir = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_mkdir.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9539,7 +9636,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_mkdir_DASH_p = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_mkdir_DASH_p.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9566,7 +9663,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_mktemp = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_mktemp.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9593,7 +9690,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_mktemp_DASH_d = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_mktemp_DASH_d.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9620,7 +9717,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_mtime = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_mtime.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9647,7 +9744,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_mv = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_mv.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9674,7 +9771,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_path = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_path.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9701,7 +9798,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_r = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_r.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9728,7 +9825,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_readlink = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_readlink.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9755,7 +9852,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_rel = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_rel.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9782,7 +9879,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_rel_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_rel_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9809,7 +9906,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_rm = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_rm.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9836,7 +9933,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_rm_DASH_r = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_rm_DASH_r.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9863,7 +9960,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_rmdir = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_rmdir.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9890,7 +9987,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_s = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_s.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9917,7 +10014,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_touch = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_touch.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9944,7 +10041,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_w = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_w.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9971,7 +10068,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_which = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_which.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -9998,7 +10095,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_x = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_x.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10025,7 +10122,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_fs_DASH_z = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_fs_DASH_z.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10052,7 +10149,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_ge = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_ge.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10079,7 +10176,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_get_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_get_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10106,7 +10203,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_grep = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_grep.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10133,7 +10230,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_gt = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_gt.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10160,7 +10257,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_has_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_has_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10187,7 +10284,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_in_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_in_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10214,7 +10311,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_inc_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_inc_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10241,7 +10338,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_index = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_index.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10268,7 +10365,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_join = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_join.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10295,7 +10392,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_joins = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_joins.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10322,7 +10419,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_lc = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_lc.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10349,7 +10446,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_le = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_le.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10376,7 +10473,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_len = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_len.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10403,7 +10500,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_lines = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_lines.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10430,7 +10527,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_lt = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_lt.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10438,7 +10535,7 @@ func LoadNS() {
 	}
 	// map-parse
 	{
-		tmp0 := sym_map_DASH_parse.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(18), kw_column, int(7), kw_end_DASH_line, int(18), kw_end_DASH_column, int(15), kw_arglists, lang.NewList(lang.NewVector(sym_args)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))).(*lang.Symbol)
+		tmp0 := sym_map_DASH_parse.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(7), kw_end_DASH_line, int(27), kw_end_DASH_column, int(15), kw_arglists, lang.NewList(lang.NewVector(sym_args)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			checkArity(args, 1)
@@ -10462,7 +10559,7 @@ func LoadNS() {
 				}
 				return tmp6
 			})
-			tmp5 := lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(20), kw_column, int(5), kw_end_DASH_line, int(23), kw_end_DASH_column, int(11))
+			tmp5 := lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(29), kw_column, int(5), kw_end_DASH_line, int(32), kw_end_DASH_column, int(11))
 			tmp6, err := lang.WithMeta(tmp4, tmp5.(lang.IPersistentMap))
 			if err != nil {
 				panic(err)
@@ -10497,7 +10594,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_mul = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_mul.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10524,7 +10621,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_mul_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_mul_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10551,7 +10648,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_ne = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_ne.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10578,7 +10675,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_omap = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_omap.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10605,7 +10702,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_or_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_or_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10632,7 +10729,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_out = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_out.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10659,7 +10756,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_print = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_print.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10686,7 +10783,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_process = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_process.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10713,7 +10810,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_q = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_q.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10740,7 +10837,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_ql = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_ql.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10767,7 +10864,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_qm = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_qm.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10794,7 +10891,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_qo = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_qo.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10821,7 +10918,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_qr = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_qr.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10848,7 +10945,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_qs = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_qs.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10875,7 +10972,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_qv = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_qv.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10902,7 +10999,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_qw = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_qw.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10929,7 +11026,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_read = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_read.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10956,7 +11053,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_replace = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_replace.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10983,7 +11080,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_replace1 = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_replace1.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11010,7 +11107,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_reset = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_reset.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11037,7 +11134,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_reverse = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_reverse.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11064,7 +11161,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_rindex = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_rindex.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11091,7 +11188,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_rng = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_rng.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11118,7 +11215,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_say = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_say.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11145,7 +11242,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_set = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_set.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11172,7 +11269,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_sh = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_sh.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11199,7 +11296,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_sh_DASH_out = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_sh_DASH_out.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11226,7 +11323,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_shell = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_shell.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11253,7 +11350,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_slice = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_slice.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11280,7 +11377,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_source = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_source.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11307,7 +11404,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_split = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_split.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11334,7 +11431,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_sqrt = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_sqrt.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11361,7 +11458,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_starts_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_starts_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11388,7 +11485,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_sub = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_sub.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11415,7 +11512,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_sub_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_sub_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11442,7 +11539,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_substr = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_substr.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11469,7 +11566,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_sum = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_sum.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11496,7 +11593,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_swap = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_swap.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11523,7 +11620,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_text = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_text.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11550,7 +11647,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_to_DASH_bool = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_to_DASH_bool.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11577,7 +11674,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_to_DASH_char = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_to_DASH_char.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11604,7 +11701,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_to_DASH_float = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_to_DASH_float.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11631,7 +11728,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_to_DASH_int = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_to_DASH_int.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11658,7 +11755,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_to_DASH_keyw = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_to_DASH_keyw.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11685,7 +11782,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_to_DASH_list = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_to_DASH_list.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11712,7 +11809,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_to_DASH_map = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_to_DASH_map.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11739,7 +11836,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_to_DASH_num = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_to_DASH_num.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11766,7 +11863,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_to_DASH_omap = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_to_DASH_omap.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11793,7 +11890,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_to_DASH_set = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_to_DASH_set.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11820,7 +11917,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_to_DASH_str = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_to_DASH_str.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11847,7 +11944,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_to_DASH_type = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_to_DASH_type.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11874,7 +11971,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_to_DASH_vec = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_to_DASH_vec.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11901,7 +11998,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_trim = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_trim.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11928,7 +12025,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_triml = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_triml.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11955,7 +12052,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_trimr = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_trimr.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -11982,7 +12079,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_truey_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_truey_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -12009,7 +12106,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_uc = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_uc.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -12036,7 +12133,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_uc1 = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_uc1.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -12063,7 +12160,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_value = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_value.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -12090,7 +12187,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_warn = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_warn.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -12117,7 +12214,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_when_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_when_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -12144,7 +12241,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_words = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_words.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -12171,7 +12268,7 @@ func LoadNS() {
 				return tmp6
 			}
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(30), kw_end_DASH_line, int(27), kw_end_DASH_column, int(60))).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(36), kw_column, int(30), kw_end_DASH_line, int(36), kw_end_DASH_column, int(60))).(lang.FnFunc)
 		var_ys_DOT_v0_write = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_write.SetMeta(tmp0.Meta().(lang.IPersistentMap))

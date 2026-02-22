@@ -509,16 +509,18 @@ Less common:
   (let [args (map-parse argv)]
     (alter-var-root #'ARGV (constantly argv))
     (alter-var-root #'ARGS (constantly args))
+    (alter-var-root #'FILE (constantly \"SOURCE-FILE\"))
+    (alter-var-root #'DIR (constantly \"SOURCE-DIR\"))
     (apply main args)))
 "
                       "")
             template-content (slurp (str TEMPLATE "/clojure.clj"))
             result-content (render-template template-content
                                             [["NAMESPACE" namespace]
-                                             ["SOURCE-FILE" source-abs]
-                                             ["SOURCE-DIR" source-dir]
                                              ["BODY\n" (str body "\n")]
-                                             ["MAIN-FN" main-fn]])]
+                                             ["MAIN-FN" main-fn]
+                                             ["SOURCE-FILE" source-abs]
+                                             ["SOURCE-DIR" source-dir]])]
         (spit output result-content)))))
 
 (defn clj-to-glj [input output]

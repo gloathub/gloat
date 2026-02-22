@@ -15,6 +15,15 @@
     [ys.std :refer :all]
     [ys.dwim :refer :all]))
 
+(def ^:dynamic ARGV [])
+(def ^:dynamic ARGS [])
+(def ^:dynamic ENV {})
+(def ^:dynamic NS nil)
+(def ^:dynamic RUN {})
+(def ^:dynamic FILE "")
+(def ^:dynamic DIR "")
+(def ^:dynamic CWD "")
+
 (defn map-parse [args]
   (mapv
     (fn [s]

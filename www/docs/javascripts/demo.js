@@ -439,6 +439,16 @@ function demoAccordion(header) {
       var el = outputPanel.querySelector('.demo-output-text');
       var layout = document.querySelector('.demo-layout');
       if (!el || !layout) return;
+
+      // In mobile (stacked column), let CSS handle sizing
+      if (window.innerWidth <= 960) {
+        layout.style.height = '';
+        el.style.minHeight = '200px';
+        el.style.maxHeight = '';
+        setTimeout(updateScrollBtns, 0);
+        return;
+      }
+
       var layoutTop = layout.getBoundingClientRect().top;
       var margin = 16;
       var totalH = Math.max(window.innerHeight - layoutTop - margin, 300);

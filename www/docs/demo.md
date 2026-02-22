@@ -21,8 +21,12 @@ hide:
 <p id="demo-intro">Run pre-compiled Wasm programs.
 Select a program, view the Source/Glojure/Go, click <strong>Run</strong>.</p>
 
-<!-- Program selector + language toggle -->
-<div class="demo-selector">
+<div class="demo-layout">
+
+<!-- Left column: selector + source + intermediates -->
+<div class="demo-left">
+
+<div class="demo-selector demo-selector-left">
   <a href=".." class="demo-home-link" title="Home">&#x25C0;</a>
   <div class="demo-lang-toggle">
     <input type="radio" name="demo-lang" id="lang-clj"
@@ -34,11 +38,6 @@ Select a program, view the Source/Glojure/Go, click <strong>Run</strong>.</p>
   </div>
   <select id="demo-program"></select>
 </div>
-
-<div class="demo-layout">
-
-<!-- Left column: source + intermediates -->
-<div class="demo-left">
 
 <!-- Source code panel -->
 <div class="demo-code-panel demo-collapsible" id="demo-source">
@@ -78,7 +77,7 @@ Select a program, view the Source/Glojure/Go, click <strong>Run</strong>.</p>
 <!-- Right column: controls + output -->
 <div class="demo-right">
 
-<div class="demo-controls">
+<div class="demo-selector demo-selector-right">
   <button id="demo-run" class="demo-run-btn">Run</button>
   <select id="demo-args"></select>
 </div>
@@ -99,6 +98,8 @@ Select a program, view the Source/Glojure/Go, click <strong>Run</strong>.</p>
 </div>
 
 </div>
+
+<div class="demo-footer" markdown="1">
 
 ---
 
@@ -122,3 +123,5 @@ make serve-demo
 >
 > On the other hand, the Codespaces demo allows you to do everything without
 > running any code locally.
+
+</div>

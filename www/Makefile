@@ -42,12 +42,16 @@ DEMO-BRANCH := demo-assets
 
 default::
 
+# Generate social card image from mkdocs.yaml metadata
+social-card: $(DEPS)
+	$(PYTHON-VENV)/bin/python3 bin/gen-social-card.py
+
 # Build main site (production)
-site: $(DEPS) demo-assets
+site: $(DEPS) social-card demo-assets
 	mkdocs build -d $@
 
 # Serve locally with MkDocs
-serve: $(DEPS) demo-assets
+serve: $(DEPS) social-card demo-assets
 	mkdocs serve --livereload
 
 # Build alias for backwards compatibility

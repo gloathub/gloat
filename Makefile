@@ -64,7 +64,7 @@ TEST-CALL-DEPS := \
 ifndef fast
 TEST-CALL-DEPS += \
   bin/gloat \
-  bin/gloat.clj \
+  bin/src/gloat.clj \
 
 endif
 

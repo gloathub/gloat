@@ -18,7 +18,7 @@ main() (
     do-shell
   fi
 
-  exec bb "$root/bin/gloat.clj" "$@"
+  exec bb "$root/bin/src/gloat.clj" "$@"
 )
 
 setup() (

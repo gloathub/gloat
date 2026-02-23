@@ -469,7 +469,7 @@ All versions must be kept in sync for releases.
 
 ### How Versions Propagate
 
-Gloat uses `get-make-var` in `bin/gloat.clj` to read Makefile variables:
+Gloat uses `get-make-var` in `bin/src/gloat.clj` to read Makefile variables:
 
 ```clojure
 (def get-make-var
@@ -691,7 +691,7 @@ git commit -m "Improve ys.std documentation"
 
 ### Typical Development Cycle
 
-1. **Make changes** to gloat source (`bin/gloat.clj`) or stdlib (`ys/src/`)
+1. **Make changes** to gloat source (`bin/src/gloat.clj`) or stdlib (`ys/src/`)
 2. **Run tests** to verify: `make test`
 3. **Test with example** project: `make run FILE=demo/foo.ys`
 4. **Update stdlib** if needed: `make update && make ys-pkg`

@@ -18,7 +18,7 @@
 (def VERSION (System/getenv "GLOAT_VERSION"))
 
 (def GLOAT-ROOT
-  (str (fs/parent (fs/parent (fs/canonicalize *file*)))))
+  (str (fs/parent (fs/parent (fs/parent (fs/canonicalize *file*))))))
 
 (def TEMPLATE (str GLOAT-ROOT "/template"))
 (def SRC (str GLOAT-ROOT "/ys/src"))

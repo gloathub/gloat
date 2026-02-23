@@ -71,6 +71,8 @@ Compiles Clojure or YAMLScript code to Go code, binaries or Wasm.
     gloat foo.ys -o foo                 Native binary
     gloat foo.ys -o foo --platform=freebsd/amd64  Cross-compile
     gloat --run foo.ys -- arg1 arg2     Compile and run
+
+  Check out https://gloathub.org
 --
 t,to=         Output format (inferred from -o; see --formats)
 o,out=        Output file or directory
@@ -84,7 +86,7 @@ module=       Go module name (e.g., github.com/user/project)
 formats       List available output formats
 extensions    List available processing extensions
 platforms     List available cross-compilation platforms
-complete=     Generate shell completion script (bash, zsh, fish)
+complete=     Generate shell completion script (bash, fish, zsh)
 
 r,run         Compile and run (pass program args after --)
 f,force       Overwrite existing output files
@@ -1221,8 +1223,14 @@ Less common:
              (:platform opts))
 
             (= (:input opts) "-")
-            (let [tmpfile (str (fs/create-temp-file {:suffix ".ys"}))]
-              (spit tmpfile (slurp *in*))
+            (let [content (slurp *in*)
+                  clj? (re-find #"^\s*\(" content)
+                  suffix (if clj? ".clj" ".ys")
+                  content (if (and clj? (not (re-find #"(?m)^\s*\(ns\s" content)))
+                            (str "(ns main.core)\n" content)
+                            content)
+                  tmpfile (str (fs/create-temp-file {:suffix suffix}))]
+              (spit tmpfile content)
               (convert-file
                tmpfile
                (:output opts)

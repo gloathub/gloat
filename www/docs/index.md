@@ -1,6 +1,8 @@
 <div class="hero">
   <div class="hero-icon">
-    <img src="img/gloat.jpeg" alt="Gloat Mascot" class="mascot-img">
+    <img src="img/gloat.jpeg" alt="GLOAT the Goat" class="mascot-img">
+    <a href="blog/2026/02/22/introducing-gloat-and-glojure/"
+       class="mascot-caption">Read all about me!</a>
   </div>
   <p class="hero-subtitle">
     Gloat compiles Clojure & YAMLScript to Go code, native binaries and Wasm

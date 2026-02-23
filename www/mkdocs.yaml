@@ -55,6 +55,7 @@ nav:
   - Demo: demo.md
   - Getting Started: getting-started.md
   - Examples: examples.md
+  - Blog: blog/index.md
 
 markdown_extensions:
   - abbr
@@ -98,8 +99,12 @@ markdown_extensions:
   - pymdownx.tilde
 
 plugins:
-  - search:
-      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+- search:
+    separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+- blog:
+    blog_dir: blog
+    post_date_format: long
+    post_url_format: "{date}/{slug}"
 
 extra:
   social:

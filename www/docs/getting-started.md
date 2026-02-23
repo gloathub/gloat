@@ -10,33 +10,36 @@ use.
 
 ### One-Line Installer
 
-Install gloat to `~/.local` with a single command:
+Install `gloat` (or `glj`) to `~/.local/bin/` with a single command:
 
 ```bash
 make -f <(curl -sL gloathub.org/make) install
 ```
 
-This clones the gloat repository to `~/.local/share/gloat`, creates a symlink
-at `~/.local/bin/gloat`, and installs all dependencies automatically.
+Installing `gloat` clones the gloat repository to `~/.local/share/gloat`,
+creates a symlink at `~/.local/bin/gloat`, and installs all the required
+dependencies automatically.
 
 Make sure `~/.local/bin` is in your `PATH`, then run `gloat --help`.
-
-Run `make -f <(curl -sL gloathub.org/make) help` to see all available targets.
 
 **Options:**
 
 ```bash
 # Install to a custom prefix
-make -f <(curl -sL gloathub.org/make) install PREFIX=~/mytools
+make -f <(curl -sL gloathub.org/make) install PREFIX=~/.gloat
 
 # Install a specific version
 make -f <(curl -sL gloathub.org/make) install VERSION=v0.1.2
 
-# Also install the glj compiler
+# Also install the Glojure glj (prebuilt binary) command
 make -f <(curl -sL gloathub.org/make) install-glj
 
 # Uninstall
 make -f <(curl -sL gloathub.org/make) uninstall
+make -f <(curl -sL gloathub.org/make) uninstall-glj
+
+# Show the installer Makefile rules:
+make -f <(curl -sL gloathub.org/make) help
 ```
 
 
@@ -158,7 +161,8 @@ build/
 └── pkg/app/core/      # Glojure runtime code
 ```
 
-Anyone can build it with just `make` - Go is automatically installed.
+Anyone can build it with just `make` - Go is automatically installed (within
+the build directory).
 
 
 ## Cross-Compilation
@@ -167,19 +171,19 @@ Compile for different platforms using `-p OS/ARCH`:
 
 ```bash
 # Linux targets
-gloat app.ys -o app-linux -p linux/amd64
-gloat app.ys -o app-arm -p linux/arm64
+gloat app.ys -o app-linux --platform=linux/amd64
+gloat app.ys -o app-arm --platform=linux/arm64
 
 # macOS targets
-gloat app.ys -o app-mac -p darwin/amd64
-gloat app.ys -o app-mac-m1 -p darwin/arm64
+gloat app.ys -o app-mac --platform=darwin/amd64
+gloat app.ys -o app-mac-m1 --platform=darwin/arm64
 
 # Windows targets
-gloat app.ys -o app.exe -p windows/amd64
+gloat app.ys -o app.exe --platform=windows/amd64
 
 # WebAssembly
-gloat app.ys -o app.wasm -p wasip1/wasm    # WASI
-gloat app.ys -o app.wasm -p js/wasm        # JavaScript
+gloat app.ys -o app.wasm --platform=wasip1/wasm    # WASI
+gloat app.ys -o app.wasm --platform=js/wasm        # JavaScript
 ```
 
 
@@ -235,13 +239,23 @@ gloat lib.clj -o libmylib.so
 gloat lib.clj -o libmylib.dylib
 
 # Windows
-gloat lib.clj -o mylib.dll -p windows/amd64
+gloat lib.clj -o mylib.dll
 ```
 
 This generates both the library file and a `.h` header file for C bindings.
 
+Check out the [FFI bindings examples](
+https://github.com/gloathub/gloat/tree/main/demo/so-bindings) for over 20
+languages.
 
-## The Make Shell
+These are all working code and bind to an example shared library written in
+YAMLScript and compiled with Gloat.
+You can run them all with `make test-so-bindings`.
+Every programming language that is needed is auto-installed by the
+[Makes](https://github.com/makeplus/makes) system.
+
+
+## The Makes Shell
 
 All Gloat dependencies are only accessible to Makefile rules, not your normal
 shell.
@@ -252,25 +266,33 @@ make shell
 ```
 
 This starts a subshell with all tools in your PATH.
-Your prompt will change to indicate you're in the Make shell.
+Your prompt will change to indicate you're in the Makes shell.
 Press Ctrl-D or type `exit` to return to your normal shell.
 
 
 ## Command-Line Options
-
 ```
--t, --to=FORMAT        Output format (inferred from -o)
--o, --out=FILE         Output file or directory
--p, --platform=OS/ARCH Cross-compile target
---ns=NAMESPACE         Override namespace
--r, --run              Compile to temp binary and run it
+-t, --to ...     Output format (inferred from -o; see --formats)
+-o, --out ...    Output file or directory
 
--f, --force            Overwrite existing output files
--v, --verbose          Print timing for each compilation step
--q, --quiet            Suppress progress messages
+--platform ...   Cross-compile (e.g., linux/amd64; see --platforms)
+-X, --ext ...    Enable a processing extension (see --extensions)
 
--h, --help             Show help
---version              Show version
+--ns ...         Override namespace
+--module ...     Go module name (e.g., github.com/user/project)
+
+--formats        List available output formats
+--extensions     List available processing extensions
+--platforms      List available cross-compilation platforms
+--complete ...   Generate shell completion script (bash, zsh, fish)
+
+-r, --run        Compile and run (pass program args after --)
+-f, --force      Overwrite existing output files
+-v, --verbose    Print timing for each compilation step
+-q, --quiet      Suppress progress messages
+
+-h, --help       Show this help
+--version        Show version
 ```
 
 

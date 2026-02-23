@@ -33,6 +33,22 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
+/* Mascot caption link */
+.mascot-caption {
+  display: block;
+  color: white;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  text-decoration: none;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.mascot-caption:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
 /* Make site title clickable */
 .md-header__topic a {
   cursor: pointer;

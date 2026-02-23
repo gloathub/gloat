@@ -2,18 +2,20 @@ M := .cache/makes
 $(shell [ -d $M ] || (git clone -q https://github.com/makeplus/makes $M))
 
 include $M/init.mk
+
 include common/common.mk
+
 include $M/babashka.mk
 include $M/gh.mk
 include $M/git.mk
 include $M/glojure.mk
 include $M/go.mk
-include $M/shellcheck.mk
-include $M/yamlscript.mk
-include $M/wasmtime.mk
-include $M/brotli.mk
 include $M/md2man.mk
-include $M/gh.mk
+include $M/shellcheck.mk
+include $M/wasmtime.mk
+include $M/yamlscript.mk
+
+include $M/brotli.mk
 
 include $M/clean.mk
 include $M/shell.mk

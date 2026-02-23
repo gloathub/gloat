@@ -117,25 +117,25 @@ git commit -am "Update to glojure v0.6.6"
 
 # 3. Release gloat
 # Edit versions in bin/gloat, Makefile, Changes
-git commit -am "Bump version to v0.2.0"
+git commit -am "Bump version to v0.1.3"
 make tag-ys-pkg
 git push origin main --tags
-# Wait for Go proxy...
-git tag -a v0.2.0 -m "Release v0.2.0"
-git push origin v0.2.0
+# Wait for Go proxy... # https://proxy.golang.org/github.com/gloathub/gloat/ys/pkg/@v/v0.1.3.info
+git tag -a v0.1.3 -m "Release v0.1.3"
+git push origin v0.1.3
 
 # 4. Update Makes (if needed)
 cd /tmp && git clone https://github.com/makeplus/makes
 cd makes
 # Edit gloat.mk if needed
-git commit -am "Update for gloat v0.2.0"
+git commit -am "Update for gloat v0.1.3"
 git push origin main
 
 # 5. Release gist
 cd /path/to/gist
 cd .cache/makes && git pull && cd ../..
-# Edit Makefile: GLOAT-VERSION := v0.2.0
-make gloat-github-release VERSION=0.2.0
+# Edit Makefile: GLOAT-VERSION := v0.1.3
+make gloat-github-release VERSION=0.1.3
 ```
 
 ### Scenario 2: Gloat-Only Release

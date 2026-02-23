@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-export GLOAT_VERSION=0.1.2
+export GLOAT_VERSION=0.1.4
 
 main() (
   self=${BASH_SOURCE[0]}

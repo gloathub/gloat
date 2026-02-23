@@ -99,13 +99,25 @@ compile-glj-patched() (
 )
 
 release() (
-  version=$1
+  version=${1:?Usage: make release VERSION=...}
   message=${2:-Release v$version}
+
+  # Validate version format (digits and dots, no v prefix)
+  if [[ ! $version =~ ^[0-9]+(\.[0-9]+)*$ ]]; then
+    echo "Error: VERSION must be digits and dots (e.g., 0.1.5)" >&2
+    exit 1
+  fi
 
   # --- Update version in all files ---
   perl -i -pe "s/^YS-PKG-VERSION .*/YS-PKG-VERSION ?= v$version/" Makefile
   perl -i -pe "s/^export GLOAT_VERSION=.*/export GLOAT_VERSION=$version/" \
     bin/gloat
+  perl -i -pe \
+    "s/VERSION=v[0-9]+\\.[0-9]+\\.[0-9]+/VERSION=v$version/" \
+    www/docs/getting-started.md
+  perl -i -pe \
+    "s/^VERSION := [0-9]+\\.[0-9]+\\.[0-9]+/VERSION := $version/" \
+    doc/gloat-tutorial.md
 
   { echo "- version: $version"
     echo "  date:    $(date)"
@@ -120,7 +132,13 @@ release() (
   make test
 
   # --- Commit and tag ys/pkg ---
-  git add Makefile bin/gloat Changes ys/
+  git add \
+    Makefile \
+    bin/gloat \
+    Changes \
+    www/docs/getting-started.md \
+    doc/gloat-tutorial.md \
+    ys/
   git commit -m "Version $version"
   git tag -a "ys/pkg/v$version" -m "Release ys/pkg v$version"
   git push origin main

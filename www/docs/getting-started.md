@@ -7,6 +7,9 @@ Getting Started
 Gloat has **zero dependencies** - everything installs automatically on first
 use.
 
+There are two main ways to get started: the one-line installer or cloning the
+repository and sourcing the `.rc` file.
+
 
 ### One-Line Installer
 
@@ -42,6 +45,10 @@ make -f <(curl -sL gloathub.org/make) uninstall-glj
 make -f <(curl -sL gloathub.org/make) help
 ```
 
+> **Note**: This installation method does not enable gloat shell completion.
+> For that, run `source <(gloat --complete bash)` (or `fish`/`zsh`) in your
+> shell's rc file after installation.
+
 
 ### Clone and Setup
 
@@ -60,11 +67,8 @@ On first run, Gloat will automatically install all required tools (Go, Glojure,
 YAMLScript, Babashka, etc) to `.cache/.local/` within the project directory.
 Just run `gloat --help` once to complete the setup.
 
-
-### Permanent Installation
-
-To make Gloat available in all terminal sessions, add this to your shell's rc
-file (`~/.bashrc`, `~/.fishrc` or `~/.zshrc`):
+To make Gloat available permanently, simply add this to your shell's rc file
+(`~/.bashrc`, `~/.fishrc` or `~/.zshrc`):
 
 ```bash
 source /path/to/gloat/.rc
@@ -195,10 +199,12 @@ gloat app.ys -o app.wasm --platform=js/wasm        # JavaScript
 | `darwin` | `amd64`, `arm64` |
 | `windows` | `amd64`, `arm64`, `386` |
 | `freebsd` | `amd64`, `arm64`, `386` |
+| `openbsd` | `amd64`, `arm64` |
+| `netbsd` | `amd64`, `arm64` |
 | `wasip1` | `wasm` |
 | `js` | `wasm` |
 
-Run `go tool dist list` to see all supported targets.
+Run `gloat --platforms` to see all supported targets.
 
 
 ## Compile and Run

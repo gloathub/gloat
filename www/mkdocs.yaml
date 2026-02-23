@@ -53,9 +53,12 @@ extra_javascript:
 nav:
   - GloatHub: index.md
   - Demo: demo.md
+  - Blog: blog/index.md
   - Getting Started: getting-started.md
   - Examples: examples.md
-  - Blog: blog/index.md
+  - Projects:
+    - projects/index.md
+    - Gist: projects/gist.md
 
 markdown_extensions:
   - abbr

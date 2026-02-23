@@ -35,6 +35,7 @@ _gloat() {
         '--ns[Override namespace]:namespace:' \
         '--module[Go module name]:module:' \
         '--complete[Generate shell completion]:shell:->shells' \
+        '(- *)--shell[Start a sub-shell with gloat tools on PATH]' \
         '(-r --run)'{-r,--run}'[Compile and run]' \
         '(-f --force)'{-f,--force}'[Overwrite existing output]' \
         '--verbose[Print timing information]' \

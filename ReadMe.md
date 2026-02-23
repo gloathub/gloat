@@ -373,7 +373,7 @@ Completions provide:
 - File completion for `--out` output paths
 
 
-## The Make Shell
+## The Gloat Shell
 
 The Makefile is set up so that you don't need to install any dependencies.
 They get installed the first time they are needed by a rule invoked by a `make`
@@ -383,13 +383,13 @@ However, these tools are only accessible inside the Makefile; to the rules that
 get run when you use `make` commands.
 In other words, they are NOT available for you to run directly in your shell.
 
-Sometimes you want to run these commands like `go`, `ys` and `bb` directly in
-your shell.
-In that case, just run: `make shell`.
+Sometimes you want to run these commands like `go`, `glj`, `ys` and `bb`
+directly in your shell.
+In that case, just run: `gloat --shell`.
 
 This will put you in a subshell with all of those commands available.
-Your `PS1` shell prompt will be changed so that it will be easy to know you are
-in such a subshell.
+Your shell prompt will be prefixed with `(gloat) ` so that it will be easy to
+know you are in the subshell.
 
 To leave this environment and get back to the shell that you started in, just
 press Ctrl-D or run the `exit` command.

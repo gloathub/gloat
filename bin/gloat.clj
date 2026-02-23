@@ -87,6 +87,7 @@ formats       List available output formats
 extensions    List available processing extensions
 platforms     List available cross-compilation platforms
 complete=     Generate shell completion script (bash, fish, zsh)
+shell         Start a sub-shell with gloat tools on PATH
 
 r,run         Compile and run (pass program args after --)
 f,force       Overwrite existing output files
@@ -452,6 +453,10 @@ Less common:
   dragonfly  amd64
 ")
     (System/exit 0)))
+
+(defn do-shell []
+  (when (:shell *opts*)
+    (die "Use 'gloat --shell' from the command line (not via gloat.clj)")))
 
 (defn do-complete []
   (when-let [shell (:complete *opts*)]
@@ -1174,6 +1179,7 @@ Less common:
       (do-formats)
       (do-extensions)
       (do-platforms)
+      (do-shell)
       (do-complete)
       (validate-extensions)
 

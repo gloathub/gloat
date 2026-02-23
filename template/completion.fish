@@ -14,6 +14,8 @@ complete -c gloat -l ns -d 'Override namespace' -x
 complete -c gloat -l module -d 'Go module name' -x
 complete -c gloat -l complete -d 'Generate shell completion' -x -a 'bash zsh fish'
 
+complete -c gloat -l shell -d 'Start a sub-shell with gloat tools on PATH'
+
 complete -c gloat -s r -l run -d 'Compile and run'
 complete -c gloat -s f -l force -d 'Overwrite existing output'
 complete -c gloat -l verbose -d 'Print timing information'

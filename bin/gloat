@@ -14,6 +14,10 @@ main() (
 
   setup
 
+  if [[ $* == --shell ]]; then
+    do-shell
+  fi
+
   exec bb "$root/bin/gloat.clj" "$@"
 )
 
@@ -48,5 +52,49 @@ ${BOLD}Press Enter to continue (or Ctrl-C to cancel)...$RESET
 )
 
 interactive() { [[ -t 0 && -t 1 && -t 2 ]]; }
+
+do-shell() {
+  if [[ ${IN_GLOAT_SHELL-} ]]; then
+    echo "Already in a gloat shell" >&2
+    exit 1
+  fi
+  export IN_GLOAT_SHELL=1
+  local shell
+  shell=$(ps -o comm= -p $PPID 2>/dev/null)
+  shell=${shell#-}
+  shell=${shell:-${GLOAT_SHELL:-bash}}
+  echo "Starting gloat $shell shell (type 'exit' to leave)" >&2
+  case $shell in
+    bash)
+      exec bash --rcfile <(cat <<'BASH'
+[[ -f ~/.bashrc ]] && source ~/.bashrc
+PS1="(gloat) $PS1"
+BASH
+)
+      ;;
+    zsh)
+      local zdot
+      zdot=$(mktemp -d)
+      cat > "$zdot/.zshrc" <<'ZSH'
+[[ -f "$HOME/.zshrc" ]] && ZDOTDIR=$HOME source "$HOME/.zshrc"
+PS1="(gloat) $PS1"
+ZSH
+      exec env ZDOTDIR="$zdot" zsh
+      ;;
+    fish)
+      exec fish --init-command '
+functions -q fish_prompt
+  and functions -c fish_prompt _gloat_orig_prompt
+  and function fish_prompt
+    echo -n "(gloat) "
+    _gloat_orig_prompt
+  end
+'
+      ;;
+    *)
+      exec "$shell"
+      ;;
+  esac
+}
 
 main "$@"

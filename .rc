@@ -7,7 +7,8 @@ test -n "$BASH_VERSION" && eval '
 GLOAT_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
 PATH=$GLOAT_ROOT/bin:$PATH
 MANPATH=$GLOAT_ROOT/man:$(manpath 2>/dev/null)
-export PATH MANPATH
+GLOAT_SHELL=bash
+export PATH MANPATH GLOAT_SHELL
 if [[ -d $GLOAT_ROOT/.cache/.local ]]; then
   source <(gloat --complete bash)
 fi
@@ -19,6 +20,7 @@ test -n "$FISH_VERSION" && eval '
 set GLOAT_ROOT (cd (dirname (status filename)) && pwd -P)
 set PATH $GLOAT_ROOT/bin:$PATH
 set MANPATH $GLOAT_ROOT/man:(manpath 2>/dev/null)
+set -gx GLOAT_SHELL fish
 export PATH MANPATH
 gloat --complete fish | source
 exit
@@ -29,7 +31,8 @@ test -n "$ZSH_VERSION" && eval '
 GLOAT_ROOT=$(cd "$(dirname "$0")" && pwd -P)
 PATH=$GLOAT_ROOT/bin:$GLOAT_ROOT/local/bin:$PATH
 MANPATH=$GLOAT_ROOT/man:$GLOAT_ROOT/local/man:$(manpath 2>/dev/null)
-export PATH MANPATH
+GLOAT_SHELL=zsh
+export PATH MANPATH GLOAT_SHELL
 if [[ -d $GLOAT_ROOT/.cache/.local ]]; then
   eval "$(gloat --complete zsh)"
 fi

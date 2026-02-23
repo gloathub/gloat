@@ -261,18 +261,18 @@ Every programming language that is needed is auto-installed by the
 [Makes](https://github.com/makeplus/makes) system.
 
 
-## The Makes Shell
+## The Gloat Shell
 
 All Gloat dependencies are only accessible to Makefile rules, not your normal
 shell.
-To run commands like `go`, `ys`, or `bb` directly:
+To run commands like `go`, `glj`, `ys`, or `bb` directly:
 
 ```bash
-make shell
+gloat --shell
 ```
 
 This starts a subshell with all tools in your PATH.
-Your prompt will change to indicate you're in the Makes shell.
+Your prompt will change to indicate you're in the Gloat subshell.
 Press Ctrl-D or type `exit` to return to your normal shell.
 
 
@@ -291,6 +291,7 @@ Press Ctrl-D or type `exit` to return to your normal shell.
 --extensions     List available processing extensions
 --platforms      List available cross-compilation platforms
 --complete ...   Generate shell completion script (bash, zsh, fish)
+--shell          Start a sub-shell with gloat tools on PATH
 
 -r, --run        Compile and run (pass program args after --)
 -f, --force      Overwrite existing output files

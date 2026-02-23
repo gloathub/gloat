@@ -39,7 +39,7 @@ YS-GLOAT-ONLY := \
 YS-REPO-URL := \
   https://raw.githubusercontent.com/yaml/yamlscript/v0/core/src
 
-YS-PKG-VERSION ?= v0.1.7
+YS-PKG-VERSION ?= v0.1.8
 
 # Mark GLJ files as precious (don't auto-delete intermediate files)
 .PRECIOUS: $(YS-CLJ-FILES) $(YS-GLJ-FILES)

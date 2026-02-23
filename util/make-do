@@ -136,6 +136,7 @@ release() (
     Makefile \
     bin/gloat \
     Changes \
+    man/man1/gloat.1 \
     www/docs/getting-started.md \
     doc/gloat-tutorial.md \
     ys/
@@ -160,9 +161,18 @@ release() (
   # --- Tag and release gloat ---
   git tag -a "v$version" -m "Release v$version"
   git push origin "v$version"
-  gh release create "v$version" \
-    --title "gloat v$version" \
-    --generate-notes
+
+  local gh_token=~/.github-api-token
+  if [[ -f $gh_token ]]; then
+    GH_TOKEN=$(< "$gh_token") \
+    gh release create "v$version" \
+      --title "gloat v$version" \
+      --generate-notes
+  else
+    gh release create "v$version" \
+      --title "gloat v$version" \
+      --generate-notes
+  fi
 )
 
 "$@"

@@ -394,7 +394,7 @@ Completions provide:
 - File completion for source files (\fB\&.ys\fR, \fB\&.clj\fR, \fB\&.glj\fR)
 - File completion for \fB--out\fR output paths
 
-.SH The Make Shell
+.SH The Gloat Shell
 The Makefile is set up so that you don't need to install any dependencies.
 They get installed the first time they are needed by a rule invoked by a \fBmake\fR
 command that you run.
@@ -405,14 +405,14 @@ get run when you use \fBmake\fR commands.
 In other words, they are NOT available for you to run directly in your shell.
 
 .PP
-Sometimes you want to run these commands like \fBgo\fR, \fBys\fR and \fBbb\fR directly in
-your shell.
-In that case, just run: \fBmake shell\fR\&.
+Sometimes you want to run these commands like \fBgo\fR, \fBglj\fR, \fBys\fR and \fBbb\fR
+directly in your shell.
+In that case, just run: \fBgloat --shell\fR\&.
 
 .PP
 This will put you in a subshell with all of those commands available.
-Your \fBPS1\fR shell prompt will be changed so that it will be easy to know you are
-in such a subshell.
+Your shell prompt will be prefixed with \fB(gloat)\fR so that it will be easy to
+know you are in the subshell.
 
 .PP
 To leave this environment and get back to the shell that you started in, just

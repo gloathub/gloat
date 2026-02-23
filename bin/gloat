@@ -15,6 +15,7 @@ main() (
   setup
 
   if [[ $* == --shell ]]; then
+    make --quiet --no-print-directory -C "$root" shell-deps
     do-shell
   fi
 

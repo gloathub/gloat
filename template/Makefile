@@ -16,13 +16,18 @@ MAKES-CLEAN := \
   $(BINARY) \
   $(GO-SUM) \
 
+BUILD-OPTS := -ldflags '-s -w'
+ifneq (,$(wildcard internal))
+BUILD-OPTS += -tags glj_no_aot_stdlib
+endif
+
 
 default:: build
 
 build: $(BINARY)
 
 $(BINARY): $(GO-SUM)
-	go build -o $(BINARY) .
+	go build $(BUILD-OPTS) -o $(BINARY) .
 
 $(GO-SUM): $(GO)
 	go mod tidy

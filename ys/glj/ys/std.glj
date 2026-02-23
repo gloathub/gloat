@@ -474,8 +474,8 @@
 (defmacro each [bindings & body]
   `(doall (for ~bindings (do ~@body))))
 
-(defn err [& xs]
-  (fmt.Fprint os.Stderr (str (apply str xs))))
+(defn err [x]
+  (fmt.Fprint os.Stderr x))
 
 #_(defn eval [S]
   (ys/eval (str "!ys-0\n" S)))
@@ -541,22 +541,22 @@
 #_(intern 'ys.std 'write clojure.core/spit)
 (intern 'ys.std 'write (fn [& args] (apply spit args)))   ; XXX
 
-(defn out [& xs]
-  (apply clojure.core/print xs))
+(defn out [x]
+  (fmt.Fprint os.Stdout x))
 
 #_(defn pp [x]
   (pp/pprint x))
 
-(defn print [& xs]
-  (apply clojure.core/print xs))
+(defn print [x]
+  (fmt.Fprint os.Stdout x))
 
 #_(def _println (resolve 'println))
 
-(defn say [& xs]
-  (apply println xs))
+(defn say [x]
+  (fmt.Fprintln os.Stdout (str x)))
 
-(defn warn [& xs]
-  (fmt.Fprintln os.Stderr (str (apply str (interpose " " xs)))))
+(defn warn [x]
+  (fmt.Fprintln os.Stderr (str x)))
 
 
 ;;------------------------------------------------------------------------------

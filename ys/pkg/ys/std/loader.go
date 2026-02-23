@@ -1048,8 +1048,6 @@ func LoadNS() {
 	var_clojure_DOT_core_int := lang.InternVarName(sym_clojure_DOT_core, sym_int)
 	// var clojure.core/int?
 	var_clojure_DOT_core_int_QMARK_ := lang.InternVarName(sym_clojure_DOT_core, sym_int_QMARK_)
-	// var clojure.core/interpose
-	var_clojure_DOT_core_interpose := lang.InternVarName(sym_clojure_DOT_core, sym_interpose)
 	// var clojure.core/into
 	var_clojure_DOT_core_into := lang.InternVarName(sym_clojure_DOT_core, sym_into)
 	// var clojure.core/keys
@@ -1094,10 +1092,6 @@ func LoadNS() {
 	var_clojure_DOT_core_partial := lang.InternVarName(sym_clojure_DOT_core, sym_partial)
 	// var clojure.core/pr-str
 	var_clojure_DOT_core_pr_DASH_str := lang.InternVarName(sym_clojure_DOT_core, sym_pr_DASH_str)
-	// var clojure.core/print
-	var_clojure_DOT_core_print := lang.InternVarName(sym_clojure_DOT_core, sym_print)
-	// var clojure.core/println
-	var_clojure_DOT_core_println := lang.InternVarName(sym_clojure_DOT_core, sym_println)
 	// var clojure.core/range
 	var_clojure_DOT_core_range := lang.InternVarName(sym_clojure_DOT_core, sym_range)
 	// var clojure.core/ratio?
@@ -6080,6 +6074,23 @@ func LoadNS() {
 	ns.AddAlias(sym_common, lang.FindOrCreateNamespace(sym_yamlscript_DOT_common))
 	ns.AddAlias(sym_util, lang.FindOrCreateNamespace(sym_yamlscript_DOT_util))
 	ns.AddAlias(sym_ipc, lang.FindOrCreateNamespace(sym_ys_DOT_ipc))
+	// err
+	{
+		tmp0 := sym_err.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(477), kw_column, int(7), kw_end_DASH_line, int(477), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			checkArity(args, 1)
+			v2 := args[0]
+			_ = v2
+			tmp3 := lang.Apply(fmt.Fprint, []any{os5.Stderr, v2})
+			return tmp3
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		var_ys_DOT_std_err = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_err.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
 	// exit
 	{
 		tmp0 := sym_exit.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(483), kw_column, int(7), kw_end_DASH_line, int(483), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_I)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
@@ -6104,6 +6115,40 @@ func LoadNS() {
 		var_ys_DOT_std_exit = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_exit.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// out
+	{
+		tmp0 := sym_out.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(544), kw_column, int(7), kw_end_DASH_line, int(544), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			checkArity(args, 1)
+			v2 := args[0]
+			_ = v2
+			tmp3 := lang.Apply(fmt.Fprint, []any{os5.Stdout, v2})
+			return tmp3
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		var_ys_DOT_std_out = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_out.SetMeta(tmp0.Meta().(lang.IPersistentMap))
+		}
+	}
+	// print
+	{
+		tmp0 := sym_print.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(550), kw_column, int(7), kw_end_DASH_line, int(550), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		var tmp1 lang.FnFunc
+		tmp1 = lang.NewFnFunc(func(args ...any) any {
+			checkArity(args, 1)
+			v2 := args[0]
+			_ = v2
+			tmp3 := lang.Apply(fmt.Fprint, []any{os5.Stdout, v2})
+			return tmp3
+		})
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		var_ys_DOT_std_print = ns.InternWithValue(tmp0, tmp1, true)
+		if tmp0.Meta() != nil {
+			var_ys_DOT_std_print.SetMeta(tmp0.Meta().(lang.IPersistentMap))
 		}
 	}
 	// source
@@ -8075,35 +8120,6 @@ func LoadNS() {
 		var_ys_DOT_std_eq = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_std_eq.SetMeta(tmp0.Meta().(lang.IPersistentMap))
-		}
-	}
-	// err
-	{
-		tmp0 := sym_err.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(477), kw_column, int(7), kw_end_DASH_line, int(477), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			switch len(args) {
-			default:
-				checkArityGTE(args, 0)
-				restArgs := args[0:]
-				var v2 any
-				if len(restArgs) > 0 {
-					v2 = lang.NewList(restArgs...)
-				}
-				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_str)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp5 := checkDerefVar(var_clojure_DOT_core_str)
-				tmp6 := lang.Apply(tmp4, []any{tmp5, v2})
-				tmp7 := lang.Apply(tmp3, []any{tmp6})
-				tmp8 := lang.Apply(fmt.Fprint, []any{os5.Stderr, tmp7})
-				return tmp8
-			}
-		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
-		var_ys_DOT_std_err = ns.InternWithValue(tmp0, tmp1, true)
-		if tmp0.Meta() != nil {
-			var_ys_DOT_std_err.SetMeta(tmp0.Meta().(lang.IPersistentMap))
 		}
 	}
 	// escape
@@ -10739,58 +10755,6 @@ func LoadNS() {
 			var_ys_DOT_std_or_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
 		}
 	}
-	// out
-	{
-		tmp0 := sym_out.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(544), kw_column, int(7), kw_end_DASH_line, int(544), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			switch len(args) {
-			default:
-				checkArityGTE(args, 0)
-				restArgs := args[0:]
-				var v2 any
-				if len(restArgs) > 0 {
-					v2 = lang.NewList(restArgs...)
-				}
-				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_print)
-				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
-				return tmp5
-			}
-		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
-		var_ys_DOT_std_out = ns.InternWithValue(tmp0, tmp1, true)
-		if tmp0.Meta() != nil {
-			var_ys_DOT_std_out.SetMeta(tmp0.Meta().(lang.IPersistentMap))
-		}
-	}
-	// print
-	{
-		tmp0 := sym_print.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(550), kw_column, int(7), kw_end_DASH_line, int(550), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			switch len(args) {
-			default:
-				checkArityGTE(args, 0)
-				restArgs := args[0:]
-				var v2 any
-				if len(restArgs) > 0 {
-					v2 = lang.NewList(restArgs...)
-				}
-				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_print)
-				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
-				return tmp5
-			}
-		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
-		var_ys_DOT_std_print = ns.InternWithValue(tmp0, tmp1, true)
-		if tmp0.Meta() != nil {
-			var_ys_DOT_std_print.SetMeta(tmp0.Meta().(lang.IPersistentMap))
-		}
-	}
 	// process
 	{
 		tmp0 := sym_process.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(953), kw_column, int(7), kw_end_DASH_line, int(953), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
@@ -11688,23 +11652,16 @@ func LoadNS() {
 	}
 	// say
 	{
-		tmp0 := sym_say.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(555), kw_column, int(7), kw_end_DASH_line, int(555), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_say.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(555), kw_column, int(7), kw_end_DASH_line, int(555), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			switch len(args) {
-			default:
-				checkArityGTE(args, 0)
-				restArgs := args[0:]
-				var v2 any
-				if len(restArgs) > 0 {
-					v2 = lang.NewList(restArgs...)
-				}
-				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_println)
-				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
-				return tmp5
-			}
+			checkArity(args, 1)
+			v2 := args[0]
+			_ = v2
+			tmp3 := checkDerefVar(var_clojure_DOT_core_str)
+			tmp4 := lang.Apply(tmp3, []any{v2})
+			tmp5 := lang.Apply(fmt.Fprintln, []any{os5.Stdout, tmp4})
+			return tmp5
 		})
 		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
 		var_ys_DOT_std_say = ns.InternWithValue(tmp0, tmp1, true)
@@ -13931,28 +13888,16 @@ func LoadNS() {
 	}
 	// warn
 	{
-		tmp0 := sym_warn.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(558), kw_column, int(7), kw_end_DASH_line, int(558), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
+		tmp0 := sym_warn.WithMeta(lang.NewMap(kw_file, "ys/std.glj", kw_line, int(558), kw_column, int(7), kw_end_DASH_line, int(558), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_std))).(*lang.Symbol)
 		var tmp1 lang.FnFunc
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			switch len(args) {
-			default:
-				checkArityGTE(args, 0)
-				restArgs := args[0:]
-				var v2 any
-				if len(restArgs) > 0 {
-					v2 = lang.NewList(restArgs...)
-				}
-				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_str)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp5 := checkDerefVar(var_clojure_DOT_core_str)
-				tmp6 := checkDerefVar(var_clojure_DOT_core_interpose)
-				tmp7 := lang.Apply(tmp6, []any{" ", v2})
-				tmp8 := lang.Apply(tmp4, []any{tmp5, tmp7})
-				tmp9 := lang.Apply(tmp3, []any{tmp8})
-				tmp10 := lang.Apply(fmt.Fprintln, []any{os5.Stderr, tmp9})
-				return tmp10
-			}
+			checkArity(args, 1)
+			v2 := args[0]
+			_ = v2
+			tmp3 := checkDerefVar(var_clojure_DOT_core_str)
+			tmp4 := lang.Apply(tmp3, []any{v2})
+			tmp5 := lang.Apply(fmt.Fprintln, []any{os5.Stderr, tmp4})
+			return tmp5
 		})
 		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
 		var_ys_DOT_std_warn = ns.InternWithValue(tmp0, tmp1, true)

@@ -228,11 +228,12 @@
  (defmacro each [bindings & body]
    `(doall (for ~bindings (do ~@body))))
  
- (defn err [& xs]
+-(defn err [& xs]
 -  (binding [*out* *err*]
 -    (apply clojure.core/print xs)
 -    (flush)))
-+  (fmt.Fprint os.Stderr (str (apply str xs))))
++(defn err [x]
++  (fmt.Fprint os.Stderr x))
  
 -(defn eval [S]
 +#_(defn eval [S]
@@ -280,32 +281,39 @@
 +#_(intern 'ys.std 'write clojure.core/spit)
 +(intern 'ys.std 'write (fn [& args] (apply spit args)))   ; XXX
  
- (defn out [& xs]
+-(defn out [& xs]
 -  (apply clojure.core/print xs)
 -  (flush))
-+  (apply clojure.core/print xs))
++(defn out [x]
++  (fmt.Fprint os.Stdout x))
  
 -(defn pp [x]
 +#_(defn pp [x]
    (pp/pprint x))
  
- (defn print [& xs]
+-(defn print [& xs]
 -  (apply clojure.core/print xs)
 -  (flush))
-+  (apply clojure.core/print xs))
- 
+-
 -(def _println (resolve 'println))
-+#_(def _println (resolve 'println))
- 
- (defn say [& xs]
+-
+-(defn say [& xs]
 -  (apply _println xs))
-+  (apply println xs))
- 
- (defn warn [& xs]
+-
+-(defn warn [& xs]
 -  (binding [*out* *err*]
 -    (apply _println xs)
 -    (flush)))
-+  (fmt.Fprintln os.Stderr (str (apply str (interpose " " xs)))))
++(defn print [x]
++  (fmt.Fprint os.Stdout x))
++
++#_(def _println (resolve 'println))
++
++(defn say [x]
++  (fmt.Fprintln os.Stdout (str x)))
++
++(defn warn [x]
++  (fmt.Fprintln os.Stderr (str x)))
  
  
  ;;------------------------------------------------------------------------------

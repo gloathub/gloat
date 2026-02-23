@@ -11,6 +11,7 @@
    [clojure.edn :as edn]
    [clojure.java.io :as io]))
 
+
 ;;------------------------------------------------------------------------------
 ;; Constants
 ;;------------------------------------------------------------------------------
@@ -20,10 +21,12 @@
 (def GLOAT-ROOT
   (str (fs/parent (fs/parent (fs/parent (fs/canonicalize *file*))))))
 
+(load-file (str GLOAT-ROOT "/bin/src/prune.clj"))
+
 (def TEMPLATE (str GLOAT-ROOT "/template"))
 (def SRC (str GLOAT-ROOT "/ys/src"))
 
-(def VALID-EXTENSIONS #{"gzip" "brotli"})
+(def VALID-EXTENSIONS #{"gzip" "brotli" "prune"})
 
 (def go-env
   {"GOPATH"     (str GLOAT-ROOT "/.cache/.local/go")
@@ -79,6 +82,7 @@ o,out=        Output file or directory
 
 platform=     Cross-compile (e.g., linux/amd64; see --platforms)
 X,ext=        Enable a processing extension (see --extensions)
+graph=        Dependency graph output (full or flat; implies -Xprune)
 
 ns=           Override namespace
 module=       Go module name (e.g., github.com/user/project)
@@ -425,8 +429,10 @@ Format can usually be inferred from -o extension:
 
   gzip      Compress with gzip (requires gzip command)
   brotli    Compress with brotli (auto-installed if needed)
+  prune     Prune unused clojure.core functions (smaller binaries)
 
-The compression extensions are applied to WASM output formats (wasm, js).")
+The compression extensions are applied to WASM output formats (wasm, js).
+The prune extension applies to binary builds (bin, lib, wasm, js, dir).")
     (System/exit 0)))
 
 (defn do-platforms []
@@ -607,6 +613,85 @@ Less common:
            "make" "--quiet" "--no-print-directory" brotli-bin))
         (process/shell brotli-bin "-9" "-f" file)
         (fs/move (str file ".br") file {:replace-existing true})))))
+
+(defn find-glojure-core-loader []
+  (let [glojure-dir (:GLOJURE-DIR make-vars)]
+    (str glojure-dir "/pkg/stdlib/clojure/core/loader.go")))
+
+(defn find-glojure-stdlib-dir []
+  (let [glojure-dir (:GLOJURE-DIR make-vars)]
+    (str glojure-dir "/pkg/stdlib")))
+
+(defn prune? []
+  (or (some #(= "prune" %) (:ext *opts*))
+      (:graph *opts*)
+      (System/getenv "GLOAT_X_PRUNE")))
+
+;; Functions referenced at runtime via glj.Var() in main.go templates
+;; that won't be found by scanning for var_clojure_DOT_core_ patterns
+(def PRUNE-RUNTIME-KEEPS
+  ;; Functions directly referenced by main.go template via glj.Var()
+  ["require" "alter-var-root" "constantly" "push-thread-bindings"
+   ;; Required by Glojure multimethod machinery (lang package calls these
+   ;; via glj.Var, invisible to loader block scanning)
+   "global-hierarchy" "parents" "isa?"])
+
+;; Namespace require order for ys runtime
+(def YS-NS-ORDER
+  ["yamlscript.common" "yamlscript.util"
+   "ys.fs" "ys.http" "ys.ipc" "ys.json"
+   "ys.std" "ys.dwim" "ys.v0"])
+
+(defn ns-to-import-path
+  "Convert a dotted namespace to its Go import path for internal/."
+  [ns-name go-module]
+  (let [pkg-path (cond
+                   (str/starts-with? ns-name "ys.")
+                   (str "ys/" (subs ns-name 3))
+                   (str/starts-with? ns-name "yamlscript.")
+                   (str "yamlscript/" (subs ns-name 11))
+                   :else
+                   (str/replace ns-name "." "/"))]
+    (str go-module "/internal/" pkg-path)))
+
+(defn generate-ys-imports
+  "Generate Go import lines for used ys namespaces."
+  [used-namespaces go-module]
+  (let [ordered (filter #(contains? used-namespaces %) YS-NS-ORDER)]
+    (str/join "\n"
+              (map #(str "\t_ \"" (ns-to-import-path % go-module) "\"")
+                   ordered))))
+
+(defn generate-ys-requires
+  "Generate Go require.Invoke lines for used ys namespaces."
+  [used-namespaces]
+  (let [ordered (filter #(contains? used-namespaces %) YS-NS-ORDER)]
+    (str/join "\n"
+              (map #(str "\trequire.Invoke(lang.NewSymbol(\"" % "\"))")
+                   ordered))))
+
+(defn deep-prune
+  "Run the full dependency-graph prune using prune.clj.
+   Returns the set of used ys/yamlscript namespaces."
+  [output-dir go-module source-required-nses]
+  (let [stdlib-dir (find-glojure-stdlib-dir)
+        graph-mode (when-let [g (:graph *opts*)]
+                     (case g
+                       "flat" :flat
+                       "full" :full
+                       :full))
+        config {:build-dir output-dir
+                :gloat-root GLOAT-ROOT
+                :stdlib-dir stdlib-dir
+                :runtime-keeps PRUNE-RUNTIME-KEEPS
+                :graph-mode graph-mode
+                :source-required-nses source-required-nses
+                :quiet (:quiet *opts*)
+                :verbose (:verbose *opts*)}]
+    (timer-start)
+    (let [result (prune/prune-all config)]
+      (timer-end "PRUNE")
+      (:used-namespaces result))))
 
 (defn cat-bb [name]
   (let [src (str GLOAT-ROOT "/ys/src/ys/" name ".clj")
@@ -810,7 +895,8 @@ Less common:
             all-namespaces (atom [])
             main-namespace (atom nil)
             export-map (atom nil)
-            has-main (atom false)]
+            has-main (atom false)
+            required-nses (atom #{})]
 
         (try
           ;; Convert each file
@@ -832,13 +918,21 @@ Less common:
                 "glj" (fs/copy source-file glj-file {:replace-existing true})
                 (die "Unknown file type: " basename))
 
-              ;; Extract EXPORT and check for main function
+              ;; Extract EXPORT, check for main function, and collect
+              ;; required namespaces for prune
               (when (fs/exists? clj-file)
                 (let [clj-content (slurp clj-file)]
                   (when-let [exports (extract-export clj-content)]
                     (reset! export-map exports))
                   (when (has-main-fn? clj-content)
-                    (reset! has-main true))))
+                    (reset! has-main true))
+                  ;; Collect ys/yamlscript namespaces from bare require forms
+                  ;; Matches: 'ys.fs and '[ys.http :as http] but NOT
+                  ;; (:require [ys.v0 ...]) which is handled by loader scanning
+                  (let [nses (re-seq #"'(?:\[)?(ys\.\w+|yamlscript\.\w+)"
+                                     clj-content)]
+                    (doseq [[_ ns-name] nses]
+                      (swap! required-nses conj ns-name)))))
 
               ;; Clojure to Glojure
               (when (fs/exists? clj-file)
@@ -943,27 +1037,48 @@ Less common:
               (spit (str output-dir "/go.mod") result)
               (msg "Generated:" (str output-dir "/go.mod")))
 
-            ;; Generate main.go
-            (let [package-path (str/replace @main-namespace #"\." "/")
-                  template (if (= format "lib")
-                             (str TEMPLATE "/lib-main.go")
-                             (str TEMPLATE "/main.go"))
-                  template-content (slurp template)
-                  ;; Generate export functions for lib format
-                  export-functions (if (= format "lib")
-                                     (generate-export-functions
-                                      @export-map @main-namespace)
-                                     "")
-                  result (render-template
-                          template-content
-                          [["GO-MODULE" go-module]
-                           ["PACKAGE-PATH" package-path]
-                           ["NAMESPACE" @main-namespace]
-                           ["EXPORT-FUNCTIONS" export-functions]])]
-              (spit (str output-dir "/main.go") result)
-              (msg "Generated:" (str output-dir "/main.go")))
+            ;; Run deep prune before generating main.go
+            ;; (prune needs user's pkg/ files; main.go needs prune results)
+            (let [used-ys-ns (when (prune?)
+                               (deep-prune output-dir go-module
+                                           @required-nses))]
 
-            ;; Generate Makefile for directory output
+              ;; Generate main.go
+              (let [package-path (str/replace @main-namespace #"\." "/")
+                    template (cond
+                               (and (= format "lib") (prune?))
+                               (str TEMPLATE "/lib-main-prune.go")
+                               (= format "lib")
+                               (str TEMPLATE "/lib-main.go")
+                               (prune?)
+                               (str TEMPLATE "/main-prune.go")
+                               :else
+                               (str TEMPLATE "/main.go"))
+                    template-content (slurp template)
+                    ;; Generate export functions for lib format
+                    export-functions (if (= format "lib")
+                                       (generate-export-functions
+                                        @export-map @main-namespace)
+                                       "")
+                    ;; Generate dynamic imports/requires for prune mode
+                    ys-imports (if used-ys-ns
+                                 (generate-ys-imports used-ys-ns go-module)
+                                 "")
+                    ys-requires (if used-ys-ns
+                                  (generate-ys-requires used-ys-ns)
+                                  "")
+                    result (render-template
+                            template-content
+                            [["GO-MODULE" go-module]
+                             ["PACKAGE-PATH" package-path]
+                             ["NAMESPACE" @main-namespace]
+                             ["EXPORT-FUNCTIONS" export-functions]
+                             ["YS-IMPORTS" ys-imports]
+                             ["YS-REQUIRES" ys-requires]])]
+                (spit (str output-dir "/main.go") result)
+                (msg "Generated:" (str output-dir "/main.go")))
+
+              ;; Generate Makefile for directory output
             (when is-dir-output
               (let [bin-name (or binary-name (fs/file-name output-dir))
                     template-content (slurp (str TEMPLATE "/Makefile"))
@@ -982,10 +1097,11 @@ Less common:
 
                 (msg "Building" format "...")
 
-                ;; go mod tidy
                 (let [io-opts (if (:quiet *opts*)
                                 {:out :string :err :string}
                                 {:out :inherit :err :inherit})]
+
+                  ;; go mod tidy
                   (process/shell (merge {:dir output-dir
                                          :extra-env build-env}
                                         io-opts)
@@ -997,6 +1113,8 @@ Less common:
                         (concat [go-bin "build"
                                  "-ldflags" "-s -w"
                                  "-o" binary-name]
+                                (when (prune?)
+                                  ["-tags" "glj_no_aot_stdlib"])
                                 (when build-mode [build-mode])
                                 ["main.go"])]
                     (apply process/shell (merge {:dir output-dir
@@ -1012,9 +1130,10 @@ Less common:
                       (msg "Generated:" output)
 
                       ;; Compress WASM if needed
-                      (when (and (contains? #{"wasm" "js"} format)
-                                 (seq (:ext *opts*)))
-                        (compress-wasm output (:ext *opts*)))
+                      (let [compress-exts (disj (set (:ext *opts*)) "prune")]
+                        (when (and (contains? #{"wasm" "js"} format)
+                                   (seq compress-exts))
+                          (compress-wasm output compress-exts)))
 
                       ;; Copy .h file for shared libraries
                       (when (= format "lib")
@@ -1034,14 +1153,18 @@ Less common:
                       ;; Clean up temp build dir
                       (fs/delete-tree (fs/parent output-dir)))
                     (die "Build failed"))))
-              ;; Directory output message
-              (if is-dir-output
-                (do
-                  (msg "Generated Go module in:" output-dir)
-                  (msg "To build: cd" output-dir "&& make"))
-                (do
-                  (msg "Generated Go module in:" output-dir)
-                  (msg "To build: cd" output-dir "&& go build")))))
+              (do
+                ;; Directory output message
+                (if is-dir-output
+                  (do
+                    (msg "Generated Go module in:" output-dir)
+                    (if (prune?)
+                      (msg "To build: cd" output-dir
+                           "&& go build -tags glj_no_aot_stdlib")
+                      (msg "To build: cd" output-dir "&& make")))
+                  (do
+                    (msg "Generated Go module in:" output-dir)
+                    (msg "To build: cd" output-dir "&& go build")))))))
 
           (finally
             (fs/delete-tree shared-tmpdir)))))))

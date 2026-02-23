@@ -525,7 +525,7 @@ supers: 20
 swap!: 0
 symbol: 2
 symbol?: 1
-sync/M: 17
+sync/M: 1
 system-newline: 0
 tagged-literal?: 1
 take: 23

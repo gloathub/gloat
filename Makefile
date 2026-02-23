@@ -95,6 +95,8 @@ run:
 
 path-deps: $(PATH-DEPS)
 
+shell-deps: $(SHELL-DEPS)
+
 path:
 	@echo "$(PATH)"
 

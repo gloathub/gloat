@@ -58,6 +58,7 @@ do-shell() {
     echo "Already in a gloat shell" >&2
     exit 1
   fi
+  make -C "$root" shell-deps
   export IN_GLOAT_SHELL=1
   local shell
   shell=$(ps -o comm= -p $PPID 2>/dev/null)

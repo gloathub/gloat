@@ -22,11 +22,12 @@
   (str (fs/parent (fs/parent (fs/parent (fs/canonicalize *file*))))))
 
 (load-file (str GLOAT-ROOT "/bin/src/prune.clj"))
+(load-file (str GLOAT-ROOT "/bin/src/deps.clj"))
 
 (def TEMPLATE (str GLOAT-ROOT "/template"))
 (def SRC (str GLOAT-ROOT "/ys/src"))
 
-(def VALID-EXTENSIONS #{"gzip" "brotli" "prune"})
+(def VALID-EXTENSIONS #{"gzip" "brotli" "prune" "deps"})
 
 (def go-env
   {"GOPATH"     (str GLOAT-ROOT "/.cache/.local/go")
@@ -62,27 +63,27 @@ gloat [<options>] <file>...
 Glojure AOT Tool - version " VERSION "
 
 Compiles Clojure or YAMLScript code to Go code, binaries or Wasm.
+Run 'man gloat' for full documentation.
+See https://gloathub.org
 
   FILE:
     path      Source file (.ys, .clj, .glj) or directory
     -         Read from stdin
 
   Examples:
-    gloat foo.ys                        Go code to stdout
-    gloat foo.ys -t clj                 Clojure code to stdout
-    gloat foo.ys -o foo.go              Go source file
-    gloat foo.ys -o foo                 Native binary
+    gloat foo.ys                        Compile to 'foo' binary
+    gloat foo.ys -t go                  Go code to stdout
+    gloat foo.ys -o foo/                Go build directory
+    gloat foo.ys -o foo.go              Go file
+    gloat foo.ys -o foo.so              Shared library + headers
     gloat foo.ys -o foo --platform=freebsd/amd64  Cross-compile
     gloat --run foo.ys -- arg1 arg2     Compile and run
-
-  Check out https://gloathub.org
 --
 t,to=         Output format (inferred from -o; see --formats)
 o,out=        Output file or directory
 
 platform=     Cross-compile (e.g., linux/amd64; see --platforms)
 X,ext=        Enable a processing extension (see --extensions)
-graph=        Dependency graph output (full or flat; implies -Xprune)
 
 ns=           Override namespace
 module=       Go module name (e.g., github.com/user/project)
@@ -90,8 +91,9 @@ module=       Go module name (e.g., github.com/user/project)
 formats       List available output formats
 extensions    List available processing extensions
 platforms     List available cross-compilation platforms
-complete=     Generate shell completion script (bash, fish, zsh)
+
 shell         Start a sub-shell with gloat tools on PATH
+complete=     Generate shell completion script (bash, fish, zsh)
 
 r,run         Compile and run (pass program args after --)
 f,force       Overwrite existing output files
@@ -427,9 +429,11 @@ Format can usually be inferred from -o extension:
   (when (:extensions *opts*)
     (println "Available processing extensions (use with -X/--ext):
 
-  gzip      Compress with gzip (requires gzip command)
-  brotli    Compress with brotli (auto-installed if needed)
-  prune     Prune unused clojure.core functions (smaller binaries)
+  brotli      Compress with brotli (auto-installed if needed)
+  deps        Print flat dependency list (implies prune)
+  deps=tree   Print dependency tree (implies prune)
+  gzip        Compress with gzip (requires gzip command)
+  prune       Prune unused clojure.core functions (smaller binaries)
 
 The compression extensions are applied to WASM output formats (wasm, js).
 The prune extension applies to binary builds (bin, lib, wasm, js, dir).")
@@ -475,12 +479,29 @@ Less common:
     (flush)
     (System/exit 0)))
 
+(defn parse-extensions
+  "Parse ext vector into map.
+   e.g. [\"prune\" \"deps=tree\"] -> {\"prune\" true, \"deps\" \"tree\"}"
+  [ext-vec]
+  (into {}
+        (for [ext ext-vec]
+          (if-let [eq-idx (str/index-of ext "=")]
+            [(subs ext 0 eq-idx) (subs ext (inc eq-idx))]
+            [ext true]))))
+
 (defn validate-extensions []
   (when (seq (:ext *opts*))
-    (doseq [ext (:ext *opts*)]
-      (when-not (VALID-EXTENSIONS ext)
-        (die "Unknown extension: " ext
-             " (see --extensions for available extensions)")))))
+    (let [parsed (parse-extensions (:ext *opts*))]
+      (doseq [[ext-name ext-val] parsed]
+        (when-not (VALID-EXTENSIONS ext-name)
+          (die "Unknown extension: " ext-name
+               " (see --extensions for available extensions)")))
+      ;; Validate deps values
+      (when-let [deps-val (get parsed "deps")]
+        (when (and (string? deps-val)
+                   (not (contains? #{"tree"} deps-val)))
+          (die "Unknown deps mode: " deps-val
+               " (use tree, list, or tree-sort)"))))))
 
 ;;------------------------------------------------------------------------------
 ;; Core Conversion Functions
@@ -623,9 +644,10 @@ Less common:
     (str glojure-dir "/pkg/stdlib")))
 
 (defn prune? []
-  (or (some #(= "prune" %) (:ext *opts*))
-      (:graph *opts*)
-      (System/getenv "GLOAT_X_PRUNE")))
+  (let [parsed (parse-extensions (or (:ext *opts*) []))]
+    (or (contains? parsed "prune")
+        (contains? parsed "deps")
+        (System/getenv "GLOAT_X_PRUNE"))))
 
 ;; Functions referenced at runtime via glj.Var() in main.go templates
 ;; that won't be found by scanning for var_clojure_DOT_core_ patterns
@@ -675,22 +697,30 @@ Less common:
    Returns the set of used ys/yamlscript namespaces."
   [output-dir go-module source-required-nses]
   (let [stdlib-dir (find-glojure-stdlib-dir)
-        graph-mode (when-let [g (:graph *opts*)]
-                     (case g
-                       "flat" :flat
-                       "full" :full
-                       :full))
+        parsed (parse-extensions (or (:ext *opts*) []))
+        deps-mode (when (contains? parsed "deps")
+                    (let [v (get parsed "deps")]
+                      (if (string? v)
+                        (keyword v)
+                        :list)))
         config {:build-dir output-dir
                 :gloat-root GLOAT-ROOT
                 :stdlib-dir stdlib-dir
                 :runtime-keeps PRUNE-RUNTIME-KEEPS
-                :graph-mode graph-mode
+                :deps-mode deps-mode
                 :source-required-nses source-required-nses
                 :quiet (:quiet *opts*)
                 :verbose (:verbose *opts*)}]
     (timer-start)
     (let [result (prune/prune-all config)]
       (timer-end "PRUNE")
+      ;; Emit deps output if requested (done here because deps.clj
+      ;; is loaded after prune.clj so deps/ ns isn't visible there)
+      (when deps-mode
+        (let [edges (:edges (:graph-result result))
+              roots (deps/find-user-roots edges)]
+          (deps/emit-deps deps-mode edges roots (:user-quiet *opts*))
+          (System/exit 0)))
       (:used-namespaces result))))
 
 (defn cat-bb [name]
@@ -1307,13 +1337,20 @@ Less common:
       (validate-extensions)
 
       (let [opts (set-vars parsed-opts)
-            format (infer-format (:output opts) (:to opts))]
+            format (infer-format (:output opts) (:to opts))
+            deps-only (contains? (parse-extensions (or (:ext opts) []))
+                                 "deps")
+            opts (if deps-only
+                   (assoc opts
+                          :user-quiet (:quiet opts)
+                          :quiet true :verbose false)
+                   opts)]
 
         (binding [*opts* opts]
           (check-exists (:output opts) (:force opts))
 
-          ;; Fail fast if output already exists (unless --force)
-          (when (and (:output opts) (not (:force opts)))
+          ;; Fail fast if output already exists (unless --force or deps-only)
+          (when (and (:output opts) (not (:force opts)) (not deps-only))
             (when (fs/exists? (:output opts))
               (die "Output already exists: " (:output opts)
                    " (use --force to overwrite)"))

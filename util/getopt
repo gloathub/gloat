@@ -32,7 +32,6 @@ main() (
  :module   $(value-to-edn option_module)
  :complete $(value-to-edn option_complete)
  :ext      $(array-to-edn option_ext)
- :graph    $(value-to-edn option_graph)
  :formats    $(bool-to-edn "${option_formats:-false}")
  :extensions $(bool-to-edn "${option_extensions:-false}")
  :platforms  $(bool-to-edn "${option_platforms:-false}")

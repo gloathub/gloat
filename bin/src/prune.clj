@@ -496,43 +496,6 @@
      :reasons @reasons}))
 
 ;;------------------------------------------------------------------------------
-;; Graph output
-;;------------------------------------------------------------------------------
-
-(defn emit-graph-full
-  "Emit full trace YAML."
-  [graph-result]
-  (let [{:keys [edges reasons]} graph-result
-        sb (StringBuilder.)]
-    ;; Sort entries by key
-    (doseq [[[ns fn-name] refs] (sort-by (comp str first) edges)]
-      (.append sb (str ns "/" fn-name ":\n"))
-      ;; Show reason if not user code
-      (when-let [reason (get reasons [ns fn-name])]
-        (.append sb (str "  reason: " (first reason) "/" (second reason) "\n")))
-      ;; Group refs by namespace
-      (let [by-ns (group-by first refs)]
-        (doseq [[ref-ns ref-fns] (sort-by first by-ns)]
-          (.append sb (str "  " ref-ns ":\n"))
-          (doseq [fn-name (sort (map second ref-fns))]
-            (.append sb (str "  - " fn-name "\n")))))
-      (.append sb "\n"))
-    (str sb)))
-
-(defn emit-graph-flat
-  "Emit flat keep-lists YAML."
-  [graph-result]
-  (let [{:keys [keeps]} graph-result
-        sb (StringBuilder.)]
-    (doseq [[ns-name fns] (sort-by first keeps)]
-      (when (seq fns)
-        (.append sb (str ns-name ":\n"))
-        (doseq [fn-name (sort fns)]
-          (.append sb (str "- " fn-name "\n")))
-        (.append sb "\n")))
-    (str sb)))
-
-;;------------------------------------------------------------------------------
 ;; Loader pruning (reused from prune-core.py logic)
 ;;------------------------------------------------------------------------------
 
@@ -737,9 +700,8 @@
      :build-dir     - build output directory
      :gloat-root    - gloat project root
      :stdlib-dir    - glojure stdlib directory
-     :core-graph-path - path to clojure-core.yaml
      :runtime-keeps - extra clojure.core functions to always keep
-     :graph-mode    - nil, :full, or :flat
+     :deps-mode     - nil, :tree, :list, or :tree-sort
      :quiet         - suppress messages
      :verbose       - verbose timing
 
@@ -748,8 +710,8 @@
       :used-namespaces - set of ys/yamlscript namespaces that are needed
       :stats         - map of ns -> {:kept N :total N}}"
   [config]
-  (let [{:keys [build-dir gloat-root stdlib-dir core-graph-path
-                runtime-keeps graph-mode quiet verbose]} config
+  (let [{:keys [build-dir gloat-root stdlib-dir
+                runtime-keeps deps-mode quiet verbose]} config
 
         ;; Build the full dependency graph (now scans clojure.core
         ;; loader.go blocks directly instead of using clojure-core.yaml)
@@ -872,12 +834,7 @@
 
         core-keeps (get-in graph-result [:keeps "clojure.core"] #{})
 
-        ;; Emit graph if requested
-        _ (when graph-mode
-            (case graph-mode
-              :full (print (emit-graph-full graph-result))
-              :flat (print (emit-graph-flat graph-result)))
-            (flush))
+        _ deps-mode ;; used by caller (gloat/deep-prune) for deps output
 
         ;; Determine which ys/yamlscript namespaces are actually used
         used-namespaces (set

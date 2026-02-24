@@ -130,6 +130,8 @@ release() (
   # --- Rebuild and test ---
   make update ys-pkg
   make test
+  make clean
+  GLOAT_X_PRUNE=1 make test
 
   # --- Commit and tag ys/pkg ---
   git add \
@@ -173,6 +175,9 @@ release() (
       --title "gloat v$version" \
       --generate-notes
   fi
+
+  # --- Publish website ---
+  make publish-www
 )
 
 "$@"

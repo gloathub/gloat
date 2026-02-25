@@ -3,8 +3,8 @@ use std::ffi::{CStr, CString};
 use std::os::raw::{c_char, c_int, c_longlong};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Load the shared library from LD_LIBRARY_PATH
-    let lib = unsafe { Library::new("example.so")? };
+    let lib_name = if cfg!(target_os = "macos") { "example.dylib" } else { "example.so" };
+    let lib = unsafe { Library::new(lib_name)? };
 
     // factorial(int) -> int
     let factorial: Symbol<unsafe extern "C" fn(c_longlong) -> c_longlong> =

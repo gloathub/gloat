@@ -366,6 +366,8 @@ l l .
 
 -h, --help       Show this help
 --version        Show version
+
+--RESET          Remove all cached dependencies (make distclean)
 .EE
 
 .SH Shell Completion
@@ -421,6 +423,18 @@ To leave this environment and get back to the shell that you started in, just
 press Ctrl-D or run the \fBexit\fR command.
 
 .SH Advanced Configuration
+.SS Resetting Dependencies
+If your cached dependencies become corrupted or you want a clean reinstall,
+run:
+
+.EX
+gloat --RESET
+.EE
+
+.PP
+This runs \fBmake distclean\fR, removing the \fB\&.cache/\fR directory.
+The next invocation of gloat will reinstall all dependencies from scratch.
+
 .SS Building Glojure from Source
 By default, gloat downloads a pre-built \fBglj\fR binary from GitHub releases.
 If a pre-built binary is not available for your platform, or you need to test

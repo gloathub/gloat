@@ -12,6 +12,11 @@ main() (
   [[ -L $self ]] && self=$(readlink -f "$self")
   root=$(cd -P "$(dirname "$self")/.." && pwd -P)
 
+  if [[ $* == --RESET ]]; then
+    make -C "$root" distclean
+    exit
+  fi
+
   PATH=$(make --quiet --no-print-directory -C "$root" path)
   export PATH
 

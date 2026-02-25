@@ -78,6 +78,7 @@ See https://gloathub.org
     gloat foo.ys -o foo.so              Shared library + headers
     gloat foo.ys -o foo --platform=freebsd/amd64  Cross-compile
     gloat --run foo.ys -- arg1 arg2     Compile and run
+    gloat --RESET                       Remove all cached dependencies
 --
 t,to=         Output format (inferred from -o; see --formats)
 o,out=        Output file or directory

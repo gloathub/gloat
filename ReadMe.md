@@ -344,6 +344,8 @@ Less common platform architectures:
 
 -h, --help       Show this help
 --version        Show version
+
+--RESET          Remove all cached dependencies (make distclean)
 ```
 
 
@@ -398,6 +400,18 @@ press Ctrl-D or run the `exit` command.
 
 
 ## Advanced Configuration
+
+### Resetting Dependencies
+
+If your cached dependencies become corrupted or you want a clean reinstall,
+run:
+
+```bash
+gloat --RESET
+```
+
+This runs `make distclean`, removing the `.cache/` directory.
+The next invocation of gloat will reinstall all dependencies from scratch.
 
 ### Building Glojure from Source
 

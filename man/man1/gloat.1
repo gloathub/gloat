@@ -420,6 +420,19 @@ know you are in the subshell.
 To leave this environment and get back to the shell that you started in, just
 press Ctrl-D or run the \fBexit\fR command.
 
+.SH Advanced Configuration
+.SS Building Glojure from Source
+By default, gloat downloads a pre-built \fBglj\fR binary from GitHub releases.
+If a pre-built binary is not available for your platform, or you need to test
+unreleased Glojure changes, you can build \fBglj\fR from source.
+
+.PP
+Set \fBGLOJURE_FROM_SOURCE\fR as an environment variable:
+
+.EX
+export GLOJURE_FROM_SOURCE=true
+.EE
+
 .SH Copyright and License
 Copyright 2026 - Ingy dot Net
 

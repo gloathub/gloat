@@ -397,6 +397,21 @@ To leave this environment and get back to the shell that you started in, just
 press Ctrl-D or run the `exit` command.
 
 
+## Advanced Configuration
+
+### Building Glojure from Source
+
+By default, gloat downloads a pre-built `glj` binary from GitHub releases.
+If a pre-built binary is not available for your platform, or you need to test
+unreleased Glojure changes, you can build `glj` from source.
+
+Set `GLOJURE_FROM_SOURCE` as an environment variable:
+
+```bash
+export GLOJURE_FROM_SOURCE=true
+```
+
+
 ## Copyright and License
 
 Copyright 2026 - Ingy dot Net

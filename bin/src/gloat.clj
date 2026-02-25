@@ -915,7 +915,9 @@ Less common:
         binary-name (when is-binary (fs/file-name output))
         build-mode (when (= format "lib") "-buildmode=c-shared")
         binary-name
-        (if (and (= format "lib") (not (str/ends-with? output ".dylib")))
+        (if (and (= format "lib")
+                 (not (str/ends-with? output ".dylib"))
+                 (not (str/ends-with? output ".so")))
           (str binary-name ".so")
           binary-name)
         [goos goarch] (cond
@@ -1139,6 +1141,7 @@ Less common:
               (let [go-bin (:GO make-vars)
                     build-env (merge go-env
                                      {"GONOSUMCHECK" "*"}
+                                     (when (= format "lib") {"CGO_ENABLED" "1"})
                                      (when goos {"GOOS" goos})
                                      (when goarch {"GOARCH" goarch}))]
 

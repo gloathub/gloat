@@ -130,6 +130,7 @@ release() (
   # --- Rebuild and test ---
   make update ys-pkg
   make test
+  make -C demo/so-bindings/ada/ test
   make clean
   GLOAT_X_PRUNE=1 make test
 

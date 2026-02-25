@@ -66,6 +66,8 @@ install:
 	fi
 	@# Checkout version
 	@cd '$(INSTALL-DIR)' && git -c advice.detachedHead=false checkout '$(VERSION)'
+	@# Clean old dependencies (may be stale after version change)
+	@make -C '$(INSTALL-DIR)' distclean &>/dev/null || true
 	@# Create symlink
 	@ln -sf '$(INSTALL-DIR)/bin/gloat' '$(GLOAT-BIN)'
 	@# Install dependencies

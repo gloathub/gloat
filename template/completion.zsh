@@ -38,6 +38,7 @@ _gloat() {
         '(- *)--shell[Start a sub-shell with gloat tools on PATH]' \
         '(- *)--shell-all[Like --shell but install all dev tools]' \
         '(- *)--reset[Remove all cached dependencies]' \
+        '(- *)--upgrade[Upgrade gloat to the latest version]' \
         '(-r --run)'{-r,--run}'[Compile and run]' \
         '(-f --force)'{-f,--force}'[Overwrite existing output]' \
         '--verbose[Print timing information]' \

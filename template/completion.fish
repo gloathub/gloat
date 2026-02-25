@@ -17,6 +17,7 @@ complete -c gloat -l complete -d 'Generate shell completion' -x -a 'bash zsh fis
 complete -c gloat -l shell -d 'Start a sub-shell with gloat tools on PATH'
 complete -c gloat -l shell-all -d 'Like --shell but install all dev tools'
 complete -c gloat -l reset -d 'Remove all cached dependencies'
+complete -c gloat -l upgrade -d 'Upgrade gloat to the latest version'
 
 complete -c gloat -s r -l run -d 'Compile and run'
 complete -c gloat -s f -l force -d 'Overwrite existing output'

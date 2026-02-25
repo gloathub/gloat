@@ -102,9 +102,11 @@ f,force       Overwrite existing output files
 v,verbose     Print timing for each compilation step
 q,quiet       Suppress progress messages
 
+upgrade       Upgrade gloat to the latest version
+reset         Remove all cached dependencies and reinstall
+
 h,help        Show this help
 version       Show version
-reset         Remove all cached dependencies (make distclean)
 "))
 
 ;;------------------------------------------------------------------------------
@@ -478,6 +480,10 @@ Less common:
 (defn do-reset []
   (when (:reset *opts*)
     (die "Use 'gloat --reset' from the command line (not via gloat.clj)")))
+
+(defn do-upgrade []
+  (when (:upgrade *opts*)
+    (die "Use 'gloat --upgrade' from the command line (not via gloat.clj)")))
 
 (defn do-complete []
   (when-let [shell (:complete *opts*)]
@@ -1346,6 +1352,7 @@ Less common:
       (do-shell)
       (do-shell-all)
       (do-reset)
+      (do-upgrade)
       (do-complete)
       (validate-extensions)
 

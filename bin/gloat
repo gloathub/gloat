@@ -17,6 +17,31 @@ main() (
     exit
   fi
 
+  if [[ $* == --upgrade ]]; then
+    echo "Upgrading gloat..."
+    cd "$root"
+    git fetch --tags
+    latest=$(git tag -l 'v*' --sort=-v:refname | head -1)
+    if [[ -z $latest ]]; then
+      echo "Error: Could not determine latest version" >&2
+      exit 1
+    fi
+    if [[ $latest == "v$GLOAT_VERSION" ]]; then
+      echo "Already at latest version ($GLOAT_VERSION)"
+      exit
+    fi
+    if [[ -L ${BASH_SOURCE[0]} ]]; then
+      # Curl-based install: checkout latest tag
+      git -c advice.detachedHead=false checkout "$latest"
+    else
+      # Clone-based install: pull current branch
+      git pull
+    fi
+    make --quiet --no-print-directory distclean
+    echo "Upgraded to $latest — run 'gloat --version' to verify"
+    exit
+  fi
+
   PATH=$(make --quiet --no-print-directory -C "$root" path)
   export PATH
 

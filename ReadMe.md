@@ -343,10 +343,11 @@ Less common platform architectures:
 -v, --verbose    Print timing for each compilation step
 -q, --quiet      Suppress progress messages
 
+--upgrade        Upgrade gloat to the latest version
+--reset          Remove all cached dependencies and reinstall
+
 -h, --help       Show this help
 --version        Show version
-
---reset          Remove all cached dependencies (make distclean)
 ```
 
 

@@ -7,7 +7,7 @@ include $R/common/common.mk
 include $M/clean.mk
 include $M/shell.mk
 
-override export PATH := $R/bin:$(PATH)
+override PATH := $R/bin:$(PATH)
 export LD_LIBRARY_PATH := $(shell pwd)
 
 NAME := example
@@ -21,7 +21,7 @@ MAKES-CLEAN := \
   $(HEADER) \
   $(LIB-LIBRARY) \
 
-LANGS := \
+LANGS ?= \
   ada \
   c \
   cpp \

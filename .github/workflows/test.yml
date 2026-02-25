@@ -109,8 +109,27 @@ jobs:
     - name: Test Go bindings
       run: make -C demo/so-bindings/go/ test
 
-    - name: Test Ada bindings
-      run: make -C demo/so-bindings/ada/ test
+    - name: Test Crystal bindings
+      run: make -C demo/so-bindings/crystal/ test
+
+  test-so-bindings-macos:
+    name: Test so-bindings (macOS)
+    runs-on: macos-latest
+    timeout-minutes: 45
+    needs: test
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Cache Makes dependencies
+      uses: actions/cache@v4
+      with:
+        path: .cache/
+        key: makes-so-macOS-${{ hashFiles('Makefile', 'common/common.mk') }}
+        restore-keys: makes-so-macOS-
+
+    - name: Test so-bindings
+      run: make -C demo/so-bindings/ test LANGS='crystal python rust'
 
   test-slow:
     name: Test slow (Linux, main only)

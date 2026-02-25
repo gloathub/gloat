@@ -2,9 +2,10 @@
 """Test the greet shared library via ctypes."""
 
 import ctypes
+import sys
 
-# Load library by name - ctypes will search LD_LIBRARY_PATH
-lib = ctypes.CDLL("example.so")
+lib_ext = "dylib" if sys.platform == "darwin" else "so"
+lib = ctypes.CDLL(f"example.{lib_ext}")
 
 # factorial(int) -> int
 lib.factorial.argtypes = [ctypes.c_longlong]

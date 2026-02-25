@@ -71,7 +71,7 @@ endif
 MAKES-CLEAN := \
   $(TEST-CALL) \
 
-# Go 1.26 has a linker bug on arm64 that crashes when building glj with CGO
+# Disable CGO to avoid Go linker issues
 export CGO_ENABLED := 0
 
 override PATH := $(ROOT)/bin:$(ROOT)/util:$(PATH)

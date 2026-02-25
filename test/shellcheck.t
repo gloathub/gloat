@@ -11,7 +11,7 @@ while read -r file; do
   [[ -h $file ]] && continue
   [[ -f $file ]] || continue
 
-  shebang=$(head -n1 "$file" | tr -d '\0')
+  shebang=$(head -n1 "$file" | LC_ALL=C tr -d '\0')
 
   if [[ $file == *.bash ]] ||
      [[ $shebang == '#!'*[/\ ]bash ]]

@@ -19,7 +19,7 @@ if [[ ! -x $BB_BIN ]]; then
 fi
 
 # Test 1: bb format can be executed with babashka
-TMP_BB=$(mktemp --suffix=.bb)
+TMP_BB=$(mktemp "${TMPDIR:-/tmp}/tmp.XXXXXX.bb")
 try "$GLOAT_BIN $EXAMPLE_DIR/factorial.ys -t bb"
 is "$rc" 0 "bb format compiles"
 echo "$got" > "$TMP_BB"
@@ -41,7 +41,7 @@ is "$rc" 0 "bb format runs with no arguments"
 rm -f "$TMP_BB"
 
 # Test 4: bb format can be saved to file with -o
-TMP_BB2=$(mktemp --suffix=.bb)
+TMP_BB2=$(mktemp "${TMPDIR:-/tmp}/tmp.XXXXXX.bb")
 rm "$TMP_BB2"  # Remove so gloat can create it
 try "$GLOAT_BIN $EXAMPLE_DIR/factorial.ys -o $TMP_BB2"
 is "$rc" 0 "bb format saves to file with -o"
@@ -53,7 +53,7 @@ is "$got" "7! -> 5040" "saved bb file produces correct output"
 rm -f "$TMP_BB2"
 
 # Test 5: bb format without extension auto-detects
-TMP_BB3=$(mktemp --suffix=.bb)
+TMP_BB3=$(mktemp "${TMPDIR:-/tmp}/tmp.XXXXXX.bb")
 try "$GLOAT_BIN $EXAMPLE_DIR/factorial -t bb"
 is "$rc" 0 "auto-detection works with bb format"
 echo "$got" > "$TMP_BB3"

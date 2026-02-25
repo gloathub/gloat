@@ -12,7 +12,7 @@ main() (
   [[ -L $self ]] && self=$(readlink -f "$self")
   root=$(cd -P "$(dirname "$self")/.." && pwd -P)
 
-  if [[ $* == --RESET ]]; then
+  if [[ $* == --reset ]]; then
     make --quiet --no-print-directory -C "$root" distclean
     exit
   fi
@@ -22,8 +22,13 @@ main() (
 
   setup
 
-  if [[ $* == --shell ]]; then
+  if [[ $* == --shell-all ]]; then
     make --quiet --no-print-directory -C "$root" shell-deps
+    do-shell
+  fi
+
+  if [[ $* == --shell ]]; then
+    make --quiet --no-print-directory -C "$root" shell-deps-min
     do-shell
   fi
 
@@ -67,7 +72,6 @@ do-shell() {
     echo "Already in a gloat shell" >&2
     exit 1
   fi
-  make --quiet --no-print-directory -C "$root" shell-deps
   export IN_GLOAT_SHELL=1
   local shell
   shell=$(ps -o comm= -p $PPID 2>/dev/null)

@@ -40,7 +40,9 @@ main() (
  :verbose  $(bool-to-edn "${option_verbose:-false}")
  :quiet    $(bool-to-edn "${option_quiet:-false}")
  :version  $(bool-to-edn "${option_version:-false}")
- :shell    $(bool-to-edn "${option_shell:-false}")
+ :shell     $(bool-to-edn "${option_shell:-false}")
+ :shell-all $(bool-to-edn "${option_shell_all:-false}")
+ :reset     $(bool-to-edn "${option_reset:-false}")
  :args     $(array-to-edn args)
  :run-args $(array-to-edn run_args)
 }

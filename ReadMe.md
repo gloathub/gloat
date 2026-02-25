@@ -335,6 +335,7 @@ Less common platform architectures:
 --platforms      List available cross-compilation platforms
 
 --shell          Start a sub-shell with gloat tools on PATH
+--shell-all      Like --shell but install all dev tools
 --complete ...   Generate shell completion script (bash, fish, zsh)
 
 -r, --run        Compile and run (pass program args after --)
@@ -345,7 +346,7 @@ Less common platform architectures:
 -h, --help       Show this help
 --version        Show version
 
---RESET          Remove all cached dependencies (make distclean)
+--reset          Remove all cached dependencies (make distclean)
 ```
 
 
@@ -389,11 +390,18 @@ In other words, they are NOT available for you to run directly in your shell.
 
 Sometimes you want to run these commands like `go`, `glj`, `ys` and `bb`
 directly in your shell.
-In that case, just run: `gloat --shell`.
+Gloat provides two shell variants:
 
-This will put you in a subshell with all of those commands available.
-Your shell prompt will be prefixed with `(gloat) ` so that it will be easy to
-know you are in the subshell.
+* `gloat --shell` — Starts a subshell with the core tools (bb, glj, go, ys)
+  plus `wasmtime` on PATH.
+  This is the everyday variant for compiling and running programs.
+
+* `gloat --shell-all` — Like `--shell` but also installs all developer tools
+  (gh, go-md2man, shellcheck, brotli, etc.).
+  Use this when you need the full development environment.
+
+Your shell prompt will be prefixed with `(gloat) ` so that you know you are in
+the subshell.
 
 To leave this environment and get back to the shell that you started in, just
 press Ctrl-D or run the `exit` command.
@@ -407,7 +415,7 @@ If your cached dependencies become corrupted or you want a clean reinstall,
 run:
 
 ```bash
-gloat --RESET
+gloat --reset
 ```
 
 This runs `make distclean`, removing the `.cache/` directory.

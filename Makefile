@@ -100,6 +100,11 @@ path-deps: $(PATH-DEPS)
 
 shell-deps: $(SHELL-DEPS)
 
+SHELL-DEPS-MIN := \
+  $(WASMTIME) \
+
+shell-deps-min: $(SHELL-DEPS-MIN)
+
 path:
 	@echo "$(PATH)"
 

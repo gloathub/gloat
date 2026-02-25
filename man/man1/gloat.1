@@ -357,6 +357,7 @@ l l .
 --platforms      List available cross-compilation platforms
 
 --shell          Start a sub-shell with gloat tools on PATH
+--shell-all      Like --shell but install all dev tools
 --complete ...   Generate shell completion script (bash, fish, zsh)
 
 -r, --run        Compile and run (pass program args after --)
@@ -367,7 +368,7 @@ l l .
 -h, --help       Show this help
 --version        Show version
 
---RESET          Remove all cached dependencies (make distclean)
+--reset          Remove all cached dependencies (make distclean)
 .EE
 
 .SH Shell Completion
@@ -411,12 +412,19 @@ In other words, they are NOT available for you to run directly in your shell.
 .PP
 Sometimes you want to run these commands like \fBgo\fR, \fBglj\fR, \fBys\fR and \fBbb\fR
 directly in your shell.
-In that case, just run: \fBgloat --shell\fR\&.
+Gloat provides two shell variants:
+.IP \(bu 2
+\fBgloat --shell\fR — Starts a subshell with the core tools (bb, glj, go, ys)
+plus \fBwasmtime\fR on PATH.
+This is the everyday variant for compiling and running programs.
+.IP \(bu 2
+\fBgloat --shell-all\fR — Like \fB--shell\fR but also installs all developer tools
+(gh, go-md2man, shellcheck, brotli, etc.).
+Use this when you need the full development environment.
 
 .PP
-This will put you in a subshell with all of those commands available.
-Your shell prompt will be prefixed with \fB(gloat)\fR so that it will be easy to
-know you are in the subshell.
+Your shell prompt will be prefixed with \fB(gloat)\fR so that you know you are in
+the subshell.
 
 .PP
 To leave this environment and get back to the shell that you started in, just
@@ -428,7 +436,7 @@ If your cached dependencies become corrupted or you want a clean reinstall,
 run:
 
 .EX
-gloat --RESET
+gloat --reset
 .EE
 
 .PP

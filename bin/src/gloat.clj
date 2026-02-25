@@ -78,7 +78,7 @@ See https://gloathub.org
     gloat foo.ys -o foo.so              Shared library + headers
     gloat foo.ys -o foo --platform=freebsd/amd64  Cross-compile
     gloat --run foo.ys -- arg1 arg2     Compile and run
-    gloat --RESET                       Remove all cached dependencies
+    gloat --reset                       Remove all cached dependencies
 --
 t,to=         Output format (inferred from -o; see --formats)
 o,out=        Output file or directory
@@ -94,6 +94,7 @@ extensions    List available processing extensions
 platforms     List available cross-compilation platforms
 
 shell         Start a sub-shell with gloat tools on PATH
+shell-all     Like --shell but install all dev tools
 complete=     Generate shell completion script (bash, fish, zsh)
 
 r,run         Compile and run (pass program args after --)
@@ -103,6 +104,7 @@ q,quiet       Suppress progress messages
 
 h,help        Show this help
 version       Show version
+reset         Remove all cached dependencies (make distclean)
 "))
 
 ;;------------------------------------------------------------------------------
@@ -468,6 +470,14 @@ Less common:
 (defn do-shell []
   (when (:shell *opts*)
     (die "Use 'gloat --shell' from the command line (not via gloat.clj)")))
+
+(defn do-shell-all []
+  (when (:shell-all *opts*)
+    (die "Use 'gloat --shell-all' from the command line (not via gloat.clj)")))
+
+(defn do-reset []
+  (when (:reset *opts*)
+    (die "Use 'gloat --reset' from the command line (not via gloat.clj)")))
 
 (defn do-complete []
   (when-let [shell (:complete *opts*)]
@@ -1334,6 +1344,8 @@ Less common:
       (do-extensions)
       (do-platforms)
       (do-shell)
+      (do-shell-all)
+      (do-reset)
       (do-complete)
       (validate-extensions)
 

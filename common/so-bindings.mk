@@ -9,7 +9,7 @@ include $M/clean.mk
 include $M/shell.mk
 
 SO-BINDINGS-DIR := $(shell cd .. && pwd)
-override export PATH := $R/bin:$(PATH)
+override PATH := $R/bin:$(PATH)
 export LD_LIBRARY_PATH := $(SO-BINDINGS-DIR)
 
 NAME := example

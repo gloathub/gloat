@@ -16,7 +16,7 @@ include $M/yamlscript.mk
 include $M/clean.mk
 include $M/shell.mk
 
-override export PATH := $(GIT-REPO-DIR)/bin:$(PATH)
+override PATH := $(GIT-REPO-DIR)/bin:$(PATH)
 
 ifndef FILE
 FILE := $(DEFAULT-FILE)

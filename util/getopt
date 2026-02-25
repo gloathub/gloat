@@ -82,10 +82,9 @@ escape-edn() (
 
 # Helper to convert bash array to EDN vector
 array-to-edn() (
-  declare -n arr=$1
-  # Filter out empty strings
+  eval "local items=(\"\${$1[@]}\")"
   result=()
-  for item in "${arr[@]}"; do
+  for item in "${items[@]}"; do
     if [[ -n $item ]]; then
       result+=("\"$(escape-edn "$item")\"")
     fi
@@ -96,14 +95,21 @@ array-to-edn() (
 # Helper to convert single value to EDN (nil or string)
 value-to-edn() (
   set +o nounset
-  declare -n arr=$1 2>/dev/null || {
+  local count
+  eval "count=\${#$1[@]}" 2>/dev/null || {
     echo "nil"
     return
   }
-  if [[ ${#arr[@]} -eq 0 || -z ${arr[0]:-} ]]; then
+  if [[ $count -eq 0 ]]; then
     echo "nil"
   else
-    echo "\"$(escape-edn "${arr[0]}")\""
+    local val
+    eval "val=\${$1[0]}"
+    if [[ -z ${val:-} ]]; then
+      echo "nil"
+    else
+      echo "\"$(escape-edn "$val")\""
+    fi
   fi
 )
 

@@ -1,0 +1,138 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  PERL_BADLANG: 0
+
+jobs:
+  test:
+    name: Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+        - ubuntu-latest
+        - macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Linux dependencies
+      if: runner.os == 'Linux'
+      run: sudo apt-get install -y build-essential curl perl xz-utils
+
+    - name: Install macOS dependencies
+      if: runner.os == 'macOS'
+      run: brew install xz
+
+    - name: Cache Makes dependencies
+      uses: actions/cache@v4
+      with:
+        path: .cache/
+        key: makes-${{ runner.os }}-${{ hashFiles('Makefile', 'common/common.mk') }}
+        restore-keys: makes-${{ runner.os }}-
+
+    - name: Run tests
+      run: make test v=1
+
+  test-windows:
+    name: Test (windows-latest)
+    runs-on: windows-latest
+    timeout-minutes: 30
+    if: github.event_name == 'workflow_dispatch'
+    # Windows not yet supported — no Windows downloads in Makes for Glojure/YAMLScript.
+    # Triggered manually to track progress toward Windows support.
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Cache Makes dependencies
+      uses: actions/cache@v4
+      with:
+        path: .cache/
+        key: makes-${{ runner.os }}-${{ hashFiles('Makefile', 'common/common.mk') }}
+        restore-keys: makes-${{ runner.os }}-
+
+    - name: Run tests
+      run: make test v=1
+
+  test-prune:
+    name: Test with pruning (Linux)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: test
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Linux dependencies
+      run: sudo apt-get install -y build-essential curl perl xz-utils
+
+    - name: Cache Makes dependencies
+      uses: actions/cache@v4
+      with:
+        path: .cache/
+        key: makes-${{ runner.os }}-${{ hashFiles('Makefile', 'common/common.mk') }}
+        restore-keys: makes-${{ runner.os }}-
+
+    - name: Run prune tests
+      run: GLOAT_X_PRUNE=1 make test v=1
+
+  test-so-bindings:
+    name: Test so-bindings (Linux)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: test
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Linux dependencies
+      run: sudo apt-get install -y build-essential curl perl xz-utils
+
+    - name: Cache Makes dependencies
+      uses: actions/cache@v4
+      with:
+        path: .cache/
+        key: makes-so-Linux-${{ hashFiles('Makefile', 'common/common.mk') }}
+        restore-keys: makes-so-Linux-
+
+    - name: Test C bindings
+      run: make -C demo/so-bindings/c/ test
+
+    - name: Test Go bindings
+      run: make -C demo/so-bindings/go/ test
+
+    - name: Test Ada bindings
+      run: make -C demo/so-bindings/ada/ test
+
+  test-slow:
+    name: Test slow (Linux, main only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Linux dependencies
+      run: sudo apt-get install -y build-essential curl perl xz-utils
+
+    - name: Cache Makes dependencies
+      uses: actions/cache@v4
+      with:
+        path: .cache/
+        key: makes-${{ runner.os }}-${{ hashFiles('Makefile', 'common/common.mk') }}
+        restore-keys: makes-${{ runner.os }}-
+
+    - name: Run slow tests
+      run: make test slow=1 v=1

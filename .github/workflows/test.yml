@@ -109,11 +109,11 @@ jobs:
     - name: Test Go bindings
       run: make -C demo/so-bindings/go/ test
 
-    - name: Test Ada bindings
-      run: make -C demo/so-bindings/ada/ test
+    - name: Test Crystal bindings
+      run: make -C demo/so-bindings/crystal/ test
 
-  test-ada-macos:
-    name: Test Ada bindings (macOS)
+  test-crystal-macos:
+    name: Test Crystal bindings (macOS)
     runs-on: macos-latest
     timeout-minutes: 45
     needs: test
@@ -125,11 +125,11 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .cache/
-        key: makes-ada-macOS-${{ hashFiles('Makefile', 'common/common.mk') }}
-        restore-keys: makes-ada-macOS-
+        key: makes-crystal-macOS-${{ hashFiles('Makefile', 'common/common.mk') }}
+        restore-keys: makes-crystal-macOS-
 
-    - name: Test Ada bindings
-      run: make -C demo/so-bindings/ada/ test
+    - name: Test Crystal bindings
+      run: make -C demo/so-bindings/crystal/ test
 
   test-slow:
     name: Test slow (Linux, main only)

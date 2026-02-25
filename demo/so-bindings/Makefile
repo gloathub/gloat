@@ -21,7 +21,7 @@ MAKES-CLEAN := \
   $(HEADER) \
   $(LIB-LIBRARY) \
 
-LANGS := \
+LANGS ?= \
   ada \
   c \
   cpp \

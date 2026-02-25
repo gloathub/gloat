@@ -11,6 +11,7 @@ include $M/shell.mk
 SO-BINDINGS-DIR := $(shell cd .. && pwd)
 override PATH := $R/bin:$(PATH)
 export LD_LIBRARY_PATH := $(SO-BINDINGS-DIR)
+export DYLD_LIBRARY_PATH := $(SO-BINDINGS-DIR)
 
 NAME := example
 SOURCE := ../$(NAME).ys

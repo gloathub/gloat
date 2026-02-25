@@ -13,7 +13,7 @@ main() (
   root=$(cd -P "$(dirname "$self")/.." && pwd -P)
 
   if [[ $* == --RESET ]]; then
-    make -C "$root" distclean
+    make --quiet --no-print-directory -C "$root" distclean
     exit
   fi
 
@@ -67,7 +67,7 @@ do-shell() {
     echo "Already in a gloat shell" >&2
     exit 1
   fi
-  make -C "$root" shell-deps
+  make --quiet --no-print-directory -C "$root" shell-deps
   export IN_GLOAT_SHELL=1
   local shell
   shell=$(ps -o comm= -p $PPID 2>/dev/null)

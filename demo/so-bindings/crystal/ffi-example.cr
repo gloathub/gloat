@@ -1,6 +1,10 @@
 require "json"
 
-@[Link(ldflags: "-L#{__DIR__}/.. -l:example.so")]
+{% if flag?(:darwin) %}
+  @[Link(ldflags: "#{__DIR__}/../example.dylib")]
+{% else %}
+  @[Link(ldflags: "-L#{__DIR__}/.. -l:example.so")]
+{% end %}
 lib Example
   fun factorial(n : Int64) : Int64
   fun greet(name : LibC::Char*) : LibC::Char*

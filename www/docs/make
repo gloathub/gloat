@@ -29,8 +29,9 @@ GLOAT-REPO ?= https://github.com/gloathub/gloat
 
 # Version to install (default: latest tag)
 VERSION ?= $(shell \
-  git ls-remote --tags --sort=-v:refname $(GLOAT-REPO) | \
-	grep -v '\^{}' | head -n1 | sed 's/.*refs\/tags\///')
+  git ls-remote --tags --sort=-v:refname $(GLOAT-REPO) 'refs/tags/v*' | \
+    grep -v '\^{}' | head -n1 | sed 's/.*refs\/tags\///')
+override VERSION := $(if $(filter v%,$(VERSION)),$(VERSION),v$(VERSION))
 
 # Installation paths
 INSTALL-DIR := $(PREFIX)/share/gloat

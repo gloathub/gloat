@@ -525,7 +525,7 @@ Less common:
 ;;------------------------------------------------------------------------------
 
 ;; Forward declarations
-(declare convert-directory)
+(declare convert-directory convert-files)
 
 (defn ys-to-clj [input output namespace]
   (let [ys (:YS make-vars)]
@@ -593,7 +593,9 @@ Less common:
 
 (defn glj-to-go [input namespace output-dir]
   (let [glj (:GLJ make-vars)
-        ns-path (str/replace namespace #"\." "/")
+        ns-path (-> namespace
+                    (str/replace #"\." "/")
+                    (str/replace #"-" "_"))
         ns-dir (if (str/includes? ns-path "/")
                  (subs ns-path 0 (str/last-index-of ns-path "/"))
                  "")
@@ -819,7 +821,9 @@ Less common:
                              glj-file)
                          nil)]
                  (glj-to-go glj-file ns go-tmpdir)
-                 (let [ns-path (str/replace ns #"\." "/")
+                 (let [ns-path (-> ns
+                                   (str/replace #"\." "/")
+                                   (str/replace #"-" "_"))
                        loader-file (str go-tmpdir "/" ns-path "/loader.go")]
                    (if (fs/exists? loader-file)
                      (print (slurp loader-file))
@@ -893,7 +897,9 @@ Less common:
                      (clj-to-glj clj-file glj-file))
                    (msg "Compiling Glojure to Go...")
                    (glj-to-go glj-file ns tmpdir)
-                   (let [ns-path (str/replace ns #"\." "/")
+                   (let [ns-path (-> ns
+                                     (str/replace #"\." "/")
+                                     (str/replace #"-" "_"))
                          loader-file (str tmpdir "/" ns-path "/loader.go")]
                      (if (fs/exists? loader-file)
                        (do
@@ -904,6 +910,45 @@ Less common:
 
           (finally
             (fs/delete-tree tmpdir)))))))
+
+(defn convert-files [input-files output format namespace module platform]
+  "Compile multiple explicit input files to a binary/lib/dir output.
+  Each file is copied to a temp directory with a unique name based on its
+  namespace to avoid basename collisions (e.g. parser.clj at different depths).
+  For lib format, the file with EXPORT is named 'main.clj' so that
+  convert-directory selects it as the main namespace."
+  (let [tmpdir (str (fs/create-temp-dir))]
+    (try
+      ;; For lib format, find the file with EXPORT to use as main namespace
+      (let [export-file (when (= format "lib")
+                          (first (filter
+                                  #(not-empty
+                                    (or (extract-export (slurp (str %))) []))
+                                  input-files)))]
+        (doseq [[idx source-file] (map-indexed vector input-files)]
+          (let [source-file (str source-file)
+                basename (fs/file-name source-file)
+                input-type (get-file-type source-file)
+                file-ns (when (contains? #{"clj" "glj"} input-type)
+                          (parse-namespace source-file))
+                ;; Name the EXPORT file 'main' so convert-directory picks it
+                ;; as main-namespace; use namespace-derived names for others
+                ;; to avoid basename collisions between files at different depths
+                unique-name (cond
+                              (= source-file (str export-file))
+                              (str "main." input-type)
+
+                              file-ns
+                              (str (str/replace file-ns #"[.\-]" "_")
+                                   "." input-type)
+
+                              :else
+                              (str "f" idx "_" basename))]
+            (fs/copy source-file (str tmpdir "/" unique-name)
+                     {:replace-existing true})))
+        (convert-directory tmpdir output format namespace module platform))
+      (finally
+        (fs/delete-tree tmpdir)))))
 
 (defn convert-directory [input-dir output format namespace module platform]
   (let [is-dir-output (= format "dir")
@@ -993,7 +1038,9 @@ Less common:
                                 (when (fs/exists? clj-file) clj-file)
                                 glj-file)
                                namespace))
-                    ns-path (str/replace ns #"\." "/")
+                    ns-path (-> ns
+                                (str/replace #"\." "/")
+                                (str/replace #"-" "_"))
                     ns-dir (if (str/includes? ns-path "/")
                              (subs ns-path 0 (str/last-index-of ns-path "/"))
                              "")
@@ -1093,7 +1140,9 @@ Less common:
                                            @required-nses))]
 
               ;; Generate main.go
-              (let [package-path (str/replace @main-namespace #"\." "/")
+              (let [package-path (-> @main-namespace
+                                     (str/replace #"\." "/")
+                                     (str/replace #"-" "_"))
                     template (cond
                                (and (= format "lib") (prune?))
                                (str TEMPLATE "/lib-main-prune.go")
@@ -1116,6 +1165,42 @@ Less common:
                     ys-requires (if used-ys-ns
                                   (generate-ys-requires used-ys-ns)
                                   "")
+                    ;; Generate blank imports for all compiled namespaces
+                    ;; (excluding main) so their init() fns register loaders
+                    all-ns-imports
+                    (let [main-ns-path package-path
+                          other-nses (remove #(= % @main-namespace)
+                                             @all-namespaces)
+                          stdlib-prefixes ["yamlscript." "ys."]]
+                      (str/join "\n"
+                                (map (fn [ns]
+                                       (let [np (-> ns
+                                                    (str/replace #"\." "/")
+                                                    (str/replace #"-" "_"))]
+                                         (str "\t_ \"" go-module "/pkg/" np "\"")))
+                                     (remove
+                                      (fn [ns]
+                                        (some #(str/starts-with? ns %)
+                                              stdlib-prefixes))
+                                      other-nses))))
+                    ;; Generate require.Invoke calls for all compiled namespaces
+                    ;; (excluding main and stdlib) so their vars are bound
+                    ;; before any user code runs. Glojure AOT does not generate
+                    ;; NSRequire calls for :require forms, so we must do this
+                    ;; explicitly.
+                    all-ns-requires
+                    (let [other-nses (remove #(= % @main-namespace)
+                                             @all-namespaces)
+                          stdlib-prefixes ["yamlscript." "ys."]]
+                      (str/join "\n"
+                                (map (fn [ns]
+                                       (str "\trequire.Invoke(lang.NewSymbol(\""
+                                            ns "\"))"))
+                                     (remove
+                                      (fn [ns]
+                                        (some #(str/starts-with? ns %)
+                                              stdlib-prefixes))
+                                      other-nses))))
                     result (render-template
                             template-content
                             [["GO-MODULE" go-module]
@@ -1123,7 +1208,9 @@ Less common:
                              ["NAMESPACE" @main-namespace]
                              ["EXPORT-FUNCTIONS" export-functions]
                              ["YS-IMPORTS" ys-imports]
-                             ["YS-REQUIRES" ys-requires]])]
+                             ["YS-REQUIRES" ys-requires]
+                             ["ALL-NS-IMPORTS" all-ns-imports]
+                             ["ALL-NS-REQUIRES" all-ns-requires]])]
                 (spit (str output-dir "/main.go") result)
                 (msg "Generated:" (str output-dir "/main.go")))
 
@@ -1242,10 +1329,29 @@ Less common:
         (die "--run does not support multiple input files."
              "Use '--' for --run program arguments."))
 
-      ;; Multiple input files not supported
+      ;; Multiple input files: compile them together (requires -o output)
       (when (> (count (:args opts)) 1)
-        (die "Multiple input files not supported. Did you mean: gloat "
-             (first (:args opts)) " -o " (second (:args opts))))
+        (let [files (:args opts)
+              output (:out opts)
+              to (:to opts)
+              format (infer-format output to)]
+          (when-not output
+            (die "Multiple input files require -o output"))
+          (when (contains? #{"clj" "glj" "go" "bb"} format)
+            (die "Multiple input files not supported for format: " format))
+          (doseq [f files]
+            (when-not (fs/exists? f)
+              (die "Input file does not exist: " f)))
+          (when (:force opts)
+            (when (fs/exists? output)
+              (fs/delete-tree output)))
+          (when (and output (not (:force opts)))
+            (when (fs/exists? output)
+              (die "Output already exists: " output
+                   " (use --force to overwrite)")))
+          (binding [*opts* opts]
+            (convert-files files output format namespace module platform))
+          (System/exit 0)))
 
       ;; Validate input
       (let [input (if (and (nil? input) (nil? output))

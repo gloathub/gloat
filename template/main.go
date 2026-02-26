@@ -7,6 +7,7 @@ import (
 	"github.com/gloathub/glojure/pkg/lang"
 	_ "GO-MODULE/pkg/PACKAGE-PATH"
 	_ "github.com/gloathub/gloat/ys/pkg/all"
+ALL-NS-IMPORTS
 )
 
 func main() {
@@ -20,6 +21,7 @@ func main() {
 	require.Invoke(lang.NewSymbol("ys.std"))
 	require.Invoke(lang.NewSymbol("ys.dwim"))
 	require.Invoke(lang.NewSymbol("ys.v0"))
+ALL-NS-REQUIRES
 	require.Invoke(lang.NewSymbol("NAMESPACE"))
 
 	// Set up dynamic variables

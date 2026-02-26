@@ -1310,6 +1310,21 @@ Less common:
 ;; Main Logic
 ;;------------------------------------------------------------------------------
 
+(defn expand-dir-args
+  "Expand any directory arguments to all .clj, .ys, and .glj files within.
+  Non-directory arguments are passed through unchanged. Order is preserved:
+  directory contents are sorted and inserted at the directory's position."
+  [args]
+  (mapcat (fn [arg]
+            (if (fs/directory? arg)
+              (->> (concat (fs/glob arg "**/*.clj")
+                           (fs/glob arg "**/*.ys")
+                           (fs/glob arg "**/*.glj"))
+                   sort
+                   (map str))
+              [arg]))
+          args))
+
 (defn set-vars [opts]
   (let [input (first (:args opts))
         output (:out opts)
@@ -1331,7 +1346,7 @@ Less common:
 
       ;; Multiple input files: compile them together (requires -o output)
       (when (> (count (:args opts)) 1)
-        (let [files (:args opts)
+        (let [files (expand-dir-args (:args opts))
               output (:out opts)
               to (:to opts)
               format (infer-format output to)]

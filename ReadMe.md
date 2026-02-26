@@ -252,7 +252,7 @@ source /absolute/path/to/gloat/.fishrc
 | `dir`  | `-o path/` | Portable Go project directory |
 | `lib`  | `.so` or `.dylib` extension | Shared library |
 | `wasm` | `.wasm` extension | WebAssembly (WASI) |
-| `js`   | `-t js` with `.wasm` | WebAssembly (JavaScript) |
+| `js`   | `-t js` with `.wasm` | WebAssembly (JavaScript, browser-ready with `-Xhtml`/`-Xserve`/`-Xopen`) |
 
 The output format is inferred from the `-o` extension, or can be explicitly
 set with `-t`.
@@ -316,6 +316,42 @@ Less common platform architectures:
 | `linux`     | `ppc64le`, `s390x`, `riscv64`, `mips64le`  |
 | `dragonfly` | `amd64`                                    |
 
+
+## JavaScript Target with HTML Page and Server
+
+Three extensions work together for the JS/WASM browser workflow:
+
+```bash
+# Generate HTML page alongside the output
+gloat app.ys -o app.js -Xhtml
+gloat app.ys -o app.js -Xhtml='arg1 arg2'
+
+# Generate HTML and start a local HTTP server
+gloat app.ys -o app.js -Xserve
+gloat app.ys -o app.js -Xserve='arg1 arg2'
+
+# Generate HTML, start server, and open browser automatically
+gloat app.ys -o app.js -Xopen
+gloat app.ys -o app.js -Xopen='arg1 arg2'
+```
+
+`-Xhtml` generates `app.js` (the WASM binary) and `app.html` (a
+self-contained HTML page with the Go WASM runtime inlined), then prints
+the command to serve locally.
+
+`-Xserve` implies `-Xhtml` and also starts a local HTTP server.
+Without `-Xhtml`, the HTML is served from a temporary directory so the
+output directory is left clean.
+
+`-Xopen` implies `-Xserve` and opens the page in your default browser
+once the server is ready.
+
+The extensions can be combined with commas.
+`-Xserve,html` generates the HTML alongside the output and starts the
+server.
+
+> **Note:** `fetch()` requires HTTP, not `file://`, so a local server is
+> needed to run WASM in the browser.
 
 
 ## Options

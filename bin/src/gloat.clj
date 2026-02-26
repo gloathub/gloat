@@ -23,11 +23,14 @@
 
 (load-file (str GLOAT-ROOT "/bin/src/prune.clj"))
 (load-file (str GLOAT-ROOT "/bin/src/deps.clj"))
+(load-file (str GLOAT-ROOT "/bin/src/html.clj"))
+(load-file (str GLOAT-ROOT "/bin/src/open.clj"))
+(load-file (str GLOAT-ROOT "/bin/src/serve.clj"))
 
 (def TEMPLATE (str GLOAT-ROOT "/template"))
 (def SRC (str GLOAT-ROOT "/ys/src"))
 
-(def VALID-EXTENSIONS #{"gzip" "brotli" "prune" "deps"})
+(def VALID-EXTENSIONS #{"gzip" "brotli" "prune" "deps" "html" "serve" "open"})
 
 (def go-env
   {"GOPATH"     (str GLOAT-ROOT "/.cache/.local/go")
@@ -438,10 +441,17 @@ Format can usually be inferred from -o extension:
   deps        Print flat dependency list (implies prune)
   deps=tree   Print dependency tree (implies prune)
   gzip        Compress with gzip (requires gzip command)
+  html        Generate HTML page for js/wasm (-Xhtml or -Xhtml='args')
+  open        Open browser after serving (-Xopen or -Xopen='args')
   prune       Prune unused clojure.core functions (smaller binaries)
+  serve       Start a local HTTP server after building (-Xserve)
 
 The compression extensions are applied to WASM output formats (wasm, js).
-The prune extension applies to binary builds (bin, lib, wasm, js, dir).")
+The html, serve, and open extensions are only valid with js format (-o foo.js or -t js).
+The prune extension applies to binary builds (bin, lib, wasm, js, dir).
+
+Multiple extensions can be combined with commas: -Xserve,html=100
+-Xopen implies -Xserve which implies -Xhtml.")
     (System/exit 0)))
 
 (defn do-platforms []
@@ -497,11 +507,12 @@ Less common:
     (System/exit 0)))
 
 (defn parse-extensions
-  "Parse ext vector into map.
-   e.g. [\"prune\" \"deps=tree\"] -> {\"prune\" true, \"deps\" \"tree\"}"
+  "Parse ext vector into map. Supports comma-separated values.
+   e.g. [\"prune\" \"deps=tree\" \"serve,html=100\"]
+     -> {\"prune\" true, \"deps\" \"tree\", \"serve\" true, \"html\" \"100\"}"
   [ext-vec]
   (into {}
-        (for [ext ext-vec]
+        (for [ext (mapcat #(str/split % #",") ext-vec)]
           (if-let [eq-idx (str/index-of ext "=")]
             [(subs ext 0 eq-idx) (subs ext (inc eq-idx))]
             [ext true]))))
@@ -518,7 +529,14 @@ Less common:
         (when (and (string? deps-val)
                    (not (contains? #{"tree"} deps-val)))
           (die "Unknown deps mode: " deps-val
-               " (use tree, list, or tree-sort)"))))))
+               " (use tree, list, or tree-sort)")))
+      ;; Validate html, serve, and open are only used with js format
+      (doseq [ext ["html" "serve" "open"]]
+        (when (contains? parsed ext)
+          (let [format (infer-format (:out *opts*) (:to *opts*))]
+            (when (not= format "js")
+              (die (str "-X" ext " is only valid with js format"
+                        " (-o foo.js or -t js)")))))))))
 
 ;;------------------------------------------------------------------------------
 ;; Core Conversion Functions
@@ -653,6 +671,7 @@ Less common:
            "make" "--quiet" "--no-print-directory" brotli-bin))
         (process/shell brotli-bin "-9" "-f" file)
         (fs/move (str file ".br") file {:replace-existing true})))))
+
 
 (defn find-glojure-core-loader []
   (let [glojure-dir (:GLOJURE-DIR make-vars)]
@@ -1267,10 +1286,33 @@ Less common:
                       (msg "Generated:" output)
 
                       ;; Compress WASM if needed
-                      (let [compress-exts (disj (set (:ext *opts*)) "prune")]
+                      (let [compress-exts (keys (dissoc (parse-extensions (or (:ext *opts*) []))
+                                                        "prune" "html" "serve" "open"))]
                         (when (and (contains? #{"wasm" "js"} format)
                                    (seq compress-exts))
                           (compress-wasm output compress-exts)))
+
+                      (when (= format "js")
+                        (let [parsed   (parse-extensions (or (:ext *opts*) []))
+                              has-open  (contains? parsed "open")
+                              has-serve (or has-open (contains? parsed "serve"))
+                              has-html  (or has-serve (contains? parsed "html"))
+                              args-val  (some #(let [v (get parsed %)]
+                                                 (when (string? v) v))
+                                              ["open" "serve" "html"])
+                              program-args (if (seq args-val)
+                                             (str/split args-val #"\s+") [])
+                              config {:output       output
+                                      :go-bin       (:GO make-vars)
+                                      :template-dir TEMPLATE
+                                      :program-args program-args
+                                      :quiet        (:quiet *opts*)
+                                      :serve        has-serve
+                                      :has-html     has-html
+                                      :open         has-open
+                                      :gloat-root   GLOAT-ROOT}]
+                          (when has-html (html/generate config))
+                          (when has-serve (serve/serve config))))
 
                       ;; Copy .h file for shared libraries
                       (when (= format "lib")

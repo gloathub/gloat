@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TITLE</title>
+  <style>
+    body { font-family: monospace; padding: 1em; }
+    #output { white-space: pre; background: #f4f4f4; padding: 1em; }
+    #status { color: #666; margin-bottom: 0.5em; }
+  </style>
+</head>
+<body>
+  <h1>TITLE</h1>
+  <div id="status">Loading...</div>
+  <pre id="output"></pre>
+  <script>
+WASM-EXEC-JS
+  </script>
+  <script>
+    const outputEl = document.getElementById('output');
+    const statusEl = document.getElementById('status');
+
+    const origLog = console.log;
+    console.log = function(...args) {
+      origLog.apply(console, args);
+      outputEl.textContent += args.join(' ') + '\n';
+    };
+
+    const go = new Go();
+    go.argv = ['TITLE'].concat(PROGRAM-ARGS);
+
+    fetch('WASM-FILE')
+      .then(r => r.arrayBuffer())
+      .then(buf => WebAssembly.instantiate(buf, go.importObject))
+      .then(result => {
+        statusEl.textContent = 'Running...';
+        return go.run(result.instance);
+      })
+      .then(() => {
+        statusEl.textContent = 'Done.';
+      })
+      .catch(err => {
+        statusEl.textContent = 'Error: ' + err;
+        console.log('Error:', err);
+      });
+  </script>
+</body>
+</html>

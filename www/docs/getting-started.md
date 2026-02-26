@@ -144,7 +144,7 @@ Gloat supports multiple output formats:
 | `dir`  | `-o path/` | Portable Go project directory |
 | `lib`  | `.so` or `.dylib` | Shared library |
 | `wasm` | `.wasm` | WebAssembly (WASI) |
-| `js`   | `-t js` with `.wasm` | WebAssembly (JavaScript) |
+| `js`   | `-t js` with `.wasm` | WebAssembly (JavaScript, browser-ready with `-Xhtml`) |
 
 
 ## Directory Output
@@ -230,7 +230,16 @@ gloat app.ys -o app.wasm
 
 # JavaScript target (for browsers)
 gloat app.ys -o app.wasm -t js
+
+# JavaScript target with HTML page for browser
+gloat app.ys -o app.js -Xhtml
+gloat app.ys -o app.js -Xhtml='arg1 arg2'
 ```
+
+Adding `-Xhtml` generates `app.html` alongside the WASM file.
+The HTML page has the Go WASM runtime inlined and is ready to serve.
+Use `python3 -m http.server` (gloat will print the command) since
+`fetch()` requires HTTP, not `file://`.
 
 
 ## Shared Libraries

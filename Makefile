@@ -16,6 +16,7 @@ include $M/wasmtime.mk
 include $M/yamlscript.mk
 
 include $M/brotli.mk
+include $M/python.mk
 
 include $M/clean.mk
 include $M/shell.mk
@@ -189,6 +190,11 @@ ys/src/ys/json.clj:
 # http.clj is gloat-only (Go net/http, not babashka.http-client)
 ys/src/ys/http.clj:
 	@true
+
+SERVE-DIR ?= .
+
+python-local-server: $(PYTHON)
+	cd '$(SERVE-DIR)' && $(PYTHON) -m http.server
 
 release: $(GH)
 	@$(if $(filter command line,$(origin VERSION)),,\

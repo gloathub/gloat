@@ -252,7 +252,7 @@ source /absolute/path/to/gloat/.fishrc
 | `dir`  | `-o path/` | Portable Go project directory |
 | `lib`  | `.so` or `.dylib` extension | Shared library |
 | `wasm` | `.wasm` extension | WebAssembly (WASI) |
-| `js`   | `-t js` with `.wasm` | WebAssembly (JavaScript, browser-ready with `-Xhtml`/`-Xserve`/`-Xopen`) |
+| `js`   | `-t js` with `.wasm` | WebAssembly (JavaScript) |
 
 The output format is inferred from the `-o` extension, or can be explicitly
 set with `-t`.
@@ -317,41 +317,99 @@ Less common platform architectures:
 | `dragonfly` | `amd64`                                    |
 
 
-## JavaScript Target with HTML Page and Server
+## Extensions
 
-Three extensions work together for the JS/WASM browser workflow:
+Extensions add post-compilation processing steps.
+Enable them with `-X` (or `--ext`):
 
-```bash
-# Generate HTML page alongside the output
-gloat app.ys -o app.js -Xhtml
-gloat app.ys -o app.js -Xhtml='arg1 arg2'
+    gloat app.ys -o app.js -Xhtml
+    gloat app.ys -o app.wasm -Xprune,gzip
 
-# Generate HTML and start a local HTTP server
-gloat app.ys -o app.js -Xserve
-gloat app.ys -o app.js -Xserve='arg1 arg2'
+Multiple extensions can be combined with commas, and some accept a
+value with `=`:
 
-# Generate HTML, start server, and open browser automatically
-gloat app.ys -o app.js -Xopen
-gloat app.ys -o app.js -Xopen='arg1 arg2'
-```
+    gloat app.ys -o app.js -Xserve,html=100
 
-`-Xhtml` generates `app.js` (the WASM binary) and `app.html` (a
-self-contained HTML page with the Go WASM runtime inlined), then prints
-the command to serve locally.
+Run `gloat --extensions` to list all available extensions.
 
-`-Xserve` implies `-Xhtml` and also starts a local HTTP server.
-Without `-Xhtml`, the HTML is served from a temporary directory so the
-output directory is left clean.
 
-`-Xopen` implies `-Xserve` and opens the page in your default browser
-once the server is ready.
+### brotli
 
-The extensions can be combined with commas.
-`-Xserve,html` generates the HTML alongside the output and starts the
-server.
+Compress WASM output with [Brotli](https://github.com/google/brotli)
+(auto-installed if needed).
+Applies to `wasm` and `js` output formats.
 
-> **Note:** `fetch()` requires HTTP, not `file://`, so a local server is
-> needed to run WASM in the browser.
+    gloat app.ys -o app.wasm -Xbrotli
+
+
+### deps
+
+Print the dependency graph of the compiled program (implies `prune`).
+With no value, prints a flat list; with `=tree`, prints a tree.
+
+    gloat app.ys -o app -Xdeps          # Flat list
+    gloat app.ys -o app -Xdeps=tree     # Tree view
+
+
+### gzip
+
+Compress WASM output with gzip (requires `gzip` on PATH).
+Applies to `wasm` and `js` output formats.
+
+    gloat app.ys -o app.wasm -Xgzip
+
+
+### html
+
+Generate a self-contained HTML page for running a JS/WASM module in
+the browser.
+Only valid with `js` format (`-o app.js`).
+
+    gloat app.ys -o app.js -Xhtml
+    gloat app.ys -o app.js -Xhtml='arg1 arg2'
+
+This generates `app.html` alongside `app.js`, with the Go WASM
+runtime (`wasm_exec.js`) inlined.
+After generation, gloat prints the command to serve locally.
+
+> **Note:** `fetch()` requires HTTP, not `file://`, so a local
+> server is needed to run WASM in the browser.
+
+
+### open
+
+Open the page in your default browser after starting the server.
+Implies `-Xserve` (which implies `-Xhtml`).
+Only valid with `js` format.
+
+    gloat app.ys -o app.js -Xopen
+    gloat app.ys -o app.js -Xopen='arg1 arg2'
+
+The implication chain: `-Xopen` → `-Xserve` → `-Xhtml`.
+
+
+### prune
+
+Prune unused `clojure.core` and YAMLScript runtime functions from
+the compiled output, producing smaller binaries.
+Applies to binary builds (`bin`, `lib`, `wasm`, `js`, `dir`).
+
+    gloat app.ys -o app -Xprune
+    gloat app.ys -o app.wasm -Xprune
+
+
+### serve
+
+Start a local HTTP server after building.
+Implies `-Xhtml`.
+Only valid with `js` format.
+
+    gloat app.ys -o app.js -Xserve
+    gloat app.ys -o app.js -Xserve='arg1 arg2'
+
+Without explicit `-Xhtml`, the HTML page is served from a temporary
+directory so the output directory is left clean.
+With `-Xserve,html`, the HTML is generated alongside the output.
 
 
 ## Options

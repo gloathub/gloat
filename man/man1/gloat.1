@@ -268,9 +268,7 @@ l l l .
 \fBdir\fR	\fB-o path/\fR	Portable Go project directory
 \fBlib\fR	\fB\&.so\fR or \fB\&.dylib\fR extension	Shared library
 \fBwasm\fR	\fB\&.wasm\fR extension	WebAssembly (WASI)
-\fBjs\fR	\fB-t js\fR with \fB\&.wasm\fR	T{
-WebAssembly (JavaScript, browser-ready with \fB-Xhtml\fR/\fB-Xserve\fR/\fB-Xopen\fR)
-T}
+\fBjs\fR	\fB-t js\fR with \fB\&.wasm\fR	WebAssembly (JavaScript)
 .TE
 
 .PP
@@ -343,50 +341,113 @@ l l .
 \fBdragonfly\fR	\fBamd64\fR
 .TE
 
-.SH JavaScript Target with HTML Page and Server
-Three extensions work together for the JS/WASM browser workflow:
+.SH Extensions
+Extensions add post-compilation processing steps.
+Enable them with \fB-X\fR (or \fB--ext\fR):
 
 .EX
-# Generate HTML page alongside the output
 gloat app.ys -o app.js -Xhtml
-gloat app.ys -o app.js -Xhtml='arg1 arg2'
-
-# Generate HTML and start a local HTTP server
-gloat app.ys -o app.js -Xserve
-gloat app.ys -o app.js -Xserve='arg1 arg2'
-
-# Generate HTML, start server, and open browser automatically
-gloat app.ys -o app.js -Xopen
-gloat app.ys -o app.js -Xopen='arg1 arg2'
+gloat app.ys -o app.wasm -Xprune,gzip
 .EE
 
 .PP
-\fB-Xhtml\fR generates \fBapp.js\fR (the WASM binary) and \fBapp.html\fR (a
-self-contained HTML page with the Go WASM runtime inlined), then prints
-the command to serve locally.
+Multiple extensions can be combined with commas, and some accept a
+value with \fB=\fR:
+
+.EX
+gloat app.ys -o app.js -Xserve,html=100
+.EE
 
 .PP
-\fB-Xserve\fR implies \fB-Xhtml\fR and also starts a local HTTP server.
-Without \fB-Xhtml\fR, the HTML is served from a temporary directory so the
-output directory is left clean.
+Run \fBgloat --extensions\fR to list all available extensions.
+
+.SS brotli
+Compress WASM output with Brotli
+(auto-installed if needed).
+Applies to \fBwasm\fR and \fBjs\fR output formats.
+
+.EX
+gloat app.ys -o app.wasm -Xbrotli
+.EE
+
+.SS deps
+Print the dependency graph of the compiled program (implies \fBprune\fR).
+With no value, prints a flat list; with \fB=tree\fR, prints a tree.
+
+.EX
+gloat app.ys -o app -Xdeps          # Flat list
+gloat app.ys -o app -Xdeps=tree     # Tree view
+.EE
+
+.SS gzip
+Compress WASM output with gzip (requires \fBgzip\fR on PATH).
+Applies to \fBwasm\fR and \fBjs\fR output formats.
+
+.EX
+gloat app.ys -o app.wasm -Xgzip
+.EE
+
+.SS html
+Generate a self-contained HTML page for running a JS/WASM module in
+the browser.
+Only valid with \fBjs\fR format (\fB-o app.js\fR).
+
+.EX
+gloat app.ys -o app.js -Xhtml
+gloat app.ys -o app.js -Xhtml='arg1 arg2'
+.EE
 
 .PP
-\fB-Xopen\fR implies \fB-Xserve\fR and opens the page in your default browser
-once the server is ready.
-
-.PP
-The extensions can be combined with commas.
-\fB-Xserve,html\fR generates the HTML alongside the output and starts the
-server.
+This generates \fBapp.html\fR alongside \fBapp.js\fR, with the Go WASM
+runtime (\fBwasm_exec.js\fR) inlined.
+After generation, gloat prints the command to serve locally.
 
 .PP
 .RS
 
 .PP
-\fBNote:\fP \fBfetch()\fR requires HTTP, not \fBfile://\fR, so a local server is
-needed to run WASM in the browser.
+\fBNote:\fP \fBfetch()\fR requires HTTP, not \fBfile://\fR, so a local
+server is needed to run WASM in the browser.
 
 .RE
+
+.SS open
+Open the page in your default browser after starting the server.
+Implies \fB-Xserve\fR (which implies \fB-Xhtml\fR).
+Only valid with \fBjs\fR format.
+
+.EX
+gloat app.ys -o app.js -Xopen
+gloat app.ys -o app.js -Xopen='arg1 arg2'
+.EE
+
+.PP
+The implication chain: \fB-Xopen\fR → \fB-Xserve\fR → \fB-Xhtml\fR\&.
+
+.SS prune
+Prune unused \fBclojure.core\fR and YAMLScript runtime functions from
+the compiled output, producing smaller binaries.
+Applies to binary builds (\fBbin\fR, \fBlib\fR, \fBwasm\fR, \fBjs\fR, \fBdir\fR).
+
+.EX
+gloat app.ys -o app -Xprune
+gloat app.ys -o app.wasm -Xprune
+.EE
+
+.SS serve
+Start a local HTTP server after building.
+Implies \fB-Xhtml\fR\&.
+Only valid with \fBjs\fR format.
+
+.EX
+gloat app.ys -o app.js -Xserve
+gloat app.ys -o app.js -Xserve='arg1 arg2'
+.EE
+
+.PP
+Without explicit \fB-Xhtml\fR, the HTML page is served from a temporary
+directory so the output directory is left clean.
+With \fB-Xserve,html\fR, the HTML is generated alongside the output.
 
 .SH Options
 .EX

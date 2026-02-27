@@ -200,7 +200,8 @@ release: $(GH)
 	@$(if $(filter command line,$(origin VERSION)),,\
 	  $(error VERSION is required on the command line))
 	$(eval RELEASE_VER := $(patsubst v%,%,$(VERSION)))
-	make-do $@ $(RELEASE_VER) "$(MESSAGE)"
+	$(eval GLJ_VER := $(patsubst v%,%,$(GLJ-VERSION)))
+	make-do $@ $(RELEASE_VER) "$(MESSAGE)" "$(GLJ_VER)"
 
 build-glj-from-source: $(GO) $(GLOJURE-DIR)
 	cd $(GLOJURE-DIR) && \

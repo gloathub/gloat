@@ -101,11 +101,21 @@ compile-glj-patched() (
 release() (
   version=${1:?Usage: make release VERSION=...}
   message=${2:-Release v$version}
+  glj_version=${3:-}
 
   # Validate version format (digits and dots, no v prefix)
   if [[ ! $version =~ ^[0-9]+(\.[0-9]+)*$ ]]; then
     echo "Error: VERSION must be digits and dots (e.g., 0.1.5)" >&2
     exit 1
+  fi
+
+  # --- Update Glojure version if specified ---
+  if [[ -n $glj_version ]]; then
+    perl -i -pe "s/^GLOJURE-VERSION := .*/GLOJURE-VERSION := $glj_version/" \
+      common/common.mk
+    perl -i -pe \
+      "s{^require github\.com/gloathub/glojure .*}{require github.com/gloathub/glojure v$glj_version}" \
+      ys/pkg/go.mod
   fi
 
   # --- Update version in all files ---
@@ -135,6 +145,7 @@ release() (
   GLOAT_X_PRUNE=1 make test
 
   # --- Commit and tag ys/pkg ---
+  [[ -n $glj_version ]] && git add common/common.mk
   git add \
     Makefile \
     bin/gloat \

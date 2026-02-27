@@ -8,6 +8,8 @@ export GLOAT_VERSION=0.1.13
 export CGO_ENABLED=0
 
 main() (
+  unset MAKES_LOCAL_DIR
+
   self=${BASH_SOURCE[0]}
   [[ -L $self ]] && self=$(readlink -f "$self")
   root=$(cd -P "$(dirname "$self")/.." && pwd -P)

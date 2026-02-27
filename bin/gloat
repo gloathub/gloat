@@ -49,14 +49,26 @@ main() (
 
   setup
 
-  if [[ $* == --shell-all ]]; then
-    make --quiet --no-print-directory -C "$root" shell-deps
-    do-shell
-  fi
-
-  if [[ $* == --shell ]]; then
-    make --quiet --no-print-directory -C "$root" shell-deps-min
-    do-shell
+  if [[ ${1-} == --shell-all || ${1-} == --shell ]]; then
+    if [[ ${1-} == --shell-all ]]; then
+      make --quiet --no-print-directory -C "$root" shell-deps
+    else
+      make --quiet --no-print-directory -C "$root" shell-deps-min
+    fi
+    shift
+    if [[ ${1-} == -- ]]; then
+      shift
+      if [[ $# -eq 0 ]]; then
+        echo "Error: No command specified after --" >&2
+        exit 1
+      elif [[ $# -eq 1 ]]; then
+        exec bash -c "$1"
+      else
+        exec "$@"
+      fi
+    else
+      do-shell
+    fi
   fi
 
   exec bb "$root/bin/src/gloat.clj" "$@"

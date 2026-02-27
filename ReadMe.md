@@ -428,7 +428,7 @@ With `-Xserve,html`, the HTML is generated alongside the output.
 --extensions     List available processing extensions
 --platforms      List available cross-compilation platforms
 
---shell          Start a sub-shell with gloat tools on PATH
+--shell          Start a sub-shell or run a command (-- cmd...)
 --shell-all      Like --shell but install all dev tools
 --complete ...   Generate shell completion script (bash, fish, zsh)
 
@@ -500,6 +500,20 @@ the subshell.
 
 To leave this environment and get back to the shell that you started in, just
 press Ctrl-D or run the `exit` command.
+
+Both variants also support running a single command without starting an
+interactive shell, using `--` followed by the command:
+
+```bash
+# Run a command string via bash -c (single argument)
+gloat --shell -- 'glj --version'
+
+# Run a command with separate arguments (direct exec)
+gloat --shell -- glj --version
+
+# Use --shell-all for commands that need dev tools
+gloat --shell-all -- go-md2man --help
+```
 
 
 ## Advanced Configuration

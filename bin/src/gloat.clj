@@ -96,7 +96,7 @@ formats       List available output formats
 extensions    List available processing extensions
 platforms     List available cross-compilation platforms
 
-shell         Start a sub-shell with gloat tools on PATH
+shell         Start a sub-shell or run a command (-- cmd...)
 shell-all     Like --shell but install all dev tools
 complete=     Generate shell completion script (bash, fish, zsh)
 

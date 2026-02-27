@@ -32,7 +32,7 @@ Make sure `~/.local/bin` is in your `PATH`, then run `gloat --help`.
 make -f <(curl -sL gloathub.org/make) install PREFIX=~/.gloat
 
 # Install a specific version
-make -f <(curl -sL gloathub.org/make) install VERSION=v0.1.13
+make -f <(curl -sL gloathub.org/make) install VERSION=v0.1.14
 
 # Also install the Glojure glj (prebuilt binary) command
 make -f <(curl -sL gloathub.org/make) install-glj

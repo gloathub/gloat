@@ -1,6 +1,7 @@
 package all
 
 import (
+	_ "github.com/gloathub/glojure/pkg/stdlib/clojure/string"
 	_ "github.com/gloathub/gloat/ys/pkg/yamlscript/common"
 	_ "github.com/gloathub/gloat/ys/pkg/yamlscript/util"
 	_ "github.com/gloathub/gloat/ys/pkg/ys/dwim"

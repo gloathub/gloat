@@ -98,8 +98,8 @@ All of these tools will be installed local to the gloat repository under
 
 .SH Gloat Live Demo
 The gloat repository comes with a lot of demo programs.
-You can find them in the \fBdemo/clojure/\fR, and \fBdemo/yamlscript/\fR
-directories.
+You can find them in the \fBdemo/clojure/\fR, \fBdemo/yamlscript/\fR, and
+\fBdemo/interop/\fR directories.
 
 .PP
 A great way to view the demos is to start the Gloat Demo Webpage Server with:
@@ -180,6 +180,26 @@ make test-so-bindings
 
 # Run a single language binding
 make -C demo/so-bindings/python run
+.EE
+
+.SH Go Interface Interop
+Gloat supports hybrid builds where a handwritten Go shim implements a Go
+interface and delegates all logic to compiled Clojure code via
+\fBglj.Var("ns", "fn").Invoke(...)\fR\&.
+
+.PP
+The \fBdemo/interop/bubbletea/\fR directory
+shows this pattern using Bubbletea,
+a Go TUI framework.
+Bubbletea requires implementing the \fBtea.Model\fR interface, which Glojure cannot
+do directly (no \fBdeftype\fR/\fBreify\fR).
+The solution: a small \fBshim.go\fR implements \fBtea.Model\fR and calls Clojure
+functions for \fBinit-model\fR, \fBupdate-model\fR, and \fBview-model\fR\&.
+
+.EX
+cd demo/interop/bubbletea
+make build
+\&./picker
 .EE
 
 .SH Installation

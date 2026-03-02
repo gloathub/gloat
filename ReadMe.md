@@ -87,8 +87,8 @@ All of these tools will be installed local to the gloat repository under
 ## Gloat Live Demo
 
 The gloat repository comes with a lot of demo programs.
-You can find them in the `demo/clojure/`, and `demo/yamlscript/`
-directories.
+You can find them in the `demo/clojure/`, `demo/yamlscript/`, and
+`demo/interop/` directories.
 
 A great way to view the demos is to start the Gloat Demo Webpage Server with:
 ```
@@ -165,6 +165,28 @@ make test-so-bindings
 
 # Run a single language binding
 make -C demo/so-bindings/python run
+```
+
+
+## Go Interface Interop
+
+Gloat supports hybrid builds where a handwritten Go shim implements a Go
+interface and delegates all logic to compiled Clojure code via
+`glj.Var("ns", "fn").Invoke(...)`.
+
+The [`demo/interop/bubbletea/`](
+https://github.com/gloathub/gloat/tree/main/demo/interop/bubbletea) directory
+shows this pattern using [Bubbletea](https://github.com/charmbracelet/bubbletea),
+a Go TUI framework.
+Bubbletea requires implementing the `tea.Model` interface, which Glojure cannot
+do directly (no `deftype`/`reify`).
+The solution: a small `shim.go` implements `tea.Model` and calls Clojure
+functions for `init-model`, `update-model`, and `view-model`.
+
+```bash
+cd demo/interop/bubbletea
+make build
+./picker
 ```
 
 

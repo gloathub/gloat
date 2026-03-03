@@ -52,6 +52,9 @@ func (m model) View() string {
 
 func main() {
 	require := glj.Var("clojure.core", "require")
+	require.Invoke(lang.NewSymbol("ys.std"))
+	require.Invoke(lang.NewSymbol("ys.dwim"))
+	require.Invoke(lang.NewSymbol("ys.v0"))
 	require.Invoke(lang.NewSymbol("picker.core"))
 
 	initModelFn = glj.Var("picker.core", "init-model")

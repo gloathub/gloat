@@ -7,6 +7,66 @@ export GLOAT_VERSION=0.1.19
 # Go 1.26 has a linker bug on arm64 that crashes when building with CGO
 export CGO_ENABLED=0
 
+# Canonical getopt spec — single source of truth for all flags.
+# bin/gloat runs this first; gloat.clj receives parsed EDN via GLOAT_OPTS.
+export GETOPT_SPEC="getopt_default=(--help)
+
+gloat [<options>] <file>...
+
+Glojure AOT Tool - version $GLOAT_VERSION
+
+Compiles Clojure or YAMLScript code to Go code, binaries or Wasm.
+Run 'man gloat' for full documentation.
+See https://gloathub.org
+
+  FILE:
+    path      Source file (.ys, .clj, .glj) or directory
+    -         Read from stdin
+
+  Examples:
+    gloat foo.ys                        Compile to 'foo' binary
+    gloat foo.ys -t go                  Go code to stdout
+    gloat foo.ys -o foo/                Go build directory
+    gloat foo.ys -o foo.go              Go file
+    gloat foo.ys -o foo.so              Shared library + headers
+    gloat foo.ys -o foo --platform=freebsd/amd64  Cross-compile
+    gloat --run foo.ys -- arg1 arg2     Compile and run
+    gloat --repl                        Start Glojure REPL
+    gloat --repl=dir                    Start REPL with build directory
+    gloat --repl --deps=gljdeps.edn     Start REPL with deps
+    gloat --reset                       Remove all cached dependencies
+--
+t,to=         Output format (inferred from -o; see --formats)
+o,out=        Output file or directory
+
+platform=     Cross-compile (e.g., linux/amd64; see --platforms)
+X,ext=        Enable a processing extension (see --extensions)
+
+ns=           Override namespace
+module=       Go module name (e.g., github.com/user/project)
+
+formats       List available output formats
+extensions    List available processing extensions
+platforms     List available cross-compilation platforms
+
+shell         Start a sub-shell or run a command (-- cmd...)
+shell-all     Like --shell but install all dev tools
+repl          Start the glj REPL with Go interop (use --repl=dir for build dir)
+deps=         Path to gljdeps.edn (for --repl)
+complete=     Generate shell completion script (bash, fish, zsh)
+
+r,run         Compile and run (pass program args after --)
+f,force       Overwrite existing output files
+v,verbose     Print timing for each compilation step
+q,quiet       Suppress progress messages
+
+upgrade       Upgrade gloat to the latest version
+reset         Remove all cached dependencies and reinstall
+
+h,help        Show this help
+version       Show version
+"
+
 main() (
   unset MAKES_LOCAL_DIR
 
@@ -49,29 +109,159 @@ main() (
 
   setup
 
-  if [[ ${1-} == --shell-all || ${1-} == --shell ]]; then
-    if [[ ${1-} == --shell-all ]]; then
+  # Single-pass scan: extract bash-level flags and build proc_args for getopt.
+  # --repl=dir has an optional value getopt doesn't support, so we normalize
+  # --repl=dir → --repl (boolean) and save the dir separately.
+  # Args after -- are captured as run_args for --shell handling.
+  repl_dir=
+  opt_repl=
+  opt_deps=
+  opt_force=
+  opt_shell=
+  opt_shellall=
+  run_args=()
+  proc_args=()
+  past_dashdash=
+
+  for arg in "$@"; do
+    if [[ -n $past_dashdash ]]; then
+      run_args+=("$arg")
+      proc_args+=("$arg")
+    else
+      case $arg in
+        --)          past_dashdash=1;          proc_args+=("$arg") ;;
+        --repl)      opt_repl=true;            proc_args+=("$arg") ;;
+        --repl=*)    opt_repl=true
+                     repl_dir=${arg#--repl=}
+                     proc_args+=(--repl)       ;;
+        --deps=*)    opt_deps=${arg#--deps=}
+                     proc_args+=("$arg")       ;;
+        --force|-f)  opt_force=true;           proc_args+=("$arg") ;;
+        --shell)     opt_shell=true;           proc_args+=("$arg") ;;
+        --shell-all) opt_shellall=true;        proc_args+=("$arg") ;;
+        *)           proc_args+=("$arg")       ;;
+      esac
+    fi
+  done
+
+  # Run getopt for --help/--version display, flag validation, and GLOAT_OPTS
+  opts_edn=$(printf '%s\n' "$GETOPT_SPEC" | \
+    "$root/util/getopt" "${proc_args[@]}") || exit $?
+
+  # --deps without --repl is an error
+  if [[ -n $opt_deps && -z $opt_repl ]]; then
+    echo "Error: --deps requires --repl" >&2
+    exit 1
+  fi
+
+  # Handle --shell-all / --shell
+  if [[ -n $opt_shellall || -n $opt_shell ]]; then
+    if [[ -n $opt_shellall ]]; then
       make --quiet --no-print-directory -C "$root" shell-deps
     else
       make --quiet --no-print-directory -C "$root" shell-deps-min
     fi
-    shift
-    if [[ ${1-} == -- ]]; then
-      shift
-      if [[ $# -eq 0 ]]; then
-        echo "Error: No command specified after --" >&2
-        exit 1
-      elif [[ $# -eq 1 ]]; then
-        exec bash -c "$1"
+
+    if [[ ${#run_args[@]} -gt 0 ]]; then
+      if [[ ${#run_args[@]} -eq 1 ]]; then
+        exec bash -c "${run_args[0]}"
       else
-        exec "$@"
+        exec "${run_args[@]}"
       fi
     else
       do-shell
     fi
   fi
 
-  exec bb "$root/bin/src/gloat.clj" "$@"
+  # Handle --repl
+  if [[ -n $opt_repl ]]; then
+    force=
+    [[ -n $opt_force ]] && force=1
+
+    # Resolve deps file: --deps= flag, GLOAT_GLJDEPS env var, or CWD auto-detect
+    deps_file=$opt_deps
+    explicit_deps=
+    if [[ -n $deps_file ]]; then
+      explicit_deps=1
+    elif [[ -n ${GLOAT_GLJDEPS-} ]]; then
+      deps_file=$GLOAT_GLJDEPS
+      explicit_deps=1
+    elif [[ -f ./gljdeps.edn ]]; then
+      deps_file=$(pwd)/gljdeps.edn
+    fi
+
+    if [[ -n $deps_file && ! -r $deps_file ]]; then
+      echo "Error: $deps_file not found" >&2
+      exit 1
+    fi
+
+    # Read deps content now before cd (handles /dev/fd/N process substitution)
+    deps_content=
+    [[ -n $deps_file ]] && deps_content=$(cat "$deps_file")
+
+    # Determine build directory:
+    #   --repl=dir  >  GLOAT_REPL=dir  >  . (if ./gljdeps.edn, no explicit deps)
+    #   >  ./gljrepl/
+    if [[ -n $repl_dir ]]; then
+      build_dir=$repl_dir
+    elif [[ -n ${GLOAT_REPL-} ]]; then
+      build_dir=$GLOAT_REPL
+    elif [[ -z $explicit_deps && -f ./gljdeps.edn ]]; then
+      build_dir=.
+    else
+      build_dir=./gljrepl
+      if [[ -e $build_dir && ! -d $build_dir ]]; then
+        echo "Error: $build_dir exists but is not a directory" >&2
+        exit 1
+      fi
+      if [[ -d $build_dir && ! -f $build_dir/go.mod && -z $force ]]; then
+        echo "Error: $build_dir exists but has no go.mod (use --force to override)" >&2
+        exit 1
+      fi
+    fi
+
+    mkdir -p "$build_dir"
+    echo "gloat repl build dir: $build_dir" >&2
+    cd "$build_dir"
+
+    # Write gljdeps.edn if provided
+    if [[ -n $deps_content ]]; then
+      printf '%s\n' "$deps_content" > gljdeps.edn
+    fi
+
+    # Ensure go.mod exists
+    if [[ ! -f go.mod ]]; then
+      go mod init gloatrepl
+    fi
+
+    # Ensure replace directive for glojure
+    glojure_dir=${GLOJURE_DIR:-$(
+      make --quiet --no-print-directory -C "$root" \
+        print-GLOJURE-DIR 2>/dev/null ||
+      echo "$root/../glojure"
+    )}
+    if ! grep -q "gloathub/glojure" go.mod 2>/dev/null; then
+      go mod edit \
+        -replace "github.com/gloathub/glojure=$glojure_dir"
+      go get github.com/gloathub/glojure
+      cp "$glojure_dir/go.sum" go.sum
+    fi
+
+    export GOFLAGS=-mod=mod
+
+    # Set GOARCH if not set
+    : "${GOARCH:=$(go env GOARCH)}"
+    export GOARCH
+
+    # Run glj (detects gljdeps.edn, generates imports, starts REPL)
+    if command -v rlwrap &>/dev/null; then
+      exec rlwrap --always-readline glj
+    fi
+    exec glj
+  fi
+
+  # Pass parsed opts to gloat.clj via env var — no re-parsing needed
+  GLOAT_OPTS="$opts_edn" exec bb "$root/bin/src/gloat.clj"
 )
 
 setup() (

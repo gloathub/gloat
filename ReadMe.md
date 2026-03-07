@@ -45,6 +45,11 @@ gloat app.ys -o app.exe --platform=windows/amd64
 gloat --run app.ys              # Compile and run (no binary kept)
 gloat --run app.ys -- <args...> # Pass arguments to program
 
+# Start the Glojure REPL
+gloat --repl                    # Auto-detects ./gljdeps.edn
+gloat --repl=mydir              # Use mydir/ as build directory
+gloat --repl --deps=gljdeps.edn # Explicit deps file
+
 # WebAssembly targets
 gloat app.ys -o app.wasm        # WASI target
 gloat app.ys -o app.wasm -t js  # JavaScript target
@@ -450,6 +455,9 @@ With `-Xserve,html`, the HTML is generated alongside the output.
 --extensions     List available processing extensions
 --platforms      List available cross-compilation platforms
 
+--repl[=dir]     Start the Glojure REPL (optional build directory)
+--deps=file      Path to gljdeps.edn for --repl (also accepts /dev/fd/N)
+
 --shell          Start a sub-shell or run a command (-- cmd...)
 --shell-all      Like --shell but install all dev tools
 --complete ...   Generate shell completion script (bash, fish, zsh)
@@ -493,6 +501,8 @@ Completions provide:
 - Available values for `--ext` (processing extensions)
 - File completion for source files (`.ys`, `.clj`, `.glj`)
 - File completion for `--out` output paths
+- Directory completion for `--repl` build directory
+- File completion for `--deps` (`.edn` files)
 
 
 ## The Gloat Shell
@@ -538,6 +548,61 @@ gloat --shell-all -- go-md2man --help
 ```
 
 
+## The Glojure REPL
+
+`gloat --repl` starts an interactive [Glojure](https://github.com/glojurelang/glojure)
+REPL with full access to Go packages.
+
+```bash
+gloat --repl            # Start REPL (auto-detects ./gljdeps.edn)
+gloat --repl=mydir      # Use mydir/ as the REPL build directory
+```
+
+
+### REPL Build Directory
+
+The REPL needs a Go module directory to bootstrap dependencies and generate
+import glue code.
+The build directory is resolved in this priority order:
+
+1. `--repl=dir` — explicit directory
+2. `GLOAT_REPL=dir` — environment variable
+3. `.` (current directory) — when `./gljdeps.edn` is present and no explicit
+   `--deps` is given
+4. `./gljrepl/` — default fallback (created automatically)
+
+Using `.` keeps all generated files alongside your source, which is convenient
+when your project already has a `go.mod` and a `gljdeps.edn`.
+
+`./gljrepl/` must either not exist, or be a directory that was previously
+initialized (contains a `go.mod`).
+Use `--force` to proceed anyway if it exists without a `go.mod`.
+
+
+### External Go Dependencies
+
+To make Go packages available in the REPL, declare them in a `gljdeps.edn`
+file:
+
+```clojure
+{:deps {gopkg.in/yaml.v3      {:mvn/version "v3.0.1"}
+        github.com/some/other  {:mvn/version "v1.2.3"}}}
+```
+
+The deps file is located via `--deps`, `GLOAT_GLJDEPS`, or auto-detection of
+`./gljdeps.edn` in the current directory.
+Process substitution works too, for one-off experiments:
+
+```bash
+gloat --repl --deps=<(echo '{:deps {gopkg.in/yaml.v3 {:mvn/version "v3.0.1"}}}')
+```
+
+On first run, `glj` fetches the declared packages with `go get`, generates
+import glue code, and re-launches itself with the new packages on the load
+path.
+Subsequent runs in the same build directory skip the fetch if versions match.
+
+
 ## Advanced Configuration
 
 ### Resetting Dependencies
@@ -563,6 +628,18 @@ Set `GLOJURE_FROM_SOURCE` as an environment variable:
 ```bash
 export GLOJURE_FROM_SOURCE=true
 ```
+
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `GLOAT_GLJDEPS` | Path to a `gljdeps.edn` file for `--repl`. Equivalent to `--deps=`. |
+| `GLOAT_MODULE` | Go module name for compiled output. Equivalent to `--module`. |
+| `GLOAT_NAMESPACE` | Namespace override for compiled output. Equivalent to `--ns`. |
+| `GLOAT_REPL` | Default build directory for `--repl`. Overridden by `--repl=dir`. |
+| `GLOAT_SHELL` | Preferred shell for `--shell` when the parent shell cannot be detected (default: `bash`). |
+| `GLOAT_X_PRUNE` | Set to any non-empty value to enable the `prune` extension without `-Xprune`. |
 
 
 ## Copyright and License

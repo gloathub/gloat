@@ -58,59 +58,7 @@
 ;; Getopt Spec
 ;;------------------------------------------------------------------------------
 
-(def getopt-spec
-  (str "getopt_default=(--help)
-
-gloat [<options>] <file>...
-
-Glojure AOT Tool - version " VERSION "
-
-Compiles Clojure or YAMLScript code to Go code, binaries or Wasm.
-Run 'man gloat' for full documentation.
-See https://gloathub.org
-
-  FILE:
-    path      Source file (.ys, .clj, .glj) or directory
-    -         Read from stdin
-
-  Examples:
-    gloat foo.ys                        Compile to 'foo' binary
-    gloat foo.ys -t go                  Go code to stdout
-    gloat foo.ys -o foo/                Go build directory
-    gloat foo.ys -o foo.go              Go file
-    gloat foo.ys -o foo.so              Shared library + headers
-    gloat foo.ys -o foo --platform=freebsd/amd64  Cross-compile
-    gloat --run foo.ys -- arg1 arg2     Compile and run
-    gloat --reset                       Remove all cached dependencies
---
-t,to=         Output format (inferred from -o; see --formats)
-o,out=        Output file or directory
-
-platform=     Cross-compile (e.g., linux/amd64; see --platforms)
-X,ext=        Enable a processing extension (see --extensions)
-
-ns=           Override namespace
-module=       Go module name (e.g., github.com/user/project)
-
-formats       List available output formats
-extensions    List available processing extensions
-platforms     List available cross-compilation platforms
-
-shell         Start a sub-shell or run a command (-- cmd...)
-shell-all     Like --shell but install all dev tools
-complete=     Generate shell completion script (bash, fish, zsh)
-
-r,run         Compile and run (pass program args after --)
-f,force       Overwrite existing output files
-v,verbose     Print timing for each compilation step
-q,quiet       Suppress progress messages
-
-upgrade       Upgrade gloat to the latest version
-reset         Remove all cached dependencies and reinstall
-
-h,help        Show this help
-version       Show version
-"))
+(def getopt-spec (System/getenv "GETOPT_SPEC"))
 
 ;;------------------------------------------------------------------------------
 ;; Helper Functions
@@ -156,16 +104,18 @@ version       Show version
 ;;------------------------------------------------------------------------------
 
 (defn parse-opts [args]
-  (let [proc (apply process/process
-                    {:in getopt-spec
-                     :out :string
-                     :err :inherit}
-                    (str GLOAT-ROOT "/util/getopt")
-                    args)
-        result @proc]
-    (when-not (zero? (:exit result))
-      (System/exit (:exit result)))
-    (edn/read-string (:out result))))
+  (if-let [opts-env (System/getenv "GLOAT_OPTS")]
+    (edn/read-string opts-env)
+    (let [proc (apply process/process
+                      {:in getopt-spec
+                       :out :string
+                       :err :inherit}
+                      (str GLOAT-ROOT "/util/getopt")
+                      args)
+          result @proc]
+      (when-not (zero? (:exit result))
+        (System/exit (:exit result)))
+      (edn/read-string (:out result)))))
 
 ;;------------------------------------------------------------------------------
 ;; File Type and Format Detection

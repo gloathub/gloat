@@ -4,9 +4,10 @@ _gloat() {
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    opts="-h --help -v --version -t --to -o --out -r --run -f --force
-          --verbose -q --quiet --platform -X --ext --ns --module
-          --formats --extensions --platforms --complete --shell --shell-all --reset --upgrade"
+    opts="-h --help --version -t --to -o --out -r --run -f --force
+          -v --verbose -q --quiet --platform -X --ext --ns --module
+          --formats --extensions --platforms --complete --shell --shell-all
+          --repl --deps --reset --upgrade"
 
     formats="clj bb glj go dir bin lib wasm js"
     platforms="linux/amd64 linux/arm64 darwin/amd64 darwin/arm64
@@ -32,6 +33,14 @@ _gloat() {
             ;;
         -o|--out)
             COMPREPLY=( $(compgen -f -- "${cur}") )
+            return 0
+            ;;
+        --repl)
+            COMPREPLY=( $(compgen -d -- "${cur}") )
+            return 0
+            ;;
+        --deps)
+            COMPREPLY=( $(compgen -f -X '!*.edn' -- "${cur}") )
             return 0
             ;;
         --ns|--module)

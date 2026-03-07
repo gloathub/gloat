@@ -24,7 +24,7 @@ _gloat() {
 
     _arguments -s -S \
         '(- *)'{-h,--help}'[Show help]' \
-        '(- *)'{-v,--version}'[Show version]' \
+        '(- *)--version[Show version]' \
         '(- *)--formats[List available output formats]' \
         '(- *)--extensions[List available processing extensions]' \
         '(- *)--platforms[List available cross-compilation platforms]' \
@@ -37,11 +37,13 @@ _gloat() {
         '--complete[Generate shell completion]:shell:->shells' \
         '(- *)--shell[Start a sub-shell with gloat tools on PATH]' \
         '(- *)--shell-all[Like --shell but install all dev tools]' \
+        '--repl=[Start the glj REPL]::build directory:_files -/' \
+        '--deps=[Path to gljdeps.edn (for --repl)]:deps file:_files -g "*.edn"' \
         '(- *)--reset[Remove all cached dependencies]' \
         '(- *)--upgrade[Upgrade gloat to the latest version]' \
         '(-r --run)'{-r,--run}'[Compile and run]' \
         '(-f --force)'{-f,--force}'[Overwrite existing output]' \
-        '--verbose[Print timing information]' \
+        '(-v --verbose)'{-v,--verbose}'[Print timing information]' \
         '(-q --quiet)'{-q,--quiet}'[Suppress progress messages]' \
         '*:source file:_files -g "*.{ys,clj,glj}"'
 

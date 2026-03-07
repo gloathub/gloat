@@ -5146,18 +5146,17 @@ func LoadNS() {
 	// atom?
 	{
 		tmp0 := sym_atom_QMARK_.WithMeta(lang.NewMap(kw_file, "yamlscript/common.glj", kw_line, int(29), kw_column, int(7), kw_end_DASH_line, int(29), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_yamlscript_DOT_common))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			tmp3 := checkDerefVar(var_clojure_DOT_core__EQ_)
 			tmp4 := checkDerefVar(var_clojure_DOT_core_type)
-			tmp5 := lang.Apply(tmp4, []any{v2})
-			tmp6 := lang.Apply(tmp3, []any{tmp5, nil})
+			tmp5 := lang.Apply1(tmp4, v2)
+			tmp6 := lang.Apply2(tmp3, tmp5, nil)
 			return tmp6
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_yamlscript_DOT_common_atom_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_yamlscript_DOT_common_atom_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5173,7 +5172,7 @@ func LoadNS() {
 				v2 := args[0]
 				_ = v2
 				tmp3 := checkDerefVar(var_yamlscript_DOT_common_chop)
-				tmp4 := lang.Apply(tmp3, []any{int64(1), v2})
+				tmp4 := lang.Apply2(tmp3, int64(1), v2)
 				return tmp4
 			case 2:
 				v2 := args[0]
@@ -5184,15 +5183,15 @@ func LoadNS() {
 				{ // let
 					// let binding "lst"
 					tmp5 := checkDerefVar(var_clojure_DOT_core_drop_DASH_last)
-					tmp6 := lang.Apply(tmp5, []any{v2, v3})
+					tmp6 := lang.Apply2(tmp5, v2, v3)
 					var v7 any = tmp6
 					_ = v7
 					var tmp8 any
 					tmp9 := checkDerefVar(var_clojure_DOT_core_string_QMARK_)
-					tmp10 := lang.Apply(tmp9, []any{v3})
+					tmp10 := lang.Apply1(tmp9, v3)
 					if lang.IsTruthy(tmp10) {
 						tmp11 := checkDerefVar(var_clojure_DOT_string_join)
-						tmp12 := lang.Apply(tmp11, []any{"", v7})
+						tmp12 := lang.Apply2(tmp11, "", v7)
 						tmp8 = tmp12
 					} else {
 						tmp8 = v7
@@ -5214,20 +5213,19 @@ func LoadNS() {
 	// re-find+
 	{
 		tmp0 := sym_re_DASH_find_PLUS_.WithMeta(lang.NewMap(kw_file, "yamlscript/common.glj", kw_line, int(80), kw_column, int(7), kw_end_DASH_line, int(80), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_R, sym_S)), kw_ns, lang.FindOrCreateNamespace(sym_yamlscript_DOT_common))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 2)
-			v2 := args[0]
+		var tmp1 lang.FnFunc2
+		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
 			_ = v2
-			v3 := args[1]
+			v3 := p1
 			_ = v3
 			tmp4 := checkDerefVar(var_clojure_DOT_core_re_DASH_find)
 			tmp5 := checkDerefVar(var_clojure_DOT_core_str)
-			tmp6 := lang.Apply(tmp5, []any{v3})
-			tmp7 := lang.Apply(tmp4, []any{v2, tmp6})
+			tmp6 := lang.Apply1(tmp5, v3)
+			tmp7 := lang.Apply2(tmp4, v2, tmp6)
 			return tmp7
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc2)
 		var_yamlscript_DOT_common_re_DASH_find_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_yamlscript_DOT_common_re_DASH_find_PLUS_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5236,19 +5234,18 @@ func LoadNS() {
 	// regex?
 	{
 		tmp0 := sym_regex_QMARK_.WithMeta(lang.NewMap(kw_file, "yamlscript/common.glj", kw_line, int(83), kw_column, int(7), kw_end_DASH_line, int(83), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_yamlscript_DOT_common))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			tmp3 := checkDerefVar(var_clojure_DOT_core__EQ_)
 			tmp4 := checkDerefVar(var_clojure_DOT_core_type)
-			tmp5 := lang.Apply(tmp4, []any{v2})
+			tmp5 := lang.Apply1(tmp4, v2)
 			tmp6 := reflect.TypeOf((*regexp4.Regexp)(nil))
-			tmp7 := lang.Apply(tmp3, []any{tmp5, tmp6})
+			tmp7 := lang.Apply2(tmp3, tmp5, tmp6)
 			return tmp7
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_yamlscript_DOT_common_regex_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_yamlscript_DOT_common_regex_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))

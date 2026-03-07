@@ -1,7 +1,7 @@
 # Fish completion for gloat
 
 complete -c gloat -s h -l help -d 'Show help'
-complete -c gloat -s v -l version -d 'Show version'
+complete -c gloat -l version -d 'Show version'
 complete -c gloat -l formats -d 'List available output formats'
 complete -c gloat -l extensions -d 'List available processing extensions'
 complete -c gloat -l platforms -d 'List available cross-compilation platforms'
@@ -16,12 +16,14 @@ complete -c gloat -l complete -d 'Generate shell completion' -x -a 'bash zsh fis
 
 complete -c gloat -l shell -d 'Start a sub-shell with gloat tools on PATH'
 complete -c gloat -l shell-all -d 'Like --shell but install all dev tools'
+complete -c gloat -l repl -d 'Start the glj REPL (optionally: --repl=DIR)' -F
+complete -c gloat -l deps -d 'Path to gljdeps.edn (for --repl)' -r -F
 complete -c gloat -l reset -d 'Remove all cached dependencies'
 complete -c gloat -l upgrade -d 'Upgrade gloat to the latest version'
 
 complete -c gloat -s r -l run -d 'Compile and run'
 complete -c gloat -s f -l force -d 'Overwrite existing output'
-complete -c gloat -l verbose -d 'Print timing information'
+complete -c gloat -s v -l verbose -d 'Print timing information'
 complete -c gloat -s q -l quiet -d 'Suppress progress messages'
 
 # Complete source files

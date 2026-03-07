@@ -43,6 +43,11 @@ gloat app.ys -o app.exe --platform=windows/amd64
 gloat --run app.ys              # Compile and run (no binary kept)
 gloat --run app.ys -- <args...> # Pass arguments to program
 
+# Start the Glojure REPL
+gloat --repl                    # Auto-detects ./gljdeps.edn
+gloat --repl=mydir              # Use mydir/ as build directory
+gloat --repl --deps=gljdeps.edn # Explicit deps file
+
 # WebAssembly targets
 gloat app.ys -o app.wasm        # WASI target
 gloat app.ys -o app.wasm -t js  # JavaScript target
@@ -484,6 +489,9 @@ With \fB-Xserve,html\fR, the HTML is generated alongside the output.
 --extensions     List available processing extensions
 --platforms      List available cross-compilation platforms
 
+--repl[=dir]     Start the Glojure REPL (optional build directory)
+--deps=file      Path to gljdeps.edn for --repl (also accepts /dev/fd/N)
+
 --shell          Start a sub-shell or run a command (-- cmd...)
 --shell-all      Like --shell but install all dev tools
 --complete ...   Generate shell completion script (bash, fish, zsh)
@@ -527,6 +535,8 @@ Completions provide:
 - Available values for \fB--ext\fR (processing extensions)
 - File completion for source files (\fB\&.ys\fR, \fB\&.clj\fR, \fB\&.glj\fR)
 - File completion for \fB--out\fR output paths
+- Directory completion for \fB--repl\fR build directory
+- File completion for \fB--deps\fR (\fB\&.edn\fR files)
 
 .SH The Gloat Shell
 The Makefile is set up so that you don't need to install any dependencies.
@@ -574,6 +584,62 @@ gloat --shell -- glj --version
 gloat --shell-all -- go-md2man --help
 .EE
 
+.SH The Glojure REPL
+\fBgloat --repl\fR starts an interactive Glojure
+REPL with full access to Go packages.
+
+.EX
+gloat --repl            # Start REPL (auto-detects ./gljdeps.edn)
+gloat --repl=mydir      # Use mydir/ as the REPL build directory
+.EE
+
+.SS REPL Build Directory
+The REPL needs a Go module directory to bootstrap dependencies and generate
+import glue code.
+The build directory is resolved in this priority order:
+.IP "  1." 5
+\fB--repl=dir\fR — explicit directory
+.IP "  2." 5
+\fBGLOAT_REPL=dir\fR — environment variable
+.IP "  3." 5
+\fB\&.\fR (current directory) — when \fB\&./gljdeps.edn\fR is present and no explicit
+\fB--deps\fR is given
+.IP "  4." 5
+\fB\&./gljrepl/\fR — default fallback (created automatically)
+
+.PP
+Using \fB\&.\fR keeps all generated files alongside your source, which is convenient
+when your project already has a \fBgo.mod\fR and a \fBgljdeps.edn\fR\&.
+
+.PP
+\fB\&./gljrepl/\fR must either not exist, or be a directory that was previously
+initialized (contains a \fBgo.mod\fR).
+Use \fB--force\fR to proceed anyway if it exists without a \fBgo.mod\fR\&.
+
+.SS External Go Dependencies
+To make Go packages available in the REPL, declare them in a \fBgljdeps.edn\fR
+file:
+
+.EX
+{:deps {gopkg.in/yaml.v3      {:mvn/version "v3.0.1"}
+        github.com/some/other  {:mvn/version "v1.2.3"}}}
+.EE
+
+.PP
+The deps file is located via \fB--deps\fR, \fBGLOAT_GLJDEPS\fR, or auto-detection of
+\fB\&./gljdeps.edn\fR in the current directory.
+Process substitution works too, for one-off experiments:
+
+.EX
+gloat --repl --deps=<(echo '{:deps {gopkg.in/yaml.v3 {:mvn/version "v3.0.1"}}}')
+.EE
+
+.PP
+On first run, \fBglj\fR fetches the declared packages with \fBgo get\fR, generates
+import glue code, and re-launches itself with the new packages on the load
+path.
+Subsequent runs in the same build directory skip the fetch if versions match.
+
 .SH Advanced Configuration
 .SS Resetting Dependencies
 If your cached dependencies become corrupted or you want a clean reinstall,
@@ -598,6 +664,26 @@ Set \fBGLOJURE_FROM_SOURCE\fR as an environment variable:
 .EX
 export GLOJURE_FROM_SOURCE=true
 .EE
+
+.SH Environment Variables
+.TS
+allbox;
+l l 
+l l .
+\fBVariable\fP	\fBDescription\fP
+\fBGLOAT_GLJDEPS\fR	Path to a \fBgljdeps.edn\fR file for \fB--repl\fR\&. Equivalent to \fB--deps=\fR\&.
+\fBGLOAT_MODULE\fR	T{
+Go module name for compiled output. Equivalent to \fB--module\fR\&.
+T}
+\fBGLOAT_NAMESPACE\fR	T{
+Namespace override for compiled output. Equivalent to \fB--ns\fR\&.
+T}
+\fBGLOAT_REPL\fR	Default build directory for \fB--repl\fR\&. Overridden by \fB--repl=dir\fR\&.
+\fBGLOAT_SHELL\fR	Preferred shell for \fB--shell\fR when the parent shell cannot be detected (default: \fBbash\fR).
+\fBGLOAT_X_PRUNE\fR	T{
+Set to any non-empty value to enable the \fBprune\fR extension without \fB-Xprune\fR\&.
+T}
+.TE
 
 .SH Copyright and License
 Copyright 2026 - Ingy dot Net

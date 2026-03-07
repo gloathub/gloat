@@ -5155,16 +5155,15 @@ func LoadNS() {
 	// bytes-to-str
 	{
 		tmp0 := sym_bytes_DASH_to_DASH_str.WithMeta(lang.NewMap(kw_file, "ys/ipc.glj", kw_line, int(14), kw_column, int(8), kw_end_DASH_line, int(14), kw_end_DASH_column, int(19), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_b)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_ipc))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Convert Go []byte to string"
-			tmp3 := lang.Apply(fmt.Sprintf, []any{"%s", v2})
+			tmp3 := lang.Apply2(fmt.Sprintf, "%s", v2)
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_ipc_bytes_DASH_to_DASH_str = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_ipc_bytes_DASH_to_DASH_str.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5187,7 +5186,7 @@ func LoadNS() {
 				_ = "Execute command via /bin/sh -c (joins args into single command string)"
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_ys_DOT_ipc_shell)
-				tmp5 := lang.Apply(tmp3, []any{tmp4, v2})
+				tmp5 := lang.Apply2(tmp3, tmp4, v2)
 				return tmp5
 			}
 		})
@@ -5214,7 +5213,7 @@ func LoadNS() {
 				_ = "Execute command directly (first arg is command, rest are arguments)"
 				var tmp3 any
 				tmp4 := checkDerefVar(var_clojure_DOT_core_empty_QMARK_)
-				tmp5 := lang.Apply(tmp4, []any{v2})
+				tmp5 := lang.Apply1(tmp4, v2)
 				if lang.IsTruthy(tmp5) {
 					tmp6 := lang.NewMap(kw_exit, int64(1), kw_out, "", kw_err, "No command specified")
 					tmp7 := lang.NewMap(kw_file, "ys/ipc.glj", kw_line, int(25), kw_column, int(5), kw_end_DASH_line, int(25), kw_end_DASH_column, int(49))
@@ -5231,17 +5230,17 @@ func LoadNS() {
 						_ = v10
 						// let binding "seq__2"
 						tmp11 := checkDerefVar(var_clojure_DOT_core_seq)
-						tmp12 := lang.Apply(tmp11, []any{v10})
+						tmp12 := lang.Apply1(tmp11, v10)
 						var v13 any = tmp12
 						_ = v13
 						// let binding "first__3"
 						tmp14 := checkDerefVar(var_clojure_DOT_core_first)
-						tmp15 := lang.Apply(tmp14, []any{v13})
+						tmp15 := lang.Apply1(tmp14, v13)
 						var v16 any = tmp15
 						_ = v16
 						// let binding "seq__2"
 						tmp17 := checkDerefVar(var_clojure_DOT_core_next)
-						tmp18 := lang.Apply(tmp17, []any{v13})
+						tmp18 := lang.Apply1(tmp17, v13)
 						var v19 any = tmp18
 						_ = v19
 						// let binding "cmd-name"
@@ -5253,8 +5252,8 @@ func LoadNS() {
 						// let binding "cmd"
 						tmp22 := checkDerefVar(var_clojure_DOT_core_apply)
 						tmp23 := checkDerefVar(var_clojure_DOT_core_vec)
-						tmp24 := lang.Apply(tmp23, []any{v21})
-						tmp25 := lang.Apply(tmp22, []any{exec4.Command, v20, tmp24})
+						tmp24 := lang.Apply1(tmp23, v21)
+						tmp25 := lang.Apply3(tmp22, exec4.Command, v20, tmp24)
 						var v26 any = tmp25
 						_ = v26
 						// let binding "vec__4"
@@ -5273,12 +5272,12 @@ func LoadNS() {
 						_ = v29
 						// let binding "stdout-pipe"
 						tmp30 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp31 := lang.Apply(tmp30, []any{v29, int64(0), nil})
+						tmp31 := lang.Apply3(tmp30, v29, int64(0), nil)
 						var v32 any = tmp31
 						_ = v32
 						// let binding "stdout-err"
 						tmp33 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp34 := lang.Apply(tmp33, []any{v29, int64(1), nil})
+						tmp34 := lang.Apply3(tmp33, v29, int64(1), nil)
 						var v35 any = tmp34
 						_ = v35
 						// let binding "vec__7"
@@ -5297,12 +5296,12 @@ func LoadNS() {
 						_ = v38
 						// let binding "stderr-pipe"
 						tmp39 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp40 := lang.Apply(tmp39, []any{v38, int64(0), nil})
+						tmp40 := lang.Apply3(tmp39, v38, int64(0), nil)
 						var v41 any = tmp40
 						_ = v41
 						// let binding "stderr-err"
 						tmp42 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp43 := lang.Apply(tmp42, []any{v38, int64(1), nil})
+						tmp43 := lang.Apply3(tmp42, v38, int64(1), nil)
 						var v44 any = tmp43
 						_ = v44
 						var tmp45 any
@@ -5311,8 +5310,8 @@ func LoadNS() {
 							// let binding "or__0__auto__"
 							tmp47 := checkDerefVar(var_clojure_DOT_core_not)
 							tmp48 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-							tmp49 := lang.Apply(tmp48, []any{v35})
-							tmp50 := lang.Apply(tmp47, []any{tmp49})
+							tmp49 := lang.Apply1(tmp48, v35)
+							tmp50 := lang.Apply1(tmp47, tmp49)
 							var v51 any = tmp50
 							_ = v51
 							var tmp52 any
@@ -5321,15 +5320,15 @@ func LoadNS() {
 							} else {
 								tmp53 := checkDerefVar(var_clojure_DOT_core_not)
 								tmp54 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-								tmp55 := lang.Apply(tmp54, []any{v44})
-								tmp56 := lang.Apply(tmp53, []any{tmp55})
+								tmp55 := lang.Apply1(tmp54, v44)
+								tmp56 := lang.Apply1(tmp53, tmp55)
 								tmp52 = tmp56
 							}
 							tmp46 = tmp52
 						} // end let
 						if lang.IsTruthy(tmp46) {
 							tmp47 := checkDerefVar(var_clojure_DOT_core_str)
-							tmp48 := lang.Apply(tmp47, []any{"Failed to create pipes"})
+							tmp48 := lang.Apply1(tmp47, "Failed to create pipes")
 							tmp49 := lang.NewMap(kw_exit, int64(1), kw_out, "", kw_err, tmp48)
 							tmp50 := lang.NewMap(kw_file, "ys/ipc.glj", kw_line, int(31), kw_column, int(9), kw_end_DASH_line, int(31), kw_end_DASH_column, int(61))
 							tmp51, err := lang.WithMeta(tmp49, tmp50.(lang.IPersistentMap))
@@ -5357,11 +5356,11 @@ func LoadNS() {
 								var tmp56 any
 								tmp57 := checkDerefVar(var_clojure_DOT_core_not)
 								tmp58 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-								tmp59 := lang.Apply(tmp58, []any{v55})
-								tmp60 := lang.Apply(tmp57, []any{tmp59})
+								tmp59 := lang.Apply1(tmp58, v55)
+								tmp60 := lang.Apply1(tmp57, tmp59)
 								if lang.IsTruthy(tmp60) {
 									tmp61 := checkDerefVar(var_clojure_DOT_core_str)
-									tmp62 := lang.Apply(tmp61, []any{"Failed to start: ", v55})
+									tmp62 := lang.Apply2(tmp61, "Failed to start: ", v55)
 									tmp63 := lang.NewMap(kw_exit, int64(1), kw_out, "", kw_err, tmp62)
 									tmp64 := lang.NewMap(kw_file, "ys/ipc.glj", kw_line, int(34), kw_column, int(13), kw_end_DASH_line, int(34), kw_end_DASH_column, int(70))
 									tmp65, err := lang.WithMeta(tmp63, tmp64.(lang.IPersistentMap))
@@ -5373,31 +5372,31 @@ func LoadNS() {
 									var tmp66 any
 									{ // let
 										// let binding "vec__10"
-										tmp67 := lang.Apply(io5.ReadAll, []any{v32})
+										tmp67 := lang.Apply1(io5.ReadAll, v32)
 										var v68 any = tmp67
 										_ = v68
 										// let binding "stdout-bytes"
 										tmp69 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp70 := lang.Apply(tmp69, []any{v68, int64(0), nil})
+										tmp70 := lang.Apply3(tmp69, v68, int64(0), nil)
 										var v71 any = tmp70
 										_ = v71
 										// let binding "stdout-read-err"
 										tmp72 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp73 := lang.Apply(tmp72, []any{v68, int64(1), nil})
+										tmp73 := lang.Apply3(tmp72, v68, int64(1), nil)
 										var v74 any = tmp73
 										_ = v74
 										// let binding "vec__13"
-										tmp75 := lang.Apply(io5.ReadAll, []any{v41})
+										tmp75 := lang.Apply1(io5.ReadAll, v41)
 										var v76 any = tmp75
 										_ = v76
 										// let binding "stderr-bytes"
 										tmp77 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp78 := lang.Apply(tmp77, []any{v76, int64(0), nil})
+										tmp78 := lang.Apply3(tmp77, v76, int64(0), nil)
 										var v79 any = tmp78
 										_ = v79
 										// let binding "stderr-read-err"
 										tmp80 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp81 := lang.Apply(tmp80, []any{v76, int64(1), nil})
+										tmp81 := lang.Apply3(tmp80, v76, int64(1), nil)
 										var v82 any = tmp81
 										_ = v82
 										// let binding "wait-err"
@@ -5417,7 +5416,7 @@ func LoadNS() {
 										// let binding "exit-code"
 										var tmp86 any
 										tmp87 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-										tmp88 := lang.Apply(tmp87, []any{v85})
+										tmp88 := lang.Apply1(tmp87, v85)
 										if lang.IsTruthy(tmp88) {
 											tmp86 = int64(0)
 										} else {
@@ -5449,20 +5448,20 @@ func LoadNS() {
 										_ = v93
 										var tmp94 any
 										tmp95 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-										tmp96 := lang.Apply(tmp95, []any{v74})
+										tmp96 := lang.Apply1(tmp95, v74)
 										if lang.IsTruthy(tmp96) {
 											tmp97 := checkDerefVar(var_ys_DOT_ipc_bytes_DASH_to_DASH_str)
-											tmp98 := lang.Apply(tmp97, []any{v71})
+											tmp98 := lang.Apply1(tmp97, v71)
 											tmp94 = tmp98
 										} else {
 											tmp94 = ""
 										}
 										var tmp99 any
 										tmp100 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-										tmp101 := lang.Apply(tmp100, []any{v82})
+										tmp101 := lang.Apply1(tmp100, v82)
 										if lang.IsTruthy(tmp101) {
 											tmp102 := checkDerefVar(var_ys_DOT_ipc_bytes_DASH_to_DASH_str)
-											tmp103 := lang.Apply(tmp102, []any{v79})
+											tmp103 := lang.Apply1(tmp102, v79)
 											tmp99 = tmp103
 										} else {
 											tmp99 = ""
@@ -5513,11 +5512,11 @@ func LoadNS() {
 				{ // let
 					// let binding "cmd-str"
 					tmp4 := checkDerefVar(var_clojure_DOT_string_join)
-					tmp5 := lang.Apply(tmp4, []any{" ", v2})
+					tmp5 := lang.Apply2(tmp4, " ", v2)
 					var v6 any = tmp5
 					_ = v6
 					tmp7 := checkDerefVar(var_ys_DOT_ipc_sh)
-					tmp8 := lang.Apply(tmp7, []any{"/bin/sh", "-c", v6})
+					tmp8 := lang.Apply3(tmp7, "/bin/sh", "-c", v6)
 					tmp3 = tmp8
 				} // end let
 				return tmp3

@@ -6661,8 +6661,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed51})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed51)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -6688,8 +6688,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed52})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed52)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -6715,8 +6715,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed53})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed53)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -6742,8 +6742,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed54})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed54)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -6769,8 +6769,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed55})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed55)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -6796,8 +6796,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed56})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed56)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -6823,8 +6823,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed57})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed57)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -6850,8 +6850,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed58})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed58)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -6877,8 +6877,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed59})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed59)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -6904,8 +6904,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed60})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed60)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -6931,8 +6931,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed61})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed61)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -6958,8 +6958,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed62})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed62)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -6985,8 +6985,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed63})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed63)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7012,8 +7012,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed64})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed64)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7039,8 +7039,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed65})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed65)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7066,8 +7066,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed66})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed66)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7093,8 +7093,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed67})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed67)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7120,8 +7120,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed68})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed68)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7147,8 +7147,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed3})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed3)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7174,8 +7174,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed0})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed0)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7201,8 +7201,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed1})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed1)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7228,8 +7228,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed49})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed49)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7255,8 +7255,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed50})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed50)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7282,8 +7282,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed2})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed2)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7309,8 +7309,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed4})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed4)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7336,8 +7336,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed5})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed5)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7363,8 +7363,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed6})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed6)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7390,8 +7390,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed7})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed7)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7417,8 +7417,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed8})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed8)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7444,8 +7444,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed9})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed9)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7471,8 +7471,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed10})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed10)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7498,8 +7498,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed11})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed11)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7525,8 +7525,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed12})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed12)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7552,8 +7552,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed13})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed13)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7579,8 +7579,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed14})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed14)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7606,8 +7606,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed15})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed15)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7633,8 +7633,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed16})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed16)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7660,8 +7660,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed17})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed17)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7687,8 +7687,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed18})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed18)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7714,8 +7714,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed19})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed19)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7741,8 +7741,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed20})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed20)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7768,8 +7768,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed21})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed21)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7795,8 +7795,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed22})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed22)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7822,8 +7822,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed23})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed23)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7849,8 +7849,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed24})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed24)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7876,8 +7876,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed25})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed25)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7903,8 +7903,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed26})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed26)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7930,8 +7930,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed27})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed27)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7957,8 +7957,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed28})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed28)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -7984,8 +7984,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed29})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed29)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8011,8 +8011,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed30})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed30)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8038,8 +8038,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed31})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed31)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8065,8 +8065,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed32})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed32)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8092,8 +8092,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed33})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed33)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8119,8 +8119,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed34})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed34)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8146,8 +8146,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed35})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed35)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8173,8 +8173,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed36})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed36)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8200,8 +8200,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed37})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed37)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8227,8 +8227,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed38})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed38)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8254,8 +8254,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed39})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed39)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8281,8 +8281,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed40})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed40)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8308,8 +8308,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed41})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed41)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8335,8 +8335,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed42})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed42)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8362,8 +8362,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed43})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed43)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8389,8 +8389,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed44})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed44)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8416,8 +8416,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed45})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed45)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8443,8 +8443,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed46})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed46)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8470,8 +8470,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed47})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed47)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8497,8 +8497,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed48})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed48)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8524,8 +8524,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed206})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed206)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8551,8 +8551,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed69})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed69)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8578,8 +8578,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed70})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed70)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8605,8 +8605,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed71})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed71)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8632,8 +8632,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed72})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed72)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8659,8 +8659,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed73})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed73)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8686,8 +8686,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed74})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed74)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8713,8 +8713,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed75})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed75)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8740,8 +8740,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed76})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed76)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8767,8 +8767,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed77})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed77)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8794,8 +8794,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed78})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed78)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8821,8 +8821,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed79})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed79)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8848,8 +8848,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed80})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed80)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8875,8 +8875,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed81})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed81)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8902,8 +8902,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed82})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed82)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8929,8 +8929,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed83})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed83)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8956,8 +8956,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed84})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed84)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -8983,8 +8983,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed85})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed85)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9010,8 +9010,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed86})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed86)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9037,8 +9037,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed87})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed87)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9064,8 +9064,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed88})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed88)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9091,8 +9091,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed89})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed89)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9118,8 +9118,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed90})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed90)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9145,8 +9145,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed91})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed91)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9172,8 +9172,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed92})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed92)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9199,8 +9199,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed93})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed93)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9226,8 +9226,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed94})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed94)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9253,8 +9253,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed95})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed95)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9280,8 +9280,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed96})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed96)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9307,8 +9307,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed97})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed97)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9334,8 +9334,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed98})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed98)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9361,8 +9361,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed99})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed99)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9388,8 +9388,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed100})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed100)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9415,8 +9415,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed101})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed101)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9442,8 +9442,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed102})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed102)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9469,8 +9469,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed103})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed103)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9496,8 +9496,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed104})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed104)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9523,8 +9523,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed105})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed105)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9550,8 +9550,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed106})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed106)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9577,8 +9577,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed107})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed107)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9604,8 +9604,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed108})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed108)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9631,8 +9631,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed109})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed109)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9658,8 +9658,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed110})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed110)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9685,8 +9685,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed111})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed111)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9712,8 +9712,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed112})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed112)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9739,8 +9739,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed113})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed113)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9766,8 +9766,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed114})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed114)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9793,8 +9793,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed115})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed115)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9820,8 +9820,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed116})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed116)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9847,8 +9847,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed117})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed117)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9874,8 +9874,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed118})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed118)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9901,8 +9901,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed119})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed119)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9928,8 +9928,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed120})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed120)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9955,8 +9955,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed121})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed121)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -9982,8 +9982,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed122})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed122)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10009,8 +10009,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed123})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed123)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10036,8 +10036,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed124})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed124)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10063,8 +10063,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed125})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed125)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10090,8 +10090,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed126})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed126)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10117,8 +10117,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed127})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed127)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10144,8 +10144,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed128})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed128)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10171,8 +10171,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed129})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed129)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10198,8 +10198,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed130})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed130)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10225,8 +10225,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed131})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed131)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10252,8 +10252,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed132})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed132)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10279,8 +10279,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed133})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed133)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10306,8 +10306,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed134})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed134)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10333,8 +10333,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed135})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed135)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10360,8 +10360,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed136})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed136)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10387,8 +10387,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed137})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed137)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10414,8 +10414,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed138})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed138)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10441,8 +10441,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed139})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed139)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10468,8 +10468,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed140})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed140)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10495,8 +10495,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed141})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed141)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10522,8 +10522,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed142})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed142)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10536,23 +10536,21 @@ func LoadNS() {
 	// map-parse
 	{
 		tmp0 := sym_map_DASH_parse.WithMeta(lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(7), kw_end_DASH_line, int(27), kw_end_DASH_column, int(15), kw_arglists, lang.NewList(lang.NewVector(sym_args)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			tmp3 := checkDerefVar(var_clojure_DOT_core_mapv)
-			var tmp4 lang.FnFunc
-			tmp4 = lang.NewFnFunc(func(args ...any) any {
-				checkArity(args, 1)
-				v5 := args[0]
+			var tmp4 lang.FnFunc1
+			tmp4 = lang.FnFunc1(func(p0 any) any {
+				v5 := p0
 				_ = v5
 				var tmp6 any
 				tmp7 := checkDerefVar(var_clojure_DOT_core_re_DASH_matches)
-				tmp8 := lang.Apply(tmp7, []any{regexp4.MustCompile("^[+-]?[0-9]+\\.?[0-9]*([eE][+-]?[0-9]+)?$"), v5})
+				tmp8 := lang.Apply2(tmp7, regexp4.MustCompile("^[+-]?[0-9]+\\.?[0-9]*([eE][+-]?[0-9]+)?$"), v5)
 				if lang.IsTruthy(tmp8) {
 					tmp9 := checkDerefVar(var_clojure_DOT_core_read_DASH_string)
-					tmp10 := lang.Apply(tmp9, []any{v5})
+					tmp10 := lang.Apply1(tmp9, v5)
 					tmp6 = tmp10
 				} else {
 					tmp6 = v5
@@ -10564,10 +10562,10 @@ func LoadNS() {
 			if err != nil {
 				panic(err)
 			}
-			tmp7 := lang.Apply(tmp3, []any{tmp6, v2})
+			tmp7 := lang.Apply2(tmp3, tmp6, v2)
 			return tmp7
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_v0_map_DASH_parse = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_v0_map_DASH_parse.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -10589,8 +10587,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed143})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed143)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10616,8 +10614,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed144})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed144)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10643,8 +10641,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed145})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed145)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10670,8 +10668,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed146})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed146)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10697,8 +10695,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed147})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed147)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10724,8 +10722,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed148})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed148)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10751,8 +10749,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed149})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed149)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10778,8 +10776,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed150})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed150)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10805,8 +10803,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed151})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed151)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10832,8 +10830,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed152})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed152)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10859,8 +10857,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed153})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed153)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10886,8 +10884,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed154})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed154)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10913,8 +10911,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed155})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed155)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10940,8 +10938,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed156})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed156)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10967,8 +10965,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed157})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed157)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -10994,8 +10992,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed158})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed158)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11021,8 +11019,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed159})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed159)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11048,8 +11046,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed160})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed160)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11075,8 +11073,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed161})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed161)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11102,8 +11100,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed162})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed162)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11129,8 +11127,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed163})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed163)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11156,8 +11154,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed164})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed164)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11183,8 +11181,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed165})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed165)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11210,8 +11208,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed166})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed166)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11237,8 +11235,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed167})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed167)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11264,8 +11262,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed168})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed168)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11291,8 +11289,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed169})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed169)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11318,8 +11316,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed170})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed170)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11345,8 +11343,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed171})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed171)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11372,8 +11370,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed172})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed172)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11399,8 +11397,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed173})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed173)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11426,8 +11424,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed174})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed174)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11453,8 +11451,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed175})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed175)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11480,8 +11478,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed176})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed176)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11507,8 +11505,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed177})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed177)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11534,8 +11532,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed178})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed178)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11561,8 +11559,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed179})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed179)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11588,8 +11586,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed180})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed180)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11615,8 +11613,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed181})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed181)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11642,8 +11640,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed182})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed182)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11669,8 +11667,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed183})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed183)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11696,8 +11694,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed184})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed184)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11723,8 +11721,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed185})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed185)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11750,8 +11748,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed186})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed186)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11777,8 +11775,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed187})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed187)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11804,8 +11802,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed188})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed188)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11831,8 +11829,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed189})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed189)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11858,8 +11856,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed190})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed190)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11885,8 +11883,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed191})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed191)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11912,8 +11910,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed192})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed192)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11939,8 +11937,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed193})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed193)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11966,8 +11964,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed194})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed194)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -11993,8 +11991,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed195})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed195)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -12020,8 +12018,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed196})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed196)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -12047,8 +12045,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed197})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed197)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -12074,8 +12072,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed198})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed198)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -12101,8 +12099,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed199})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed199)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -12128,8 +12126,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed200})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed200)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -12155,8 +12153,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed201})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed201)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -12182,8 +12180,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed202})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed202)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -12209,8 +12207,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed203})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed203)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -12236,8 +12234,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed204})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed204)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})
@@ -12263,8 +12261,8 @@ func LoadNS() {
 				_ = v2
 				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
 				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply(tmp4, []any{closed205})
-				tmp6 := lang.Apply(tmp3, []any{tmp5, v2})
+				tmp5 := lang.Apply1(tmp4, closed205)
+				tmp6 := lang.Apply2(tmp3, tmp5, v2)
 				return tmp6
 			}
 		})

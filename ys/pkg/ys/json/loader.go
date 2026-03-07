@@ -5198,89 +5198,87 @@ func LoadNS() {
 	// dump
 	{
 		tmp0 := sym_dump.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(23), kw_column, int(7), kw_end_DASH_line, int(23), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Convert Clojure data to JSON string"
 			var tmp3 any
 			tmp4 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-			tmp5 := lang.Apply(tmp4, []any{v2})
+			tmp5 := lang.Apply1(tmp4, v2)
 			if lang.IsTruthy(tmp5) {
 				tmp3 = "null"
 			} else {
 				var tmp6 any
 				tmp7 := checkDerefVar(var_clojure_DOT_core_true_QMARK_)
-				tmp8 := lang.Apply(tmp7, []any{v2})
+				tmp8 := lang.Apply1(tmp7, v2)
 				if lang.IsTruthy(tmp8) {
 					tmp6 = "true"
 				} else {
 					var tmp9 any
 					tmp10 := checkDerefVar(var_clojure_DOT_core_false_QMARK_)
-					tmp11 := lang.Apply(tmp10, []any{v2})
+					tmp11 := lang.Apply1(tmp10, v2)
 					if lang.IsTruthy(tmp11) {
 						tmp9 = "false"
 					} else {
 						var tmp12 any
 						tmp13 := checkDerefVar(var_clojure_DOT_core_keyword_QMARK_)
-						tmp14 := lang.Apply(tmp13, []any{v2})
+						tmp14 := lang.Apply1(tmp13, v2)
 						if lang.IsTruthy(tmp14) {
 							var tmp15 any
 							{ // let
 								// let binding "s"
 								tmp16 := checkDerefVar(var_clojure_DOT_core_str)
-								tmp17 := lang.Apply(tmp16, []any{v2})
+								tmp17 := lang.Apply1(tmp16, v2)
 								var v18 any = tmp17
 								_ = v18
 								tmp19 := checkDerefVar(var_clojure_DOT_core_str)
 								var tmp20 any
 								tmp21 := checkDerefVar(var_clojure_DOT_core__EQ_)
 								tmp22 := checkDerefVar(var_clojure_DOT_core_first)
-								tmp23 := lang.Apply(tmp22, []any{v18})
-								tmp24 := lang.Apply(tmp21, []any{tmp23, lang.NewChar(58)})
+								tmp23 := lang.Apply1(tmp22, v18)
+								tmp24 := lang.Apply2(tmp21, tmp23, lang.NewChar(58))
 								if lang.IsTruthy(tmp24) {
 									tmp25 := checkDerefVar(var_clojure_DOT_core_subs)
-									tmp26 := lang.Apply(tmp25, []any{v18, int64(1)})
+									tmp26 := lang.Apply2(tmp25, v18, int64(1))
 									tmp20 = tmp26
 								} else {
 									tmp20 = v18
 								}
-								tmp27 := lang.Apply(tmp19, []any{"\"", tmp20, "\""})
+								tmp27 := lang.Apply3(tmp19, "\"", tmp20, "\"")
 								tmp15 = tmp27
 							} // end let
 							tmp12 = tmp15
 						} else {
 							var tmp16 any
 							tmp17 := checkDerefVar(var_clojure_DOT_core_string_QMARK_)
-							tmp18 := lang.Apply(tmp17, []any{v2})
+							tmp18 := lang.Apply1(tmp17, v2)
 							if lang.IsTruthy(tmp18) {
 								tmp19 := checkDerefVar(var_clojure_DOT_core_str)
 								tmp20 := checkDerefVar(var_ys_DOT_json_escape_DASH_string)
-								tmp21 := lang.Apply(tmp20, []any{v2})
-								tmp22 := lang.Apply(tmp19, []any{"\"", tmp21, "\""})
+								tmp21 := lang.Apply1(tmp20, v2)
+								tmp22 := lang.Apply3(tmp19, "\"", tmp21, "\"")
 								tmp16 = tmp22
 							} else {
 								var tmp23 any
 								tmp24 := checkDerefVar(var_clojure_DOT_core_number_QMARK_)
-								tmp25 := lang.Apply(tmp24, []any{v2})
+								tmp25 := lang.Apply1(tmp24, v2)
 								if lang.IsTruthy(tmp25) {
 									tmp26 := checkDerefVar(var_clojure_DOT_core_str)
-									tmp27 := lang.Apply(tmp26, []any{v2})
+									tmp27 := lang.Apply1(tmp26, v2)
 									tmp23 = tmp27
 								} else {
 									var tmp28 any
 									tmp29 := checkDerefVar(var_clojure_DOT_core_map_QMARK_)
-									tmp30 := lang.Apply(tmp29, []any{v2})
+									tmp30 := lang.Apply1(tmp29, v2)
 									if lang.IsTruthy(tmp30) {
 										var tmp31 any
 										{ // let
 											// let binding "pairs"
 											tmp32 := checkDerefVar(var_clojure_DOT_core_map)
-											var tmp33 lang.FnFunc
-											tmp33 = lang.NewFnFunc(func(args ...any) any {
-												checkArity(args, 1)
-												v34 := args[0]
+											var tmp33 lang.FnFunc1
+											tmp33 = lang.FnFunc1(func(p0 any) any {
+												v34 := p0
 												_ = v34
 												var tmp35 any
 												{ // let
@@ -5289,30 +5287,30 @@ func LoadNS() {
 													_ = v36
 													// let binding "k"
 													tmp37 := checkDerefVar(var_clojure_DOT_core_nth)
-													tmp38 := lang.Apply(tmp37, []any{v36, int64(0), nil})
+													tmp38 := lang.Apply3(tmp37, v36, int64(0), nil)
 													var v39 any = tmp38
 													_ = v39
 													// let binding "v"
 													tmp40 := checkDerefVar(var_clojure_DOT_core_nth)
-													tmp41 := lang.Apply(tmp40, []any{v36, int64(1), nil})
+													tmp41 := lang.Apply3(tmp40, v36, int64(1), nil)
 													var v42 any = tmp41
 													_ = v42
 													var tmp43 any
 													{ // let
 														// let binding "ks"
 														tmp44 := checkDerefVar(var_clojure_DOT_core_str)
-														tmp45 := lang.Apply(tmp44, []any{v39})
+														tmp45 := lang.Apply1(tmp44, v39)
 														var v46 any = tmp45
 														_ = v46
 														// let binding "key-str"
 														var tmp47 any
 														tmp48 := checkDerefVar(var_clojure_DOT_core__EQ_)
 														tmp49 := checkDerefVar(var_clojure_DOT_core_first)
-														tmp50 := lang.Apply(tmp49, []any{v46})
-														tmp51 := lang.Apply(tmp48, []any{tmp50, lang.NewChar(58)})
+														tmp50 := lang.Apply1(tmp49, v46)
+														tmp51 := lang.Apply2(tmp48, tmp50, lang.NewChar(58))
 														if lang.IsTruthy(tmp51) {
 															tmp52 := checkDerefVar(var_clojure_DOT_core_subs)
-															tmp53 := lang.Apply(tmp52, []any{v46, int64(1)})
+															tmp53 := lang.Apply2(tmp52, v46, int64(1))
 															tmp47 = tmp53
 														} else {
 															tmp47 = v46
@@ -5321,10 +5319,10 @@ func LoadNS() {
 														_ = v54
 														tmp55 := checkDerefVar(var_clojure_DOT_core_str)
 														tmp56 := checkDerefVar(var_ys_DOT_json_escape_DASH_string)
-														tmp57 := lang.Apply(tmp56, []any{v54})
+														tmp57 := lang.Apply1(tmp56, v54)
 														tmp58 := checkDerefVar(var_ys_DOT_json_dump)
-														tmp59 := lang.Apply(tmp58, []any{v42})
-														tmp60 := lang.Apply(tmp55, []any{"\"", tmp57, "\":", tmp59})
+														tmp59 := lang.Apply1(tmp58, v42)
+														tmp60 := lang.Apply4(tmp55, "\"", tmp57, "\":", tmp59)
 														tmp43 = tmp60
 													} // end let
 													tmp35 = tmp43
@@ -5336,37 +5334,37 @@ func LoadNS() {
 											if err != nil {
 												panic(err)
 											}
-											tmp36 := lang.Apply(tmp32, []any{tmp35, v2})
+											tmp36 := lang.Apply2(tmp32, tmp35, v2)
 											var v37 any = tmp36
 											_ = v37
 											tmp38 := checkDerefVar(var_clojure_DOT_core_str)
 											tmp39 := checkDerefVar(var_clojure_DOT_string_join)
-											tmp40 := lang.Apply(tmp39, []any{",", v37})
-											tmp41 := lang.Apply(tmp38, []any{"{", tmp40, "}"})
+											tmp40 := lang.Apply2(tmp39, ",", v37)
+											tmp41 := lang.Apply3(tmp38, "{", tmp40, "}")
 											tmp31 = tmp41
 										} // end let
 										tmp28 = tmp31
 									} else {
 										var tmp32 any
 										tmp33 := checkDerefVar(var_clojure_DOT_core_sequential_QMARK_)
-										tmp34 := lang.Apply(tmp33, []any{v2})
+										tmp34 := lang.Apply1(tmp33, v2)
 										if lang.IsTruthy(tmp34) {
 											tmp35 := checkDerefVar(var_clojure_DOT_core_str)
 											tmp36 := checkDerefVar(var_clojure_DOT_string_join)
 											tmp37 := checkDerefVar(var_clojure_DOT_core_map)
 											tmp38 := checkDerefVar(var_ys_DOT_json_dump)
-											tmp39 := lang.Apply(tmp37, []any{tmp38, v2})
-											tmp40 := lang.Apply(tmp36, []any{",", tmp39})
-											tmp41 := lang.Apply(tmp35, []any{"[", tmp40, "]"})
+											tmp39 := lang.Apply2(tmp37, tmp38, v2)
+											tmp40 := lang.Apply2(tmp36, ",", tmp39)
+											tmp41 := lang.Apply3(tmp35, "[", tmp40, "]")
 											tmp32 = tmp41
 										} else {
 											var tmp42 any
 											if lang.IsTruthy(kw_else) {
 												tmp43 := checkDerefVar(var_clojure_DOT_core_str)
 												tmp44 := checkDerefVar(var_clojure_DOT_core_type)
-												tmp45 := lang.Apply(tmp44, []any{v2})
-												tmp46 := lang.Apply(tmp43, []any{"Cannot encode ", tmp45, " to JSON"})
-												tmp47 := lang.Apply(lang.NewError, []any{tmp46})
+												tmp45 := lang.Apply1(tmp44, v2)
+												tmp46 := lang.Apply3(tmp43, "Cannot encode ", tmp45, " to JSON")
+												tmp47 := lang.Apply1(lang.NewError, tmp46)
 												panic(tmp47)
 											} else {
 											}
@@ -5388,7 +5386,7 @@ func LoadNS() {
 			}
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_json_dump = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_json_dump.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5397,10 +5395,9 @@ func LoadNS() {
 	// escape-string
 	{
 		tmp0 := sym_escape_DASH_string.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(14), kw_column, int(7), kw_end_DASH_line, int(14), kw_end_DASH_column, int(19), kw_arglists, lang.NewList(lang.NewVector(sym_s)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Escape special characters in JSON strings"
 			tmp3 := checkDerefVar(var_clojure_DOT_string_replace)
@@ -5408,14 +5405,14 @@ func LoadNS() {
 			tmp5 := checkDerefVar(var_clojure_DOT_string_replace)
 			tmp6 := checkDerefVar(var_clojure_DOT_string_replace)
 			tmp7 := checkDerefVar(var_clojure_DOT_string_replace)
-			tmp8 := lang.Apply(tmp7, []any{v2, "\\", "\\\\"})
-			tmp9 := lang.Apply(tmp6, []any{tmp8, "\"", "\\\""})
-			tmp10 := lang.Apply(tmp5, []any{tmp9, "\n", "\\n"})
-			tmp11 := lang.Apply(tmp4, []any{tmp10, "\r", "\\r"})
-			tmp12 := lang.Apply(tmp3, []any{tmp11, "\t", "\\t"})
+			tmp8 := lang.Apply3(tmp7, v2, "\\", "\\\\")
+			tmp9 := lang.Apply3(tmp6, tmp8, "\"", "\\\"")
+			tmp10 := lang.Apply3(tmp5, tmp9, "\n", "\\n")
+			tmp11 := lang.Apply3(tmp4, tmp10, "\r", "\\r")
+			tmp12 := lang.Apply3(tmp3, tmp11, "\t", "\\t")
 			return tmp12
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_json_escape_DASH_string = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_json_escape_DASH_string.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5424,10 +5421,9 @@ func LoadNS() {
 	// is-digit?
 	{
 		tmp0 := sym_is_DASH_digit_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(88), kw_column, int(8), kw_end_DASH_line, int(88), kw_end_DASH_column, int(16), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_c)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Check if character is a digit"
 			var tmp3 any
@@ -5435,20 +5431,20 @@ func LoadNS() {
 				// let binding "and__0__auto__"
 				tmp4 := checkDerefVar(var_clojure_DOT_core__GT__EQ_)
 				tmp5 := checkDerefVar(var_clojure_DOT_core_int)
-				tmp6 := lang.Apply(tmp5, []any{v2})
+				tmp6 := lang.Apply1(tmp5, v2)
 				tmp7 := checkDerefVar(var_clojure_DOT_core_int)
-				tmp8 := lang.Apply(tmp7, []any{lang.NewChar(48)})
-				tmp9 := lang.Apply(tmp4, []any{tmp6, tmp8})
+				tmp8 := lang.Apply1(tmp7, lang.NewChar(48))
+				tmp9 := lang.Apply2(tmp4, tmp6, tmp8)
 				var v10 any = tmp9
 				_ = v10
 				var tmp11 any
 				if lang.IsTruthy(v10) {
 					tmp12 := checkDerefVar(var_clojure_DOT_core__LT__EQ_)
 					tmp13 := checkDerefVar(var_clojure_DOT_core_int)
-					tmp14 := lang.Apply(tmp13, []any{v2})
+					tmp14 := lang.Apply1(tmp13, v2)
 					tmp15 := checkDerefVar(var_clojure_DOT_core_int)
-					tmp16 := lang.Apply(tmp15, []any{lang.NewChar(57)})
-					tmp17 := lang.Apply(tmp12, []any{tmp14, tmp16})
+					tmp16 := lang.Apply1(tmp15, lang.NewChar(57))
+					tmp17 := lang.Apply2(tmp12, tmp14, tmp16)
 					tmp11 = tmp17
 				} else {
 					tmp11 = v10
@@ -5457,7 +5453,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_json_is_DASH_digit_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_json_is_DASH_digit_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5466,34 +5462,33 @@ func LoadNS() {
 	// load
 	{
 		tmp0 := sym_load.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(169), kw_column, int(7), kw_end_DASH_line, int(169), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_s)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Parse JSON string to Clojure data"
 			var tmp3 any
 			{ // let
 				// let binding "vec__18"
 				tmp4 := checkDerefVar(var_ys_DOT_json_parse_DASH_value)
-				tmp5 := lang.Apply(tmp4, []any{v2, int64(0)})
+				tmp5 := lang.Apply2(tmp4, v2, int64(0))
 				var v6 any = tmp5
 				_ = v6
 				// let binding "value"
 				tmp7 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp8 := lang.Apply(tmp7, []any{v6, int64(0), nil})
+				tmp8 := lang.Apply3(tmp7, v6, int64(0), nil)
 				var v9 any = tmp8
 				_ = v9
 				// let binding "_"
 				tmp10 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp11 := lang.Apply(tmp10, []any{v6, int64(1), nil})
+				tmp11 := lang.Apply3(tmp10, v6, int64(1), nil)
 				var v12 any = tmp11
 				_ = v12
 				tmp3 = v9
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_json_load = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_json_load.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5502,12 +5497,11 @@ func LoadNS() {
 	// parse-array
 	{
 		tmp0 := sym_parse_DASH_array.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(106), kw_column, int(8), kw_end_DASH_line, int(106), kw_end_DASH_column, int(18), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 2)
-			v2 := args[0]
+		var tmp1 lang.FnFunc2
+		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
 			_ = v2
-			v3 := args[1]
+			v3 := p1
 			_ = v3
 			_ = "Parse a JSON array starting at pos, return [value new-pos]"
 			var tmp4 any
@@ -5515,8 +5509,8 @@ func LoadNS() {
 				// let binding "i"
 				tmp5 := checkDerefVar(var_ys_DOT_json_skip_DASH_whitespace)
 				tmp6 := checkDerefVar(var_clojure_DOT_core_inc)
-				tmp7 := lang.Apply(tmp6, []any{v3})
-				tmp8 := lang.Apply(tmp5, []any{v2, tmp7})
+				tmp7 := lang.Apply1(tmp6, v3)
+				tmp8 := lang.Apply2(tmp5, v2, tmp7)
 				var v9 any = tmp8
 				_ = v9
 				// let binding "values"
@@ -5532,25 +5526,25 @@ func LoadNS() {
 					var tmp14 any
 					tmp15 := checkDerefVar(var_clojure_DOT_core__GT__EQ_)
 					tmp16 := checkDerefVar(var_clojure_DOT_core_count)
-					tmp17 := lang.Apply(tmp16, []any{v2})
-					tmp18 := lang.Apply(tmp15, []any{v9, tmp17})
+					tmp17 := lang.Apply1(tmp16, v2)
+					tmp18 := lang.Apply2(tmp15, v9, tmp17)
 					if lang.IsTruthy(tmp18) {
-						tmp19 := lang.Apply(lang.NewError, []any{"Unterminated array"})
+						tmp19 := lang.Apply1(lang.NewError, "Unterminated array")
 						panic(tmp19)
 					} else {
 						var tmp20 any
 						{ // let
 							// let binding "c"
 							tmp21 := checkDerefVar(var_clojure_DOT_core_nth)
-							tmp22 := lang.Apply(tmp21, []any{v2, v9})
+							tmp22 := lang.Apply2(tmp21, v2, v9)
 							var v23 any = tmp22
 							_ = v23
 							var tmp24 any
 							tmp25 := checkDerefVar(var_clojure_DOT_core__EQ_)
-							tmp26 := lang.Apply(tmp25, []any{v23, lang.NewChar(93)})
+							tmp26 := lang.Apply2(tmp25, v23, lang.NewChar(93))
 							if lang.IsTruthy(tmp26) {
 								tmp27 := checkDerefVar(var_clojure_DOT_core_inc)
-								tmp28 := lang.Apply(tmp27, []any{v9})
+								tmp28 := lang.Apply1(tmp27, v9)
 								tmp29 := lang.NewVector(v13, tmp28)
 								tmp30 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(114), kw_column, int(20), kw_end_DASH_line, int(114), kw_end_DASH_column, int(35))
 								tmp31, err := lang.WithMeta(tmp29, tmp30.(lang.IPersistentMap))
@@ -5564,13 +5558,13 @@ func LoadNS() {
 								{ // let
 									// let binding "and__0__auto__"
 									tmp34 := checkDerefVar(var_clojure_DOT_core_empty_QMARK_)
-									tmp35 := lang.Apply(tmp34, []any{v13})
+									tmp35 := lang.Apply1(tmp34, v13)
 									var v36 any = tmp35
 									_ = v36
 									var tmp37 any
 									if lang.IsTruthy(v36) {
 										tmp38 := checkDerefVar(var_clojure_DOT_core_not_EQ_)
-										tmp39 := lang.Apply(tmp38, []any{v23, lang.NewChar(44)})
+										tmp39 := lang.Apply2(tmp38, v23, lang.NewChar(44))
 										tmp37 = tmp39
 									} else {
 										tmp37 = v36
@@ -5582,27 +5576,27 @@ func LoadNS() {
 									{ // let
 										// let binding "vec__6"
 										tmp35 := checkDerefVar(var_ys_DOT_json_parse_DASH_value)
-										tmp36 := lang.Apply(tmp35, []any{v2, v9})
+										tmp36 := lang.Apply2(tmp35, v2, v9)
 										var v37 any = tmp36
 										_ = v37
 										// let binding "v"
 										tmp38 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp39 := lang.Apply(tmp38, []any{v37, int64(0), nil})
+										tmp39 := lang.Apply3(tmp38, v37, int64(0), nil)
 										var v40 any = tmp39
 										_ = v40
 										// let binding "new-pos"
 										tmp41 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp42 := lang.Apply(tmp41, []any{v37, int64(1), nil})
+										tmp42 := lang.Apply3(tmp41, v37, int64(1), nil)
 										var v43 any = tmp42
 										_ = v43
 										// let binding "new-pos"
 										tmp44 := checkDerefVar(var_ys_DOT_json_skip_DASH_whitespace)
-										tmp45 := lang.Apply(tmp44, []any{v2, v43})
+										tmp45 := lang.Apply2(tmp44, v2, v43)
 										var v46 any = tmp45
 										_ = v46
 										var tmp47 any = v46
 										tmp49 := checkDerefVar(var_clojure_DOT_core_conj)
-										tmp50 := lang.Apply(tmp49, []any{v13, v40})
+										tmp50 := lang.Apply2(tmp49, v13, v40)
 										var tmp48 any = tmp50
 										v9 = tmp47
 										v13 = tmp48
@@ -5612,40 +5606,40 @@ func LoadNS() {
 								} else {
 									var tmp35 any
 									tmp36 := checkDerefVar(var_clojure_DOT_core__EQ_)
-									tmp37 := lang.Apply(tmp36, []any{v23, lang.NewChar(44)})
+									tmp37 := lang.Apply2(tmp36, v23, lang.NewChar(44))
 									if lang.IsTruthy(tmp37) {
 										var tmp38 any
 										{ // let
 											// let binding "new-pos"
 											tmp39 := checkDerefVar(var_ys_DOT_json_skip_DASH_whitespace)
 											tmp40 := checkDerefVar(var_clojure_DOT_core_inc)
-											tmp41 := lang.Apply(tmp40, []any{v9})
-											tmp42 := lang.Apply(tmp39, []any{v2, tmp41})
+											tmp41 := lang.Apply1(tmp40, v9)
+											tmp42 := lang.Apply2(tmp39, v2, tmp41)
 											var v43 any = tmp42
 											_ = v43
 											// let binding "vec__9"
 											tmp44 := checkDerefVar(var_ys_DOT_json_parse_DASH_value)
-											tmp45 := lang.Apply(tmp44, []any{v2, v43})
+											tmp45 := lang.Apply2(tmp44, v2, v43)
 											var v46 any = tmp45
 											_ = v46
 											// let binding "v"
 											tmp47 := checkDerefVar(var_clojure_DOT_core_nth)
-											tmp48 := lang.Apply(tmp47, []any{v46, int64(0), nil})
+											tmp48 := lang.Apply3(tmp47, v46, int64(0), nil)
 											var v49 any = tmp48
 											_ = v49
 											// let binding "new-pos"
 											tmp50 := checkDerefVar(var_clojure_DOT_core_nth)
-											tmp51 := lang.Apply(tmp50, []any{v46, int64(1), nil})
+											tmp51 := lang.Apply3(tmp50, v46, int64(1), nil)
 											var v52 any = tmp51
 											_ = v52
 											// let binding "new-pos"
 											tmp53 := checkDerefVar(var_ys_DOT_json_skip_DASH_whitespace)
-											tmp54 := lang.Apply(tmp53, []any{v2, v52})
+											tmp54 := lang.Apply2(tmp53, v2, v52)
 											var v55 any = tmp54
 											_ = v55
 											var tmp56 any = v55
 											tmp58 := checkDerefVar(var_clojure_DOT_core_conj)
-											tmp59 := lang.Apply(tmp58, []any{v13, v49})
+											tmp59 := lang.Apply2(tmp58, v13, v49)
 											var tmp57 any = tmp59
 											v9 = tmp56
 											v13 = tmp57
@@ -5656,8 +5650,8 @@ func LoadNS() {
 										var tmp39 any
 										if lang.IsTruthy(kw_else) {
 											tmp40 := checkDerefVar(var_clojure_DOT_core_str)
-											tmp41 := lang.Apply(tmp40, []any{"Unexpected character in array: ", v23})
-											tmp42 := lang.Apply(lang.NewError, []any{tmp41})
+											tmp41 := lang.Apply2(tmp40, "Unexpected character in array: ", v23)
+											tmp42 := lang.Apply1(lang.NewError, tmp41)
 											panic(tmp42)
 										} else {
 										}
@@ -5677,7 +5671,7 @@ func LoadNS() {
 			} // end let
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc2)
 		var_ys_DOT_json_parse_DASH_array = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_json_parse_DASH_array.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5686,12 +5680,11 @@ func LoadNS() {
 	// parse-number
 	{
 		tmp0 := sym_parse_DASH_number.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(93), kw_column, int(8), kw_end_DASH_line, int(93), kw_end_DASH_column, int(19), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 2)
-			v2 := args[0]
+		var tmp1 lang.FnFunc2
+		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
 			_ = v2
-			v3 := args[1]
+			v3 := p1
 			_ = v3
 			_ = "Parse a JSON number starting at pos, return [value new-pos]"
 			var tmp4 any
@@ -5712,14 +5705,14 @@ func LoadNS() {
 					var tmp10 any
 					tmp11 := checkDerefVar(var_clojure_DOT_core__GT__EQ_)
 					tmp12 := checkDerefVar(var_clojure_DOT_core_count)
-					tmp13 := lang.Apply(tmp12, []any{v2})
-					tmp14 := lang.Apply(tmp11, []any{v5, tmp13})
+					tmp13 := lang.Apply1(tmp12, v2)
+					tmp14 := lang.Apply2(tmp11, v5, tmp13)
 					if lang.IsTruthy(tmp14) {
 						tmp15 := checkDerefVar(var_clojure_DOT_core_read_DASH_string)
 						tmp16 := checkDerefVar(var_clojure_DOT_core_apply)
 						tmp17 := checkDerefVar(var_clojure_DOT_core_str)
-						tmp18 := lang.Apply(tmp16, []any{tmp17, v9})
-						tmp19 := lang.Apply(tmp15, []any{tmp18})
+						tmp18 := lang.Apply2(tmp16, tmp17, v9)
+						tmp19 := lang.Apply1(tmp15, tmp18)
 						tmp20 := lang.NewVector(tmp19, v5)
 						tmp21 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(98), kw_column, int(7), kw_end_DASH_line, int(98), kw_end_DASH_column, int(41))
 						tmp22, err := lang.WithMeta(tmp20, tmp21.(lang.IPersistentMap))
@@ -5732,7 +5725,7 @@ func LoadNS() {
 						{ // let
 							// let binding "c"
 							tmp24 := checkDerefVar(var_clojure_DOT_core_nth)
-							tmp25 := lang.Apply(tmp24, []any{v2, v5})
+							tmp25 := lang.Apply2(tmp24, v2, v5)
 							var v26 any = tmp25
 							_ = v26
 							var tmp27 any
@@ -5740,7 +5733,7 @@ func LoadNS() {
 							{ // let
 								// let binding "or__0__auto__"
 								tmp29 := checkDerefVar(var_ys_DOT_json_is_DASH_digit_QMARK_)
-								tmp30 := lang.Apply(tmp29, []any{v26})
+								tmp30 := lang.Apply1(tmp29, v26)
 								var v31 any = tmp30
 								_ = v31
 								var tmp32 any
@@ -5751,7 +5744,7 @@ func LoadNS() {
 									{ // let
 										// let binding "or__0__auto__"
 										tmp34 := checkDerefVar(var_clojure_DOT_core__EQ_)
-										tmp35 := lang.Apply(tmp34, []any{v26, lang.NewChar(46)})
+										tmp35 := lang.Apply2(tmp34, v26, lang.NewChar(46))
 										var v36 any = tmp35
 										_ = v36
 										var tmp37 any
@@ -5762,7 +5755,7 @@ func LoadNS() {
 											{ // let
 												// let binding "or__0__auto__"
 												tmp39 := checkDerefVar(var_clojure_DOT_core__EQ_)
-												tmp40 := lang.Apply(tmp39, []any{v26, lang.NewChar(45)})
+												tmp40 := lang.Apply2(tmp39, v26, lang.NewChar(45))
 												var v41 any = tmp40
 												_ = v41
 												var tmp42 any
@@ -5773,7 +5766,7 @@ func LoadNS() {
 													{ // let
 														// let binding "or__0__auto__"
 														tmp44 := checkDerefVar(var_clojure_DOT_core__EQ_)
-														tmp45 := lang.Apply(tmp44, []any{v26, lang.NewChar(43)})
+														tmp45 := lang.Apply2(tmp44, v26, lang.NewChar(43))
 														var v46 any = tmp45
 														_ = v46
 														var tmp47 any
@@ -5784,7 +5777,7 @@ func LoadNS() {
 															{ // let
 																// let binding "or__0__auto__"
 																tmp49 := checkDerefVar(var_clojure_DOT_core__EQ_)
-																tmp50 := lang.Apply(tmp49, []any{v26, lang.NewChar(101)})
+																tmp50 := lang.Apply2(tmp49, v26, lang.NewChar(101))
 																var v51 any = tmp50
 																_ = v51
 																var tmp52 any
@@ -5792,7 +5785,7 @@ func LoadNS() {
 																	tmp52 = v51
 																} else {
 																	tmp53 := checkDerefVar(var_clojure_DOT_core__EQ_)
-																	tmp54 := lang.Apply(tmp53, []any{v26, lang.NewChar(69)})
+																	tmp54 := lang.Apply2(tmp53, v26, lang.NewChar(69))
 																	tmp52 = tmp54
 																}
 																tmp48 = tmp52
@@ -5815,10 +5808,10 @@ func LoadNS() {
 							} // end let
 							if lang.IsTruthy(tmp28) {
 								tmp30 := checkDerefVar(var_clojure_DOT_core_inc)
-								tmp31 := lang.Apply(tmp30, []any{v5})
+								tmp31 := lang.Apply1(tmp30, v5)
 								var tmp29 any = tmp31
 								tmp33 := checkDerefVar(var_clojure_DOT_core_conj)
-								tmp34 := lang.Apply(tmp33, []any{v9, v26})
+								tmp34 := lang.Apply2(tmp33, v9, v26)
 								var tmp32 any = tmp34
 								v5 = tmp29
 								v9 = tmp32
@@ -5827,8 +5820,8 @@ func LoadNS() {
 								tmp35 := checkDerefVar(var_clojure_DOT_core_read_DASH_string)
 								tmp36 := checkDerefVar(var_clojure_DOT_core_apply)
 								tmp37 := checkDerefVar(var_clojure_DOT_core_str)
-								tmp38 := lang.Apply(tmp36, []any{tmp37, v9})
-								tmp39 := lang.Apply(tmp35, []any{tmp38})
+								tmp38 := lang.Apply2(tmp36, tmp37, v9)
+								tmp39 := lang.Apply1(tmp35, tmp38)
 								tmp40 := lang.NewVector(tmp39, v5)
 								tmp41 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(102), kw_column, int(11), kw_end_DASH_line, int(102), kw_end_DASH_column, int(45))
 								tmp42, err := lang.WithMeta(tmp40, tmp41.(lang.IPersistentMap))
@@ -5847,7 +5840,7 @@ func LoadNS() {
 			} // end let
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc2)
 		var_ys_DOT_json_parse_DASH_number = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_json_parse_DASH_number.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5856,12 +5849,11 @@ func LoadNS() {
 	// parse-object
 	{
 		tmp0 := sym_parse_DASH_object.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(124), kw_column, int(8), kw_end_DASH_line, int(124), kw_end_DASH_column, int(19), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 2)
-			v2 := args[0]
+		var tmp1 lang.FnFunc2
+		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
 			_ = v2
-			v3 := args[1]
+			v3 := p1
 			_ = v3
 			_ = "Parse a JSON object starting at pos, return [value new-pos]"
 			var tmp4 any
@@ -5869,8 +5861,8 @@ func LoadNS() {
 				// let binding "i"
 				tmp5 := checkDerefVar(var_ys_DOT_json_skip_DASH_whitespace)
 				tmp6 := checkDerefVar(var_clojure_DOT_core_inc)
-				tmp7 := lang.Apply(tmp6, []any{v3})
-				tmp8 := lang.Apply(tmp5, []any{v2, tmp7})
+				tmp7 := lang.Apply1(tmp6, v3)
+				tmp8 := lang.Apply2(tmp5, v2, tmp7)
 				var v9 any = tmp8
 				_ = v9
 				// let binding "obj"
@@ -5886,25 +5878,25 @@ func LoadNS() {
 					var tmp14 any
 					tmp15 := checkDerefVar(var_clojure_DOT_core__GT__EQ_)
 					tmp16 := checkDerefVar(var_clojure_DOT_core_count)
-					tmp17 := lang.Apply(tmp16, []any{v2})
-					tmp18 := lang.Apply(tmp15, []any{v9, tmp17})
+					tmp17 := lang.Apply1(tmp16, v2)
+					tmp18 := lang.Apply2(tmp15, v9, tmp17)
 					if lang.IsTruthy(tmp18) {
-						tmp19 := lang.Apply(lang.NewError, []any{"Unterminated object"})
+						tmp19 := lang.Apply1(lang.NewError, "Unterminated object")
 						panic(tmp19)
 					} else {
 						var tmp20 any
 						{ // let
 							// let binding "c"
 							tmp21 := checkDerefVar(var_clojure_DOT_core_nth)
-							tmp22 := lang.Apply(tmp21, []any{v2, v9})
+							tmp22 := lang.Apply2(tmp21, v2, v9)
 							var v23 any = tmp22
 							_ = v23
 							var tmp24 any
 							tmp25 := checkDerefVar(var_clojure_DOT_core__EQ_)
-							tmp26 := lang.Apply(tmp25, []any{v23, lang.NewChar(125)})
+							tmp26 := lang.Apply2(tmp25, v23, lang.NewChar(125))
 							if lang.IsTruthy(tmp26) {
 								tmp27 := checkDerefVar(var_clojure_DOT_core_inc)
-								tmp28 := lang.Apply(tmp27, []any{v9})
+								tmp28 := lang.Apply1(tmp27, v9)
 								tmp29 := lang.NewVector(v13, tmp28)
 								tmp30 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(132), kw_column, int(20), kw_end_DASH_line, int(132), kw_end_DASH_column, int(32))
 								tmp31, err := lang.WithMeta(tmp29, tmp30.(lang.IPersistentMap))
@@ -5915,37 +5907,37 @@ func LoadNS() {
 							} else {
 								var tmp32 any
 								tmp33 := checkDerefVar(var_clojure_DOT_core__EQ_)
-								tmp34 := lang.Apply(tmp33, []any{v23, lang.NewChar(34)})
+								tmp34 := lang.Apply2(tmp33, v23, lang.NewChar(34))
 								if lang.IsTruthy(tmp34) {
 									var tmp35 any
 									{ // let
 										// let binding "vec__12"
 										tmp36 := checkDerefVar(var_ys_DOT_json_parse_DASH_string)
-										tmp37 := lang.Apply(tmp36, []any{v2, v9})
+										tmp37 := lang.Apply2(tmp36, v2, v9)
 										var v38 any = tmp37
 										_ = v38
 										// let binding "k"
 										tmp39 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp40 := lang.Apply(tmp39, []any{v38, int64(0), nil})
+										tmp40 := lang.Apply3(tmp39, v38, int64(0), nil)
 										var v41 any = tmp40
 										_ = v41
 										// let binding "new-pos"
 										tmp42 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp43 := lang.Apply(tmp42, []any{v38, int64(1), nil})
+										tmp43 := lang.Apply3(tmp42, v38, int64(1), nil)
 										var v44 any = tmp43
 										_ = v44
 										// let binding "new-pos"
 										tmp45 := checkDerefVar(var_ys_DOT_json_skip_DASH_whitespace)
-										tmp46 := lang.Apply(tmp45, []any{v2, v44})
+										tmp46 := lang.Apply2(tmp45, v2, v44)
 										var v47 any = tmp46
 										_ = v47
 										var tmp48 any
 										tmp49 := checkDerefVar(var_clojure_DOT_core_not_EQ_)
 										tmp50 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp51 := lang.Apply(tmp50, []any{v2, v47})
-										tmp52 := lang.Apply(tmp49, []any{tmp51, lang.NewChar(58)})
+										tmp51 := lang.Apply2(tmp50, v2, v47)
+										tmp52 := lang.Apply2(tmp49, tmp51, lang.NewChar(58))
 										if lang.IsTruthy(tmp52) {
-											tmp53 := lang.Apply(lang.NewError, []any{"Expected : after object key"})
+											tmp53 := lang.Apply1(lang.NewError, "Expected : after object key")
 											panic(tmp53)
 										} else {
 											var tmp54 any
@@ -5953,55 +5945,55 @@ func LoadNS() {
 												// let binding "new-pos"
 												tmp55 := checkDerefVar(var_ys_DOT_json_skip_DASH_whitespace)
 												tmp56 := checkDerefVar(var_clojure_DOT_core_inc)
-												tmp57 := lang.Apply(tmp56, []any{v47})
-												tmp58 := lang.Apply(tmp55, []any{v2, tmp57})
+												tmp57 := lang.Apply1(tmp56, v47)
+												tmp58 := lang.Apply2(tmp55, v2, tmp57)
 												var v59 any = tmp58
 												_ = v59
 												// let binding "vec__15"
 												tmp60 := checkDerefVar(var_ys_DOT_json_parse_DASH_value)
-												tmp61 := lang.Apply(tmp60, []any{v2, v59})
+												tmp61 := lang.Apply2(tmp60, v2, v59)
 												var v62 any = tmp61
 												_ = v62
 												// let binding "v"
 												tmp63 := checkDerefVar(var_clojure_DOT_core_nth)
-												tmp64 := lang.Apply(tmp63, []any{v62, int64(0), nil})
+												tmp64 := lang.Apply3(tmp63, v62, int64(0), nil)
 												var v65 any = tmp64
 												_ = v65
 												// let binding "new-pos"
 												tmp66 := checkDerefVar(var_clojure_DOT_core_nth)
-												tmp67 := lang.Apply(tmp66, []any{v62, int64(1), nil})
+												tmp67 := lang.Apply3(tmp66, v62, int64(1), nil)
 												var v68 any = tmp67
 												_ = v68
 												// let binding "new-pos"
 												tmp69 := checkDerefVar(var_ys_DOT_json_skip_DASH_whitespace)
-												tmp70 := lang.Apply(tmp69, []any{v2, v68})
+												tmp70 := lang.Apply2(tmp69, v2, v68)
 												var v71 any = tmp70
 												_ = v71
 												// let binding "next-c"
 												var tmp72 any
 												tmp73 := checkDerefVar(var_clojure_DOT_core__GT__EQ_)
 												tmp74 := checkDerefVar(var_clojure_DOT_core_count)
-												tmp75 := lang.Apply(tmp74, []any{v2})
-												tmp76 := lang.Apply(tmp73, []any{v71, tmp75})
+												tmp75 := lang.Apply1(tmp74, v2)
+												tmp76 := lang.Apply2(tmp73, v71, tmp75)
 												if lang.IsTruthy(tmp76) {
 												} else {
 													tmp77 := checkDerefVar(var_clojure_DOT_core_nth)
-													tmp78 := lang.Apply(tmp77, []any{v2, v71})
+													tmp78 := lang.Apply2(tmp77, v2, v71)
 													tmp72 = tmp78
 												}
 												var v79 any = tmp72
 												_ = v79
 												var tmp80 any
 												tmp81 := checkDerefVar(var_clojure_DOT_core__EQ_)
-												tmp82 := lang.Apply(tmp81, []any{v79, lang.NewChar(44)})
+												tmp82 := lang.Apply2(tmp81, v79, lang.NewChar(44))
 												if lang.IsTruthy(tmp82) {
 													tmp84 := checkDerefVar(var_ys_DOT_json_skip_DASH_whitespace)
 													tmp85 := checkDerefVar(var_clojure_DOT_core_inc)
-													tmp86 := lang.Apply(tmp85, []any{v71})
-													tmp87 := lang.Apply(tmp84, []any{v2, tmp86})
+													tmp86 := lang.Apply1(tmp85, v71)
+													tmp87 := lang.Apply2(tmp84, v2, tmp86)
 													var tmp83 any = tmp87
 													tmp89 := checkDerefVar(var_clojure_DOT_core_assoc)
-													tmp90 := lang.Apply(tmp89, []any{v13, v41, v65})
+													tmp90 := lang.Apply3(tmp89, v13, v41, v65)
 													var tmp88 any = tmp90
 													v9 = tmp83
 													v13 = tmp88
@@ -6009,7 +6001,7 @@ func LoadNS() {
 												} else {
 													var tmp91 any = v71
 													tmp93 := checkDerefVar(var_clojure_DOT_core_assoc)
-													tmp94 := lang.Apply(tmp93, []any{v13, v41, v65})
+													tmp94 := lang.Apply3(tmp93, v13, v41, v65)
 													var tmp92 any = tmp94
 													v9 = tmp91
 													v13 = tmp92
@@ -6026,8 +6018,8 @@ func LoadNS() {
 									var tmp36 any
 									if lang.IsTruthy(kw_else) {
 										tmp37 := checkDerefVar(var_clojure_DOT_core_str)
-										tmp38 := lang.Apply(tmp37, []any{"Unexpected character in object: ", v23})
-										tmp39 := lang.Apply(lang.NewError, []any{tmp38})
+										tmp38 := lang.Apply2(tmp37, "Unexpected character in object: ", v23)
+										tmp39 := lang.Apply1(lang.NewError, tmp38)
 										panic(tmp39)
 									} else {
 									}
@@ -6045,7 +6037,7 @@ func LoadNS() {
 			} // end let
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc2)
 		var_ys_DOT_json_parse_DASH_object = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_json_parse_DASH_object.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6054,19 +6046,18 @@ func LoadNS() {
 	// parse-string
 	{
 		tmp0 := sym_parse_DASH_string.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(64), kw_column, int(8), kw_end_DASH_line, int(64), kw_end_DASH_column, int(19), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 2)
-			v2 := args[0]
+		var tmp1 lang.FnFunc2
+		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
 			_ = v2
-			v3 := args[1]
+			v3 := p1
 			_ = v3
 			_ = "Parse a JSON string starting at pos, return [value new-pos]"
 			var tmp4 any
 			{ // let
 				// let binding "i"
 				tmp5 := checkDerefVar(var_clojure_DOT_core_inc)
-				tmp6 := lang.Apply(tmp5, []any{v3})
+				tmp6 := lang.Apply1(tmp5, v3)
 				var v7 any = tmp6
 				_ = v7
 				// let binding "chars"
@@ -6082,28 +6073,28 @@ func LoadNS() {
 					var tmp12 any
 					tmp13 := checkDerefVar(var_clojure_DOT_core__GT__EQ_)
 					tmp14 := checkDerefVar(var_clojure_DOT_core_count)
-					tmp15 := lang.Apply(tmp14, []any{v2})
-					tmp16 := lang.Apply(tmp13, []any{v7, tmp15})
+					tmp15 := lang.Apply1(tmp14, v2)
+					tmp16 := lang.Apply2(tmp13, v7, tmp15)
 					if lang.IsTruthy(tmp16) {
-						tmp17 := lang.Apply(lang.NewError, []any{"Unterminated string"})
+						tmp17 := lang.Apply1(lang.NewError, "Unterminated string")
 						panic(tmp17)
 					} else {
 						var tmp18 any
 						{ // let
 							// let binding "c"
 							tmp19 := checkDerefVar(var_clojure_DOT_core_nth)
-							tmp20 := lang.Apply(tmp19, []any{v2, v7})
+							tmp20 := lang.Apply2(tmp19, v2, v7)
 							var v21 any = tmp20
 							_ = v21
 							var tmp22 any
 							tmp23 := checkDerefVar(var_clojure_DOT_core__EQ_)
-							tmp24 := lang.Apply(tmp23, []any{v21, lang.NewChar(34)})
+							tmp24 := lang.Apply2(tmp23, v21, lang.NewChar(34))
 							if lang.IsTruthy(tmp24) {
 								tmp25 := checkDerefVar(var_clojure_DOT_core_apply)
 								tmp26 := checkDerefVar(var_clojure_DOT_core_str)
-								tmp27 := lang.Apply(tmp25, []any{tmp26, v11})
+								tmp27 := lang.Apply2(tmp25, tmp26, v11)
 								tmp28 := checkDerefVar(var_clojure_DOT_core_inc)
-								tmp29 := lang.Apply(tmp28, []any{v7})
+								tmp29 := lang.Apply1(tmp28, v7)
 								tmp30 := lang.NewVector(tmp27, tmp29)
 								tmp31 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(72), kw_column, int(20), kw_end_DASH_line, int(72), kw_end_DASH_column, int(46))
 								tmp32, err := lang.WithMeta(tmp30, tmp31.(lang.IPersistentMap))
@@ -6114,17 +6105,17 @@ func LoadNS() {
 							} else {
 								var tmp33 any
 								tmp34 := checkDerefVar(var_clojure_DOT_core__EQ_)
-								tmp35 := lang.Apply(tmp34, []any{v21, lang.NewChar(92)})
+								tmp35 := lang.Apply2(tmp34, v21, lang.NewChar(92))
 								if lang.IsTruthy(tmp35) {
 									var tmp36 any
 									tmp37 := checkDerefVar(var_clojure_DOT_core__GT__EQ_)
 									tmp38 := checkDerefVar(var_clojure_DOT_core_inc)
-									tmp39 := lang.Apply(tmp38, []any{v7})
+									tmp39 := lang.Apply1(tmp38, v7)
 									tmp40 := checkDerefVar(var_clojure_DOT_core_count)
-									tmp41 := lang.Apply(tmp40, []any{v2})
-									tmp42 := lang.Apply(tmp37, []any{tmp39, tmp41})
+									tmp41 := lang.Apply1(tmp40, v2)
+									tmp42 := lang.Apply2(tmp37, tmp39, tmp41)
 									if lang.IsTruthy(tmp42) {
-										tmp43 := lang.Apply(lang.NewError, []any{"Unterminated escape sequence"})
+										tmp43 := lang.Apply1(lang.NewError, "Unterminated escape sequence")
 										panic(tmp43)
 									} else {
 										var tmp44 any
@@ -6132,12 +6123,12 @@ func LoadNS() {
 											// let binding "next-c"
 											tmp45 := checkDerefVar(var_clojure_DOT_core_nth)
 											tmp46 := checkDerefVar(var_clojure_DOT_core_inc)
-											tmp47 := lang.Apply(tmp46, []any{v7})
-											tmp48 := lang.Apply(tmp45, []any{v2, tmp47})
+											tmp47 := lang.Apply1(tmp46, v7)
+											tmp48 := lang.Apply2(tmp45, v2, tmp47)
 											var v49 any = tmp48
 											_ = v49
 											tmp51 := checkDerefVar(var_clojure_DOT_core__PLUS_)
-											tmp52 := lang.Apply(tmp51, []any{v7, int64(2)})
+											tmp52 := lang.Apply2(tmp51, v7, int64(2))
 											var tmp50 any = tmp52
 											tmp54 := checkDerefVar(var_clojure_DOT_core_conj)
 											var tmp55 any
@@ -6196,7 +6187,7 @@ func LoadNS() {
 												}
 												tmp55 = tmp57
 											} // end let
-											tmp56 := lang.Apply(tmp54, []any{v11, tmp55})
+											tmp56 := lang.Apply2(tmp54, v11, tmp55)
 											var tmp53 any = tmp56
 											v7 = tmp50
 											v11 = tmp53
@@ -6209,10 +6200,10 @@ func LoadNS() {
 									var tmp45 any
 									if lang.IsTruthy(kw_else) {
 										tmp47 := checkDerefVar(var_clojure_DOT_core_inc)
-										tmp48 := lang.Apply(tmp47, []any{v7})
+										tmp48 := lang.Apply1(tmp47, v7)
 										var tmp46 any = tmp48
 										tmp50 := checkDerefVar(var_clojure_DOT_core_conj)
-										tmp51 := lang.Apply(tmp50, []any{v11, v21})
+										tmp51 := lang.Apply2(tmp50, v11, v21)
 										var tmp49 any = tmp51
 										v7 = tmp46
 										v11 = tmp49
@@ -6233,7 +6224,7 @@ func LoadNS() {
 			} // end let
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc2)
 		var_ys_DOT_json_parse_DASH_string = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_json_parse_DASH_string.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6242,59 +6233,58 @@ func LoadNS() {
 	// parse-value
 	{
 		tmp0 := sym_parse_DASH_value.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(146), kw_column, int(8), kw_end_DASH_line, int(146), kw_end_DASH_column, int(18), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 2)
-			v2 := args[0]
+		var tmp1 lang.FnFunc2
+		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
 			_ = v2
-			v3 := args[1]
+			v3 := p1
 			_ = v3
 			_ = "Parse a JSON value starting at pos, return [value new-pos]"
 			var tmp4 any
 			{ // let
 				// let binding "pos"
 				tmp5 := checkDerefVar(var_ys_DOT_json_skip_DASH_whitespace)
-				tmp6 := lang.Apply(tmp5, []any{v2, v3})
+				tmp6 := lang.Apply2(tmp5, v2, v3)
 				var v7 any = tmp6
 				_ = v7
 				var tmp8 any
 				tmp9 := checkDerefVar(var_clojure_DOT_core__GT__EQ_)
 				tmp10 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp11 := lang.Apply(tmp10, []any{v2})
-				tmp12 := lang.Apply(tmp9, []any{v7, tmp11})
+				tmp11 := lang.Apply1(tmp10, v2)
+				tmp12 := lang.Apply2(tmp9, v7, tmp11)
 				if lang.IsTruthy(tmp12) {
-					tmp13 := lang.Apply(lang.NewError, []any{"Unexpected end of input"})
+					tmp13 := lang.Apply1(lang.NewError, "Unexpected end of input")
 					panic(tmp13)
 				} else {
 					var tmp14 any
 					{ // let
 						// let binding "c"
 						tmp15 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp16 := lang.Apply(tmp15, []any{v2, v7})
+						tmp16 := lang.Apply2(tmp15, v2, v7)
 						var v17 any = tmp16
 						_ = v17
 						var tmp18 any
 						tmp19 := checkDerefVar(var_clojure_DOT_core__EQ_)
-						tmp20 := lang.Apply(tmp19, []any{v17, lang.NewChar(34)})
+						tmp20 := lang.Apply2(tmp19, v17, lang.NewChar(34))
 						if lang.IsTruthy(tmp20) {
 							tmp21 := checkDerefVar(var_ys_DOT_json_parse_DASH_string)
-							tmp22 := lang.Apply(tmp21, []any{v2, v7})
+							tmp22 := lang.Apply2(tmp21, v2, v7)
 							tmp18 = tmp22
 						} else {
 							var tmp23 any
 							tmp24 := checkDerefVar(var_clojure_DOT_core__EQ_)
-							tmp25 := lang.Apply(tmp24, []any{v17, lang.NewChar(123)})
+							tmp25 := lang.Apply2(tmp24, v17, lang.NewChar(123))
 							if lang.IsTruthy(tmp25) {
 								tmp26 := checkDerefVar(var_ys_DOT_json_parse_DASH_object)
-								tmp27 := lang.Apply(tmp26, []any{v2, v7})
+								tmp27 := lang.Apply2(tmp26, v2, v7)
 								tmp23 = tmp27
 							} else {
 								var tmp28 any
 								tmp29 := checkDerefVar(var_clojure_DOT_core__EQ_)
-								tmp30 := lang.Apply(tmp29, []any{v17, lang.NewChar(91)})
+								tmp30 := lang.Apply2(tmp29, v17, lang.NewChar(91))
 								if lang.IsTruthy(tmp30) {
 									tmp31 := checkDerefVar(var_ys_DOT_json_parse_DASH_array)
-									tmp32 := lang.Apply(tmp31, []any{v2, v7})
+									tmp32 := lang.Apply2(tmp31, v2, v7)
 									tmp28 = tmp32
 								} else {
 									var tmp33 any
@@ -6302,7 +6292,7 @@ func LoadNS() {
 									{ // let
 										// let binding "or__0__auto__"
 										tmp35 := checkDerefVar(var_ys_DOT_json_is_DASH_digit_QMARK_)
-										tmp36 := lang.Apply(tmp35, []any{v17})
+										tmp36 := lang.Apply1(tmp35, v17)
 										var v37 any = tmp36
 										_ = v37
 										var tmp38 any
@@ -6310,14 +6300,14 @@ func LoadNS() {
 											tmp38 = v37
 										} else {
 											tmp39 := checkDerefVar(var_clojure_DOT_core__EQ_)
-											tmp40 := lang.Apply(tmp39, []any{v17, lang.NewChar(45)})
+											tmp40 := lang.Apply2(tmp39, v17, lang.NewChar(45))
 											tmp38 = tmp40
 										}
 										tmp34 = tmp38
 									} // end let
 									if lang.IsTruthy(tmp34) {
 										tmp35 := checkDerefVar(var_ys_DOT_json_parse_DASH_number)
-										tmp36 := lang.Apply(tmp35, []any{v2, v7})
+										tmp36 := lang.Apply2(tmp35, v2, v7)
 										tmp33 = tmp36
 									} else {
 										var tmp37 any
@@ -6325,7 +6315,7 @@ func LoadNS() {
 										{ // let
 											// let binding "and__0__auto__"
 											tmp39 := checkDerefVar(var_clojure_DOT_core__EQ_)
-											tmp40 := lang.Apply(tmp39, []any{v17, lang.NewChar(116)})
+											tmp40 := lang.Apply2(tmp39, v17, lang.NewChar(116))
 											var v41 any = tmp40
 											_ = v41
 											var tmp42 any
@@ -6335,10 +6325,10 @@ func LoadNS() {
 													// let binding "and__0__auto__"
 													tmp44 := checkDerefVar(var_clojure_DOT_core__LT__EQ_)
 													tmp45 := checkDerefVar(var_clojure_DOT_core__PLUS_)
-													tmp46 := lang.Apply(tmp45, []any{v7, int64(4)})
+													tmp46 := lang.Apply2(tmp45, v7, int64(4))
 													tmp47 := checkDerefVar(var_clojure_DOT_core_count)
-													tmp48 := lang.Apply(tmp47, []any{v2})
-													tmp49 := lang.Apply(tmp44, []any{tmp46, tmp48})
+													tmp48 := lang.Apply1(tmp47, v2)
+													tmp49 := lang.Apply2(tmp44, tmp46, tmp48)
 													var v50 any = tmp49
 													_ = v50
 													var tmp51 any
@@ -6349,9 +6339,9 @@ func LoadNS() {
 															tmp53 := checkDerefVar(var_clojure_DOT_core__EQ_)
 															tmp54 := checkDerefVar(var_clojure_DOT_core_nth)
 															tmp55 := checkDerefVar(var_clojure_DOT_core_inc)
-															tmp56 := lang.Apply(tmp55, []any{v7})
-															tmp57 := lang.Apply(tmp54, []any{v2, tmp56})
-															tmp58 := lang.Apply(tmp53, []any{tmp57, lang.NewChar(114)})
+															tmp56 := lang.Apply1(tmp55, v7)
+															tmp57 := lang.Apply2(tmp54, v2, tmp56)
+															tmp58 := lang.Apply2(tmp53, tmp57, lang.NewChar(114))
 															var v59 any = tmp58
 															_ = v59
 															var tmp60 any
@@ -6362,9 +6352,9 @@ func LoadNS() {
 																	tmp62 := checkDerefVar(var_clojure_DOT_core__EQ_)
 																	tmp63 := checkDerefVar(var_clojure_DOT_core_nth)
 																	tmp64 := checkDerefVar(var_clojure_DOT_core__PLUS_)
-																	tmp65 := lang.Apply(tmp64, []any{v7, int64(2)})
-																	tmp66 := lang.Apply(tmp63, []any{v2, tmp65})
-																	tmp67 := lang.Apply(tmp62, []any{tmp66, lang.NewChar(117)})
+																	tmp65 := lang.Apply2(tmp64, v7, int64(2))
+																	tmp66 := lang.Apply2(tmp63, v2, tmp65)
+																	tmp67 := lang.Apply2(tmp62, tmp66, lang.NewChar(117))
 																	var v68 any = tmp67
 																	_ = v68
 																	var tmp69 any
@@ -6372,9 +6362,9 @@ func LoadNS() {
 																		tmp70 := checkDerefVar(var_clojure_DOT_core__EQ_)
 																		tmp71 := checkDerefVar(var_clojure_DOT_core_nth)
 																		tmp72 := checkDerefVar(var_clojure_DOT_core__PLUS_)
-																		tmp73 := lang.Apply(tmp72, []any{v7, int64(3)})
-																		tmp74 := lang.Apply(tmp71, []any{v2, tmp73})
-																		tmp75 := lang.Apply(tmp70, []any{tmp74, lang.NewChar(101)})
+																		tmp73 := lang.Apply2(tmp72, v7, int64(3))
+																		tmp74 := lang.Apply2(tmp71, v2, tmp73)
+																		tmp75 := lang.Apply2(tmp70, tmp74, lang.NewChar(101))
 																		tmp69 = tmp75
 																	} else {
 																		tmp69 = v68
@@ -6401,7 +6391,7 @@ func LoadNS() {
 										} // end let
 										if lang.IsTruthy(tmp38) {
 											tmp39 := checkDerefVar(var_clojure_DOT_core__PLUS_)
-											tmp40 := lang.Apply(tmp39, []any{v7, int64(4)})
+											tmp40 := lang.Apply2(tmp39, v7, int64(4))
 											tmp41 := lang.NewVector(true, tmp40)
 											tmp42 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(159), kw_column, int(11), kw_end_DASH_line, int(159), kw_end_DASH_column, int(26))
 											tmp43, err := lang.WithMeta(tmp41, tmp42.(lang.IPersistentMap))
@@ -6415,7 +6405,7 @@ func LoadNS() {
 											{ // let
 												// let binding "and__0__auto__"
 												tmp46 := checkDerefVar(var_clojure_DOT_core__EQ_)
-												tmp47 := lang.Apply(tmp46, []any{v17, lang.NewChar(102)})
+												tmp47 := lang.Apply2(tmp46, v17, lang.NewChar(102))
 												var v48 any = tmp47
 												_ = v48
 												var tmp49 any
@@ -6425,10 +6415,10 @@ func LoadNS() {
 														// let binding "and__0__auto__"
 														tmp51 := checkDerefVar(var_clojure_DOT_core__LT__EQ_)
 														tmp52 := checkDerefVar(var_clojure_DOT_core__PLUS_)
-														tmp53 := lang.Apply(tmp52, []any{v7, int64(5)})
+														tmp53 := lang.Apply2(tmp52, v7, int64(5))
 														tmp54 := checkDerefVar(var_clojure_DOT_core_count)
-														tmp55 := lang.Apply(tmp54, []any{v2})
-														tmp56 := lang.Apply(tmp51, []any{tmp53, tmp55})
+														tmp55 := lang.Apply1(tmp54, v2)
+														tmp56 := lang.Apply2(tmp51, tmp53, tmp55)
 														var v57 any = tmp56
 														_ = v57
 														var tmp58 any
@@ -6439,9 +6429,9 @@ func LoadNS() {
 																tmp60 := checkDerefVar(var_clojure_DOT_core__EQ_)
 																tmp61 := checkDerefVar(var_clojure_DOT_core_nth)
 																tmp62 := checkDerefVar(var_clojure_DOT_core_inc)
-																tmp63 := lang.Apply(tmp62, []any{v7})
-																tmp64 := lang.Apply(tmp61, []any{v2, tmp63})
-																tmp65 := lang.Apply(tmp60, []any{tmp64, lang.NewChar(97)})
+																tmp63 := lang.Apply1(tmp62, v7)
+																tmp64 := lang.Apply2(tmp61, v2, tmp63)
+																tmp65 := lang.Apply2(tmp60, tmp64, lang.NewChar(97))
 																var v66 any = tmp65
 																_ = v66
 																var tmp67 any
@@ -6452,9 +6442,9 @@ func LoadNS() {
 																		tmp69 := checkDerefVar(var_clojure_DOT_core__EQ_)
 																		tmp70 := checkDerefVar(var_clojure_DOT_core_nth)
 																		tmp71 := checkDerefVar(var_clojure_DOT_core__PLUS_)
-																		tmp72 := lang.Apply(tmp71, []any{v7, int64(2)})
-																		tmp73 := lang.Apply(tmp70, []any{v2, tmp72})
-																		tmp74 := lang.Apply(tmp69, []any{tmp73, lang.NewChar(108)})
+																		tmp72 := lang.Apply2(tmp71, v7, int64(2))
+																		tmp73 := lang.Apply2(tmp70, v2, tmp72)
+																		tmp74 := lang.Apply2(tmp69, tmp73, lang.NewChar(108))
 																		var v75 any = tmp74
 																		_ = v75
 																		var tmp76 any
@@ -6465,9 +6455,9 @@ func LoadNS() {
 																				tmp78 := checkDerefVar(var_clojure_DOT_core__EQ_)
 																				tmp79 := checkDerefVar(var_clojure_DOT_core_nth)
 																				tmp80 := checkDerefVar(var_clojure_DOT_core__PLUS_)
-																				tmp81 := lang.Apply(tmp80, []any{v7, int64(3)})
-																				tmp82 := lang.Apply(tmp79, []any{v2, tmp81})
-																				tmp83 := lang.Apply(tmp78, []any{tmp82, lang.NewChar(115)})
+																				tmp81 := lang.Apply2(tmp80, v7, int64(3))
+																				tmp82 := lang.Apply2(tmp79, v2, tmp81)
+																				tmp83 := lang.Apply2(tmp78, tmp82, lang.NewChar(115))
 																				var v84 any = tmp83
 																				_ = v84
 																				var tmp85 any
@@ -6475,9 +6465,9 @@ func LoadNS() {
 																					tmp86 := checkDerefVar(var_clojure_DOT_core__EQ_)
 																					tmp87 := checkDerefVar(var_clojure_DOT_core_nth)
 																					tmp88 := checkDerefVar(var_clojure_DOT_core__PLUS_)
-																					tmp89 := lang.Apply(tmp88, []any{v7, int64(4)})
-																					tmp90 := lang.Apply(tmp87, []any{v2, tmp89})
-																					tmp91 := lang.Apply(tmp86, []any{tmp90, lang.NewChar(101)})
+																					tmp89 := lang.Apply2(tmp88, v7, int64(4))
+																					tmp90 := lang.Apply2(tmp87, v2, tmp89)
+																					tmp91 := lang.Apply2(tmp86, tmp90, lang.NewChar(101))
 																					tmp85 = tmp91
 																				} else {
 																					tmp85 = v84
@@ -6510,7 +6500,7 @@ func LoadNS() {
 											} // end let
 											if lang.IsTruthy(tmp45) {
 												tmp46 := checkDerefVar(var_clojure_DOT_core__PLUS_)
-												tmp47 := lang.Apply(tmp46, []any{v7, int64(5)})
+												tmp47 := lang.Apply2(tmp46, v7, int64(5))
 												tmp48 := lang.NewVector(false, tmp47)
 												tmp49 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(163), kw_column, int(11), kw_end_DASH_line, int(163), kw_end_DASH_column, int(27))
 												tmp50, err := lang.WithMeta(tmp48, tmp49.(lang.IPersistentMap))
@@ -6524,7 +6514,7 @@ func LoadNS() {
 												{ // let
 													// let binding "and__0__auto__"
 													tmp53 := checkDerefVar(var_clojure_DOT_core__EQ_)
-													tmp54 := lang.Apply(tmp53, []any{v17, lang.NewChar(110)})
+													tmp54 := lang.Apply2(tmp53, v17, lang.NewChar(110))
 													var v55 any = tmp54
 													_ = v55
 													var tmp56 any
@@ -6534,10 +6524,10 @@ func LoadNS() {
 															// let binding "and__0__auto__"
 															tmp58 := checkDerefVar(var_clojure_DOT_core__LT__EQ_)
 															tmp59 := checkDerefVar(var_clojure_DOT_core__PLUS_)
-															tmp60 := lang.Apply(tmp59, []any{v7, int64(4)})
+															tmp60 := lang.Apply2(tmp59, v7, int64(4))
 															tmp61 := checkDerefVar(var_clojure_DOT_core_count)
-															tmp62 := lang.Apply(tmp61, []any{v2})
-															tmp63 := lang.Apply(tmp58, []any{tmp60, tmp62})
+															tmp62 := lang.Apply1(tmp61, v2)
+															tmp63 := lang.Apply2(tmp58, tmp60, tmp62)
 															var v64 any = tmp63
 															_ = v64
 															var tmp65 any
@@ -6548,9 +6538,9 @@ func LoadNS() {
 																	tmp67 := checkDerefVar(var_clojure_DOT_core__EQ_)
 																	tmp68 := checkDerefVar(var_clojure_DOT_core_nth)
 																	tmp69 := checkDerefVar(var_clojure_DOT_core_inc)
-																	tmp70 := lang.Apply(tmp69, []any{v7})
-																	tmp71 := lang.Apply(tmp68, []any{v2, tmp70})
-																	tmp72 := lang.Apply(tmp67, []any{tmp71, lang.NewChar(117)})
+																	tmp70 := lang.Apply1(tmp69, v7)
+																	tmp71 := lang.Apply2(tmp68, v2, tmp70)
+																	tmp72 := lang.Apply2(tmp67, tmp71, lang.NewChar(117))
 																	var v73 any = tmp72
 																	_ = v73
 																	var tmp74 any
@@ -6561,9 +6551,9 @@ func LoadNS() {
 																			tmp76 := checkDerefVar(var_clojure_DOT_core__EQ_)
 																			tmp77 := checkDerefVar(var_clojure_DOT_core_nth)
 																			tmp78 := checkDerefVar(var_clojure_DOT_core__PLUS_)
-																			tmp79 := lang.Apply(tmp78, []any{v7, int64(2)})
-																			tmp80 := lang.Apply(tmp77, []any{v2, tmp79})
-																			tmp81 := lang.Apply(tmp76, []any{tmp80, lang.NewChar(108)})
+																			tmp79 := lang.Apply2(tmp78, v7, int64(2))
+																			tmp80 := lang.Apply2(tmp77, v2, tmp79)
+																			tmp81 := lang.Apply2(tmp76, tmp80, lang.NewChar(108))
 																			var v82 any = tmp81
 																			_ = v82
 																			var tmp83 any
@@ -6571,9 +6561,9 @@ func LoadNS() {
 																				tmp84 := checkDerefVar(var_clojure_DOT_core__EQ_)
 																				tmp85 := checkDerefVar(var_clojure_DOT_core_nth)
 																				tmp86 := checkDerefVar(var_clojure_DOT_core__PLUS_)
-																				tmp87 := lang.Apply(tmp86, []any{v7, int64(3)})
-																				tmp88 := lang.Apply(tmp85, []any{v2, tmp87})
-																				tmp89 := lang.Apply(tmp84, []any{tmp88, lang.NewChar(108)})
+																				tmp87 := lang.Apply2(tmp86, v7, int64(3))
+																				tmp88 := lang.Apply2(tmp85, v2, tmp87)
+																				tmp89 := lang.Apply2(tmp84, tmp88, lang.NewChar(108))
 																				tmp83 = tmp89
 																			} else {
 																				tmp83 = v82
@@ -6600,7 +6590,7 @@ func LoadNS() {
 												} // end let
 												if lang.IsTruthy(tmp52) {
 													tmp53 := checkDerefVar(var_clojure_DOT_core__PLUS_)
-													tmp54 := lang.Apply(tmp53, []any{v7, int64(4)})
+													tmp54 := lang.Apply2(tmp53, v7, int64(4))
 													tmp55 := lang.NewVector(nil, tmp54)
 													tmp56 := lang.NewMap(kw_file, "ys/json.glj", kw_line, int(166), kw_column, int(11), kw_end_DASH_line, int(166), kw_end_DASH_column, int(25))
 													tmp57, err := lang.WithMeta(tmp55, tmp56.(lang.IPersistentMap))
@@ -6612,8 +6602,8 @@ func LoadNS() {
 													var tmp58 any
 													if lang.IsTruthy(kw_else) {
 														tmp59 := checkDerefVar(var_clojure_DOT_core_str)
-														tmp60 := lang.Apply(tmp59, []any{"Unexpected character: ", v17})
-														tmp61 := lang.Apply(lang.NewError, []any{tmp60})
+														tmp60 := lang.Apply2(tmp59, "Unexpected character: ", v17)
+														tmp61 := lang.Apply1(lang.NewError, tmp60)
 														panic(tmp61)
 													} else {
 													}
@@ -6639,7 +6629,7 @@ func LoadNS() {
 			} // end let
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc2)
 		var_ys_DOT_json_parse_DASH_value = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_json_parse_DASH_value.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6648,12 +6638,11 @@ func LoadNS() {
 	// skip-whitespace
 	{
 		tmp0 := sym_skip_DASH_whitespace.WithMeta(lang.NewMap(kw_file, "ys/json.glj", kw_line, int(53), kw_column, int(8), kw_end_DASH_line, int(53), kw_end_DASH_column, int(22), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_s, sym_pos)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_json))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 2)
-			v2 := args[0]
+		var tmp1 lang.FnFunc2
+		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
 			_ = v2
-			v3 := args[1]
+			v3 := p1
 			_ = v3
 			_ = "Skip whitespace characters, return new position"
 			var tmp4 any
@@ -6665,8 +6654,8 @@ func LoadNS() {
 					var tmp6 any
 					tmp7 := checkDerefVar(var_clojure_DOT_core__GT__EQ_)
 					tmp8 := checkDerefVar(var_clojure_DOT_core_count)
-					tmp9 := lang.Apply(tmp8, []any{v2})
-					tmp10 := lang.Apply(tmp7, []any{v5, tmp9})
+					tmp9 := lang.Apply1(tmp8, v2)
+					tmp10 := lang.Apply2(tmp7, v5, tmp9)
 					if lang.IsTruthy(tmp10) {
 						tmp6 = v5
 					} else {
@@ -6674,12 +6663,12 @@ func LoadNS() {
 						{ // let
 							// let binding "c"
 							tmp12 := checkDerefVar(var_clojure_DOT_core_nth)
-							tmp13 := lang.Apply(tmp12, []any{v2, v5})
+							tmp13 := lang.Apply2(tmp12, v2, v5)
 							var v14 any = tmp13
 							_ = v14
 							// let binding "cc"
 							tmp15 := checkDerefVar(var_clojure_DOT_core_int)
-							tmp16 := lang.Apply(tmp15, []any{v14})
+							tmp16 := lang.Apply1(tmp15, v14)
 							var v17 any = tmp16
 							_ = v17
 							var tmp18 any
@@ -6687,7 +6676,7 @@ func LoadNS() {
 							{ // let
 								// let binding "or__0__auto__"
 								tmp20 := checkDerefVar(var_clojure_DOT_core__EQ_)
-								tmp21 := lang.Apply(tmp20, []any{v17, int64(32)})
+								tmp21 := lang.Apply2(tmp20, v17, int64(32))
 								var v22 any = tmp21
 								_ = v22
 								var tmp23 any
@@ -6698,7 +6687,7 @@ func LoadNS() {
 									{ // let
 										// let binding "or__0__auto__"
 										tmp25 := checkDerefVar(var_clojure_DOT_core__EQ_)
-										tmp26 := lang.Apply(tmp25, []any{v17, int64(10)})
+										tmp26 := lang.Apply2(tmp25, v17, int64(10))
 										var v27 any = tmp26
 										_ = v27
 										var tmp28 any
@@ -6709,7 +6698,7 @@ func LoadNS() {
 											{ // let
 												// let binding "or__0__auto__"
 												tmp30 := checkDerefVar(var_clojure_DOT_core__EQ_)
-												tmp31 := lang.Apply(tmp30, []any{v17, int64(13)})
+												tmp31 := lang.Apply2(tmp30, v17, int64(13))
 												var v32 any = tmp31
 												_ = v32
 												var tmp33 any
@@ -6717,7 +6706,7 @@ func LoadNS() {
 													tmp33 = v32
 												} else {
 													tmp34 := checkDerefVar(var_clojure_DOT_core__EQ_)
-													tmp35 := lang.Apply(tmp34, []any{v17, int64(9)})
+													tmp35 := lang.Apply2(tmp34, v17, int64(9))
 													tmp33 = tmp35
 												}
 												tmp29 = tmp33
@@ -6732,7 +6721,7 @@ func LoadNS() {
 							} // end let
 							if lang.IsTruthy(tmp19) {
 								tmp21 := checkDerefVar(var_clojure_DOT_core_inc)
-								tmp22 := lang.Apply(tmp21, []any{v5})
+								tmp22 := lang.Apply1(tmp21, v5)
 								var tmp20 any = tmp22
 								v5 = tmp20
 								continue
@@ -6749,7 +6738,7 @@ func LoadNS() {
 			} // end let
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc2)
 		var_ys_DOT_json_skip_DASH_whitespace = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_json_skip_DASH_whitespace.SetMeta(tmp0.Meta().(lang.IPersistentMap))

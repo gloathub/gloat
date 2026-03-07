@@ -5153,16 +5153,15 @@ func LoadNS() {
 	// bytes-to-str
 	{
 		tmp0 := sym_bytes_DASH_to_DASH_str.WithMeta(lang.NewMap(kw_file, "ys/http.glj", kw_line, int(14), kw_column, int(8), kw_end_DASH_line, int(14), kw_end_DASH_column, int(19), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_b)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_http))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Convert Go []byte to string"
-			tmp3 := lang.Apply(fmt.Sprintf, []any{"%s", v2})
+			tmp3 := lang.Apply2(fmt.Sprintf, "%s", v2)
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_http_bytes_DASH_to_DASH_str = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_http_bytes_DASH_to_DASH_str.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5184,7 +5183,7 @@ func LoadNS() {
 				if err != nil {
 					panic(err)
 				}
-				tmp7 := lang.Apply(tmp3, []any{v2, tmp6})
+				tmp7 := lang.Apply2(tmp3, v2, tmp6)
 				return tmp7
 			case 2:
 				v2 := args[0]
@@ -5194,27 +5193,27 @@ func LoadNS() {
 				var tmp4 any
 				{ // let
 					// let binding "vec__20"
-					tmp5 := lang.Apply(http4.NewRequest, []any{"GET", v2, nil})
+					tmp5 := lang.Apply3(http4.NewRequest, "GET", v2, nil)
 					var v6 any = tmp5
 					_ = v6
 					// let binding "req"
 					tmp7 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp8 := lang.Apply(tmp7, []any{v6, int64(0), nil})
+					tmp8 := lang.Apply3(tmp7, v6, int64(0), nil)
 					var v9 any = tmp8
 					_ = v9
 					// let binding "req-err"
 					tmp10 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp11 := lang.Apply(tmp10, []any{v6, int64(1), nil})
+					tmp11 := lang.Apply3(tmp10, v6, int64(1), nil)
 					var v12 any = tmp11
 					_ = v12
 					var tmp13 any
 					tmp14 := checkDerefVar(var_clojure_DOT_core_not)
 					tmp15 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-					tmp16 := lang.Apply(tmp15, []any{v12})
-					tmp17 := lang.Apply(tmp14, []any{tmp16})
+					tmp16 := lang.Apply1(tmp15, v12)
+					tmp17 := lang.Apply1(tmp14, tmp16)
 					if lang.IsTruthy(tmp17) {
 						tmp18 := checkDerefVar(var_clojure_DOT_core_str)
-						tmp19 := lang.Apply(tmp18, []any{"Failed to create request: ", v12})
+						tmp19 := lang.Apply2(tmp18, "Failed to create request: ", v12)
 						tmp20 := lang.NewMap(kw_status, int64(500), kw_body, tmp19)
 						tmp21 := lang.NewMap(kw_file, "ys/http.glj", kw_line, int(58), kw_column, int(8), kw_end_DASH_line, int(58), kw_end_DASH_column, int(69))
 						tmp22, err := lang.WithMeta(tmp20, tmp21.(lang.IPersistentMap))
@@ -5227,8 +5226,8 @@ func LoadNS() {
 						{ // let
 							// let binding "seq_23"
 							tmp24 := checkDerefVar(var_clojure_DOT_core_seq)
-							tmp25 := lang.Apply(kw_headers, []any{v3})
-							tmp26 := lang.Apply(tmp24, []any{tmp25})
+							tmp25 := lang.Apply1(kw_headers, v3)
+							tmp26 := lang.Apply1(tmp24, tmp25)
 							var v27 any = tmp26
 							_ = v27
 							// let binding "chunk_24"
@@ -5243,7 +5242,7 @@ func LoadNS() {
 							for {
 								var tmp31 any
 								tmp32 := checkDerefVar(var_clojure_DOT_core__LT_)
-								tmp33 := lang.Apply(tmp32, []any{v30, v29})
+								tmp33 := lang.Apply2(tmp32, v30, v29)
 								if lang.IsTruthy(tmp33) {
 									var tmp34 any
 									{ // let
@@ -5252,17 +5251,17 @@ func LoadNS() {
 										if reflect.TypeOf(tmp35).Kind() != reflect.Func {
 											panic(lang.NewIllegalArgumentError(fmt.Sprintf("nth is not a function")))
 										}
-										tmp36 := lang.Apply(tmp35, []any{v30})
+										tmp36 := lang.Apply1(tmp35, v30)
 										var v37 any = tmp36
 										_ = v37
 										// let binding "k"
 										tmp38 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp39 := lang.Apply(tmp38, []any{v37, int64(0), nil})
+										tmp39 := lang.Apply3(tmp38, v37, int64(0), nil)
 										var v40 any = tmp39
 										_ = v40
 										// let binding "v"
 										tmp41 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp42 := lang.Apply(tmp41, []any{v37, int64(1), nil})
+										tmp42 := lang.Apply3(tmp41, v37, int64(1), nil)
 										var v43 any = tmp42
 										_ = v43
 										tmp44, ok := lang.FieldOrMethod(v9, "Header")
@@ -5277,20 +5276,20 @@ func LoadNS() {
 											tmp45 = tmp44
 										}
 										tmp46 := checkDerefVar(var_clojure_DOT_core_str)
-										tmp47 := lang.Apply(tmp46, []any{v40})
+										tmp47 := lang.Apply1(tmp46, v40)
 										tmp48 := checkDerefVar(var_clojure_DOT_core_str)
-										tmp49 := lang.Apply(tmp48, []any{v43})
+										tmp49 := lang.Apply1(tmp48, v43)
 										tmp50, _ := lang.FieldOrMethod(tmp45, "Set")
 										if reflect.TypeOf(tmp50).Kind() != reflect.Func {
 											panic(lang.NewIllegalArgumentError(fmt.Sprintf("Set is not a function")))
 										}
-										tmp51 := lang.Apply(tmp50, []any{tmp47, tmp49})
+										tmp51 := lang.Apply2(tmp50, tmp47, tmp49)
 										_ = tmp51
 										var tmp52 any = v27
 										var tmp53 any = v28
 										var tmp54 any = v29
 										tmp56 := checkDerefVar(var_clojure_DOT_core_unchecked_DASH_inc)
-										tmp57 := lang.Apply(tmp56, []any{v30})
+										tmp57 := lang.Apply1(tmp56, v30)
 										var tmp55 any = tmp57
 										v27 = tmp52
 										v28 = tmp53
@@ -5304,7 +5303,7 @@ func LoadNS() {
 									{ // let
 										// let binding "temp__0__auto__"
 										tmp36 := checkDerefVar(var_clojure_DOT_core_seq)
-										tmp37 := lang.Apply(tmp36, []any{v27})
+										tmp37 := lang.Apply1(tmp36, v27)
 										var v38 any = tmp37
 										_ = v38
 										var tmp39 any
@@ -5316,26 +5315,26 @@ func LoadNS() {
 												_ = v41
 												var tmp42 any
 												tmp43 := checkDerefVar(var_clojure_DOT_core_chunked_DASH_seq_QMARK_)
-												tmp44 := lang.Apply(tmp43, []any{v41})
+												tmp44 := lang.Apply1(tmp43, v41)
 												if lang.IsTruthy(tmp44) {
 													var tmp45 any
 													{ // let
 														// let binding "c__0__auto__"
 														tmp46 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_first)
-														tmp47 := lang.Apply(tmp46, []any{v41})
+														tmp47 := lang.Apply1(tmp46, v41)
 														var v48 any = tmp47
 														_ = v48
 														tmp50 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_rest)
-														tmp51 := lang.Apply(tmp50, []any{v41})
+														tmp51 := lang.Apply1(tmp50, v41)
 														var tmp49 any = tmp51
 														var tmp52 any = v48
 														tmp54 := checkDerefVar(var_clojure_DOT_core_int)
 														tmp55 := checkDerefVar(var_clojure_DOT_core_count)
-														tmp56 := lang.Apply(tmp55, []any{v48})
-														tmp57 := lang.Apply(tmp54, []any{tmp56})
+														tmp56 := lang.Apply1(tmp55, v48)
+														tmp57 := lang.Apply1(tmp54, tmp56)
 														var tmp53 any = tmp57
 														tmp59 := checkDerefVar(var_clojure_DOT_core_int)
-														tmp60 := lang.Apply(tmp59, []any{int64(0)})
+														tmp60 := lang.Apply1(tmp59, int64(0))
 														var tmp58 any = tmp60
 														v27 = tmp49
 														v28 = tmp52
@@ -5349,17 +5348,17 @@ func LoadNS() {
 													{ // let
 														// let binding "vec__30"
 														tmp47 := checkDerefVar(var_clojure_DOT_core_first)
-														tmp48 := lang.Apply(tmp47, []any{v41})
+														tmp48 := lang.Apply1(tmp47, v41)
 														var v49 any = tmp48
 														_ = v49
 														// let binding "k"
 														tmp50 := checkDerefVar(var_clojure_DOT_core_nth)
-														tmp51 := lang.Apply(tmp50, []any{v49, int64(0), nil})
+														tmp51 := lang.Apply3(tmp50, v49, int64(0), nil)
 														var v52 any = tmp51
 														_ = v52
 														// let binding "v"
 														tmp53 := checkDerefVar(var_clojure_DOT_core_nth)
-														tmp54 := lang.Apply(tmp53, []any{v49, int64(1), nil})
+														tmp54 := lang.Apply3(tmp53, v49, int64(1), nil)
 														var v55 any = tmp54
 														_ = v55
 														tmp56, ok := lang.FieldOrMethod(v9, "Header")
@@ -5374,17 +5373,17 @@ func LoadNS() {
 															tmp57 = tmp56
 														}
 														tmp58 := checkDerefVar(var_clojure_DOT_core_str)
-														tmp59 := lang.Apply(tmp58, []any{v52})
+														tmp59 := lang.Apply1(tmp58, v52)
 														tmp60 := checkDerefVar(var_clojure_DOT_core_str)
-														tmp61 := lang.Apply(tmp60, []any{v55})
+														tmp61 := lang.Apply1(tmp60, v55)
 														tmp62, _ := lang.FieldOrMethod(tmp57, "Set")
 														if reflect.TypeOf(tmp62).Kind() != reflect.Func {
 															panic(lang.NewIllegalArgumentError(fmt.Sprintf("Set is not a function")))
 														}
-														tmp63 := lang.Apply(tmp62, []any{tmp59, tmp61})
+														tmp63 := lang.Apply2(tmp62, tmp59, tmp61)
 														_ = tmp63
 														tmp65 := checkDerefVar(var_clojure_DOT_core_next)
-														tmp66 := lang.Apply(tmp65, []any{v41})
+														tmp66 := lang.Apply1(tmp65, v41)
 														var tmp64 any = tmp66
 														var tmp67 any = nil
 														var tmp68 any = int64(0)
@@ -5421,27 +5420,27 @@ func LoadNS() {
 							if reflect.TypeOf(tmp26).Kind() != reflect.Func {
 								panic(lang.NewIllegalArgumentError(fmt.Sprintf("Do is not a function")))
 							}
-							tmp27 := lang.Apply(tmp26, []any{v9})
+							tmp27 := lang.Apply1(tmp26, v9)
 							var v28 any = tmp27
 							_ = v28
 							// let binding "resp"
 							tmp29 := checkDerefVar(var_clojure_DOT_core_nth)
-							tmp30 := lang.Apply(tmp29, []any{v28, int64(0), nil})
+							tmp30 := lang.Apply3(tmp29, v28, int64(0), nil)
 							var v31 any = tmp30
 							_ = v31
 							// let binding "resp-err"
 							tmp32 := checkDerefVar(var_clojure_DOT_core_nth)
-							tmp33 := lang.Apply(tmp32, []any{v28, int64(1), nil})
+							tmp33 := lang.Apply3(tmp32, v28, int64(1), nil)
 							var v34 any = tmp33
 							_ = v34
 							var tmp35 any
 							tmp36 := checkDerefVar(var_clojure_DOT_core_not)
 							tmp37 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-							tmp38 := lang.Apply(tmp37, []any{v34})
-							tmp39 := lang.Apply(tmp36, []any{tmp38})
+							tmp38 := lang.Apply1(tmp37, v34)
+							tmp39 := lang.Apply1(tmp36, tmp38)
 							if lang.IsTruthy(tmp39) {
 								tmp40 := checkDerefVar(var_clojure_DOT_core_str)
-								tmp41 := lang.Apply(tmp40, []any{"Request failed: ", v34})
+								tmp41 := lang.Apply2(tmp40, "Request failed: ", v34)
 								tmp42 := lang.NewMap(kw_status, int64(500), kw_body, tmp41)
 								tmp43 := lang.NewMap(kw_file, "ys/http.glj", kw_line, int(67), kw_column, int(14), kw_end_DASH_line, int(67), kw_end_DASH_column, int(66))
 								tmp44, err := lang.WithMeta(tmp42, tmp43.(lang.IPersistentMap))
@@ -5464,17 +5463,17 @@ func LoadNS() {
 									default:
 										tmp47 = tmp46
 									}
-									tmp48 := lang.Apply(io5.ReadAll, []any{tmp47})
+									tmp48 := lang.Apply1(io5.ReadAll, tmp47)
 									var v49 any = tmp48
 									_ = v49
 									// let binding "body-bytes"
 									tmp50 := checkDerefVar(var_clojure_DOT_core_nth)
-									tmp51 := lang.Apply(tmp50, []any{v49, int64(0), nil})
+									tmp51 := lang.Apply3(tmp50, v49, int64(0), nil)
 									var v52 any = tmp51
 									_ = v52
 									// let binding "body-err"
 									tmp53 := checkDerefVar(var_clojure_DOT_core_nth)
-									tmp54 := lang.Apply(tmp53, []any{v49, int64(1), nil})
+									tmp54 := lang.Apply3(tmp53, v49, int64(1), nil)
 									var v55 any = tmp54
 									_ = v55
 									tmp56, ok := lang.FieldOrMethod(v31, "Body")
@@ -5513,10 +5512,10 @@ func LoadNS() {
 									}
 									var tmp62 any
 									tmp63 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-									tmp64 := lang.Apply(tmp63, []any{v55})
+									tmp64 := lang.Apply1(tmp63, v55)
 									if lang.IsTruthy(tmp64) {
 										tmp65 := checkDerefVar(var_ys_DOT_http_bytes_DASH_to_DASH_str)
-										tmp66 := lang.Apply(tmp65, []any{v52})
+										tmp66 := lang.Apply1(tmp65, v52)
 										tmp62 = tmp66
 									} else {
 										tmp67 := checkDerefVar(var_clojure_DOT_core_str)
@@ -5531,7 +5530,7 @@ func LoadNS() {
 										default:
 											tmp69 = tmp68
 										}
-										tmp70 := lang.Apply(tmp67, []any{"Failed to read response: ", tmp69})
+										tmp70 := lang.Apply2(tmp67, "Failed to read response: ", tmp69)
 										tmp62 = tmp70
 									}
 									tmp71 := lang.NewMap(kw_status, tmp61, kw_body, tmp62)
@@ -5565,12 +5564,11 @@ func LoadNS() {
 	// post
 	{
 		tmp0 := sym_post.WithMeta(lang.NewMap(kw_file, "ys/http.glj", kw_line, int(22), kw_column, int(7), kw_end_DASH_line, int(22), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_url, sym_opts)), kw_doc, "HTTP POST request\n   url: string\n   opts: {:headers {\"Key\" \"Value\"} :body \"...\"}\n   returns: {:status N :body \"...\"}", kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_http))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 2)
-			v2 := args[0]
+		var tmp1 lang.FnFunc2
+		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
 			_ = v2
-			v3 := args[1]
+			v3 := p1
 			_ = v3
 			var tmp4 any
 			{ // let
@@ -5578,7 +5576,7 @@ func LoadNS() {
 				var tmp5 any
 				{ // let
 					// let binding "or__0__auto__"
-					tmp6 := lang.Apply(kw_body, []any{v3})
+					tmp6 := lang.Apply1(kw_body, v3)
 					var v7 any = tmp6
 					_ = v7
 					var tmp8 any
@@ -5592,28 +5590,28 @@ func LoadNS() {
 				var v6 any = tmp5
 				_ = v6
 				// let binding "reader"
-				tmp7 := lang.Apply(strings6.NewReader, []any{v6})
+				tmp7 := lang.Apply1(strings6.NewReader, v6)
 				var v8 any = tmp7
 				_ = v8
 				// let binding "vec__1"
-				tmp9 := lang.Apply(http4.NewRequest, []any{"POST", v2, v8})
+				tmp9 := lang.Apply3(http4.NewRequest, "POST", v2, v8)
 				var v10 any = tmp9
 				_ = v10
 				// let binding "req"
 				tmp11 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp12 := lang.Apply(tmp11, []any{v10, int64(0), nil})
+				tmp12 := lang.Apply3(tmp11, v10, int64(0), nil)
 				var v13 any = tmp12
 				_ = v13
 				// let binding "req-err"
 				tmp14 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp15 := lang.Apply(tmp14, []any{v10, int64(1), nil})
+				tmp15 := lang.Apply3(tmp14, v10, int64(1), nil)
 				var v16 any = tmp15
 				_ = v16
 				var tmp17 any
 				tmp18 := checkDerefVar(var_clojure_DOT_core_not)
 				tmp19 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-				tmp20 := lang.Apply(tmp19, []any{v16})
-				tmp21 := lang.Apply(tmp18, []any{tmp20})
+				tmp20 := lang.Apply1(tmp19, v16)
+				tmp21 := lang.Apply1(tmp18, tmp20)
 				if lang.IsTruthy(tmp21) {
 					tmp22 := checkDerefVar(var_clojure_DOT_core_str)
 					tmp23, ok := lang.FieldOrMethod(v16, "Error")
@@ -5627,7 +5625,7 @@ func LoadNS() {
 					default:
 						tmp24 = tmp23
 					}
-					tmp25 := lang.Apply(tmp22, []any{"Failed to create request: ", tmp24})
+					tmp25 := lang.Apply2(tmp22, "Failed to create request: ", tmp24)
 					tmp26 := lang.NewMap(kw_status, int64(500), kw_body, tmp25)
 					tmp27 := lang.NewMap(kw_file, "ys/http.glj", kw_line, int(32), kw_column, int(7), kw_end_DASH_line, int(32), kw_end_DASH_column, int(77))
 					tmp28, err := lang.WithMeta(tmp26, tmp27.(lang.IPersistentMap))
@@ -5640,8 +5638,8 @@ func LoadNS() {
 					{ // let
 						// let binding "seq_4"
 						tmp30 := checkDerefVar(var_clojure_DOT_core_seq)
-						tmp31 := lang.Apply(kw_headers, []any{v3})
-						tmp32 := lang.Apply(tmp30, []any{tmp31})
+						tmp31 := lang.Apply1(kw_headers, v3)
+						tmp32 := lang.Apply1(tmp30, tmp31)
 						var v33 any = tmp32
 						_ = v33
 						// let binding "chunk_5"
@@ -5656,7 +5654,7 @@ func LoadNS() {
 						for {
 							var tmp37 any
 							tmp38 := checkDerefVar(var_clojure_DOT_core__LT_)
-							tmp39 := lang.Apply(tmp38, []any{v36, v35})
+							tmp39 := lang.Apply2(tmp38, v36, v35)
 							if lang.IsTruthy(tmp39) {
 								var tmp40 any
 								{ // let
@@ -5665,17 +5663,17 @@ func LoadNS() {
 									if reflect.TypeOf(tmp41).Kind() != reflect.Func {
 										panic(lang.NewIllegalArgumentError(fmt.Sprintf("nth is not a function")))
 									}
-									tmp42 := lang.Apply(tmp41, []any{v36})
+									tmp42 := lang.Apply1(tmp41, v36)
 									var v43 any = tmp42
 									_ = v43
 									// let binding "k"
 									tmp44 := checkDerefVar(var_clojure_DOT_core_nth)
-									tmp45 := lang.Apply(tmp44, []any{v43, int64(0), nil})
+									tmp45 := lang.Apply3(tmp44, v43, int64(0), nil)
 									var v46 any = tmp45
 									_ = v46
 									// let binding "v"
 									tmp47 := checkDerefVar(var_clojure_DOT_core_nth)
-									tmp48 := lang.Apply(tmp47, []any{v43, int64(1), nil})
+									tmp48 := lang.Apply3(tmp47, v43, int64(1), nil)
 									var v49 any = tmp48
 									_ = v49
 									tmp50, ok := lang.FieldOrMethod(v13, "Header")
@@ -5690,20 +5688,20 @@ func LoadNS() {
 										tmp51 = tmp50
 									}
 									tmp52 := checkDerefVar(var_clojure_DOT_core_name)
-									tmp53 := lang.Apply(tmp52, []any{v46})
+									tmp53 := lang.Apply1(tmp52, v46)
 									tmp54 := checkDerefVar(var_clojure_DOT_core_str)
-									tmp55 := lang.Apply(tmp54, []any{v49})
+									tmp55 := lang.Apply1(tmp54, v49)
 									tmp56, _ := lang.FieldOrMethod(tmp51, "Set")
 									if reflect.TypeOf(tmp56).Kind() != reflect.Func {
 										panic(lang.NewIllegalArgumentError(fmt.Sprintf("Set is not a function")))
 									}
-									tmp57 := lang.Apply(tmp56, []any{tmp53, tmp55})
+									tmp57 := lang.Apply2(tmp56, tmp53, tmp55)
 									_ = tmp57
 									var tmp58 any = v33
 									var tmp59 any = v34
 									var tmp60 any = v35
 									tmp62 := checkDerefVar(var_clojure_DOT_core_unchecked_DASH_inc)
-									tmp63 := lang.Apply(tmp62, []any{v36})
+									tmp63 := lang.Apply1(tmp62, v36)
 									var tmp61 any = tmp63
 									v33 = tmp58
 									v34 = tmp59
@@ -5717,7 +5715,7 @@ func LoadNS() {
 								{ // let
 									// let binding "temp__0__auto__"
 									tmp42 := checkDerefVar(var_clojure_DOT_core_seq)
-									tmp43 := lang.Apply(tmp42, []any{v33})
+									tmp43 := lang.Apply1(tmp42, v33)
 									var v44 any = tmp43
 									_ = v44
 									var tmp45 any
@@ -5729,26 +5727,26 @@ func LoadNS() {
 											_ = v47
 											var tmp48 any
 											tmp49 := checkDerefVar(var_clojure_DOT_core_chunked_DASH_seq_QMARK_)
-											tmp50 := lang.Apply(tmp49, []any{v47})
+											tmp50 := lang.Apply1(tmp49, v47)
 											if lang.IsTruthy(tmp50) {
 												var tmp51 any
 												{ // let
 													// let binding "c__0__auto__"
 													tmp52 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_first)
-													tmp53 := lang.Apply(tmp52, []any{v47})
+													tmp53 := lang.Apply1(tmp52, v47)
 													var v54 any = tmp53
 													_ = v54
 													tmp56 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_rest)
-													tmp57 := lang.Apply(tmp56, []any{v47})
+													tmp57 := lang.Apply1(tmp56, v47)
 													var tmp55 any = tmp57
 													var tmp58 any = v54
 													tmp60 := checkDerefVar(var_clojure_DOT_core_int)
 													tmp61 := checkDerefVar(var_clojure_DOT_core_count)
-													tmp62 := lang.Apply(tmp61, []any{v54})
-													tmp63 := lang.Apply(tmp60, []any{tmp62})
+													tmp62 := lang.Apply1(tmp61, v54)
+													tmp63 := lang.Apply1(tmp60, tmp62)
 													var tmp59 any = tmp63
 													tmp65 := checkDerefVar(var_clojure_DOT_core_int)
-													tmp66 := lang.Apply(tmp65, []any{int64(0)})
+													tmp66 := lang.Apply1(tmp65, int64(0))
 													var tmp64 any = tmp66
 													v33 = tmp55
 													v34 = tmp58
@@ -5762,17 +5760,17 @@ func LoadNS() {
 												{ // let
 													// let binding "vec__11"
 													tmp53 := checkDerefVar(var_clojure_DOT_core_first)
-													tmp54 := lang.Apply(tmp53, []any{v47})
+													tmp54 := lang.Apply1(tmp53, v47)
 													var v55 any = tmp54
 													_ = v55
 													// let binding "k"
 													tmp56 := checkDerefVar(var_clojure_DOT_core_nth)
-													tmp57 := lang.Apply(tmp56, []any{v55, int64(0), nil})
+													tmp57 := lang.Apply3(tmp56, v55, int64(0), nil)
 													var v58 any = tmp57
 													_ = v58
 													// let binding "v"
 													tmp59 := checkDerefVar(var_clojure_DOT_core_nth)
-													tmp60 := lang.Apply(tmp59, []any{v55, int64(1), nil})
+													tmp60 := lang.Apply3(tmp59, v55, int64(1), nil)
 													var v61 any = tmp60
 													_ = v61
 													tmp62, ok := lang.FieldOrMethod(v13, "Header")
@@ -5787,17 +5785,17 @@ func LoadNS() {
 														tmp63 = tmp62
 													}
 													tmp64 := checkDerefVar(var_clojure_DOT_core_name)
-													tmp65 := lang.Apply(tmp64, []any{v58})
+													tmp65 := lang.Apply1(tmp64, v58)
 													tmp66 := checkDerefVar(var_clojure_DOT_core_str)
-													tmp67 := lang.Apply(tmp66, []any{v61})
+													tmp67 := lang.Apply1(tmp66, v61)
 													tmp68, _ := lang.FieldOrMethod(tmp63, "Set")
 													if reflect.TypeOf(tmp68).Kind() != reflect.Func {
 														panic(lang.NewIllegalArgumentError(fmt.Sprintf("Set is not a function")))
 													}
-													tmp69 := lang.Apply(tmp68, []any{tmp65, tmp67})
+													tmp69 := lang.Apply2(tmp68, tmp65, tmp67)
 													_ = tmp69
 													tmp71 := checkDerefVar(var_clojure_DOT_core_next)
-													tmp72 := lang.Apply(tmp71, []any{v47})
+													tmp72 := lang.Apply1(tmp71, v47)
 													var tmp70 any = tmp72
 													var tmp73 any = nil
 													var tmp74 any = int64(0)
@@ -5834,24 +5832,24 @@ func LoadNS() {
 						if reflect.TypeOf(tmp32).Kind() != reflect.Func {
 							panic(lang.NewIllegalArgumentError(fmt.Sprintf("Do is not a function")))
 						}
-						tmp33 := lang.Apply(tmp32, []any{v13})
+						tmp33 := lang.Apply1(tmp32, v13)
 						var v34 any = tmp33
 						_ = v34
 						// let binding "resp"
 						tmp35 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp36 := lang.Apply(tmp35, []any{v34, int64(0), nil})
+						tmp36 := lang.Apply3(tmp35, v34, int64(0), nil)
 						var v37 any = tmp36
 						_ = v37
 						// let binding "resp-err"
 						tmp38 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp39 := lang.Apply(tmp38, []any{v34, int64(1), nil})
+						tmp39 := lang.Apply3(tmp38, v34, int64(1), nil)
 						var v40 any = tmp39
 						_ = v40
 						var tmp41 any
 						tmp42 := checkDerefVar(var_clojure_DOT_core_not)
 						tmp43 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-						tmp44 := lang.Apply(tmp43, []any{v40})
-						tmp45 := lang.Apply(tmp42, []any{tmp44})
+						tmp44 := lang.Apply1(tmp43, v40)
+						tmp45 := lang.Apply1(tmp42, tmp44)
 						if lang.IsTruthy(tmp45) {
 							tmp46 := checkDerefVar(var_clojure_DOT_core_str)
 							tmp47, ok := lang.FieldOrMethod(v40, "Error")
@@ -5865,7 +5863,7 @@ func LoadNS() {
 							default:
 								tmp48 = tmp47
 							}
-							tmp49 := lang.Apply(tmp46, []any{"Request failed: ", tmp48})
+							tmp49 := lang.Apply2(tmp46, "Request failed: ", tmp48)
 							tmp50 := lang.NewMap(kw_status, int64(500), kw_body, tmp49)
 							tmp51 := lang.NewMap(kw_file, "ys/http.glj", kw_line, int(41), kw_column, int(13), kw_end_DASH_line, int(41), kw_end_DASH_column, int(74))
 							tmp52, err := lang.WithMeta(tmp50, tmp51.(lang.IPersistentMap))
@@ -5888,17 +5886,17 @@ func LoadNS() {
 								default:
 									tmp55 = tmp54
 								}
-								tmp56 := lang.Apply(io5.ReadAll, []any{tmp55})
+								tmp56 := lang.Apply1(io5.ReadAll, tmp55)
 								var v57 any = tmp56
 								_ = v57
 								// let binding "body-bytes"
 								tmp58 := checkDerefVar(var_clojure_DOT_core_nth)
-								tmp59 := lang.Apply(tmp58, []any{v57, int64(0), nil})
+								tmp59 := lang.Apply3(tmp58, v57, int64(0), nil)
 								var v60 any = tmp59
 								_ = v60
 								// let binding "body-err"
 								tmp61 := checkDerefVar(var_clojure_DOT_core_nth)
-								tmp62 := lang.Apply(tmp61, []any{v57, int64(1), nil})
+								tmp62 := lang.Apply3(tmp61, v57, int64(1), nil)
 								var v63 any = tmp62
 								_ = v63
 								tmp64, ok := lang.FieldOrMethod(v37, "Body")
@@ -5937,10 +5935,10 @@ func LoadNS() {
 								}
 								var tmp70 any
 								tmp71 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-								tmp72 := lang.Apply(tmp71, []any{v63})
+								tmp72 := lang.Apply1(tmp71, v63)
 								if lang.IsTruthy(tmp72) {
 									tmp73 := checkDerefVar(var_ys_DOT_http_bytes_DASH_to_DASH_str)
-									tmp74 := lang.Apply(tmp73, []any{v60})
+									tmp74 := lang.Apply1(tmp73, v60)
 									tmp70 = tmp74
 								} else {
 									tmp75 := checkDerefVar(var_clojure_DOT_core_str)
@@ -5955,7 +5953,7 @@ func LoadNS() {
 									default:
 										tmp77 = tmp76
 									}
-									tmp78 := lang.Apply(tmp75, []any{"Failed to read response: ", tmp77})
+									tmp78 := lang.Apply2(tmp75, "Failed to read response: ", tmp77)
 									tmp70 = tmp78
 								}
 								tmp79 := lang.NewMap(kw_status, tmp69, kw_body, tmp70)
@@ -5976,7 +5974,7 @@ func LoadNS() {
 			} // end let
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc2)
 		var_ys_DOT_http_post = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_http_post.SetMeta(tmp0.Meta().(lang.IPersistentMap))

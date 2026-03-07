@@ -5308,16 +5308,15 @@ func LoadNS() {
 	// abs?
 	{
 		tmp0 := sym_abs_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(37), kw_column, int(7), kw_end_DASH_line, int(37), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "True if path is absolute"
-			tmp3 := lang.Apply(filepath4.IsAbs, []any{v2})
+			tmp3 := lang.Apply1(filepath4.IsAbs, v2)
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_abs_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_abs_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5326,16 +5325,15 @@ func LoadNS() {
 	// mkdir
 	{
 		tmp0 := sym_mkdir.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(255), kw_column, int(7), kw_end_DASH_line, int(255), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Create directory"
-			tmp3 := lang.Apply(os5.Mkdir, []any{v2, int64(493)})
+			tmp3 := lang.Apply2(os5.Mkdir, v2, int64(493))
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_mkdir = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_mkdir.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5344,16 +5342,15 @@ func LoadNS() {
 	// mkdir-p
 	{
 		tmp0 := sym_mkdir_DASH_p.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(259), kw_column, int(7), kw_end_DASH_line, int(259), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Create directory and parents"
-			tmp3 := lang.Apply(os5.MkdirAll, []any{v2, int64(493)})
+			tmp3 := lang.Apply2(os5.MkdirAll, v2, int64(493))
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_mkdir_DASH_p = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_mkdir_DASH_p.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5362,18 +5359,17 @@ func LoadNS() {
 	// mv
 	{
 		tmp0 := sym_mv.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(263), kw_column, int(7), kw_end_DASH_line, int(263), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_src, sym_dst)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 2)
-			v2 := args[0]
+		var tmp1 lang.FnFunc2
+		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
 			_ = v2
-			v3 := args[1]
+			v3 := p1
 			_ = v3
 			_ = "Move/rename file or directory"
-			tmp4 := lang.Apply(os5.Rename, []any{v2, v3})
+			tmp4 := lang.Apply2(os5.Rename, v2, v3)
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc2)
 		var_ys_DOT_fs_mv = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_mv.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5382,16 +5378,15 @@ func LoadNS() {
 	// rm
 	{
 		tmp0 := sym_rm.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(267), kw_column, int(7), kw_end_DASH_line, int(267), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Remove file or empty directory"
-			tmp3 := lang.Apply(os5.Remove, []any{v2})
+			tmp3 := lang.Apply1(os5.Remove, v2)
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_rm = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_rm.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5400,10 +5395,9 @@ func LoadNS() {
 	// rm-f
 	{
 		tmp0 := sym_rm_DASH_f.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(271), kw_column, int(7), kw_end_DASH_line, int(271), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Remove file, ignore errors"
 			var tmp3 any
@@ -5418,12 +5412,12 @@ func LoadNS() {
 						}
 					}
 				}()
-				tmp4 := lang.Apply(os5.Remove, []any{v2})
+				tmp4 := lang.Apply1(os5.Remove, v2)
 				tmp3 = tmp4
 			}()
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_rm_DASH_f = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_rm_DASH_f.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5432,16 +5426,15 @@ func LoadNS() {
 	// rm-r
 	{
 		tmp0 := sym_rm_DASH_r.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(277), kw_column, int(7), kw_end_DASH_line, int(277), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Remove directory recursively"
-			tmp3 := lang.Apply(os5.RemoveAll, []any{v2})
+			tmp3 := lang.Apply1(os5.RemoveAll, v2)
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_rm_DASH_r = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_rm_DASH_r.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5450,16 +5443,15 @@ func LoadNS() {
 	// rmdir
 	{
 		tmp0 := sym_rmdir.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(281), kw_column, int(7), kw_end_DASH_line, int(281), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Remove empty directory"
-			tmp3 := lang.Apply(os5.Remove, []any{v2})
+			tmp3 := lang.Apply1(os5.Remove, v2)
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_rmdir = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_rmdir.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -5467,17 +5459,16 @@ func LoadNS() {
 	}
 	var closed0 any
 	{
-		var tmp0 lang.FnFunc
-		tmp0 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v1 := args[0]
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
 			_ = v1
 			_ = "True if path is a directory"
 			var tmp2 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp3 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp4 := lang.Apply(tmp3, []any{v1})
+				tmp4 := lang.Apply1(tmp3, v1)
 				var v5 any = tmp4
 				_ = v5
 				var tmp6 any
@@ -5508,41 +5499,39 @@ func LoadNS() {
 			} // end let
 			return tmp2
 		})
-		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		closed0 = tmp0
 	}
 	var closed1 any
 	{
-		var tmp0 lang.FnFunc
-		tmp0 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v1 := args[0]
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
 			_ = v1
 			_ = "True if path exists"
 			tmp2 := checkDerefVar(var_clojure_DOT_core_not)
 			tmp3 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
 			tmp4 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-			tmp5 := lang.Apply(tmp4, []any{v1})
-			tmp6 := lang.Apply(tmp3, []any{tmp5})
-			tmp7 := lang.Apply(tmp2, []any{tmp6})
+			tmp5 := lang.Apply1(tmp4, v1)
+			tmp6 := lang.Apply1(tmp3, tmp5)
+			tmp7 := lang.Apply1(tmp2, tmp6)
 			return tmp7
 		})
-		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		closed1 = tmp0
 	}
 	var closed2 any
 	{
-		var tmp0 lang.FnFunc
-		tmp0 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v1 := args[0]
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
 			_ = v1
 			_ = "True if path is a regular file"
 			var tmp2 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp3 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp4 := lang.Apply(tmp3, []any{v1})
+				tmp4 := lang.Apply1(tmp3, v1)
 				var v5 any = tmp4
 				_ = v5
 				var tmp6 any
@@ -5591,22 +5580,21 @@ func LoadNS() {
 			} // end let
 			return tmp2
 		})
-		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		closed2 = tmp0
 	}
 	var closed3 any
 	{
-		var tmp0 lang.FnFunc
-		tmp0 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v1 := args[0]
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
 			_ = v1
 			_ = "True if path is a symbolic link"
 			var tmp2 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp3 := checkDerefVar(var_ys_DOT_fs_get_DASH_link_DASH_info)
-				tmp4 := lang.Apply(tmp3, []any{v1})
+				tmp4 := lang.Apply1(tmp3, v1)
 				var v5 any = tmp4
 				_ = v5
 				var tmp6 any
@@ -5634,13 +5622,13 @@ func LoadNS() {
 							_ = v12
 							// let binding "link-bit"
 							tmp13 := checkDerefVar(var_clojure_DOT_core_bit_DASH_and)
-							tmp14 := lang.Apply(tmp13, []any{v12, os5.ModeSymlink})
+							tmp14 := lang.Apply2(tmp13, v12, os5.ModeSymlink)
 							var v15 any = tmp14
 							_ = v15
 							tmp16 := checkDerefVar(var_clojure_DOT_core_not)
 							tmp17 := checkDerefVar(var_clojure_DOT_core_zero_QMARK_)
-							tmp18 := lang.Apply(tmp17, []any{v15})
-							tmp19 := lang.Apply(tmp16, []any{tmp18})
+							tmp18 := lang.Apply1(tmp17, v15)
+							tmp19 := lang.Apply1(tmp16, tmp18)
 							tmp9 = tmp19
 						} // end let
 						tmp7 = tmp9
@@ -5653,22 +5641,21 @@ func LoadNS() {
 			} // end let
 			return tmp2
 		})
-		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		closed3 = tmp0
 	}
 	var closed4 any
 	{
-		var tmp0 lang.FnFunc
-		tmp0 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v1 := args[0]
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
 			_ = v1
 			_ = "True if path is readable"
 			var tmp2 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp3 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp4 := lang.Apply(tmp3, []any{v1})
+				tmp4 := lang.Apply1(tmp3, v1)
 				var v5 any = tmp4
 				_ = v5
 				var tmp6 any
@@ -5696,13 +5683,13 @@ func LoadNS() {
 							_ = v12
 							// let binding "read-bits"
 							tmp13 := checkDerefVar(var_clojure_DOT_core_bit_DASH_and)
-							tmp14 := lang.Apply(tmp13, []any{v12, int64(292)})
+							tmp14 := lang.Apply2(tmp13, v12, int64(292))
 							var v15 any = tmp14
 							_ = v15
 							tmp16 := checkDerefVar(var_clojure_DOT_core_not)
 							tmp17 := checkDerefVar(var_clojure_DOT_core_zero_QMARK_)
-							tmp18 := lang.Apply(tmp17, []any{v15})
-							tmp19 := lang.Apply(tmp16, []any{tmp18})
+							tmp18 := lang.Apply1(tmp17, v15)
+							tmp19 := lang.Apply1(tmp16, tmp18)
 							tmp9 = tmp19
 						} // end let
 						tmp7 = tmp9
@@ -5715,22 +5702,21 @@ func LoadNS() {
 			} // end let
 			return tmp2
 		})
-		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		closed4 = tmp0
 	}
 	var closed5 any
 	{
-		var tmp0 lang.FnFunc
-		tmp0 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v1 := args[0]
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
 			_ = v1
 			_ = "True if file size > 0"
 			var tmp2 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp3 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp4 := lang.Apply(tmp3, []any{v1})
+				tmp4 := lang.Apply1(tmp3, v1)
 				var v5 any = tmp4
 				_ = v5
 				var tmp6 any
@@ -5752,7 +5738,7 @@ func LoadNS() {
 						default:
 							tmp11 = tmp10
 						}
-						tmp12 := lang.Apply(tmp9, []any{tmp11, int64(0)})
+						tmp12 := lang.Apply2(tmp9, tmp11, int64(0))
 						tmp7 = tmp12
 					} // end let
 					tmp6 = tmp7
@@ -5763,22 +5749,21 @@ func LoadNS() {
 			} // end let
 			return tmp2
 		})
-		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		closed5 = tmp0
 	}
 	var closed6 any
 	{
-		var tmp0 lang.FnFunc
-		tmp0 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v1 := args[0]
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
 			_ = v1
 			_ = "True if path is writable"
 			var tmp2 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp3 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp4 := lang.Apply(tmp3, []any{v1})
+				tmp4 := lang.Apply1(tmp3, v1)
 				var v5 any = tmp4
 				_ = v5
 				var tmp6 any
@@ -5806,13 +5791,13 @@ func LoadNS() {
 							_ = v12
 							// let binding "write-bits"
 							tmp13 := checkDerefVar(var_clojure_DOT_core_bit_DASH_and)
-							tmp14 := lang.Apply(tmp13, []any{v12, int64(146)})
+							tmp14 := lang.Apply2(tmp13, v12, int64(146))
 							var v15 any = tmp14
 							_ = v15
 							tmp16 := checkDerefVar(var_clojure_DOT_core_not)
 							tmp17 := checkDerefVar(var_clojure_DOT_core_zero_QMARK_)
-							tmp18 := lang.Apply(tmp17, []any{v15})
-							tmp19 := lang.Apply(tmp16, []any{tmp18})
+							tmp18 := lang.Apply1(tmp17, v15)
+							tmp19 := lang.Apply1(tmp16, tmp18)
 							tmp9 = tmp19
 						} // end let
 						tmp7 = tmp9
@@ -5825,22 +5810,21 @@ func LoadNS() {
 			} // end let
 			return tmp2
 		})
-		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		closed6 = tmp0
 	}
 	var closed7 any
 	{
-		var tmp0 lang.FnFunc
-		tmp0 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v1 := args[0]
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
 			_ = v1
 			_ = "True if path is executable"
 			var tmp2 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp3 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp4 := lang.Apply(tmp3, []any{v1})
+				tmp4 := lang.Apply1(tmp3, v1)
 				var v5 any = tmp4
 				_ = v5
 				var tmp6 any
@@ -5868,13 +5852,13 @@ func LoadNS() {
 							_ = v12
 							// let binding "exec-bits"
 							tmp13 := checkDerefVar(var_clojure_DOT_core_bit_DASH_and)
-							tmp14 := lang.Apply(tmp13, []any{v12, int64(73)})
+							tmp14 := lang.Apply2(tmp13, v12, int64(73))
 							var v15 any = tmp14
 							_ = v15
 							tmp16 := checkDerefVar(var_clojure_DOT_core_not)
 							tmp17 := checkDerefVar(var_clojure_DOT_core_zero_QMARK_)
-							tmp18 := lang.Apply(tmp17, []any{v15})
-							tmp19 := lang.Apply(tmp16, []any{tmp18})
+							tmp18 := lang.Apply1(tmp17, v15)
+							tmp19 := lang.Apply1(tmp16, tmp18)
 							tmp9 = tmp19
 						} // end let
 						tmp7 = tmp9
@@ -5887,22 +5871,21 @@ func LoadNS() {
 			} // end let
 			return tmp2
 		})
-		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		closed7 = tmp0
 	}
 	var closed8 any
 	{
-		var tmp0 lang.FnFunc
-		tmp0 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v1 := args[0]
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
 			_ = v1
 			_ = "True if file size is 0 or directory is empty"
 			var tmp2 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp3 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp4 := lang.Apply(tmp3, []any{v1})
+				tmp4 := lang.Apply1(tmp3, v1)
 				var v5 any = tmp4
 				_ = v5
 				var tmp6 any
@@ -5928,13 +5911,13 @@ func LoadNS() {
 							var tmp12 any
 							{ // let
 								// let binding "entries"
-								tmp13 := lang.Apply(os5.ReadDir, []any{v1})
+								tmp13 := lang.Apply1(os5.ReadDir, v1)
 								var v14 any = tmp13
 								_ = v14
 								tmp15 := checkDerefVar(var_clojure_DOT_core_zero_QMARK_)
 								tmp16 := checkDerefVar(var_clojure_DOT_core_count)
-								tmp17 := lang.Apply(tmp16, []any{v14})
-								tmp18 := lang.Apply(tmp15, []any{tmp17})
+								tmp17 := lang.Apply1(tmp16, v14)
+								tmp18 := lang.Apply1(tmp15, tmp17)
 								tmp12 = tmp18
 							} // end let
 							tmp9 = tmp12
@@ -5951,7 +5934,7 @@ func LoadNS() {
 							default:
 								tmp15 = tmp14
 							}
-							tmp16 := lang.Apply(tmp13, []any{tmp15})
+							tmp16 := lang.Apply1(tmp13, tmp15)
 							tmp9 = tmp16
 						}
 						tmp7 = tmp9
@@ -5964,37 +5947,36 @@ func LoadNS() {
 			} // end let
 			return tmp2
 		})
-		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp0 = tmp0.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		closed8 = tmp0
 	}
 	// abs
 	{
 		tmp0 := sym_abs.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(124), kw_column, int(7), kw_end_DASH_line, int(124), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Return absolute path"
 			var tmp3 any
 			{ // let
 				// let binding "vec__7"
-				tmp4 := lang.Apply(filepath4.Abs, []any{v2})
+				tmp4 := lang.Apply1(filepath4.Abs, v2)
 				var v5 any = tmp4
 				_ = v5
 				// let binding "result"
 				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply(tmp6, []any{v5, int64(0), nil})
+				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
 				var v8 any = tmp7
 				_ = v8
 				// let binding "err"
 				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply(tmp9, []any{v5, int64(1), nil})
+				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
 				var v11 any = tmp10
 				_ = v11
 				var tmp12 any
 				tmp13 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-				tmp14 := lang.Apply(tmp13, []any{v11})
+				tmp14 := lang.Apply1(tmp13, v11)
 				if lang.IsTruthy(tmp14) {
 					tmp12 = v8
 				} else {
@@ -6004,7 +5986,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_abs = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_abs.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6013,42 +5995,41 @@ func LoadNS() {
 	// basename
 	{
 		tmp0 := sym_basename.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(129), kw_column, int(7), kw_end_DASH_line, int(129), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Return basename of path (follows symlinks)"
 			var tmp3 any
 			{ // let
 				// let binding "vec__10"
-				tmp4 := lang.Apply(filepath4.EvalSymlinks, []any{v2})
+				tmp4 := lang.Apply1(filepath4.EvalSymlinks, v2)
 				var v5 any = tmp4
 				_ = v5
 				// let binding "real-path"
 				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply(tmp6, []any{v5, int64(0), nil})
+				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
 				var v8 any = tmp7
 				_ = v8
 				// let binding "err"
 				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply(tmp9, []any{v5, int64(1), nil})
+				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
 				var v11 any = tmp10
 				_ = v11
 				var tmp12 any
 				tmp13 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-				tmp14 := lang.Apply(tmp13, []any{v11})
+				tmp14 := lang.Apply1(tmp13, v11)
 				if lang.IsTruthy(tmp14) {
 					tmp12 = v8
 				} else {
 					tmp12 = v2
 				}
-				tmp15 := lang.Apply(filepath4.Base, []any{tmp12})
+				tmp15 := lang.Apply1(filepath4.Base, tmp12)
 				tmp3 = tmp15
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_basename = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_basename.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6057,35 +6038,34 @@ func LoadNS() {
 	// cp
 	{
 		tmp0 := sym_cp.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(233), kw_column, int(7), kw_end_DASH_line, int(233), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_src, sym_dst)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 2)
-			v2 := args[0]
+		var tmp1 lang.FnFunc2
+		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
 			_ = v2
-			v3 := args[1]
+			v3 := p1
 			_ = v3
 			_ = "Copy file from src to dst"
 			var tmp4 any
 			{ // let
 				// let binding "vec__44"
-				tmp5 := lang.Apply(os5.ReadFile, []any{v2})
+				tmp5 := lang.Apply1(os5.ReadFile, v2)
 				var v6 any = tmp5
 				_ = v6
 				// let binding "content"
 				tmp7 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp8 := lang.Apply(tmp7, []any{v6, int64(0), nil})
+				tmp8 := lang.Apply3(tmp7, v6, int64(0), nil)
 				var v9 any = tmp8
 				_ = v9
 				// let binding "err"
 				tmp10 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp11 := lang.Apply(tmp10, []any{v6, int64(1), nil})
+				tmp11 := lang.Apply3(tmp10, v6, int64(1), nil)
 				var v12 any = tmp11
 				_ = v12
 				var tmp13 any
 				tmp14 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-				tmp15 := lang.Apply(tmp14, []any{v12})
+				tmp15 := lang.Apply1(tmp14, v12)
 				if lang.IsTruthy(tmp15) {
-					tmp16 := lang.Apply(os5.WriteFile, []any{v3, v9, int64(420)})
+					tmp16 := lang.Apply3(os5.WriteFile, v3, v9, int64(420))
 					tmp13 = tmp16
 				} else {
 				}
@@ -6093,7 +6073,7 @@ func LoadNS() {
 			} // end let
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc2)
 		var_ys_DOT_fs_cp = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_cp.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6102,45 +6082,43 @@ func LoadNS() {
 	// cp-r
 	{
 		tmp0 := sym_cp_DASH_r.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(239), kw_column, int(7), kw_end_DASH_line, int(239), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_src, sym_dst)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 2)
-			v2 := args[0]
+		var tmp1 lang.FnFunc2
+		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
 			_ = v2
-			v3 := args[1]
+			v3 := p1
 			_ = v3
 			_ = "Recursively copy directory"
-			var tmp4 lang.FnFunc
-			tmp4 = lang.NewFnFunc(func(args ...any) any {
-				checkArity(args, 3)
-				v5 := args[0]
+			var tmp4 lang.FnFunc3
+			tmp4 = lang.FnFunc3(func(p0, p1, p2 any) any {
+				v5 := p0
 				_ = v5
-				v6 := args[1]
+				v6 := p1
 				_ = v6
-				v7 := args[2]
+				v7 := p2
 				_ = v7
 				var tmp8 any
 				tmp9 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-				tmp10 := lang.Apply(tmp9, []any{v7})
+				tmp10 := lang.Apply1(tmp9, v7)
 				if lang.IsTruthy(tmp10) {
 					var tmp11 any
 					{ // let
 						// let binding "vec__47"
-						tmp12 := lang.Apply(filepath4.Rel, []any{v2, v5})
+						tmp12 := lang.Apply2(filepath4.Rel, v2, v5)
 						var v13 any = tmp12
 						_ = v13
 						// let binding "rel-path"
 						tmp14 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp15 := lang.Apply(tmp14, []any{v13, int64(0), nil})
+						tmp15 := lang.Apply3(tmp14, v13, int64(0), nil)
 						var v16 any = tmp15
 						_ = v16
 						// let binding "_"
 						tmp17 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp18 := lang.Apply(tmp17, []any{v13, int64(1), nil})
+						tmp18 := lang.Apply3(tmp17, v13, int64(1), nil)
 						var v19 any = tmp18
 						_ = v19
 						// let binding "dst-path"
-						tmp20 := lang.Apply(filepath4.Join, []any{v3, v16})
+						tmp20 := lang.Apply2(filepath4.Join, v3, v16)
 						var v21 any = tmp20
 						_ = v21
 						var tmp22 any
@@ -6156,28 +6134,28 @@ func LoadNS() {
 							tmp24 = tmp23
 						}
 						if lang.IsTruthy(tmp24) {
-							tmp25 := lang.Apply(os5.MkdirAll, []any{v21, int64(493)})
+							tmp25 := lang.Apply2(os5.MkdirAll, v21, int64(493))
 							tmp22 = tmp25
 						} else {
 							var tmp26 any
 							{ // let
 								// let binding "vec__50"
-								tmp27 := lang.Apply(os5.ReadFile, []any{v5})
+								tmp27 := lang.Apply1(os5.ReadFile, v5)
 								var v28 any = tmp27
 								_ = v28
 								// let binding "content"
 								tmp29 := checkDerefVar(var_clojure_DOT_core_nth)
-								tmp30 := lang.Apply(tmp29, []any{v28, int64(0), nil})
+								tmp30 := lang.Apply3(tmp29, v28, int64(0), nil)
 								var v31 any = tmp30
 								_ = v31
 								// let binding "read-err"
 								tmp32 := checkDerefVar(var_clojure_DOT_core_nth)
-								tmp33 := lang.Apply(tmp32, []any{v28, int64(1), nil})
+								tmp33 := lang.Apply3(tmp32, v28, int64(1), nil)
 								var v34 any = tmp33
 								_ = v34
 								var tmp35 any
 								tmp36 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-								tmp37 := lang.Apply(tmp36, []any{v34})
+								tmp37 := lang.Apply1(tmp36, v34)
 								if lang.IsTruthy(tmp37) {
 									tmp38, ok := lang.FieldOrMethod(v6, "Mode")
 									if !ok {
@@ -6190,7 +6168,7 @@ func LoadNS() {
 									default:
 										tmp39 = tmp38
 									}
-									tmp40 := lang.Apply(os5.WriteFile, []any{v21, v31, tmp39})
+									tmp40 := lang.Apply3(os5.WriteFile, v21, v31, tmp39)
 									tmp35 = tmp40
 								} else {
 								}
@@ -6211,11 +6189,11 @@ func LoadNS() {
 			if err != nil {
 				panic(err)
 			}
-			tmp7 := lang.Apply(filepath4.Walk, []any{v2, tmp6})
+			tmp7 := lang.Apply2(filepath4.Walk, v2, tmp6)
 			_ = tmp7
 			return nil
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc2)
 		var_ys_DOT_fs_cp_DASH_r = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_cp_DASH_r.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6224,17 +6202,16 @@ func LoadNS() {
 	// ctime
 	{
 		tmp0 := sym_ctime.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(134), kw_column, int(7), kw_end_DASH_line, int(134), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Return creation time in milliseconds (same as mtime in Unix)"
 			var tmp3 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp4 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp5 := lang.Apply(tmp4, []any{v2})
+				tmp5 := lang.Apply1(tmp4, v2)
 				var v6 any = tmp5
 				_ = v6
 				var tmp7 any
@@ -6275,7 +6252,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_ctime = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_ctime.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6284,29 +6261,28 @@ func LoadNS() {
 	// cwd
 	{
 		tmp0 := sym_cwd.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(146), kw_column, int(7), kw_end_DASH_line, int(146), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector()), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 0)
+		var tmp1 lang.FnFunc0
+		tmp1 = lang.FnFunc0(func() any {
 			_ = "Return current working directory"
 			var tmp2 any
 			{ // let
 				// let binding "vec__13"
-				tmp3 := lang.Apply(os5.Getwd, nil)
+				tmp3 := lang.Apply0(os5.Getwd)
 				var v4 any = tmp3
 				_ = v4
 				// let binding "result"
 				tmp5 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp6 := lang.Apply(tmp5, []any{v4, int64(0), nil})
+				tmp6 := lang.Apply3(tmp5, v4, int64(0), nil)
 				var v7 any = tmp6
 				_ = v7
 				// let binding "err"
 				tmp8 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp9 := lang.Apply(tmp8, []any{v4, int64(1), nil})
+				tmp9 := lang.Apply3(tmp8, v4, int64(1), nil)
 				var v10 any = tmp9
 				_ = v10
 				var tmp11 any
 				tmp12 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-				tmp13 := lang.Apply(tmp12, []any{v10})
+				tmp13 := lang.Apply1(tmp12, v10)
 				if lang.IsTruthy(tmp13) {
 					tmp11 = v7
 				} else {
@@ -6316,7 +6292,7 @@ func LoadNS() {
 			} // end let
 			return tmp2
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc0)
 		var_ys_DOT_fs_cwd = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_cwd.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6339,16 +6315,16 @@ func LoadNS() {
 				var tmp3 any
 				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
 				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply(tmp5, []any{v2})
-				tmp7 := lang.Apply(tmp4, []any{int64(1), tmp6})
+				tmp6 := lang.Apply1(tmp5, v2)
+				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
 				if lang.IsTruthy(tmp7) {
 					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply(tmp8, []any{v2})
-					tmp10 := lang.Apply(closed0, []any{tmp9})
+					tmp9 := lang.Apply1(tmp8, v2)
+					tmp10 := lang.Apply1(closed0, tmp9)
 					tmp3 = tmp10
 				} else {
 					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply(tmp11, []any{closed0, v2})
+					tmp12 := lang.Apply2(tmp11, closed0, v2)
 					tmp3 = tmp12
 				}
 				return tmp3
@@ -6363,17 +6339,16 @@ func LoadNS() {
 	// dir?
 	{
 		tmp0 := sym_dir_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(41), kw_column, int(7), kw_end_DASH_line, int(41), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "True if path is a directory"
 			var tmp3 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp4 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp5 := lang.Apply(tmp4, []any{v2})
+				tmp5 := lang.Apply1(tmp4, v2)
 				var v6 any = tmp5
 				_ = v6
 				var tmp7 any
@@ -6404,7 +6379,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_dir_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_dir_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6413,42 +6388,41 @@ func LoadNS() {
 	// dirname
 	{
 		tmp0 := sym_dirname.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(151), kw_column, int(7), kw_end_DASH_line, int(151), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Return directory name of path (follows symlinks)"
 			var tmp3 any
 			{ // let
 				// let binding "vec__16"
-				tmp4 := lang.Apply(filepath4.EvalSymlinks, []any{v2})
+				tmp4 := lang.Apply1(filepath4.EvalSymlinks, v2)
 				var v5 any = tmp4
 				_ = v5
 				// let binding "real-path"
 				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply(tmp6, []any{v5, int64(0), nil})
+				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
 				var v8 any = tmp7
 				_ = v8
 				// let binding "err"
 				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply(tmp9, []any{v5, int64(1), nil})
+				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
 				var v11 any = tmp10
 				_ = v11
 				var tmp12 any
 				tmp13 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-				tmp14 := lang.Apply(tmp13, []any{v11})
+				tmp14 := lang.Apply1(tmp13, v11)
 				if lang.IsTruthy(tmp14) {
 					tmp12 = v8
 				} else {
 					tmp12 = v2
 				}
-				tmp15 := lang.Apply(filepath4.Dir, []any{tmp12})
+				tmp15 := lang.Apply1(filepath4.Dir, tmp12)
 				tmp3 = tmp15
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_dirname = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_dirname.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6471,16 +6445,16 @@ func LoadNS() {
 				var tmp3 any
 				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
 				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply(tmp5, []any{v2})
-				tmp7 := lang.Apply(tmp4, []any{int64(1), tmp6})
+				tmp6 := lang.Apply1(tmp5, v2)
+				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
 				if lang.IsTruthy(tmp7) {
 					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply(tmp8, []any{v2})
-					tmp10 := lang.Apply(closed1, []any{tmp9})
+					tmp9 := lang.Apply1(tmp8, v2)
+					tmp10 := lang.Apply1(closed1, tmp9)
 					tmp3 = tmp10
 				} else {
 					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply(tmp11, []any{closed1, v2})
+					tmp12 := lang.Apply2(tmp11, closed1, v2)
 					tmp3 = tmp12
 				}
 				return tmp3
@@ -6495,17 +6469,16 @@ func LoadNS() {
 	// empty?
 	{
 		tmp0 := sym_empty_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(47), kw_column, int(7), kw_end_DASH_line, int(47), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "True if file size is 0 or directory is empty"
 			var tmp3 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp4 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp5 := lang.Apply(tmp4, []any{v2})
+				tmp5 := lang.Apply1(tmp4, v2)
 				var v6 any = tmp5
 				_ = v6
 				var tmp7 any
@@ -6531,13 +6504,13 @@ func LoadNS() {
 							var tmp13 any
 							{ // let
 								// let binding "entries"
-								tmp14 := lang.Apply(os5.ReadDir, []any{v2})
+								tmp14 := lang.Apply1(os5.ReadDir, v2)
 								var v15 any = tmp14
 								_ = v15
 								tmp16 := checkDerefVar(var_clojure_DOT_core_zero_QMARK_)
 								tmp17 := checkDerefVar(var_clojure_DOT_core_count)
-								tmp18 := lang.Apply(tmp17, []any{v15})
-								tmp19 := lang.Apply(tmp16, []any{tmp18})
+								tmp18 := lang.Apply1(tmp17, v15)
+								tmp19 := lang.Apply1(tmp16, tmp18)
 								tmp13 = tmp19
 							} // end let
 							tmp10 = tmp13
@@ -6554,7 +6527,7 @@ func LoadNS() {
 							default:
 								tmp16 = tmp15
 							}
-							tmp17 := lang.Apply(tmp14, []any{tmp16})
+							tmp17 := lang.Apply1(tmp14, tmp16)
 							tmp10 = tmp17
 						}
 						tmp8 = tmp10
@@ -6567,7 +6540,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_empty_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_empty_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6576,17 +6549,16 @@ func LoadNS() {
 	// exec?
 	{
 		tmp0 := sym_exec_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(56), kw_column, int(7), kw_end_DASH_line, int(56), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "True if path is executable"
 			var tmp3 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp4 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp5 := lang.Apply(tmp4, []any{v2})
+				tmp5 := lang.Apply1(tmp4, v2)
 				var v6 any = tmp5
 				_ = v6
 				var tmp7 any
@@ -6614,13 +6586,13 @@ func LoadNS() {
 							_ = v13
 							// let binding "exec-bits"
 							tmp14 := checkDerefVar(var_clojure_DOT_core_bit_DASH_and)
-							tmp15 := lang.Apply(tmp14, []any{v13, int64(73)})
+							tmp15 := lang.Apply2(tmp14, v13, int64(73))
 							var v16 any = tmp15
 							_ = v16
 							tmp17 := checkDerefVar(var_clojure_DOT_core_not)
 							tmp18 := checkDerefVar(var_clojure_DOT_core_zero_QMARK_)
-							tmp19 := lang.Apply(tmp18, []any{v16})
-							tmp20 := lang.Apply(tmp17, []any{tmp19})
+							tmp19 := lang.Apply1(tmp18, v16)
+							tmp20 := lang.Apply1(tmp17, tmp19)
 							tmp10 = tmp20
 						} // end let
 						tmp8 = tmp10
@@ -6633,7 +6605,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_exec_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_exec_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6642,21 +6614,20 @@ func LoadNS() {
 	// exists?
 	{
 		tmp0 := sym_exists_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(64), kw_column, int(7), kw_end_DASH_line, int(64), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "True if path exists"
 			tmp3 := checkDerefVar(var_clojure_DOT_core_not)
 			tmp4 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
 			tmp5 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-			tmp6 := lang.Apply(tmp5, []any{v2})
-			tmp7 := lang.Apply(tmp4, []any{tmp6})
-			tmp8 := lang.Apply(tmp3, []any{tmp7})
+			tmp6 := lang.Apply1(tmp5, v2)
+			tmp7 := lang.Apply1(tmp4, tmp6)
+			tmp8 := lang.Apply1(tmp3, tmp7)
 			return tmp8
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_exists_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_exists_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6679,16 +6650,16 @@ func LoadNS() {
 				var tmp3 any
 				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
 				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply(tmp5, []any{v2})
-				tmp7 := lang.Apply(tmp4, []any{int64(1), tmp6})
+				tmp6 := lang.Apply1(tmp5, v2)
+				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
 				if lang.IsTruthy(tmp7) {
 					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply(tmp8, []any{v2})
-					tmp10 := lang.Apply(closed2, []any{tmp9})
+					tmp9 := lang.Apply1(tmp8, v2)
+					tmp10 := lang.Apply1(closed2, tmp9)
 					tmp3 = tmp10
 				} else {
 					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply(tmp11, []any{closed2, v2})
+					tmp12 := lang.Apply2(tmp11, closed2, v2)
 					tmp3 = tmp12
 				}
 				return tmp3
@@ -6703,17 +6674,16 @@ func LoadNS() {
 	// file?
 	{
 		tmp0 := sym_file_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(68), kw_column, int(7), kw_end_DASH_line, int(68), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "True if path is a regular file"
 			var tmp3 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp4 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp5 := lang.Apply(tmp4, []any{v2})
+				tmp5 := lang.Apply1(tmp4, v2)
 				var v6 any = tmp5
 				_ = v6
 				var tmp7 any
@@ -6762,7 +6732,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_file_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_file_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6771,43 +6741,42 @@ func LoadNS() {
 	// filename
 	{
 		tmp0 := sym_filename.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(156), kw_column, int(7), kw_end_DASH_line, int(156), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Return filename without extension"
 			var tmp3 any
 			{ // let
 				// let binding "base"
-				tmp4 := lang.Apply(filepath4.Base, []any{v2})
+				tmp4 := lang.Apply1(filepath4.Base, v2)
 				var v5 any = tmp4
 				_ = v5
 				// let binding "ext"
-				tmp6 := lang.Apply(filepath4.Ext, []any{v5})
+				tmp6 := lang.Apply1(filepath4.Ext, v5)
 				var v7 any = tmp6
 				_ = v7
 				var tmp8 any
 				tmp9 := checkDerefVar(var_clojure_DOT_string_blank_QMARK_)
-				tmp10 := lang.Apply(tmp9, []any{v7})
+				tmp10 := lang.Apply1(tmp9, v7)
 				if lang.IsTruthy(tmp10) {
 					tmp8 = v5
 				} else {
 					tmp11 := checkDerefVar(var_clojure_DOT_core_subs)
 					tmp12 := checkDerefVar(var_clojure_DOT_core__DASH_)
 					tmp13 := checkDerefVar(var_clojure_DOT_core_count)
-					tmp14 := lang.Apply(tmp13, []any{v5})
+					tmp14 := lang.Apply1(tmp13, v5)
 					tmp15 := checkDerefVar(var_clojure_DOT_core_count)
-					tmp16 := lang.Apply(tmp15, []any{v7})
-					tmp17 := lang.Apply(tmp12, []any{tmp14, tmp16})
-					tmp18 := lang.Apply(tmp11, []any{v5, int64(0), tmp17})
+					tmp16 := lang.Apply1(tmp15, v7)
+					tmp17 := lang.Apply2(tmp12, tmp14, tmp16)
+					tmp18 := lang.Apply3(tmp11, v5, int64(0), tmp17)
 					tmp8 = tmp18
 				}
 				tmp3 = tmp8
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_filename = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_filename.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -6840,36 +6809,35 @@ func LoadNS() {
 					if err != nil {
 						panic(err)
 					}
-					tmp9 := lang.Apply(tmp5, []any{tmp8})
+					tmp9 := lang.Apply1(tmp5, tmp8)
 					var v10 any = tmp9
 					_ = v10
-					var tmp11 lang.FnFunc
-					tmp11 = lang.NewFnFunc(func(args ...any) any {
-						checkArity(args, 3)
-						v12 := args[0]
+					var tmp11 lang.FnFunc3
+					tmp11 = lang.FnFunc3(func(p0, p1, p2 any) any {
+						v12 := p0
 						_ = v12
-						v13 := args[1]
+						v13 := p1
 						_ = v13
-						v14 := args[2]
+						v14 := p2
 						_ = v14
 						var tmp15 any
 						tmp16 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-						tmp17 := lang.Apply(tmp16, []any{v14})
+						tmp17 := lang.Apply1(tmp16, v14)
 						if lang.IsTruthy(tmp17) {
 							var tmp18 any
 							tmp19 := checkDerefVar(var_ys_DOT_fs_empty_QMARK_)
-							tmp20 := lang.Apply(tmp19, []any{v3})
+							tmp20 := lang.Apply1(tmp19, v3)
 							if lang.IsTruthy(tmp20) {
 								tmp21 := checkDerefVar(var_clojure_DOT_core_swap_BANG_)
 								tmp22 := checkDerefVar(var_clojure_DOT_core_conj)
-								tmp23 := lang.Apply(tmp21, []any{v10, tmp22, v12})
+								tmp23 := lang.Apply3(tmp21, v10, tmp22, v12)
 								tmp18 = tmp23
 							} else {
 								var tmp24 any
 								{ // let
 									// let binding "seq_19"
 									tmp25 := checkDerefVar(var_clojure_DOT_core_seq)
-									tmp26 := lang.Apply(tmp25, []any{v3})
+									tmp26 := lang.Apply1(tmp25, v3)
 									var v27 any = tmp26
 									_ = v27
 									// let binding "chunk_20"
@@ -6884,7 +6852,7 @@ func LoadNS() {
 									for {
 										var tmp31 any
 										tmp32 := checkDerefVar(var_clojure_DOT_core__LT_)
-										tmp33 := lang.Apply(tmp32, []any{v30, v29})
+										tmp33 := lang.Apply2(tmp32, v30, v29)
 										if lang.IsTruthy(tmp33) {
 											var tmp34 any
 											{ // let
@@ -6893,16 +6861,16 @@ func LoadNS() {
 												if reflect.TypeOf(tmp35).Kind() != reflect.Func {
 													panic(lang.NewIllegalArgumentError(fmt.Sprintf("nth is not a function")))
 												}
-												tmp36 := lang.Apply(tmp35, []any{v30})
+												tmp36 := lang.Apply1(tmp35, v30)
 												var v37 any = tmp36
 												_ = v37
 												var tmp38 any
 												tmp39 := checkDerefVar(var_clojure_DOT_string_includes_QMARK_)
-												tmp40 := lang.Apply(tmp39, []any{v12, v37})
+												tmp40 := lang.Apply2(tmp39, v12, v37)
 												if lang.IsTruthy(tmp40) {
 													tmp41 := checkDerefVar(var_clojure_DOT_core_swap_BANG_)
 													tmp42 := checkDerefVar(var_clojure_DOT_core_conj)
-													tmp43 := lang.Apply(tmp41, []any{v10, tmp42, v12})
+													tmp43 := lang.Apply3(tmp41, v10, tmp42, v12)
 													tmp38 = tmp43
 												} else {
 												}
@@ -6911,7 +6879,7 @@ func LoadNS() {
 												var tmp45 any = v28
 												var tmp46 any = v29
 												tmp48 := checkDerefVar(var_clojure_DOT_core_unchecked_DASH_inc)
-												tmp49 := lang.Apply(tmp48, []any{v30})
+												tmp49 := lang.Apply1(tmp48, v30)
 												var tmp47 any = tmp49
 												v27 = tmp44
 												v28 = tmp45
@@ -6925,7 +6893,7 @@ func LoadNS() {
 											{ // let
 												// let binding "temp__0__auto__"
 												tmp36 := checkDerefVar(var_clojure_DOT_core_seq)
-												tmp37 := lang.Apply(tmp36, []any{v27})
+												tmp37 := lang.Apply1(tmp36, v27)
 												var v38 any = tmp37
 												_ = v38
 												var tmp39 any
@@ -6937,26 +6905,26 @@ func LoadNS() {
 														_ = v41
 														var tmp42 any
 														tmp43 := checkDerefVar(var_clojure_DOT_core_chunked_DASH_seq_QMARK_)
-														tmp44 := lang.Apply(tmp43, []any{v41})
+														tmp44 := lang.Apply1(tmp43, v41)
 														if lang.IsTruthy(tmp44) {
 															var tmp45 any
 															{ // let
 																// let binding "c__0__auto__"
 																tmp46 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_first)
-																tmp47 := lang.Apply(tmp46, []any{v41})
+																tmp47 := lang.Apply1(tmp46, v41)
 																var v48 any = tmp47
 																_ = v48
 																tmp50 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_rest)
-																tmp51 := lang.Apply(tmp50, []any{v41})
+																tmp51 := lang.Apply1(tmp50, v41)
 																var tmp49 any = tmp51
 																var tmp52 any = v48
 																tmp54 := checkDerefVar(var_clojure_DOT_core_int)
 																tmp55 := checkDerefVar(var_clojure_DOT_core_count)
-																tmp56 := lang.Apply(tmp55, []any{v48})
-																tmp57 := lang.Apply(tmp54, []any{tmp56})
+																tmp56 := lang.Apply1(tmp55, v48)
+																tmp57 := lang.Apply1(tmp54, tmp56)
 																var tmp53 any = tmp57
 																tmp59 := checkDerefVar(var_clojure_DOT_core_int)
-																tmp60 := lang.Apply(tmp59, []any{int64(0)})
+																tmp60 := lang.Apply1(tmp59, int64(0))
 																var tmp58 any = tmp60
 																v27 = tmp49
 																v28 = tmp52
@@ -6970,22 +6938,22 @@ func LoadNS() {
 															{ // let
 																// let binding "pattern"
 																tmp47 := checkDerefVar(var_clojure_DOT_core_first)
-																tmp48 := lang.Apply(tmp47, []any{v41})
+																tmp48 := lang.Apply1(tmp47, v41)
 																var v49 any = tmp48
 																_ = v49
 																var tmp50 any
 																tmp51 := checkDerefVar(var_clojure_DOT_string_includes_QMARK_)
-																tmp52 := lang.Apply(tmp51, []any{v12, v49})
+																tmp52 := lang.Apply2(tmp51, v12, v49)
 																if lang.IsTruthy(tmp52) {
 																	tmp53 := checkDerefVar(var_clojure_DOT_core_swap_BANG_)
 																	tmp54 := checkDerefVar(var_clojure_DOT_core_conj)
-																	tmp55 := lang.Apply(tmp53, []any{v10, tmp54, v12})
+																	tmp55 := lang.Apply3(tmp53, v10, tmp54, v12)
 																	tmp50 = tmp55
 																} else {
 																}
 																_ = tmp50
 																tmp57 := checkDerefVar(var_clojure_DOT_core_next)
-																tmp58 := lang.Apply(tmp57, []any{v41})
+																tmp58 := lang.Apply1(tmp57, v41)
 																var tmp56 any = tmp58
 																var tmp59 any = nil
 																var tmp60 any = int64(0)
@@ -7024,10 +6992,10 @@ func LoadNS() {
 					if err != nil {
 						panic(err)
 					}
-					tmp14 := lang.Apply(filepath4.Walk, []any{v2, tmp13})
+					tmp14 := lang.Apply2(filepath4.Walk, v2, tmp13)
 					_ = tmp14
 					tmp15 := checkDerefVar(var_clojure_DOT_core_deref)
-					tmp16 := lang.Apply(tmp15, []any{v10})
+					tmp16 := lang.Apply1(tmp15, v10)
 					tmp4 = tmp16
 				} // end let
 				return tmp4
@@ -7042,10 +7010,9 @@ func LoadNS() {
 	// get-file-info
 	{
 		tmp0 := sym_get_DASH_file_DASH_info.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(19), kw_column, int(8), kw_end_DASH_line, int(19), kw_end_DASH_column, int(20), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Get os.FileInfo for path, returns nil on error"
 			var tmp3 any
@@ -7063,22 +7030,22 @@ func LoadNS() {
 				var tmp4 any
 				{ // let
 					// let binding "vec__1"
-					tmp5 := lang.Apply(os5.Stat, []any{v2})
+					tmp5 := lang.Apply1(os5.Stat, v2)
 					var v6 any = tmp5
 					_ = v6
 					// let binding "info"
 					tmp7 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp8 := lang.Apply(tmp7, []any{v6, int64(0), nil})
+					tmp8 := lang.Apply3(tmp7, v6, int64(0), nil)
 					var v9 any = tmp8
 					_ = v9
 					// let binding "err"
 					tmp10 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp11 := lang.Apply(tmp10, []any{v6, int64(1), nil})
+					tmp11 := lang.Apply3(tmp10, v6, int64(1), nil)
 					var v12 any = tmp11
 					_ = v12
 					var tmp13 any
 					tmp14 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-					tmp15 := lang.Apply(tmp14, []any{v12})
+					tmp15 := lang.Apply1(tmp14, v12)
 					if lang.IsTruthy(tmp15) {
 						tmp13 = v9
 					} else {
@@ -7089,7 +7056,7 @@ func LoadNS() {
 			}()
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_get_DASH_file_DASH_info = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_get_DASH_file_DASH_info.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7098,17 +7065,16 @@ func LoadNS() {
 	// mtime
 	{
 		tmp0 := sym_mtime.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(140), kw_column, int(7), kw_end_DASH_line, int(140), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Return modification time in milliseconds"
 			var tmp3 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp4 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp5 := lang.Apply(tmp4, []any{v2})
+				tmp5 := lang.Apply1(tmp4, v2)
 				var v6 any = tmp5
 				_ = v6
 				var tmp7 any
@@ -7149,7 +7115,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_mtime = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_mtime.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7158,10 +7124,9 @@ func LoadNS() {
 	// get-link-info
 	{
 		tmp0 := sym_get_DASH_link_DASH_info.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(26), kw_column, int(8), kw_end_DASH_line, int(26), kw_end_DASH_column, int(20), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Get os.FileInfo for symlink (don't follow), returns nil on error"
 			var tmp3 any
@@ -7179,22 +7144,22 @@ func LoadNS() {
 				var tmp4 any
 				{ // let
 					// let binding "vec__4"
-					tmp5 := lang.Apply(os5.Lstat, []any{v2})
+					tmp5 := lang.Apply1(os5.Lstat, v2)
 					var v6 any = tmp5
 					_ = v6
 					// let binding "info"
 					tmp7 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp8 := lang.Apply(tmp7, []any{v6, int64(0), nil})
+					tmp8 := lang.Apply3(tmp7, v6, int64(0), nil)
 					var v9 any = tmp8
 					_ = v9
 					// let binding "err"
 					tmp10 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp11 := lang.Apply(tmp10, []any{v6, int64(1), nil})
+					tmp11 := lang.Apply3(tmp10, v6, int64(1), nil)
 					var v12 any = tmp11
 					_ = v12
 					var tmp13 any
 					tmp14 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-					tmp15 := lang.Apply(tmp14, []any{v12})
+					tmp15 := lang.Apply1(tmp14, v12)
 					if lang.IsTruthy(tmp15) {
 						tmp13 = v9
 					} else {
@@ -7205,7 +7170,7 @@ func LoadNS() {
 			}()
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_get_DASH_link_DASH_info = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_get_DASH_link_DASH_info.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7214,31 +7179,30 @@ func LoadNS() {
 	// glob
 	{
 		tmp0 := sym_glob.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(179), kw_column, int(7), kw_end_DASH_line, int(179), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_pattern)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Return paths matching glob pattern"
 			var tmp3 any
 			{ // let
 				// let binding "vec__23"
-				tmp4 := lang.Apply(filepath4.Glob, []any{v2})
+				tmp4 := lang.Apply1(filepath4.Glob, v2)
 				var v5 any = tmp4
 				_ = v5
 				// let binding "result"
 				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply(tmp6, []any{v5, int64(0), nil})
+				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
 				var v8 any = tmp7
 				_ = v8
 				// let binding "err"
 				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply(tmp9, []any{v5, int64(1), nil})
+				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
 				var v11 any = tmp10
 				_ = v11
 				var tmp12 any
 				tmp13 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-				tmp14 := lang.Apply(tmp13, []any{v11})
+				tmp14 := lang.Apply1(tmp13, v11)
 				if lang.IsTruthy(tmp14) {
 					tmp12 = v8
 				} else {
@@ -7254,7 +7218,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_glob = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_glob.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7277,16 +7241,16 @@ func LoadNS() {
 				var tmp3 any
 				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
 				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply(tmp5, []any{v2})
-				tmp7 := lang.Apply(tmp4, []any{int64(1), tmp6})
+				tmp6 := lang.Apply1(tmp5, v2)
+				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
 				if lang.IsTruthy(tmp7) {
 					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply(tmp8, []any{v2})
-					tmp10 := lang.Apply(closed3, []any{tmp9})
+					tmp9 := lang.Apply1(tmp8, v2)
+					tmp10 := lang.Apply1(closed3, tmp9)
 					tmp3 = tmp10
 				} else {
 					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply(tmp11, []any{closed3, v2})
+					tmp12 := lang.Apply2(tmp11, closed3, v2)
 					tmp3 = tmp12
 				}
 				return tmp3
@@ -7301,17 +7265,16 @@ func LoadNS() {
 	// link?
 	{
 		tmp0 := sym_link_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(75), kw_column, int(7), kw_end_DASH_line, int(75), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "True if path is a symbolic link"
 			var tmp3 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp4 := checkDerefVar(var_ys_DOT_fs_get_DASH_link_DASH_info)
-				tmp5 := lang.Apply(tmp4, []any{v2})
+				tmp5 := lang.Apply1(tmp4, v2)
 				var v6 any = tmp5
 				_ = v6
 				var tmp7 any
@@ -7339,13 +7302,13 @@ func LoadNS() {
 							_ = v13
 							// let binding "link-bit"
 							tmp14 := checkDerefVar(var_clojure_DOT_core_bit_DASH_and)
-							tmp15 := lang.Apply(tmp14, []any{v13, os5.ModeSymlink})
+							tmp15 := lang.Apply2(tmp14, v13, os5.ModeSymlink)
 							var v16 any = tmp15
 							_ = v16
 							tmp17 := checkDerefVar(var_clojure_DOT_core_not)
 							tmp18 := checkDerefVar(var_clojure_DOT_core_zero_QMARK_)
-							tmp19 := lang.Apply(tmp18, []any{v16})
-							tmp20 := lang.Apply(tmp17, []any{tmp19})
+							tmp19 := lang.Apply1(tmp18, v16)
+							tmp20 := lang.Apply1(tmp17, tmp19)
 							tmp10 = tmp20
 						} // end let
 						tmp8 = tmp10
@@ -7358,7 +7321,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_link_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_link_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7367,31 +7330,30 @@ func LoadNS() {
 	// ls
 	{
 		tmp0 := sym_ls.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(184), kw_column, int(7), kw_end_DASH_line, int(184), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "List directory contents"
 			var tmp3 any
 			{ // let
 				// let binding "vec__26"
-				tmp4 := lang.Apply(os5.ReadDir, []any{v2})
+				tmp4 := lang.Apply1(os5.ReadDir, v2)
 				var v5 any = tmp4
 				_ = v5
 				// let binding "entries"
 				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply(tmp6, []any{v5, int64(0), nil})
+				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
 				var v8 any = tmp7
 				_ = v8
 				// let binding "err"
 				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply(tmp9, []any{v5, int64(1), nil})
+				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
 				var v11 any = tmp10
 				_ = v11
 				var tmp12 any
 				tmp13 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-				tmp14 := lang.Apply(tmp13, []any{v11})
+				tmp14 := lang.Apply1(tmp13, v11)
 				if lang.IsTruthy(tmp14) {
 					var tmp15 any
 					{ // let
@@ -7400,7 +7362,7 @@ func LoadNS() {
 						_ = v16
 						// let binding "n"
 						tmp17 := checkDerefVar(var_clojure_DOT_core_count)
-						tmp18 := lang.Apply(tmp17, []any{v8})
+						tmp18 := lang.Apply1(tmp17, v8)
 						var v19 any = tmp18
 						_ = v19
 						// let binding "result"
@@ -7415,15 +7377,15 @@ func LoadNS() {
 						for {
 							var tmp24 any
 							tmp25 := checkDerefVar(var_clojure_DOT_core__LT_)
-							tmp26 := lang.Apply(tmp25, []any{v16, v19})
+							tmp26 := lang.Apply2(tmp25, v16, v19)
 							if lang.IsTruthy(tmp26) {
 								tmp28 := checkDerefVar(var_clojure_DOT_core_inc)
-								tmp29 := lang.Apply(tmp28, []any{v16})
+								tmp29 := lang.Apply1(tmp28, v16)
 								var tmp27 any = tmp29
 								var tmp30 any = v19
 								tmp32 := checkDerefVar(var_clojure_DOT_core_conj)
 								tmp33 := checkDerefVar(var_clojure_DOT_core_nth)
-								tmp34 := lang.Apply(tmp33, []any{v8, v16})
+								tmp34 := lang.Apply2(tmp33, v8, v16)
 								tmp35, ok := lang.FieldOrMethod(tmp34, "Name")
 								if !ok {
 									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", tmp34, "Name")))
@@ -7435,7 +7397,7 @@ func LoadNS() {
 								default:
 									tmp36 = tmp35
 								}
-								tmp37 := lang.Apply(tmp32, []any{v23, tmp36})
+								tmp37 := lang.Apply2(tmp32, v23, tmp36)
 								var tmp31 any = tmp37
 								v16 = tmp27
 								v19 = tmp30
@@ -7462,7 +7424,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_ls = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_ls.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7476,13 +7438,13 @@ func LoadNS() {
 			switch len(args) {
 			case 0:
 				tmp2 := checkDerefVar(var_ys_DOT_fs_mktemp)
-				tmp3 := lang.Apply(tmp2, []any{"", "ys-"})
+				tmp3 := lang.Apply2(tmp2, "", "ys-")
 				return tmp3
 			case 1:
 				v2 := args[0]
 				_ = v2
 				tmp3 := checkDerefVar(var_ys_DOT_fs_mktemp)
-				tmp4 := lang.Apply(tmp3, []any{"", v2})
+				tmp4 := lang.Apply2(tmp3, "", v2)
 				return tmp4
 			case 2:
 				v2 := args[0]
@@ -7492,22 +7454,22 @@ func LoadNS() {
 				var tmp4 any
 				{ // let
 					// let binding "vec__56"
-					tmp5 := lang.Apply(os5.CreateTemp, []any{v2, v3})
+					tmp5 := lang.Apply2(os5.CreateTemp, v2, v3)
 					var v6 any = tmp5
 					_ = v6
 					// let binding "f"
 					tmp7 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp8 := lang.Apply(tmp7, []any{v6, int64(0), nil})
+					tmp8 := lang.Apply3(tmp7, v6, int64(0), nil)
 					var v9 any = tmp8
 					_ = v9
 					// let binding "err"
 					tmp10 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp11 := lang.Apply(tmp10, []any{v6, int64(1), nil})
+					tmp11 := lang.Apply3(tmp10, v6, int64(1), nil)
 					var v12 any = tmp11
 					_ = v12
 					var tmp13 any
 					tmp14 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-					tmp15 := lang.Apply(tmp14, []any{v12})
+					tmp15 := lang.Apply1(tmp14, v12)
 					if lang.IsTruthy(tmp15) {
 						tmp16, ok := lang.FieldOrMethod(v9, "Close")
 						if !ok {
@@ -7533,7 +7495,7 @@ func LoadNS() {
 						default:
 							tmp20 = tmp19
 						}
-						tmp21 := lang.Apply(tmp18, []any{tmp20})
+						tmp21 := lang.Apply1(tmp18, tmp20)
 						tmp13 = tmp21
 					} else {
 					}
@@ -7559,13 +7521,13 @@ func LoadNS() {
 			switch len(args) {
 			case 0:
 				tmp2 := checkDerefVar(var_ys_DOT_fs_mktemp_DASH_d)
-				tmp3 := lang.Apply(tmp2, []any{"", "ys-"})
+				tmp3 := lang.Apply2(tmp2, "", "ys-")
 				return tmp3
 			case 1:
 				v2 := args[0]
 				_ = v2
 				tmp3 := checkDerefVar(var_ys_DOT_fs_mktemp_DASH_d)
-				tmp4 := lang.Apply(tmp3, []any{"", v2})
+				tmp4 := lang.Apply2(tmp3, "", v2)
 				return tmp4
 			case 2:
 				v2 := args[0]
@@ -7575,22 +7537,22 @@ func LoadNS() {
 				var tmp4 any
 				{ // let
 					// let binding "vec__59"
-					tmp5 := lang.Apply(os5.MkdirTemp, []any{v2, v3})
+					tmp5 := lang.Apply2(os5.MkdirTemp, v2, v3)
 					var v6 any = tmp5
 					_ = v6
 					// let binding "path"
 					tmp7 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp8 := lang.Apply(tmp7, []any{v6, int64(0), nil})
+					tmp8 := lang.Apply3(tmp7, v6, int64(0), nil)
 					var v9 any = tmp8
 					_ = v9
 					// let binding "err"
 					tmp10 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp11 := lang.Apply(tmp10, []any{v6, int64(1), nil})
+					tmp11 := lang.Apply3(tmp10, v6, int64(1), nil)
 					var v12 any = tmp11
 					_ = v12
 					var tmp13 any
 					tmp14 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-					tmp15 := lang.Apply(tmp14, []any{v12})
+					tmp15 := lang.Apply1(tmp14, v12)
 					if lang.IsTruthy(tmp15) {
 						tmp13 = v9
 					} else {
@@ -7612,10 +7574,9 @@ func LoadNS() {
 	// multi
 	{
 		tmp0 := sym_multi.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(12), kw_column, int(8), kw_end_DASH_line, int(12), kw_end_DASH_column, int(12), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_f)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Wrap single-path function to support multiple paths"
 			var tmp3 lang.FnFunc
@@ -7632,16 +7593,16 @@ func LoadNS() {
 					var tmp5 any
 					tmp6 := checkDerefVar(var_clojure_DOT_core__EQ_)
 					tmp7 := checkDerefVar(var_clojure_DOT_core_count)
-					tmp8 := lang.Apply(tmp7, []any{v4})
-					tmp9 := lang.Apply(tmp6, []any{int64(1), tmp8})
+					tmp8 := lang.Apply1(tmp7, v4)
+					tmp9 := lang.Apply2(tmp6, int64(1), tmp8)
 					if lang.IsTruthy(tmp9) {
 						tmp10 := checkDerefVar(var_clojure_DOT_core_first)
-						tmp11 := lang.Apply(tmp10, []any{v4})
-						tmp12 := lang.Apply(v2, []any{tmp11})
+						tmp11 := lang.Apply1(tmp10, v4)
+						tmp12 := lang.Apply1(v2, tmp11)
 						tmp5 = tmp12
 					} else {
 						tmp13 := checkDerefVar(var_clojure_DOT_core_map)
-						tmp14 := lang.Apply(tmp13, []any{v2, v4})
+						tmp14 := lang.Apply2(tmp13, v2, v4)
 						tmp5 = tmp14
 					}
 					return tmp5
@@ -7654,7 +7615,7 @@ func LoadNS() {
 			}
 			return tmp5
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_multi = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_multi.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7663,31 +7624,30 @@ func LoadNS() {
 	// path
 	{
 		tmp0 := sym_path.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(194), kw_column, int(7), kw_end_DASH_line, int(194), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_p)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Return canonical path (follows symlinks)"
 			var tmp3 any
 			{ // let
 				// let binding "vec__29"
-				tmp4 := lang.Apply(filepath4.EvalSymlinks, []any{v2})
+				tmp4 := lang.Apply1(filepath4.EvalSymlinks, v2)
 				var v5 any = tmp4
 				_ = v5
 				// let binding "result"
 				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply(tmp6, []any{v5, int64(0), nil})
+				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
 				var v8 any = tmp7
 				_ = v8
 				// let binding "err"
 				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply(tmp9, []any{v5, int64(1), nil})
+				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
 				var v11 any = tmp10
 				_ = v11
 				var tmp12 any
 				tmp13 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-				tmp14 := lang.Apply(tmp13, []any{v11})
+				tmp14 := lang.Apply1(tmp13, v11)
 				if lang.IsTruthy(tmp14) {
 					tmp12 = v8
 				} else {
@@ -7697,7 +7657,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_path = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_path.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7720,16 +7680,16 @@ func LoadNS() {
 				var tmp3 any
 				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
 				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply(tmp5, []any{v2})
-				tmp7 := lang.Apply(tmp4, []any{int64(1), tmp6})
+				tmp6 := lang.Apply1(tmp5, v2)
+				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
 				if lang.IsTruthy(tmp7) {
 					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply(tmp8, []any{v2})
-					tmp10 := lang.Apply(closed4, []any{tmp9})
+					tmp9 := lang.Apply1(tmp8, v2)
+					tmp10 := lang.Apply1(closed4, tmp9)
 					tmp3 = tmp10
 				} else {
 					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply(tmp11, []any{closed4, v2})
+					tmp12 := lang.Apply2(tmp11, closed4, v2)
 					tmp3 = tmp12
 				}
 				return tmp3
@@ -7744,43 +7704,42 @@ func LoadNS() {
 	// read
 	{
 		tmp0 := sym_read.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(215), kw_column, int(7), kw_end_DASH_line, int(215), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Read file contents as string"
 			var tmp3 any
 			{ // let
 				// let binding "vec__41"
-				tmp4 := lang.Apply(os5.ReadFile, []any{v2})
+				tmp4 := lang.Apply1(os5.ReadFile, v2)
 				var v5 any = tmp4
 				_ = v5
 				// let binding "bytes"
 				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply(tmp6, []any{v5, int64(0), nil})
+				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
 				var v8 any = tmp7
 				_ = v8
 				// let binding "err"
 				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply(tmp9, []any{v5, int64(1), nil})
+				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
 				var v11 any = tmp10
 				_ = v11
 				var tmp12 any
 				tmp13 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-				tmp14 := lang.Apply(tmp13, []any{v11})
+				tmp14 := lang.Apply1(tmp13, v11)
 				if lang.IsTruthy(tmp14) {
-					tmp15 := lang.Apply(fmt.Sprintf, []any{"%s", v8})
+					tmp15 := lang.Apply2(fmt.Sprintf, "%s", v8)
 					tmp12 = tmp15
 				} else {
-					tmp16 := lang.Apply(nil, []any{"Failed to read file: ", v2})
+					tmp16 := lang.Apply2(nil, "Failed to read file: ", v2)
 					tmp12 = tmp16
 				}
 				tmp3 = tmp12
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_read = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_read.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7789,17 +7748,16 @@ func LoadNS() {
 	// read?
 	{
 		tmp0 := sym_read_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(83), kw_column, int(7), kw_end_DASH_line, int(83), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "True if path is readable"
 			var tmp3 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp4 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp5 := lang.Apply(tmp4, []any{v2})
+				tmp5 := lang.Apply1(tmp4, v2)
 				var v6 any = tmp5
 				_ = v6
 				var tmp7 any
@@ -7827,13 +7785,13 @@ func LoadNS() {
 							_ = v13
 							// let binding "read-bits"
 							tmp14 := checkDerefVar(var_clojure_DOT_core_bit_DASH_and)
-							tmp15 := lang.Apply(tmp14, []any{v13, int64(292)})
+							tmp15 := lang.Apply2(tmp14, v13, int64(292))
 							var v16 any = tmp15
 							_ = v16
 							tmp17 := checkDerefVar(var_clojure_DOT_core_not)
 							tmp18 := checkDerefVar(var_clojure_DOT_core_zero_QMARK_)
-							tmp19 := lang.Apply(tmp18, []any{v16})
-							tmp20 := lang.Apply(tmp17, []any{tmp19})
+							tmp19 := lang.Apply1(tmp18, v16)
+							tmp20 := lang.Apply1(tmp17, tmp19)
 							tmp10 = tmp20
 						} // end let
 						tmp8 = tmp10
@@ -7846,7 +7804,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_read_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_read_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7855,31 +7813,30 @@ func LoadNS() {
 	// readlink
 	{
 		tmp0 := sym_readlink.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(199), kw_column, int(7), kw_end_DASH_line, int(199), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Read symbolic link target"
 			var tmp3 any
 			{ // let
 				// let binding "vec__32"
-				tmp4 := lang.Apply(os5.Readlink, []any{v2})
+				tmp4 := lang.Apply1(os5.Readlink, v2)
 				var v5 any = tmp4
 				_ = v5
 				// let binding "result"
 				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply(tmp6, []any{v5, int64(0), nil})
+				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
 				var v8 any = tmp7
 				_ = v8
 				// let binding "err"
 				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply(tmp9, []any{v5, int64(1), nil})
+				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
 				var v11 any = tmp10
 				_ = v11
 				var tmp12 any
 				tmp13 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-				tmp14 := lang.Apply(tmp13, []any{v11})
+				tmp14 := lang.Apply1(tmp13, v11)
 				if lang.IsTruthy(tmp14) {
 					tmp12 = v8
 				} else {
@@ -7888,7 +7845,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_readlink = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_readlink.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7897,36 +7854,35 @@ func LoadNS() {
 	// rel
 	{
 		tmp0 := sym_rel.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(204), kw_column, int(7), kw_end_DASH_line, int(204), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Return path relative to current directory"
 			var tmp3 any
 			{ // let
 				// let binding "cwd-path"
 				tmp4 := checkDerefVar(var_ys_DOT_fs_cwd)
-				tmp5 := lang.Apply(tmp4, nil)
+				tmp5 := lang.Apply0(tmp4)
 				var v6 any = tmp5
 				_ = v6
 				// let binding "vec__35"
-				tmp7 := lang.Apply(filepath4.Rel, []any{v6, v2})
+				tmp7 := lang.Apply2(filepath4.Rel, v6, v2)
 				var v8 any = tmp7
 				_ = v8
 				// let binding "result"
 				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply(tmp9, []any{v8, int64(0), nil})
+				tmp10 := lang.Apply3(tmp9, v8, int64(0), nil)
 				var v11 any = tmp10
 				_ = v11
 				// let binding "err"
 				tmp12 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp13 := lang.Apply(tmp12, []any{v8, int64(1), nil})
+				tmp13 := lang.Apply3(tmp12, v8, int64(1), nil)
 				var v14 any = tmp13
 				_ = v14
 				var tmp15 any
 				tmp16 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-				tmp17 := lang.Apply(tmp16, []any{v14})
+				tmp17 := lang.Apply1(tmp16, v14)
 				if lang.IsTruthy(tmp17) {
 					tmp15 = v11
 				} else {
@@ -7936,7 +7892,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_rel = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_rel.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7945,18 +7901,17 @@ func LoadNS() {
 	// rel?
 	{
 		tmp0 := sym_rel_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(91), kw_column, int(7), kw_end_DASH_line, int(91), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "True if path is relative"
 			tmp3 := checkDerefVar(var_clojure_DOT_core_not)
-			tmp4 := lang.Apply(filepath4.IsAbs, []any{v2})
-			tmp5 := lang.Apply(tmp3, []any{tmp4})
+			tmp4 := lang.Apply1(filepath4.IsAbs, v2)
+			tmp5 := lang.Apply1(tmp3, tmp4)
 			return tmp5
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_rel_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_rel_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -7979,16 +7934,16 @@ func LoadNS() {
 				var tmp3 any
 				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
 				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply(tmp5, []any{v2})
-				tmp7 := lang.Apply(tmp4, []any{int64(1), tmp6})
+				tmp6 := lang.Apply1(tmp5, v2)
+				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
 				if lang.IsTruthy(tmp7) {
 					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply(tmp8, []any{v2})
-					tmp10 := lang.Apply(closed5, []any{tmp9})
+					tmp9 := lang.Apply1(tmp8, v2)
+					tmp10 := lang.Apply1(closed5, tmp9)
 					tmp3 = tmp10
 				} else {
 					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply(tmp11, []any{closed5, v2})
+					tmp12 := lang.Apply2(tmp11, closed5, v2)
 					tmp3 = tmp12
 				}
 				return tmp3
@@ -8003,17 +7958,16 @@ func LoadNS() {
 	// size?
 	{
 		tmp0 := sym_size_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(95), kw_column, int(7), kw_end_DASH_line, int(95), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "True if file size > 0"
 			var tmp3 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp4 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp5 := lang.Apply(tmp4, []any{v2})
+				tmp5 := lang.Apply1(tmp4, v2)
 				var v6 any = tmp5
 				_ = v6
 				var tmp7 any
@@ -8035,7 +7989,7 @@ func LoadNS() {
 						default:
 							tmp12 = tmp11
 						}
-						tmp13 := lang.Apply(tmp10, []any{tmp12, int64(0)})
+						tmp13 := lang.Apply2(tmp10, tmp12, int64(0))
 						tmp8 = tmp13
 					} // end let
 					tmp7 = tmp8
@@ -8046,7 +8000,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_size_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_size_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8055,23 +8009,22 @@ func LoadNS() {
 	// touch
 	{
 		tmp0 := sym_touch.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(285), kw_column, int(7), kw_end_DASH_line, int(285), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Update file timestamp or create if doesn't exist"
 			var tmp3 any
 			tmp4 := checkDerefVar(var_ys_DOT_fs_exists_QMARK_)
-			tmp5 := lang.Apply(tmp4, []any{v2})
+			tmp5 := lang.Apply1(tmp4, v2)
 			if lang.IsTruthy(tmp5) {
 				var tmp6 any
 				{ // let
 					// let binding "now"
-					tmp7 := lang.Apply(time6.Now, nil)
+					tmp7 := lang.Apply0(time6.Now)
 					var v8 any = tmp7
 					_ = v8
-					tmp9 := lang.Apply(os5.Chtimes, []any{v2, v8, v8})
+					tmp9 := lang.Apply3(os5.Chtimes, v2, v8, v8)
 					tmp6 = tmp9
 				} // end let
 				tmp3 = tmp6
@@ -8079,22 +8032,22 @@ func LoadNS() {
 				var tmp7 any
 				{ // let
 					// let binding "vec__53"
-					tmp8 := lang.Apply(os5.Create, []any{v2})
+					tmp8 := lang.Apply1(os5.Create, v2)
 					var v9 any = tmp8
 					_ = v9
 					// let binding "f"
 					tmp10 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp11 := lang.Apply(tmp10, []any{v9, int64(0), nil})
+					tmp11 := lang.Apply3(tmp10, v9, int64(0), nil)
 					var v12 any = tmp11
 					_ = v12
 					// let binding "err"
 					tmp13 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp14 := lang.Apply(tmp13, []any{v9, int64(1), nil})
+					tmp14 := lang.Apply3(tmp13, v9, int64(1), nil)
 					var v15 any = tmp14
 					_ = v15
 					var tmp16 any
 					tmp17 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-					tmp18 := lang.Apply(tmp17, []any{v15})
+					tmp18 := lang.Apply1(tmp17, v15)
 					if lang.IsTruthy(tmp18) {
 						tmp19, ok := lang.FieldOrMethod(v12, "Close")
 						if !ok {
@@ -8116,7 +8069,7 @@ func LoadNS() {
 			}
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_touch = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_touch.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8139,16 +8092,16 @@ func LoadNS() {
 				var tmp3 any
 				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
 				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply(tmp5, []any{v2})
-				tmp7 := lang.Apply(tmp4, []any{int64(1), tmp6})
+				tmp6 := lang.Apply1(tmp5, v2)
+				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
 				if lang.IsTruthy(tmp7) {
 					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply(tmp8, []any{v2})
-					tmp10 := lang.Apply(closed6, []any{tmp9})
+					tmp9 := lang.Apply1(tmp8, v2)
+					tmp10 := lang.Apply1(closed6, tmp9)
 					tmp3 = tmp10
 				} else {
 					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply(tmp11, []any{closed6, v2})
+					tmp12 := lang.Apply2(tmp11, closed6, v2)
 					tmp3 = tmp12
 				}
 				return tmp3
@@ -8163,22 +8116,21 @@ func LoadNS() {
 	// when-str
 	{
 		tmp0 := sym_when_DASH_str.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(8), kw_column, int(8), kw_end_DASH_line, int(8), kw_end_DASH_column, int(15), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Convert to string or return nil"
 			var tmp3 any
 			if lang.IsTruthy(v2) {
 				tmp4 := checkDerefVar(var_clojure_DOT_core_str)
-				tmp5 := lang.Apply(tmp4, []any{v2})
+				tmp5 := lang.Apply1(tmp4, v2)
 				tmp3 = tmp5
 			} else {
 			}
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_when_DASH_str = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_when_DASH_str.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8187,31 +8139,30 @@ func LoadNS() {
 	// which
 	{
 		tmp0 := sym_which.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(210), kw_column, int(7), kw_end_DASH_line, int(210), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_name)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "Find executable in PATH"
 			var tmp3 any
 			{ // let
 				// let binding "vec__38"
-				tmp4 := lang.Apply(exec7.LookPath, []any{v2})
+				tmp4 := lang.Apply1(exec7.LookPath, v2)
 				var v5 any = tmp4
 				_ = v5
 				// let binding "result"
 				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply(tmp6, []any{v5, int64(0), nil})
+				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
 				var v8 any = tmp7
 				_ = v8
 				// let binding "err"
 				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply(tmp9, []any{v5, int64(1), nil})
+				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
 				var v11 any = tmp10
 				_ = v11
 				var tmp12 any
 				tmp13 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-				tmp14 := lang.Apply(tmp13, []any{v11})
+				tmp14 := lang.Apply1(tmp13, v11)
 				if lang.IsTruthy(tmp14) {
 					tmp12 = v8
 				} else {
@@ -8220,7 +8171,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_which = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_which.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8229,12 +8180,11 @@ func LoadNS() {
 	// write
 	{
 		tmp0 := sym_write.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(222), kw_column, int(7), kw_end_DASH_line, int(222), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path, sym_content)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 2)
-			v2 := args[0]
+		var tmp1 lang.FnFunc2
+		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
 			_ = v2
-			v3 := args[1]
+			v3 := p1
 			_ = v3
 			_ = "Write string content to file"
 			var tmp4 any
@@ -8254,22 +8204,22 @@ func LoadNS() {
 				var v7 any = tmp6
 				_ = v7
 				// let binding "err"
-				tmp8 := lang.Apply(os5.WriteFile, []any{v2, v7, int64(420)})
+				tmp8 := lang.Apply3(os5.WriteFile, v2, v7, int64(420))
 				var v9 any = tmp8
 				_ = v9
 				var tmp10 any
 				tmp11 := checkDerefVar(var_clojure_DOT_core_nil_QMARK_)
-				tmp12 := lang.Apply(tmp11, []any{v9})
+				tmp12 := lang.Apply1(tmp11, v9)
 				if lang.IsTruthy(tmp12) {
 				} else {
-					tmp13 := lang.Apply(nil, []any{"Failed to write file: ", v2})
+					tmp13 := lang.Apply2(nil, "Failed to write file: ", v2)
 					tmp10 = tmp13
 				}
 				tmp4 = tmp10
 			} // end let
 			return tmp4
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc2)
 		var_ys_DOT_fs_write = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_write.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8278,17 +8228,16 @@ func LoadNS() {
 	// write?
 	{
 		tmp0 := sym_write_QMARK_.WithMeta(lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(101), kw_column, int(7), kw_end_DASH_line, int(101), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))).(*lang.Symbol)
-		var tmp1 lang.FnFunc
-		tmp1 = lang.NewFnFunc(func(args ...any) any {
-			checkArity(args, 1)
-			v2 := args[0]
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
 			_ = v2
 			_ = "True if path is writable"
 			var tmp3 any
 			{ // let
 				// let binding "temp__0__auto__"
 				tmp4 := checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				tmp5 := lang.Apply(tmp4, []any{v2})
+				tmp5 := lang.Apply1(tmp4, v2)
 				var v6 any = tmp5
 				_ = v6
 				var tmp7 any
@@ -8316,13 +8265,13 @@ func LoadNS() {
 							_ = v13
 							// let binding "write-bits"
 							tmp14 := checkDerefVar(var_clojure_DOT_core_bit_DASH_and)
-							tmp15 := lang.Apply(tmp14, []any{v13, int64(146)})
+							tmp15 := lang.Apply2(tmp14, v13, int64(146))
 							var v16 any = tmp15
 							_ = v16
 							tmp17 := checkDerefVar(var_clojure_DOT_core_not)
 							tmp18 := checkDerefVar(var_clojure_DOT_core_zero_QMARK_)
-							tmp19 := lang.Apply(tmp18, []any{v16})
-							tmp20 := lang.Apply(tmp17, []any{tmp19})
+							tmp19 := lang.Apply1(tmp18, v16)
+							tmp20 := lang.Apply1(tmp17, tmp19)
 							tmp10 = tmp20
 						} // end let
 						tmp8 = tmp10
@@ -8335,7 +8284,7 @@ func LoadNS() {
 			} // end let
 			return tmp3
 		})
-		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc)
+		tmp1 = tmp1.WithMeta(lang.NewMap(kw_rettag, nil)).(lang.FnFunc1)
 		var_ys_DOT_fs_write_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		if tmp0.Meta() != nil {
 			var_ys_DOT_fs_write_QMARK_.SetMeta(tmp0.Meta().(lang.IPersistentMap))
@@ -8358,16 +8307,16 @@ func LoadNS() {
 				var tmp3 any
 				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
 				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply(tmp5, []any{v2})
-				tmp7 := lang.Apply(tmp4, []any{int64(1), tmp6})
+				tmp6 := lang.Apply1(tmp5, v2)
+				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
 				if lang.IsTruthy(tmp7) {
 					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply(tmp8, []any{v2})
-					tmp10 := lang.Apply(closed7, []any{tmp9})
+					tmp9 := lang.Apply1(tmp8, v2)
+					tmp10 := lang.Apply1(closed7, tmp9)
 					tmp3 = tmp10
 				} else {
 					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply(tmp11, []any{closed7, v2})
+					tmp12 := lang.Apply2(tmp11, closed7, v2)
 					tmp3 = tmp12
 				}
 				return tmp3
@@ -8396,16 +8345,16 @@ func LoadNS() {
 				var tmp3 any
 				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
 				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply(tmp5, []any{v2})
-				tmp7 := lang.Apply(tmp4, []any{int64(1), tmp6})
+				tmp6 := lang.Apply1(tmp5, v2)
+				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
 				if lang.IsTruthy(tmp7) {
 					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply(tmp8, []any{v2})
-					tmp10 := lang.Apply(closed8, []any{tmp9})
+					tmp9 := lang.Apply1(tmp8, v2)
+					tmp10 := lang.Apply1(closed8, tmp9)
 					tmp3 = tmp10
 				} else {
 					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply(tmp11, []any{closed8, v2})
+					tmp12 := lang.Apply2(tmp11, closed8, v2)
 					tmp3 = tmp12
 				}
 				return tmp3

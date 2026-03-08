@@ -31,7 +31,7 @@ _gloat() {
         '(-t --to)'{-t,--to}'[Output format]:format:->formats' \
         '(-o --out)'{-o,--out}'[Output file or directory]:output file:_files' \
         '--platform[Cross-compile]:platform:->platforms' \
-        '(-X --ext)'{-X,--ext}'[Enable processing extension]:extension:(gzip brotli)' \
+        '(-X --ext)'{-X,--ext}'[Enable processing extension]:extension:(gzip brotli goimports)' \
         '--ns[Override namespace]:namespace:' \
         '--module[Go module name]:module:' \
         '--complete[Generate shell completion]:shell:->shells' \

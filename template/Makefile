@@ -19,6 +19,8 @@ MAKES-CLEAN := \
 BUILD-OPTS := -ldflags '-s -w'
 ifneq (,$(wildcard internal))
 BUILD-OPTS += -tags glj_no_aot_stdlib
+else
+BUILD-OPTS += -tags glj_no_goimports
 endif
 
 

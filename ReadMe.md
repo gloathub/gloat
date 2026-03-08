@@ -378,6 +378,19 @@ With no value, prints a flat list; with `=tree`, prints a tree.
     gloat app.ys -o app -Xdeps=tree     # Tree view
 
 
+### goimports
+
+Include the Go standard library (~135 packages) in the runtime pkgmap.
+By default, gloat excludes these to produce smaller binaries — AOT-compiled
+programs use direct Go imports instead of pkgmap lookups, so the pkgmap
+entries are not needed.
+Use this extension only if your program performs dynamic Go interop at
+runtime (e.g. calling Go packages by name via the interpreter).
+Applies to binary builds (`bin`, `lib`, `wasm`, `js`, `dir`).
+
+    gloat app.ys -o app -Xgoimports
+
+
 ### gzip
 
 Compress WASM output with gzip (requires `gzip` on PATH).

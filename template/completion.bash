@@ -24,7 +24,7 @@ _gloat() {
             return 0
             ;;
         -X|--ext)
-            COMPREPLY=( $(compgen -W "gzip brotli" -- "${cur}") )
+            COMPREPLY=( $(compgen -W "gzip brotli goimports" -- "${cur}") )
             return 0
             ;;
         --complete)

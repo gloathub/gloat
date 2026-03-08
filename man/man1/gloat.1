@@ -404,6 +404,19 @@ gloat app.ys -o app -Xdeps          # Flat list
 gloat app.ys -o app -Xdeps=tree     # Tree view
 .EE
 
+.SS goimports
+Include the Go standard library (~135 packages) in the runtime pkgmap.
+By default, gloat excludes these to produce smaller binaries — AOT-compiled
+programs use direct Go imports instead of pkgmap lookups, so the pkgmap
+entries are not needed.
+Use this extension only if your program performs dynamic Go interop at
+runtime (e.g. calling Go packages by name via the interpreter).
+Applies to binary builds (\fBbin\fR, \fBlib\fR, \fBwasm\fR, \fBjs\fR, \fBdir\fR).
+
+.EX
+gloat app.ys -o app -Xgoimports
+.EE
+
 .SS gzip
 Compress WASM output with gzip (requires \fBgzip\fR on PATH).
 Applies to \fBwasm\fR and \fBjs\fR output formats.

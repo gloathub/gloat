@@ -30,7 +30,7 @@
 (def TEMPLATE (str GLOAT-ROOT "/template"))
 (def SRC (str GLOAT-ROOT "/ys/src"))
 
-(def VALID-EXTENSIONS #{"gzip" "brotli" "prune" "deps" "html" "serve" "open"})
+(def VALID-EXTENSIONS #{"gzip" "brotli" "prune" "deps" "html" "serve" "open" "goimports"})
 
 (def go-env
   {"GOPATH"     (str GLOAT-ROOT "/.cache/.local/go")
@@ -390,6 +390,7 @@ Format can usually be inferred from -o extension:
   brotli      Compress with brotli (auto-installed if needed)
   deps        Print flat dependency list (implies prune)
   deps=tree   Print dependency tree (implies prune)
+  goimports   Include Go stdlib in pkgmap (needed for runtime Go interop)
   gzip        Compress with gzip (requires gzip command)
   html        Generate HTML page for js/wasm (-Xhtml or -Xhtml='args')
   open        Open browser after serving (-Xopen or -Xopen='args')
@@ -399,6 +400,7 @@ Format can usually be inferred from -o extension:
 The compression extensions are applied to WASM output formats (wasm, js).
 The html, serve, and open extensions are only valid with js format (-o foo.js or -t js).
 The prune extension applies to binary builds (bin, lib, wasm, js, dir).
+The goimports extension applies to binary builds (bin, lib, wasm, js, dir).
 
 Multiple extensions can be combined with commas: -Xserve,html=100
 -Xopen implies -Xserve which implies -Xhtml.")
@@ -636,6 +638,10 @@ Less common:
     (or (contains? parsed "prune")
         (contains? parsed "deps")
         (System/getenv "GLOAT_X_PRUNE"))))
+
+(defn goimports? []
+  (let [parsed (parse-extensions (or (:ext *opts*) []))]
+    (contains? parsed "goimports")))
 
 ;; Functions referenced at runtime via glj.Var() in main.go templates
 ;; that won't be found by scanning for var_clojure_DOT_core_ patterns
@@ -1215,12 +1221,17 @@ Less common:
 
                   ;; Build
                   (timer-start)
-                  (let [build-args
+                  (let [build-tags
+                        (str/join ","
+                                  (concat (when (and (not (goimports?)) (not (prune?)))
+                                            ["glj_no_goimports"])
+                                          (when (prune?) ["glj_no_aot_stdlib"])))
+                        build-args
                         (concat [go-bin "build"
                                  "-ldflags" "-s -w"
                                  "-o" binary-name]
-                                (when (prune?)
-                                  ["-tags" "glj_no_aot_stdlib"])
+                                (when (seq build-tags)
+                                  ["-tags" build-tags])
                                 (when build-mode [build-mode])
                                 ["main.go"])]
                     (apply process/shell (merge {:dir output-dir
@@ -1293,7 +1304,10 @@ Less common:
                       (msg "To build: cd" output-dir "&& make")))
                   (do
                     (msg "Generated Go module in:" output-dir)
-                    (msg "To build: cd" output-dir "&& go build")))))))
+                    (msg "To build: cd" output-dir
+                         (if (goimports?)
+                           "&& go build"
+                           "&& go build -tags glj_no_goimports"))))))))
 
           (finally
             (fs/delete-tree shared-tmpdir)))))))

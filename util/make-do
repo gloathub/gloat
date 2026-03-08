@@ -129,13 +129,35 @@ release() (
     "s/^VERSION := [0-9]+\\.[0-9]+\\.[0-9]+/VERSION := $version/" \
     doc/gloat-tutorial.md
 
-  { echo "- version: $version"
+  # Collect commit subjects since last release tag
+  prev_tag=$(git tag -l 'v[0-9]*' --sort=-v:refname | head -1)
+  if [[ -n $prev_tag ]]; then
+    changes=$(git log "$prev_tag"..HEAD --format='%s' \
+      | grep -v '^Version ' || true)
+  else
+    changes="Initial release"
+  fi
+
+  # Build Changes entry
+  {
+    echo "- version: $version"
     echo "  date:    $(date)"
     echo "  changes:"
-    echo "  - $message"
+    if [[ -n $changes ]]; then
+      while IFS= read -r line; do
+        echo "  - $line"
+      done <<< "$changes"
+    else
+      echo "  - Release v$version"
+    fi
     echo ""
     cat Changes
   } > Changes.tmp && mv Changes.tmp Changes
+
+  "${EDITOR:-vim}" Changes
+
+  echo
+  read -rp $'\e[33mContinue release of v'"$version"$'? Enter to continue, ctrl-C to cancel. \e[0m'
 
   # --- Rebuild and test ---
   make update ys-pkg
@@ -176,16 +198,26 @@ release() (
   git tag -a "v$version" -m "Release v$version"
   git push origin "v$version"
 
+  # Extract changes for this version from Changes file
+  release_notes=$(
+    awk '
+      /^- version:/ { if (found) exit; }
+      /^- version: '"$version"'/ { found=1; next }
+      found && /^  - / { print "- " substr($0, 5) }
+    ' Changes
+  )
+  release_notes+=$'\n\n'"**Full Changelog**: https://github.com/gloathub/gloat/compare/${prev_tag}...v${version}"
+
   local gh_token=~/.github-api-token
   if [[ -f $gh_token ]]; then
     GH_TOKEN=$(< "$gh_token") \
     gh release create "v$version" \
       --title "gloat v$version" \
-      --generate-notes
+      --notes "$release_notes"
   else
     gh release create "v$version" \
       --title "gloat v$version" \
-      --generate-notes
+      --notes "$release_notes"
   fi
 
   # --- Publish website ---

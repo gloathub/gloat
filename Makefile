@@ -70,6 +70,7 @@ TEST-CALL-DEPS += \
 endif
 
 MAKES-CLEAN := \
+  Changes.tmp \
   $(TEST-CALL) \
 
 # Disable CGO to avoid Go linker issues
@@ -199,6 +200,8 @@ python-local-server: $(PYTHON)
 release: $(GH)
 	@$(if $(filter command line,$(origin VERSION)),,\
 	  $(error VERSION is required on the command line))
+	@$(if $(filter command line,$(origin GLJ-VERSION)),,\
+	  $(error GLJ-VERSION is required on the command line))
 	$(eval RELEASE_VER := $(patsubst v%,%,$(VERSION)))
 	$(eval GLJ_VER := $(patsubst v%,%,$(GLJ-VERSION)))
 	make-do $@ $(RELEASE_VER) "$(MESSAGE)" "$(GLJ_VER)"

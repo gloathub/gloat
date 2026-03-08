@@ -224,4 +224,17 @@ release() (
   make publish-www
 )
 
+annoucement() (
+  glj_version=$1
+  version=$(awk '/^- version:/ { print $3; exit }' Changes)
+  echo "#gloat version v$version"
+  echo "#glojure version $glj_version"
+  awk '
+    /^- version:/ { if (found) exit }
+    /^  changes:/ { found=1; next }
+    found && /^  - / { sub(/^  - /, ""); print "* " $0 }
+  ' Changes
+  echo "https://gloathub.org/"
+)
+
 "$@"

@@ -197,6 +197,9 @@ SERVE-DIR ?= .
 python-local-server: $(PYTHON)
 	cd '$(SERVE-DIR)' && $(PYTHON) -m http.server
 
+annoucement:
+	@make-do $@ $(GLOJURE-VERSION)
+
 release: $(GH)
 	@$(if $(filter command line,$(origin VERSION)),,\
 	  $(error VERSION is required on the command line))

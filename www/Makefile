@@ -9,10 +9,11 @@ SHELL-DEPS += $(PYTHON-VENV)
 include $M/shell.mk
 
 export UV_LINK_MODE := copy
+export NO_MKDOCS_2_WARNING := 1
 
-# Override venv creation: use uv venv by Python name so uv uses its own
-# installation metadata rather than probing the binary (which hangs with
-# uv-managed standalone Python builds due to ensurepip).
+# Override python.mk's venv recipe: use uv venv instead of python -m venv
+# (avoids ensurepip hang with uv-managed standalone Python builds).
+# TODO: Fix python.mk to support recipe override without Make warning.
 $(PYTHON-VENV): $(PYTHON)
 	@echo '+++ Installing a Python virtualenv in $@'
 	uv venv --python $(PYTHON-NAME) $@
@@ -21,7 +22,12 @@ $(PYTHON-VENV): $(PYTHON)
 
 REPO ?= git@github.com:gloathub/gloat
 
-MAKES-CLEAN := site docs/build-report docs/demo-assets
+MAKES-CLEAN := \
+  site \
+  docs/build-report \
+  docs/demo-assets \
+  build-report \
+
 MAKES-REALCLEAN := $(PYTHON-VENV)
 MAKES-DISTCLEAN := .cache/
 

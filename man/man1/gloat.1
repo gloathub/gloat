@@ -472,6 +472,26 @@ gloat app.ys -o app -Xprune
 gloat app.ys -o app.wasm -Xprune
 .EE
 
+.SS report
+Write a binary size analysis report (Markdown).
+Applies to binary builds (\fBbin\fR, \fBlib\fR, \fBwasm\fR, \fBjs\fR).
+
+.EX
+gloat app.ys -o app -Xreport
+gloat app.ys -o app -Xreport=out.md
+gloat app.ys -o app -Xreport=keep
+gloat app.ys -o app -Xreport=keep+out.md
+.EE
+
+.PP
+By default, the report is written to \fBreport.md\fR and the unstripped
+binary (needed for symbol analysis) is deleted afterward.
+Use \fB=keep\fR to save the unstripped binary as \fB<output>-unstripped\fR,
+or \fB=filename.md\fR to write the report to a specific path.
+Combine both with \fB+\fR\&.
+The report includes section breakdown, category analysis, top packages,
+and top symbols by size.
+
 .SS serve
 Start a local HTTP server after building.
 Implies \fB-Xhtml\fR\&.

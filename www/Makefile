@@ -21,7 +21,7 @@ $(PYTHON-VENV): $(PYTHON)
 
 REPO ?= git@github.com:gloathub/gloat
 
-MAKES-CLEAN := site docs/demo-assets
+MAKES-CLEAN := site docs/build-report docs/demo-assets
 MAKES-REALCLEAN := $(PYTHON-VENV)
 MAKES-DISTCLEAN := .cache/
 
@@ -46,12 +46,21 @@ default::
 social-card: $(DEPS)
 	$(PYTHON-VENV)/bin/python3 bin/gen-social-card.py
 
+# Generate build report from hello-world.clj
+build-report: docs/build-report/index.html
+
+docs/build-report/index.html: docs/hello-world.clj
+	@mkdir -p $(dir $@)
+	../bin/gloat $< -fqo /tmp/gloat-hello \
+	  -Xprune,report=$@
+	@$(RM) /tmp/gloat-hello
+
 # Build main site (production)
-site: $(DEPS) social-card demo-assets
+site: $(DEPS) social-card build-report demo-assets
 	mkdocs build -d $@
 
 # Serve locally with MkDocs
-serve: $(DEPS) social-card demo-assets
+serve: $(DEPS) social-card build-report demo-assets
 	mkdocs serve --livereload
 
 # Build alias for backwards compatibility

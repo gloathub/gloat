@@ -26,11 +26,12 @@
 (load-file (str GLOAT-ROOT "/src/html.clj"))
 (load-file (str GLOAT-ROOT "/src/open.clj"))
 (load-file (str GLOAT-ROOT "/src/serve.clj"))
+(load-file (str GLOAT-ROOT "/src/report.clj"))
 
 (def TEMPLATE (str GLOAT-ROOT "/template"))
 (def SRC (str GLOAT-ROOT "/ys/src"))
 
-(def VALID-EXTENSIONS #{"gzip" "brotli" "prune" "deps" "html" "serve" "open" "goimports"})
+(def VALID-EXTENSIONS #{"gzip" "brotli" "prune" "deps" "html" "serve" "open" "goimports" "report"})
 
 (def go-env
   {"GOPATH"     (str GLOAT-ROOT "/.cache/.local/go")
@@ -387,6 +388,7 @@ Format can usually be inferred from -o extension:
   (when (:extensions *opts*)
     (println "Available processing extensions (use with -X/--ext):
 
+  report      Write binary size analysis report (-Xreport, -Xreport=html, -Xreport=open)
   brotli      Compress with brotli (auto-installed if needed)
   deps        Print flat dependency list (implies prune)
   deps=tree   Print dependency tree (implies prune)
@@ -642,6 +644,34 @@ Less common:
 (defn goimports? []
   (let [parsed (parse-extensions (or (:ext *opts*) []))]
     (contains? parsed "goimports")))
+
+(defn report-ext []
+  (let [parsed (parse-extensions (or (:ext *opts*) []))
+        val (get parsed "report")]
+    (when val
+      (let [params (if (true? val) []
+                     (str/split val #"\+"))
+            md-files (filter #(str/ends-with? % ".md") params)
+            html-files (filter #(str/ends-with? % ".html") params)
+            open? (some #(= % "open") params)
+            html? (or open? (some #(= % "html") params) (seq html-files))
+            keep? (some #(= % "keep") params)
+            unknown (remove #(or (= % "keep")
+                                 (= % "html")
+                                 (= % "open")
+                                 (str/ends-with? % ".md")
+                                 (str/ends-with? % ".html")) params)]
+        (when (seq unknown)
+          (die (str "Unknown -Xreport parameter: " (first unknown))))
+        (when (> (count md-files) 1)
+          (die "Multiple .md files in -Xreport"))
+        (when (> (count html-files) 1)
+          (die "Multiple .html files in -Xreport"))
+        (let [default-path (if html? "report.html" "report.md")]
+          {:path (or (first html-files) (first md-files) default-path)
+           :format (if html? :html :md)
+           :open (boolean open?)
+           :keep (boolean keep?)})))))
 
 ;; Functions referenced at runtime via glj.Var() in main.go templates
 ;; that won't be found by scanning for var_clojure_DOT_core_ patterns
@@ -1248,7 +1278,7 @@ Less common:
 
                       ;; Compress WASM if needed
                       (let [compress-exts (keys (dissoc (parse-extensions (or (:ext *opts*) []))
-                                                        "prune" "html" "serve" "open"))]
+                                                        "prune" "html" "serve" "open" "report"))]
                         (when (and (contains? #{"wasm" "js"} format)
                                    (seq compress-exts))
                           (compress-wasm output compress-exts)))
@@ -1289,6 +1319,64 @@ Less common:
                           (when (fs/exists? h-source)
                             (fs/copy h-source h-output {:replace-existing true})
                             (msg "Generated:" h-output))))
+
+                      ;; Generate binary size report if requested
+                      (when-let [{:keys [path keep open] report-fmt :format} (report-ext)]
+                        (msg "Analyzing binary size...")
+                        (let [output-name (fs/file-name output)
+                              keep-path (str output "-unstripped")
+                              unstripped-name "unstripped-report"
+                              a-build-tags
+                              (str/join ","
+                                        (concat
+                                         (when (and (not (goimports?))
+                                                    (not (prune?)))
+                                           ["glj_no_goimports"])
+                                         (when (prune?)
+                                           ["glj_no_aot_stdlib"])))
+                              unstripped-args
+                              (concat [go-bin "build"
+                                       "-o" unstripped-name]
+                                      (when (seq a-build-tags)
+                                        ["-tags" a-build-tags])
+                                      (when build-mode [build-mode])
+                                      ["main.go"])]
+                          (apply process/shell
+                                 {:dir output-dir
+                                  :extra-env build-env
+                                  :out :string :err :string}
+                                 unstripped-args)
+                          (let [unstripped-file (str output-dir "/"
+                                                     unstripped-name)]
+                            ;; Copy unstripped next to output if keeping
+                            (when keep
+                              (fs/copy unstripped-file keep-path
+                                       {:replace-existing true})
+                              (msg "Kept unstripped:" keep-path))
+                            (report/generate-report
+                             {:stripped-binary (str output)
+                              :unstripped-binary (if keep
+                                                   keep-path
+                                                   unstripped-file)
+                              :output-name output-name
+                              :goos goos
+                              :goarch goarch
+                              :go-bin go-bin
+                              :gloat-version VERSION
+                              :glojure-version (:GLOJURE-VERSION make-vars)
+                              :pruned (prune?)
+                              :report-path path
+                              :report-format report-fmt
+                              :sources (mapv (fn [f]
+                                              {:name (str (fs/file-name f))
+                                               :content (slurp (str f))})
+                                            source-files)})
+                            (msg "Generated:" path)
+                            (when open
+                              (open/open-browser
+                               (str "file://" (fs/absolutize path))))
+                            (when-not keep
+                              (fs/delete unstripped-file)))))
 
                       ;; Clean up temp build dir
                       (fs/delete-tree (fs/parent output-dir)))

@@ -438,6 +438,33 @@ Applies to binary builds (`bin`, `lib`, `wasm`, `js`, `dir`).
     gloat app.ys -o app.wasm -Xprune
 
 
+### report
+
+Write a binary size analysis report.
+Applies to binary builds (`bin`, `lib`, `wasm`, `js`).
+
+    gloat app.ys -o app -Xreport
+    gloat app.ys -o app -Xreport=out.md
+    gloat app.ys -o app -Xreport=keep
+    gloat app.ys -o app -Xreport=keep+out.md
+    gloat app.ys -o app -Xreport=html
+    gloat app.ys -o app -Xreport=report.html
+    gloat app.ys -o app -Xreport=open
+    gloat app.ys -o app -Xreport=keep+report.html
+
+By default, the report is written to `report.md` (Markdown) and the
+unstripped binary (needed for symbol analysis) is deleted afterward.
+Use `=keep` to save the unstripped binary as `<output>-unstripped`,
+or `=filename.md` to write the report to a specific path.
+Use `=html` or `=filename.html` for an HTML report with sortable
+table columns.
+Use `=open` to generate an HTML report and open it in a browser
+(implies `html`).
+Combine options with `+`.
+The report includes source files, section breakdown, category analysis,
+top packages, and top symbols by size.
+
+
 ### serve
 
 Start a local HTTP server after building.

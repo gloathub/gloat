@@ -1,6 +1,6 @@
 #!/usr/bin/env bb
 
-;; gloat - Glojure AOT Tool
+;; gloat - Glojure Automation Tool
 ;; Compiles YAMLScript/Clojure/Glojure to Go, binaries, or Wasm
 
 (ns gloat

@@ -13,7 +13,7 @@ export GETOPT_SPEC="getopt_default=(--help)
 
 gloat [<options>] <file>...
 
-Glojure AOT Tool - version $GLOAT_VERSION
+Glojure Automation Tool - version $GLOAT_VERSION
 
 Compiles Clojure or YAMLScript code to Go code, binaries or Wasm.
 Run 'man gloat' for full documentation.

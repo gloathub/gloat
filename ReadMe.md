@@ -1,4 +1,4 @@
-gloat - [Glojure](https://github.com/glojurelang/glojure) AOT Tool
+gloat - [Glojure](https://github.com/glojurelang/glojure) Automation Tool
 ==================================================================
 
 [![Try Gloat Live Demo](

@@ -261,7 +261,7 @@ main() (
   fi
 
   # Pass parsed opts to gloat.clj via env var — no re-parsing needed
-  GLOAT_OPTS="$opts_edn" exec bb "$root/bin/src/gloat.clj"
+  GLOAT_OPTS="$opts_edn" exec bb "$root/src/gloat.clj"
 )
 
 setup() (

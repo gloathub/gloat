@@ -19,13 +19,13 @@
 (def VERSION (System/getenv "GLOAT_VERSION"))
 
 (def GLOAT-ROOT
-  (str (fs/parent (fs/parent (fs/parent (fs/canonicalize *file*))))))
+  (str (fs/parent (fs/parent (fs/canonicalize *file*)))))
 
-(load-file (str GLOAT-ROOT "/bin/src/prune.clj"))
-(load-file (str GLOAT-ROOT "/bin/src/deps.clj"))
-(load-file (str GLOAT-ROOT "/bin/src/html.clj"))
-(load-file (str GLOAT-ROOT "/bin/src/open.clj"))
-(load-file (str GLOAT-ROOT "/bin/src/serve.clj"))
+(load-file (str GLOAT-ROOT "/src/prune.clj"))
+(load-file (str GLOAT-ROOT "/src/deps.clj"))
+(load-file (str GLOAT-ROOT "/src/html.clj"))
+(load-file (str GLOAT-ROOT "/src/open.clj"))
+(load-file (str GLOAT-ROOT "/src/serve.clj"))
 
 (def TEMPLATE (str GLOAT-ROOT "/template"))
 (def SRC (str GLOAT-ROOT "/ys/src"))

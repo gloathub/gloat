@@ -74,6 +74,8 @@ To make Gloat available permanently, simply add this to your shell's rc file
 source /path/to/gloat/.rc
 ```
 
+Yes, that command and `.rc` file actually supports all three shells!
+
 
 ## Basic Usage
 

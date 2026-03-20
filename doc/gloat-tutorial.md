@@ -79,7 +79,8 @@ Users are prompted interactively before the first installation.
 ```
 gloat/
 ├── bin/
-│   ├── gloat              # Bash wrapper (sets GLOAT_VERSION, PATH)
+│   └── gloat              # Bash wrapper (sets GLOAT_VERSION, PATH)
+├── src/                   # Babashka source files
 │   └── gloat.clj          # Main Babashka script (CLI logic)
 ├── template/
 │   ├── clojure.clj        # Template for YS→CLJ conversion
@@ -469,7 +470,7 @@ All versions must be kept in sync for releases.
 
 ### How Versions Propagate
 
-Gloat uses `get-make-var` in `bin/src/gloat.clj` to read Makefile variables:
+Gloat uses `get-make-var` in `src/gloat.clj` to read Makefile variables:
 
 ```clojure
 (def get-make-var
@@ -691,7 +692,7 @@ git commit -m "Improve ys.std documentation"
 
 ### Typical Development Cycle
 
-1. **Make changes** to gloat source (`bin/src/gloat.clj`) or stdlib (`ys/src/`)
+1. **Make changes** to gloat source (`src/gloat.clj`) or stdlib (`ys/src/`)
 2. **Run tests** to verify: `make test`
 3. **Test with example** project: `make run FILE=demo/foo.ys`
 4. **Update stdlib** if needed: `make update && make ys-pkg`

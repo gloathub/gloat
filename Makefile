@@ -70,6 +70,7 @@ TEST-CALL-DEPS += \
 endif
 
 MAKES-CLEAN := \
+  report.* \
   Changes.tmp \
   $(TEST-CALL) \
 

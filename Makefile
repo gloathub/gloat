@@ -6,6 +6,7 @@ include $M/init.mk
 include common/common.mk
 
 include $M/babashka.mk
+include $M/claude.mk
 include $M/gh.mk
 include $M/git.mk
 include $M/glojure.mk
@@ -22,6 +23,13 @@ include $M/clean.mk
 include $M/shell.mk
 include common/path.mk
 include common/gloat-vars.mk
+
+# Nono sandbox permissions for `make claude-nono`
+CLAUDE-NONO-OPTS += --allow $(ROOT)/.cache/.local/tmp
+CLAUDE-NONO-OPTS += --read /usr/bin
+CLAUDE-NONO-OPTS += --read /usr/libexec
+CLAUDE-NONO-OPTS += --read /usr/include
+CLAUDE-NONO-OPTS += --allow /tmp
 
 # Auto-discover YS standard library source files
 YS-CLJ-FILES := $(wildcard ys/src/*/*.clj ys/src/*/*/*.clj)

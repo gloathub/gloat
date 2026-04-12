@@ -30,6 +30,8 @@
 
 (def TEMPLATE (str GLOAT-ROOT "/template"))
 (def SRC (str GLOAT-ROOT "/ys/src"))
+(def GLOAT-TMP (str GLOAT-ROOT "/.cache/.local/tmp"))
+(fs/create-dirs GLOAT-TMP)
 
 (def VALID-EXTENSIONS #{"gzip" "brotli" "prune" "deps" "html" "serve" "open" "goimports" "report"})
 
@@ -283,11 +285,11 @@
   "Generate a single //export Go function wrapper.
   type-spec is a vector like [arg-types... return-type]."
   (let [type-vec (if (vector? type-spec) type-spec [type-spec])
-        return-type (last type-vec)
+        return-type (when (seq type-vec) (last type-vec))
         arg-types (if (> (count type-vec) 1)
                     (butlast type-vec)
                     [])
-        return-info (get type-mappings return-type)
+        return-info (when return-type (get type-mappings return-type))
         c-fn-name (kebab-to-snake fn-name)
 
         ;; Generate parameter list
@@ -307,7 +309,8 @@
                          arg-types)
 
         ;; Generate function signature
-        signature (if (:no-return return-info)
+        no-return (or (nil? return-info) (:no-return return-info))
+        signature (if no-return
                     (str "func " c-fn-name "(" params ")")
                     (str "func " c-fn-name "(" params ") "
                          (:go-type return-info)))
@@ -320,7 +323,7 @@
                       (str "\tfn.Invoke(" invoke-args ")")
                       "\tfn.Invoke()")
 
-        body (if (:no-return return-info)
+        body (if no-return
                ;; Void return
                (str "\tfn := glj.Var(\"" namespace "\", \"" fn-name "\")\n"
                     invoke-line "\n")
@@ -750,7 +753,7 @@ Less common:
 (defn cat-bb [name]
   (let [src (str GLOAT-ROOT "/ys/src/ys/" name ".clj")
         patch (str GLOAT-ROOT "/ys/patch/ys-" name "-bb.patch")
-        tmpfile (str (fs/create-temp-file))
+        tmpfile (str (fs/create-temp-file {:dir GLOAT-TMP}))
         patch-content (slurp patch)]
 
     (process/shell
@@ -795,7 +798,7 @@ Less common:
 ;;------------------------------------------------------------------------------
 
 (defn convert-to-stdout [input format namespace]
-  (let [tmpdir (str (fs/create-temp-dir))
+  (let [tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))
         input-type (get-file-type input)
         clj-file (str tmpdir "/temp.clj")
         glj-file (str tmpdir "/temp.glj")]
@@ -816,7 +819,7 @@ Less common:
                 (when (fs/exists? clj-file)
                   (clj-to-glj clj-file glj-file))
                 (print (slurp glj-file)))
-        "go" (let [go-tmpdir (str (fs/create-temp-dir))]
+        "go" (let [go-tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))]
                (when (fs/exists? clj-file)
                  (clj-to-glj clj-file glj-file))
                (let [ns (resolve-namespace
@@ -845,7 +848,7 @@ Less common:
     ;; For formats that need directory build, delegate
     (if (contains? #{"dir" "bin" "lib" "wasm" "js"} format)
       (let [original-source (str (fs/canonicalize input))
-            tmpdir (str (fs/create-temp-dir))
+            tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))
             basename (fs/file-name input)
             ;; Ensure file has appropriate extension
             basename (if-not (re-find #"\.(ys|clj|glj)$" basename)
@@ -861,7 +864,7 @@ Less common:
         (fs/delete-tree tmpdir))
 
       ;; Handle simple file conversion
-      (let [tmpdir (str (fs/create-temp-dir))
+      (let [tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))
             clj-file (str tmpdir "/temp.clj")
             glj-file (str tmpdir "/temp.glj")
             ns (when (= input-type "ys")
@@ -922,7 +925,7 @@ Less common:
   namespace to avoid basename collisions (e.g. parser.clj at different depths).
   For lib format, the file with EXPORT is named 'main.clj' so that
   convert-directory selects it as the main namespace."
-  (let [tmpdir (str (fs/create-temp-dir))]
+  (let [tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))]
     (try
       ;; For lib format, find the file with EXPORT to use as main namespace
       (let [export-file (when (= format "lib")
@@ -960,7 +963,7 @@ Less common:
         is-binary (contains? #{"bin" "lib" "wasm" "js"} format)
         output-dir (cond
                      is-dir-output (str/replace output #"/$" "")
-                     is-binary (str (fs/create-temp-dir) "/build")
+                     is-binary (str (fs/create-temp-dir {:dir GLOAT-TMP}) "/build")
                      :else (str/replace output #"/$" ""))
         binary-name (when is-binary (fs/file-name output))
         build-mode (when (= format "lib") "-buildmode=c-shared")
@@ -990,7 +993,7 @@ Less common:
 
       (msg "Found" (count source-files) "source file(s)")
 
-      (let [shared-tmpdir (str (fs/create-temp-dir))
+      (let [shared-tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))
             all-namespaces (atom [])
             main-namespace (atom nil)
             export-map (atom nil)
@@ -1504,7 +1507,7 @@ Less common:
             ;; --run without -o: compile to temp file
             (let [[output to]
                   (if (and run (nil? output))
-                    (let [run-tmpdir (str (fs/create-temp-dir))]
+                    (let [run-tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))]
                       (alter-var-root #'*opts* assoc :run-tmpdir run-tmpdir)
                       (cond
                         (= to "bb") [(str run-tmpdir "/gloat-run.bb") to]
@@ -1633,7 +1636,7 @@ Less common:
                   content (if (and clj? (not (re-find #"(?m)^\s*\(ns\s" content)))
                             (str "(ns main.core)\n" content)
                             content)
-                  tmpfile (str (fs/create-temp-file {:suffix suffix}))]
+                  tmpfile (str (fs/create-temp-file {:dir GLOAT-TMP :suffix suffix}))]
               (spit tmpfile content)
               (convert-file
                tmpfile

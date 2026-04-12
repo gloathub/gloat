@@ -1,3 +1,9 @@
+- version: 0.1.24
+  date:    Sun Apr 12 02:52:41 PM EDT 2026
+  changes:
+  - Use project-local tmp dir and fix empty EXPORT type spec
+  - Rename tagline to Glojure Automation Tool
+
 - version: 0.1.23
   date:    Fri Mar 20 10:22:45 AM PDT 2026
   changes:

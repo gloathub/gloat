@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+# Extract pre-compiled demo assets from the demo-assets branch and copy
+# source files from demo/ for the static WASM demo page.
+
+set -euo pipefail
+
+DEMO_ASSETS=${1:?Usage: build-demo-assets DEMO_ASSETS_DIR}
+shift
+
+DEMO_BRANCH=${DEMO_BRANCH:?}
+DEMO_PROGRAMS=("$@")
+
+DEMO_LANGS=(yamlscript clojure)
+DEMO_STAGES=(glj go js)
+
+rm -rf "$DEMO_ASSETS"
+mkdir -p "$DEMO_ASSETS"
+
+# Extract wasm_exec.js
+git show "$DEMO_BRANCH":wasm_exec.js > "$DEMO_ASSETS/wasm_exec.js"
+
+# Extract compiled files for each language/program/stage
+for lang in "${DEMO_LANGS[@]}"; do
+  for stage in "${DEMO_STAGES[@]}"; do
+    mkdir -p "$DEMO_ASSETS/$lang/$stage"
+    for prog in "${DEMO_PROGRAMS[@]}"; do
+      git show "$DEMO_BRANCH:$lang/$stage/$prog.$stage" \
+        > "$DEMO_ASSETS/$lang/$stage/$prog.$stage"
+    done
+  done
+done
+
+# Copy source files from demo/
+for prog in "${DEMO_PROGRAMS[@]}"; do
+  mkdir -p "$DEMO_ASSETS/yamlscript/src"
+  cp "../demo/yamlscript/$prog.ys" "$DEMO_ASSETS/yamlscript/src/"
+  mkdir -p "$DEMO_ASSETS/clojure/src"
+  cp "../demo/clojure/$prog.clj" "$DEMO_ASSETS/clojure/src/"
+done
+
+# Generate config.json filtered to demo programs
+programs_json=$(printf '%s\n' "${DEMO_PROGRAMS[@]}" | \
+  python3 -c "
+import yaml, json, sys
+config = yaml.safe_load(open('../demo/config.yaml'))
+programs = sys.stdin.read().split()
+filtered = {k: v for k, v in config.items() if k in programs}
+json.dump(filtered, sys.stdout, indent=2)
+")
+echo "$programs_json" > "$DEMO_ASSETS/config.json"
+
+touch "$DEMO_ASSETS/.built"
+echo "Demo assets ready in $DEMO_ASSETS/"

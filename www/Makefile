@@ -58,15 +58,23 @@ build-report: docs/build-report/index.html
 docs/build-report/index.html: docs/hello-world.clj
 	@mkdir -p $(dir $@)
 	../bin/gloat $< -fqo /tmp/gloat-hello \
-	  -Xprune,report=$@
+	  -Xprune,report=$@ </dev/null
 	@$(RM) /tmp/gloat-hello
 
+GLOJURE-TEST-REPORT := ../../glojure/test/clojure-test-suite/report.html
+ifneq (,$(GLOJURE-TEST-REPORT))
+TEST-REPORT := docs/test-report/index.html
+$(TEST-REPORT): $(GLOJURE-TEST-REPORT)
+	mkdir -p $(dir $@)
+	cp -p $< $@
+endif
+
 # Build main site (production)
-site: $(DEPS) social-card build-report demo-assets
+site: $(DEPS) social-card build-report demo-assets $(TEST-REPORT)
 	mkdocs build -d $@
 
 # Serve locally with MkDocs
-serve: $(DEPS) social-card build-report demo-assets
+serve: $(DEPS) social-card build-report demo-assets $(TEST-REPORT)
 	mkdocs serve --livereload
 
 # Build alias for backwards compatibility
@@ -91,34 +99,5 @@ demo-assets: $(DEPS) $(DEMO-ASSETS)/.built
 
 $(DEMO-ASSETS)/.built:
 	@echo "Extracting demo assets..."
-	@$(RM) -r $(DEMO-ASSETS)
-	@mkdir -p $(DEMO-ASSETS)
-	@# Extract wasm_exec.js
-	git show $(DEMO-BRANCH):wasm_exec.js > $(DEMO-ASSETS)/wasm_exec.js
-	@# Extract compiled files for each language/program/stage
-	@for lang in $(DEMO-LANGS); do \
-	  for stage in $(DEMO-STAGES); do \
-	    mkdir -p $(DEMO-ASSETS)/$$lang/$$stage; \
-	    for prog in $(DEMO-PROGRAMS); do \
-	      git show $(DEMO-BRANCH):$$lang/$$stage/$$prog.$$stage \
-	        > $(DEMO-ASSETS)/$$lang/$$stage/$$prog.$$stage; \
-	    done; \
-	  done; \
-	done
-	@# Copy source files from demo/
-	@for prog in $(DEMO-PROGRAMS); do \
-	  mkdir -p $(DEMO-ASSETS)/yamlscript/src; \
-	  cp ../demo/yamlscript/$$prog.ys $(DEMO-ASSETS)/yamlscript/src/; \
-	  mkdir -p $(DEMO-ASSETS)/clojure/src; \
-	  cp ../demo/clojure/$$prog.clj $(DEMO-ASSETS)/clojure/src/; \
-	done
-	@# Generate config.json filtered to demo programs
-	$(PYTHON-VENV)/bin/python3 -c " \
-	import yaml, json, sys; \
-	config = yaml.safe_load(open('../demo/config.yaml')); \
-	programs = '$(DEMO-PROGRAMS)'.split(); \
-	filtered = {k: v for k, v in config.items() if k in programs}; \
-	json.dump(filtered, sys.stdout, indent=2)" \
-	  > $(DEMO-ASSETS)/config.json
-	@touch $@
-	@echo "Demo assets ready in $(DEMO-ASSETS)/"
+	DEMO_BRANCH=$(DEMO-BRANCH) \
+	  util/build-demo-assets $(DEMO-ASSETS) $(DEMO-PROGRAMS)

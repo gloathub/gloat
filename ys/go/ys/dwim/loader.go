@@ -136,6 +136,7 @@ func LoadNS() {
 	sym_accessor := lang.NewSymbol("accessor")
 	sym_aclone := lang.NewSymbol("aclone")
 	sym_add_DASH_classpath := lang.NewSymbol("add-classpath")
+	sym_add_DASH_load_DASH_path := lang.NewSymbol("add-load-path")
 	sym_add_DASH_watch := lang.NewSymbol("add-watch")
 	sym_agent := lang.NewSymbol("agent")
 	sym_agent_DASH_error := lang.NewSymbol("agent-error")
@@ -2736,6 +2737,13 @@ func LoadNS() {
 		v := srcNS.Mappings().ValAt(sym_dorun)
 		if vr, ok := v.(*lang.Var); ok {
 			ns.Refer(sym_dorun, vr)
+		}
+	}
+	{ // refer clojure.core/add-load-path as add-load-path
+		srcNS := lang.FindOrCreateNamespace(sym_clojure_DOT_core)
+		v := srcNS.Mappings().ValAt(sym_add_DASH_load_DASH_path)
+		if vr, ok := v.(*lang.Var); ok {
+			ns.Refer(sym_add_DASH_load_DASH_path, vr)
 		}
 	}
 	{ // refer clojure.core/assert as assert
@@ -6757,11 +6765,11 @@ func LoadNS() {
 				_ = v21
 				var tmp22 any
 				{ // let
-					// let binding "pred__1"
+					// let binding "pred__5"
 					tmp23 := checkDerefVar(var_clojure_DOT_core__EQ_)
 					var v24 any = tmp23
 					_ = v24
-					// let binding "expr__2"
+					// let binding "expr__6"
 					var v25 any = v4
 					_ = v25
 					var tmp26 any

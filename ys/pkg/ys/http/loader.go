@@ -93,6 +93,7 @@ func LoadNS() {
 	sym_accessor := lang.NewSymbol("accessor")
 	sym_aclone := lang.NewSymbol("aclone")
 	sym_add_DASH_classpath := lang.NewSymbol("add-classpath")
+	sym_add_DASH_load_DASH_path := lang.NewSymbol("add-load-path")
 	sym_add_DASH_watch := lang.NewSymbol("add-watch")
 	sym_agent := lang.NewSymbol("agent")
 	sym_agent_DASH_error := lang.NewSymbol("agent-error")
@@ -2522,6 +2523,13 @@ func LoadNS() {
 		v := srcNS.Mappings().ValAt(sym_dorun)
 		if vr, ok := v.(*lang.Var); ok {
 			ns.Refer(sym_dorun, vr)
+		}
+	}
+	{ // refer clojure.core/add-load-path as add-load-path
+		srcNS := lang.FindOrCreateNamespace(sym_clojure_DOT_core)
+		v := srcNS.Mappings().ValAt(sym_add_DASH_load_DASH_path)
+		if vr, ok := v.(*lang.Var); ok {
+			ns.Refer(sym_add_DASH_load_DASH_path, vr)
 		}
 	}
 	{ // refer clojure.core/assert as assert
@@ -5192,7 +5200,7 @@ func LoadNS() {
 				_ = v3
 				var tmp4 any
 				{ // let
-					// let binding "vec__20"
+					// let binding "vec__24"
 					tmp5 := lang.Apply3(http4.NewRequest, "GET", v2, nil)
 					var v6 any = tmp5
 					_ = v6
@@ -5224,19 +5232,19 @@ func LoadNS() {
 					} else {
 						var tmp23 any
 						{ // let
-							// let binding "seq_23"
+							// let binding "seq_27"
 							tmp24 := checkDerefVar(var_clojure_DOT_core_seq)
 							tmp25 := lang.Apply1(kw_headers, v3)
 							tmp26 := lang.Apply1(tmp24, tmp25)
 							var v27 any = tmp26
 							_ = v27
-							// let binding "chunk_24"
+							// let binding "chunk_28"
 							var v28 any = nil
 							_ = v28
-							// let binding "count_25"
+							// let binding "count_29"
 							var v29 any = int64(0)
 							_ = v29
-							// let binding "i_26"
+							// let binding "i_30"
 							var v30 any = int64(0)
 							_ = v30
 							for {
@@ -5246,7 +5254,7 @@ func LoadNS() {
 								if lang.IsTruthy(tmp33) {
 									var tmp34 any
 									{ // let
-										// let binding "vec__27"
+										// let binding "vec__31"
 										tmp35, _ := lang.FieldOrMethod(v28, "nth")
 										if reflect.TypeOf(tmp35).Kind() != reflect.Func {
 											panic(lang.NewIllegalArgumentError(fmt.Sprintf("nth is not a function")))
@@ -5310,7 +5318,7 @@ func LoadNS() {
 										if lang.IsTruthy(v38) {
 											var tmp40 any
 											{ // let
-												// let binding "seq_23"
+												// let binding "seq_27"
 												var v41 any = v38
 												_ = v41
 												var tmp42 any
@@ -5346,7 +5354,7 @@ func LoadNS() {
 												} else {
 													var tmp46 any
 													{ // let
-														// let binding "vec__30"
+														// let binding "vec__34"
 														tmp47 := checkDerefVar(var_clojure_DOT_core_first)
 														tmp48 := lang.Apply1(tmp47, v41)
 														var v49 any = tmp48
@@ -5415,7 +5423,7 @@ func LoadNS() {
 							// let binding "client"
 							var v25 any = http4.DefaultClient
 							_ = v25
-							// let binding "vec__33"
+							// let binding "vec__37"
 							tmp26, _ := lang.FieldOrMethod(v25, "Do")
 							if reflect.TypeOf(tmp26).Kind() != reflect.Func {
 								panic(lang.NewIllegalArgumentError(fmt.Sprintf("Do is not a function")))
@@ -5451,7 +5459,7 @@ func LoadNS() {
 							} else {
 								var tmp45 any
 								{ // let
-									// let binding "vec__36"
+									// let binding "vec__40"
 									tmp46, ok := lang.FieldOrMethod(v31, "Body")
 									if !ok {
 										panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v31, "Body")))
@@ -5593,7 +5601,7 @@ func LoadNS() {
 				tmp7 := lang.Apply1(strings6.NewReader, v6)
 				var v8 any = tmp7
 				_ = v8
-				// let binding "vec__1"
+				// let binding "vec__5"
 				tmp9 := lang.Apply3(http4.NewRequest, "POST", v2, v8)
 				var v10 any = tmp9
 				_ = v10
@@ -5636,19 +5644,19 @@ func LoadNS() {
 				} else {
 					var tmp29 any
 					{ // let
-						// let binding "seq_4"
+						// let binding "seq_8"
 						tmp30 := checkDerefVar(var_clojure_DOT_core_seq)
 						tmp31 := lang.Apply1(kw_headers, v3)
 						tmp32 := lang.Apply1(tmp30, tmp31)
 						var v33 any = tmp32
 						_ = v33
-						// let binding "chunk_5"
+						// let binding "chunk_9"
 						var v34 any = nil
 						_ = v34
-						// let binding "count_6"
+						// let binding "count_10"
 						var v35 any = int64(0)
 						_ = v35
-						// let binding "i_7"
+						// let binding "i_11"
 						var v36 any = int64(0)
 						_ = v36
 						for {
@@ -5658,7 +5666,7 @@ func LoadNS() {
 							if lang.IsTruthy(tmp39) {
 								var tmp40 any
 								{ // let
-									// let binding "vec__8"
+									// let binding "vec__12"
 									tmp41, _ := lang.FieldOrMethod(v34, "nth")
 									if reflect.TypeOf(tmp41).Kind() != reflect.Func {
 										panic(lang.NewIllegalArgumentError(fmt.Sprintf("nth is not a function")))
@@ -5722,7 +5730,7 @@ func LoadNS() {
 									if lang.IsTruthy(v44) {
 										var tmp46 any
 										{ // let
-											// let binding "seq_4"
+											// let binding "seq_8"
 											var v47 any = v44
 											_ = v47
 											var tmp48 any
@@ -5758,7 +5766,7 @@ func LoadNS() {
 											} else {
 												var tmp52 any
 												{ // let
-													// let binding "vec__11"
+													// let binding "vec__15"
 													tmp53 := checkDerefVar(var_clojure_DOT_core_first)
 													tmp54 := lang.Apply1(tmp53, v47)
 													var v55 any = tmp54
@@ -5827,7 +5835,7 @@ func LoadNS() {
 						// let binding "client"
 						var v31 any = http4.DefaultClient
 						_ = v31
-						// let binding "vec__14"
+						// let binding "vec__18"
 						tmp32, _ := lang.FieldOrMethod(v31, "Do")
 						if reflect.TypeOf(tmp32).Kind() != reflect.Func {
 							panic(lang.NewIllegalArgumentError(fmt.Sprintf("Do is not a function")))
@@ -5874,7 +5882,7 @@ func LoadNS() {
 						} else {
 							var tmp53 any
 							{ // let
-								// let binding "vec__17"
+								// let binding "vec__21"
 								tmp54, ok := lang.FieldOrMethod(v37, "Body")
 								if !ok {
 									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v37, "Body")))

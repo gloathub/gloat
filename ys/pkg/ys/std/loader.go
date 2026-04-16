@@ -127,6 +127,7 @@ func LoadNS() {
 	sym_add := lang.NewSymbol("add")
 	sym_add_PLUS_ := lang.NewSymbol("add+")
 	sym_add_DASH_classpath := lang.NewSymbol("add-classpath")
+	sym_add_DASH_load_DASH_path := lang.NewSymbol("add-load-path")
 	sym_add_DASH_watch := lang.NewSymbol("add-watch")
 	sym_agent := lang.NewSymbol("agent")
 	sym_agent_DASH_error := lang.NewSymbol("agent-error")
@@ -3428,6 +3429,13 @@ func LoadNS() {
 		v := srcNS.Mappings().ValAt(sym_dorun)
 		if vr, ok := v.(*lang.Var); ok {
 			ns.Refer(sym_dorun, vr)
+		}
+	}
+	{ // refer clojure.core/add-load-path as add-load-path
+		srcNS := lang.FindOrCreateNamespace(sym_clojure_DOT_core)
+		v := srcNS.Mappings().ValAt(sym_add_DASH_load_DASH_path)
+		if vr, ok := v.(*lang.Var); ok {
+			ns.Refer(sym_add_DASH_load_DASH_path, vr)
 		}
 	}
 	{ // refer clojure.core/assert as assert
@@ -7024,7 +7032,7 @@ func LoadNS() {
 				_ = v3
 				var tmp4 any
 				{ // let
-					// let binding "pred__120"
+					// let binding "pred__124"
 					var tmp5 lang.FnFunc2
 					tmp5 = lang.FnFunc2(func(p0, p1 any) any {
 						v6 := p0
@@ -7036,7 +7044,7 @@ func LoadNS() {
 					})
 					var v6 any = tmp5
 					_ = v6
-					// let binding "expr__121"
+					// let binding "expr__125"
 					var v7 any = v2
 					_ = v7
 					var tmp8 any
@@ -7547,7 +7555,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__116"
+				// let binding "pred__120"
 				var tmp4 lang.FnFunc2
 				tmp4 = lang.FnFunc2(func(p0, p1 any) any {
 					v5 := p0
@@ -7559,7 +7567,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__117"
+				// let binding "expr__121"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -7591,7 +7599,7 @@ func LoadNS() {
 							_ = v24
 							var tmp25 any
 							{ // let
-								// let binding "pred__118"
+								// let binding "pred__122"
 								var tmp26 lang.FnFunc2
 								tmp26 = lang.FnFunc2(func(p0, p1 any) any {
 									v27 := p0
@@ -7603,7 +7611,7 @@ func LoadNS() {
 								})
 								var v27 any = tmp26
 								_ = v27
-								// let binding "expr__119"
+								// let binding "expr__123"
 								var v28 any = v24
 								_ = v28
 								var tmp29 any
@@ -7684,7 +7692,7 @@ func LoadNS() {
 					{ // let
 						// let binding "iter__0__auto__"
 						var tmp11 lang.FnFunc1
-						{ // function iter__108
+						{ // function iter__112
 							var v12 lang.FnFunc1
 							tmp11 = lang.FnFunc1(func(p0 any) any {
 								v13 := p0
@@ -7693,7 +7701,7 @@ func LoadNS() {
 								tmp14 = lang.FnFunc0(func() any {
 									var tmp15 any
 									{ // let
-										// let binding "s__109"
+										// let binding "s__113"
 										var v16 any = v13
 										_ = v16
 										for {
@@ -7708,7 +7716,7 @@ func LoadNS() {
 												if lang.IsTruthy(v20) {
 													var tmp22 any
 													{ // let
-														// let binding "s__109"
+														// let binding "s__113"
 														var v23 any = v20
 														_ = v23
 														var tmp24 any
@@ -7729,7 +7737,7 @@ func LoadNS() {
 																tmp34 := lang.Apply1(tmp31, tmp33)
 																var v35 any = tmp34
 																_ = v35
-																// let binding "b__111"
+																// let binding "b__115"
 																tmp36 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_buffer)
 																tmp37 := lang.Apply1(tmp36, v35)
 																var v38 any = tmp37
@@ -7737,7 +7745,7 @@ func LoadNS() {
 																var tmp39 any
 																var tmp40 any
 																{ // let
-																	// let binding "i__110"
+																	// let binding "i__114"
 																	tmp41 := checkDerefVar(var_clojure_DOT_core_int)
 																	tmp42 := lang.Apply1(tmp41, int64(0))
 																	var v43 any = tmp42
@@ -8113,7 +8121,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__144"
+				// let binding "pred__148"
 				var tmp4 lang.FnFunc2
 				tmp4 = lang.FnFunc2(func(p0, p1 any) any {
 					v5 := p0
@@ -8125,7 +8133,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__145"
+				// let binding "expr__149"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -9285,7 +9293,7 @@ func LoadNS() {
 			_ = v3
 			var tmp4 any
 			{ // let
-				// let binding "pred__90"
+				// let binding "pred__94"
 				var tmp5 lang.FnFunc2
 				tmp5 = lang.FnFunc2(func(p0, p1 any) any {
 					v6 := p0
@@ -9297,7 +9305,7 @@ func LoadNS() {
 				})
 				var v6 any = tmp5
 				_ = v6
-				// let binding "expr__91"
+				// let binding "expr__95"
 				var v7 any = v2
 				_ = v7
 				var tmp8 any
@@ -9417,7 +9425,7 @@ func LoadNS() {
 							if lang.IsTruthy(tmp31) {
 								var tmp32 any
 								{ // let
-									// let binding "pred__92"
+									// let binding "pred__96"
 									var tmp33 lang.FnFunc2
 									tmp33 = lang.FnFunc2(func(p0, p1 any) any {
 										v34 := p0
@@ -9429,7 +9437,7 @@ func LoadNS() {
 									})
 									var v34 any = tmp33
 									_ = v34
-									// let binding "expr__93"
+									// let binding "expr__97"
 									var v35 any = v3
 									_ = v35
 									var tmp36 any
@@ -9480,7 +9488,7 @@ func LoadNS() {
 			_ = v3
 			var tmp4 any
 			{ // let
-				// let binding "vec__94"
+				// let binding "vec__98"
 				var tmp5 any
 				tmp6 := checkDerefVar(var_clojure_DOT_core_seqable_QMARK_)
 				tmp7 := lang.Apply1(tmp6, v3)
@@ -9527,7 +9535,7 @@ func LoadNS() {
 				_ = v26
 				var tmp27 any
 				{ // let
-					// let binding "pred__97"
+					// let binding "pred__101"
 					var tmp28 lang.FnFunc2
 					tmp28 = lang.FnFunc2(func(p0, p1 any) any {
 						v29 := p0
@@ -9539,7 +9547,7 @@ func LoadNS() {
 					})
 					var v29 any = tmp28
 					_ = v29
-					// let binding "expr__98"
+					// let binding "expr__102"
 					var v30 any = v17
 					_ = v30
 					var tmp31 any
@@ -9807,7 +9815,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__112"
+				// let binding "pred__116"
 				var tmp4 lang.FnFunc2
 				tmp4 = lang.FnFunc2(func(p0, p1 any) any {
 					v5 := p0
@@ -9819,7 +9827,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__113"
+				// let binding "expr__117"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -9851,7 +9859,7 @@ func LoadNS() {
 							_ = v24
 							var tmp25 any
 							{ // let
-								// let binding "pred__114"
+								// let binding "pred__118"
 								var tmp26 lang.FnFunc2
 								tmp26 = lang.FnFunc2(func(p0, p1 any) any {
 									v27 := p0
@@ -9863,7 +9871,7 @@ func LoadNS() {
 								})
 								var v27 any = tmp26
 								_ = v27
-								// let binding "expr__115"
+								// let binding "expr__119"
 								var v28 any = v24
 								_ = v28
 								var tmp29 any
@@ -11180,7 +11188,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__99"
+				// let binding "pred__103"
 				var tmp4 lang.FnFunc2
 				tmp4 = lang.FnFunc2(func(p0, p1 any) any {
 					v5 := p0
@@ -11192,7 +11200,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__100"
+				// let binding "expr__104"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -11276,12 +11284,12 @@ func LoadNS() {
 			_ = v3
 			var tmp4 any
 			{ // let
-				// let binding "vec__101"
+				// let binding "vec__105"
 				var tmp5 any
 				{ // let
 					// let binding "iter__0__auto__"
 					var tmp6 lang.FnFunc1
-					{ // function iter__104
+					{ // function iter__108
 						var v7 lang.FnFunc1
 						tmp6 = lang.FnFunc1(func(p0 any) any {
 							v8 := p0
@@ -11290,7 +11298,7 @@ func LoadNS() {
 							tmp9 = lang.FnFunc0(func() any {
 								var tmp10 any
 								{ // let
-									// let binding "s__105"
+									// let binding "s__109"
 									var v11 any = v8
 									_ = v11
 									for {
@@ -11305,7 +11313,7 @@ func LoadNS() {
 											if lang.IsTruthy(v15) {
 												var tmp17 any
 												{ // let
-													// let binding "s__105"
+													// let binding "s__109"
 													var v18 any = v15
 													_ = v18
 													var tmp19 any
@@ -11326,7 +11334,7 @@ func LoadNS() {
 															tmp29 := lang.Apply1(tmp26, tmp28)
 															var v30 any = tmp29
 															_ = v30
-															// let binding "b__107"
+															// let binding "b__111"
 															tmp31 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_buffer)
 															tmp32 := lang.Apply1(tmp31, v30)
 															var v33 any = tmp32
@@ -11334,7 +11342,7 @@ func LoadNS() {
 															var tmp34 any
 															var tmp35 any
 															{ // let
-																// let binding "i__106"
+																// let binding "i__110"
 																tmp36 := checkDerefVar(var_clojure_DOT_core_int)
 																tmp37 := lang.Apply1(tmp36, int64(0))
 																var v38 any = tmp37
@@ -11599,7 +11607,7 @@ func LoadNS() {
 		tmp1 = lang.NewFnFunc(func(args ...any) any {
 			switch len(args) {
 			case 0:
-				tmp2 := lang.CreatePersistentTreeSet(lang.NewSliceSeq([]any{}))
+				tmp2 := lang.NewSet()
 				tmp3 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(697), kw_column, int(7), kw_end_DASH_line, int(697), kw_end_DASH_column, int(9))
 				tmp4, err := lang.WithMeta(tmp2, tmp3.(lang.IPersistentMap))
 				if err != nil {
@@ -11816,7 +11824,7 @@ func LoadNS() {
 				_ = v3
 				var tmp4 any
 				{ // let
-					// let binding "vec__79"
+					// let binding "vec__83"
 					var tmp5 any
 					tmp6 := checkDerefVar(var_yamlscript_DOT_common_regex_QMARK_)
 					tmp7 := lang.Apply1(tmp6, v2)
@@ -12052,7 +12060,7 @@ func LoadNS() {
 				_ = v3
 				var tmp4 any
 				{ // let
-					// let binding "pred__122"
+					// let binding "pred__126"
 					var tmp5 lang.FnFunc2
 					tmp5 = lang.FnFunc2(func(p0, p1 any) any {
 						v6 := p0
@@ -12064,7 +12072,7 @@ func LoadNS() {
 					})
 					var v6 any = tmp5
 					_ = v6
-					// let binding "expr__123"
+					// let binding "expr__127"
 					var v7 any = v2
 					_ = v7
 					var tmp8 any
@@ -12132,7 +12140,7 @@ func LoadNS() {
 										if lang.IsTruthy(tmp44) {
 											var tmp45 any
 											{ // let
-												// let binding "pred__124"
+												// let binding "pred__128"
 												var tmp46 lang.FnFunc2
 												tmp46 = lang.FnFunc2(func(p0, p1 any) any {
 													v47 := p0
@@ -12144,7 +12152,7 @@ func LoadNS() {
 												})
 												var v47 any = tmp46
 												_ = v47
-												// let binding "expr__125"
+												// let binding "expr__129"
 												var v48 any = v3
 												_ = v48
 												var tmp49 any
@@ -12306,7 +12314,7 @@ func LoadNS() {
 					}
 					var v14 any = tmp9
 					_ = v14
-					// let binding "vec__82"
+					// let binding "vec__86"
 					var tmp15 any
 					tmp16 := checkDerefVar(var_clojure_DOT_core_neg_QMARK_)
 					tmp17 := lang.Apply1(tmp16, v4)
@@ -12352,11 +12360,11 @@ func LoadNS() {
 					_ = v28
 					var tmp29 any
 					{ // let
-						// let binding "pred__85"
+						// let binding "pred__89"
 						tmp30 := checkDerefVar(var_clojure_DOT_core_apply)
 						var v31 any = tmp30
 						_ = v31
-						// let binding "expr__86"
+						// let binding "expr__90"
 						tmp32 := lang.NewVector(v14, v28)
 						tmp33 := lang.NewMap(kw_file, "ys/std.glj", kw_line, int(144), kw_column, int(19), kw_end_DASH_line, int(144), kw_end_DASH_column, int(28))
 						tmp34, err := lang.WithMeta(tmp32, tmp33.(lang.IPersistentMap))
@@ -12377,7 +12385,7 @@ func LoadNS() {
 							if lang.IsTruthy(tmp43) {
 								var tmp44 any
 								{ // let
-									// let binding "vec__87"
+									// let binding "vec__91"
 									var tmp45 any
 									tmp46 := checkDerefVar(var_clojure_DOT_core_neg_QMARK_)
 									tmp47 := lang.Apply1(tmp46, v14)
@@ -12578,7 +12586,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__126"
+				// let binding "pred__130"
 				var tmp4 lang.FnFunc2
 				tmp4 = lang.FnFunc2(func(p0, p1 any) any {
 					v5 := p0
@@ -12590,7 +12598,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__127"
+				// let binding "expr__131"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -12711,7 +12719,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__128"
+				// let binding "pred__132"
 				var tmp4 lang.FnFunc2
 				tmp4 = lang.FnFunc2(func(p0, p1 any) any {
 					v5 := p0
@@ -12723,7 +12731,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__129"
+				// let binding "expr__133"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -12820,7 +12828,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__130"
+				// let binding "pred__134"
 				var tmp4 lang.FnFunc2
 				tmp4 = lang.FnFunc2(func(p0, p1 any) any {
 					v5 := p0
@@ -12832,7 +12840,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__131"
+				// let binding "expr__135"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -12930,7 +12938,7 @@ func LoadNS() {
 				_ = v3
 				var tmp4 any
 				{ // let
-					// let binding "pred__132"
+					// let binding "pred__136"
 					var tmp5 lang.FnFunc2
 					tmp5 = lang.FnFunc2(func(p0, p1 any) any {
 						v6 := p0
@@ -12942,7 +12950,7 @@ func LoadNS() {
 					})
 					var v6 any = tmp5
 					_ = v6
-					// let binding "expr__133"
+					// let binding "expr__137"
 					var v7 any = v2
 					_ = v7
 					var tmp8 any
@@ -13043,7 +13051,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__134"
+				// let binding "pred__138"
 				var tmp4 lang.FnFunc2
 				tmp4 = lang.FnFunc2(func(p0, p1 any) any {
 					v5 := p0
@@ -13055,7 +13063,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__135"
+				// let binding "expr__139"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -13122,7 +13130,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__136"
+				// let binding "pred__140"
 				var tmp4 lang.FnFunc2
 				tmp4 = lang.FnFunc2(func(p0, p1 any) any {
 					v5 := p0
@@ -13134,7 +13142,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__137"
+				// let binding "expr__141"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -13194,7 +13202,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__138"
+				// let binding "pred__142"
 				var tmp4 lang.FnFunc2
 				tmp4 = lang.FnFunc2(func(p0, p1 any) any {
 					v5 := p0
@@ -13206,7 +13214,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__139"
+				// let binding "expr__143"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -13246,7 +13254,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__140"
+				// let binding "pred__144"
 				var tmp4 lang.FnFunc2
 				tmp4 = lang.FnFunc2(func(p0, p1 any) any {
 					v5 := p0
@@ -13258,7 +13266,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__141"
+				// let binding "expr__145"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any
@@ -13436,7 +13444,7 @@ func LoadNS() {
 			_ = v2
 			var tmp3 any
 			{ // let
-				// let binding "pred__142"
+				// let binding "pred__146"
 				var tmp4 lang.FnFunc2
 				tmp4 = lang.FnFunc2(func(p0, p1 any) any {
 					v5 := p0
@@ -13448,7 +13456,7 @@ func LoadNS() {
 				})
 				var v5 any = tmp4
 				_ = v5
-				// let binding "expr__143"
+				// let binding "expr__147"
 				var v6 any = v2
 				_ = v6
 				var tmp7 any

@@ -90,6 +90,7 @@ func LoadNS() {
 	sym_accessor := lang.NewSymbol("accessor")
 	sym_aclone := lang.NewSymbol("aclone")
 	sym_add_DASH_classpath := lang.NewSymbol("add-classpath")
+	sym_add_DASH_load_DASH_path := lang.NewSymbol("add-load-path")
 	sym_add_DASH_watch := lang.NewSymbol("add-watch")
 	sym_agent := lang.NewSymbol("agent")
 	sym_agent_DASH_error := lang.NewSymbol("agent-error")
@@ -2560,6 +2561,13 @@ func LoadNS() {
 		v := srcNS.Mappings().ValAt(sym_dorun)
 		if vr, ok := v.(*lang.Var); ok {
 			ns.Refer(sym_dorun, vr)
+		}
+	}
+	{ // refer clojure.core/add-load-path as add-load-path
+		srcNS := lang.FindOrCreateNamespace(sym_clojure_DOT_core)
+		v := srcNS.Mappings().ValAt(sym_add_DASH_load_DASH_path)
+		if vr, ok := v.(*lang.Var); ok {
+			ns.Refer(sym_add_DASH_load_DASH_path, vr)
 		}
 	}
 	{ // refer clojure.core/assert as assert
@@ -5282,7 +5290,7 @@ func LoadNS() {
 												_ = v34
 												var tmp35 any
 												{ // let
-													// let binding "vec__2"
+													// let binding "vec__6"
 													var v36 any = v34
 													_ = v36
 													// let binding "k"
@@ -5469,7 +5477,7 @@ func LoadNS() {
 			_ = "Parse JSON string to Clojure data"
 			var tmp3 any
 			{ // let
-				// let binding "vec__18"
+				// let binding "vec__22"
 				tmp4 := checkDerefVar(var_ys_DOT_json_parse_DASH_value)
 				tmp5 := lang.Apply2(tmp4, v2, int64(0))
 				var v6 any = tmp5
@@ -5574,7 +5582,7 @@ func LoadNS() {
 								if lang.IsTruthy(tmp33) {
 									var tmp34 any
 									{ // let
-										// let binding "vec__6"
+										// let binding "vec__10"
 										tmp35 := checkDerefVar(var_ys_DOT_json_parse_DASH_value)
 										tmp36 := lang.Apply2(tmp35, v2, v9)
 										var v37 any = tmp36
@@ -5617,7 +5625,7 @@ func LoadNS() {
 											tmp42 := lang.Apply2(tmp39, v2, tmp41)
 											var v43 any = tmp42
 											_ = v43
-											// let binding "vec__9"
+											// let binding "vec__13"
 											tmp44 := checkDerefVar(var_ys_DOT_json_parse_DASH_value)
 											tmp45 := lang.Apply2(tmp44, v2, v43)
 											var v46 any = tmp45
@@ -5911,7 +5919,7 @@ func LoadNS() {
 								if lang.IsTruthy(tmp34) {
 									var tmp35 any
 									{ // let
-										// let binding "vec__12"
+										// let binding "vec__16"
 										tmp36 := checkDerefVar(var_ys_DOT_json_parse_DASH_string)
 										tmp37 := lang.Apply2(tmp36, v2, v9)
 										var v38 any = tmp37
@@ -5949,7 +5957,7 @@ func LoadNS() {
 												tmp58 := lang.Apply2(tmp55, v2, tmp57)
 												var v59 any = tmp58
 												_ = v59
-												// let binding "vec__15"
+												// let binding "vec__19"
 												tmp60 := checkDerefVar(var_ys_DOT_json_parse_DASH_value)
 												tmp61 := lang.Apply2(tmp60, v2, v59)
 												var v62 any = tmp61
@@ -6133,52 +6141,52 @@ func LoadNS() {
 											tmp54 := checkDerefVar(var_clojure_DOT_core_conj)
 											var tmp55 any
 											{ // let
-												// let binding "G__5"
+												// let binding "G__9"
 												var v56 any = v49
 												_ = v56
 												// case
 												var tmp57 any
 												var tmp58 int64
 												tmp58 = int64(lang.Hash(v56))
-												// case entry 0 (key=110, collision=false)
-												if tmp58 == 110 {
-													if lang.Equals(v56, lang.NewChar(110)) {
-														tmp57 = lang.NewChar(10)
+												// case entry 0 (key=34, collision=false)
+												if tmp58 == 34 {
+													if lang.Equals(v56, lang.NewChar(34)) {
+														tmp57 = lang.NewChar(34)
 													} else {
 														tmp57 = v49
 													}
-													// case entry 1 (key=114, collision=false)
-												} else if tmp58 == 114 {
-													if lang.Equals(v56, lang.NewChar(114)) {
-														tmp57 = lang.NewChar(13)
+													// case entry 1 (key=47, collision=false)
+												} else if tmp58 == 47 {
+													if lang.Equals(v56, lang.NewChar(47)) {
+														tmp57 = lang.NewChar(47)
 													} else {
 														tmp57 = v49
 													}
-													// case entry 2 (key=116, collision=false)
-												} else if tmp58 == 116 {
-													if lang.Equals(v56, lang.NewChar(116)) {
-														tmp57 = lang.NewChar(9)
-													} else {
-														tmp57 = v49
-													}
-													// case entry 3 (key=92, collision=false)
+													// case entry 2 (key=92, collision=false)
 												} else if tmp58 == 92 {
 													if lang.Equals(v56, lang.NewChar(92)) {
 														tmp57 = lang.NewChar(92)
 													} else {
 														tmp57 = v49
 													}
-													// case entry 4 (key=34, collision=false)
-												} else if tmp58 == 34 {
-													if lang.Equals(v56, lang.NewChar(34)) {
-														tmp57 = lang.NewChar(34)
+													// case entry 3 (key=110, collision=false)
+												} else if tmp58 == 110 {
+													if lang.Equals(v56, lang.NewChar(110)) {
+														tmp57 = lang.NewChar(10)
 													} else {
 														tmp57 = v49
 													}
-													// case entry 5 (key=47, collision=false)
-												} else if tmp58 == 47 {
-													if lang.Equals(v56, lang.NewChar(47)) {
-														tmp57 = lang.NewChar(47)
+													// case entry 4 (key=114, collision=false)
+												} else if tmp58 == 114 {
+													if lang.Equals(v56, lang.NewChar(114)) {
+														tmp57 = lang.NewChar(13)
+													} else {
+														tmp57 = v49
+													}
+													// case entry 5 (key=116, collision=false)
+												} else if tmp58 == 116 {
+													if lang.Equals(v56, lang.NewChar(116)) {
+														tmp57 = lang.NewChar(9)
 													} else {
 														tmp57 = v49
 													}

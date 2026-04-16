@@ -93,6 +93,7 @@ func LoadNS() {
 	sym_accessor := lang.NewSymbol("accessor")
 	sym_aclone := lang.NewSymbol("aclone")
 	sym_add_DASH_classpath := lang.NewSymbol("add-classpath")
+	sym_add_DASH_load_DASH_path := lang.NewSymbol("add-load-path")
 	sym_add_DASH_watch := lang.NewSymbol("add-watch")
 	sym_agent := lang.NewSymbol("agent")
 	sym_agent_DASH_error := lang.NewSymbol("agent-error")
@@ -2517,6 +2518,13 @@ func LoadNS() {
 		v := srcNS.Mappings().ValAt(sym_dorun)
 		if vr, ok := v.(*lang.Var); ok {
 			ns.Refer(sym_dorun, vr)
+		}
+	}
+	{ // refer clojure.core/add-load-path as add-load-path
+		srcNS := lang.FindOrCreateNamespace(sym_clojure_DOT_core)
+		v := srcNS.Mappings().ValAt(sym_add_DASH_load_DASH_path)
+		if vr, ok := v.(*lang.Var); ok {
+			ns.Refer(sym_add_DASH_load_DASH_path, vr)
 		}
 	}
 	{ // refer clojure.core/assert as assert
@@ -5225,20 +5233,20 @@ func LoadNS() {
 				} else {
 					var tmp9 any
 					{ // let
-						// let binding "vec__1"
+						// let binding "vec__5"
 						var v10 any = v2
 						_ = v10
-						// let binding "seq__2"
+						// let binding "seq__6"
 						tmp11 := checkDerefVar(var_clojure_DOT_core_seq)
 						tmp12 := lang.Apply1(tmp11, v10)
 						var v13 any = tmp12
 						_ = v13
-						// let binding "first__3"
+						// let binding "first__7"
 						tmp14 := checkDerefVar(var_clojure_DOT_core_first)
 						tmp15 := lang.Apply1(tmp14, v13)
 						var v16 any = tmp15
 						_ = v16
-						// let binding "seq__2"
+						// let binding "seq__6"
 						tmp17 := checkDerefVar(var_clojure_DOT_core_next)
 						tmp18 := lang.Apply1(tmp17, v13)
 						var v19 any = tmp18
@@ -5256,7 +5264,7 @@ func LoadNS() {
 						tmp25 := lang.Apply3(tmp22, exec4.Command, v20, tmp24)
 						var v26 any = tmp25
 						_ = v26
-						// let binding "vec__4"
+						// let binding "vec__8"
 						tmp27, ok := lang.FieldOrMethod(v26, "StdoutPipe")
 						if !ok {
 							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v26, "StdoutPipe")))
@@ -5280,7 +5288,7 @@ func LoadNS() {
 						tmp34 := lang.Apply3(tmp33, v29, int64(1), nil)
 						var v35 any = tmp34
 						_ = v35
-						// let binding "vec__7"
+						// let binding "vec__11"
 						tmp36, ok := lang.FieldOrMethod(v26, "StderrPipe")
 						if !ok {
 							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v26, "StderrPipe")))
@@ -5371,7 +5379,7 @@ func LoadNS() {
 								} else {
 									var tmp66 any
 									{ // let
-										// let binding "vec__10"
+										// let binding "vec__14"
 										tmp67 := lang.Apply1(io5.ReadAll, v32)
 										var v68 any = tmp67
 										_ = v68
@@ -5385,7 +5393,7 @@ func LoadNS() {
 										tmp73 := lang.Apply3(tmp72, v68, int64(1), nil)
 										var v74 any = tmp73
 										_ = v74
-										// let binding "vec__13"
+										// let binding "vec__17"
 										tmp75 := lang.Apply1(io5.ReadAll, v41)
 										var v76 any = tmp75
 										_ = v76

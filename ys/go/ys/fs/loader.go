@@ -96,6 +96,7 @@ func LoadNS() {
 	sym_accessor := lang.NewSymbol("accessor")
 	sym_aclone := lang.NewSymbol("aclone")
 	sym_add_DASH_classpath := lang.NewSymbol("add-classpath")
+	sym_add_DASH_load_DASH_path := lang.NewSymbol("add-load-path")
 	sym_add_DASH_watch := lang.NewSymbol("add-watch")
 	sym_agent := lang.NewSymbol("agent")
 	sym_agent_DASH_error := lang.NewSymbol("agent-error")
@@ -2691,6 +2692,13 @@ func LoadNS() {
 		v := srcNS.Mappings().ValAt(sym_dorun)
 		if vr, ok := v.(*lang.Var); ok {
 			ns.Refer(sym_dorun, vr)
+		}
+	}
+	{ // refer clojure.core/add-load-path as add-load-path
+		srcNS := lang.FindOrCreateNamespace(sym_clojure_DOT_core)
+		v := srcNS.Mappings().ValAt(sym_add_DASH_load_DASH_path)
+		if vr, ok := v.(*lang.Var); ok {
+			ns.Refer(sym_add_DASH_load_DASH_path, vr)
 		}
 	}
 	{ // refer clojure.core/assert as assert
@@ -5960,7 +5968,7 @@ func LoadNS() {
 			_ = "Return absolute path"
 			var tmp3 any
 			{ // let
-				// let binding "vec__7"
+				// let binding "vec__11"
 				tmp4 := lang.Apply1(filepath4.Abs, v2)
 				var v5 any = tmp4
 				_ = v5
@@ -6002,7 +6010,7 @@ func LoadNS() {
 			_ = "Return basename of path (follows symlinks)"
 			var tmp3 any
 			{ // let
-				// let binding "vec__10"
+				// let binding "vec__14"
 				tmp4 := lang.Apply1(filepath4.EvalSymlinks, v2)
 				var v5 any = tmp4
 				_ = v5
@@ -6047,7 +6055,7 @@ func LoadNS() {
 			_ = "Copy file from src to dst"
 			var tmp4 any
 			{ // let
-				// let binding "vec__44"
+				// let binding "vec__48"
 				tmp5 := lang.Apply1(os5.ReadFile, v2)
 				var v6 any = tmp5
 				_ = v6
@@ -6103,7 +6111,7 @@ func LoadNS() {
 				if lang.IsTruthy(tmp10) {
 					var tmp11 any
 					{ // let
-						// let binding "vec__47"
+						// let binding "vec__51"
 						tmp12 := lang.Apply2(filepath4.Rel, v2, v5)
 						var v13 any = tmp12
 						_ = v13
@@ -6139,7 +6147,7 @@ func LoadNS() {
 						} else {
 							var tmp26 any
 							{ // let
-								// let binding "vec__50"
+								// let binding "vec__54"
 								tmp27 := lang.Apply1(os5.ReadFile, v5)
 								var v28 any = tmp27
 								_ = v28
@@ -6266,7 +6274,7 @@ func LoadNS() {
 			_ = "Return current working directory"
 			var tmp2 any
 			{ // let
-				// let binding "vec__13"
+				// let binding "vec__17"
 				tmp3 := lang.Apply0(os5.Getwd)
 				var v4 any = tmp3
 				_ = v4
@@ -6395,7 +6403,7 @@ func LoadNS() {
 			_ = "Return directory name of path (follows symlinks)"
 			var tmp3 any
 			{ // let
-				// let binding "vec__16"
+				// let binding "vec__20"
 				tmp4 := lang.Apply1(filepath4.EvalSymlinks, v2)
 				var v5 any = tmp4
 				_ = v5
@@ -6835,18 +6843,18 @@ func LoadNS() {
 							} else {
 								var tmp24 any
 								{ // let
-									// let binding "seq_19"
+									// let binding "seq_23"
 									tmp25 := checkDerefVar(var_clojure_DOT_core_seq)
 									tmp26 := lang.Apply1(tmp25, v3)
 									var v27 any = tmp26
 									_ = v27
-									// let binding "chunk_20"
+									// let binding "chunk_24"
 									var v28 any = nil
 									_ = v28
-									// let binding "count_21"
+									// let binding "count_25"
 									var v29 any = int64(0)
 									_ = v29
-									// let binding "i_22"
+									// let binding "i_26"
 									var v30 any = int64(0)
 									_ = v30
 									for {
@@ -6900,7 +6908,7 @@ func LoadNS() {
 												if lang.IsTruthy(v38) {
 													var tmp40 any
 													{ // let
-														// let binding "seq_19"
+														// let binding "seq_23"
 														var v41 any = v38
 														_ = v41
 														var tmp42 any
@@ -7029,7 +7037,7 @@ func LoadNS() {
 				}()
 				var tmp4 any
 				{ // let
-					// let binding "vec__1"
+					// let binding "vec__5"
 					tmp5 := lang.Apply1(os5.Stat, v2)
 					var v6 any = tmp5
 					_ = v6
@@ -7143,7 +7151,7 @@ func LoadNS() {
 				}()
 				var tmp4 any
 				{ // let
-					// let binding "vec__4"
+					// let binding "vec__8"
 					tmp5 := lang.Apply1(os5.Lstat, v2)
 					var v6 any = tmp5
 					_ = v6
@@ -7186,7 +7194,7 @@ func LoadNS() {
 			_ = "Return paths matching glob pattern"
 			var tmp3 any
 			{ // let
-				// let binding "vec__23"
+				// let binding "vec__27"
 				tmp4 := lang.Apply1(filepath4.Glob, v2)
 				var v5 any = tmp4
 				_ = v5
@@ -7337,7 +7345,7 @@ func LoadNS() {
 			_ = "List directory contents"
 			var tmp3 any
 			{ // let
-				// let binding "vec__26"
+				// let binding "vec__30"
 				tmp4 := lang.Apply1(os5.ReadDir, v2)
 				var v5 any = tmp4
 				_ = v5
@@ -7453,7 +7461,7 @@ func LoadNS() {
 				_ = v3
 				var tmp4 any
 				{ // let
-					// let binding "vec__56"
+					// let binding "vec__60"
 					tmp5 := lang.Apply2(os5.CreateTemp, v2, v3)
 					var v6 any = tmp5
 					_ = v6
@@ -7536,7 +7544,7 @@ func LoadNS() {
 				_ = v3
 				var tmp4 any
 				{ // let
-					// let binding "vec__59"
+					// let binding "vec__63"
 					tmp5 := lang.Apply2(os5.MkdirTemp, v2, v3)
 					var v6 any = tmp5
 					_ = v6
@@ -7631,7 +7639,7 @@ func LoadNS() {
 			_ = "Return canonical path (follows symlinks)"
 			var tmp3 any
 			{ // let
-				// let binding "vec__29"
+				// let binding "vec__33"
 				tmp4 := lang.Apply1(filepath4.EvalSymlinks, v2)
 				var v5 any = tmp4
 				_ = v5
@@ -7711,7 +7719,7 @@ func LoadNS() {
 			_ = "Read file contents as string"
 			var tmp3 any
 			{ // let
-				// let binding "vec__41"
+				// let binding "vec__45"
 				tmp4 := lang.Apply1(os5.ReadFile, v2)
 				var v5 any = tmp4
 				_ = v5
@@ -7820,7 +7828,7 @@ func LoadNS() {
 			_ = "Read symbolic link target"
 			var tmp3 any
 			{ // let
-				// let binding "vec__32"
+				// let binding "vec__36"
 				tmp4 := lang.Apply1(os5.Readlink, v2)
 				var v5 any = tmp4
 				_ = v5
@@ -7866,7 +7874,7 @@ func LoadNS() {
 				tmp5 := lang.Apply0(tmp4)
 				var v6 any = tmp5
 				_ = v6
-				// let binding "vec__35"
+				// let binding "vec__39"
 				tmp7 := lang.Apply2(filepath4.Rel, v6, v2)
 				var v8 any = tmp7
 				_ = v8
@@ -8031,7 +8039,7 @@ func LoadNS() {
 			} else {
 				var tmp7 any
 				{ // let
-					// let binding "vec__53"
+					// let binding "vec__57"
 					tmp8 := lang.Apply1(os5.Create, v2)
 					var v9 any = tmp8
 					_ = v9
@@ -8146,7 +8154,7 @@ func LoadNS() {
 			_ = "Find executable in PATH"
 			var tmp3 any
 			{ // let
-				// let binding "vec__38"
+				// let binding "vec__42"
 				tmp4 := lang.Apply1(exec7.LookPath, v2)
 				var v5 any = tmp4
 				_ = v5

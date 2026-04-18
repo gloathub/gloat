@@ -1,3 +1,10 @@
+- version: 0.1.26
+  date:    Sat Apr 18 02:26:33 PM PDT 2026
+  changes:
+  - Add GOPRIVATE to Makefile
+  - Update test-report
+  - Glojure - Fix mapcat to work with lazy seqs
+
 - version: 0.1.25
   date:    Thu Apr 16 01:54:46 PM EDT 2026
   changes:

@@ -79,6 +79,8 @@ export CGO_ENABLED := 0
 
 override PATH := $(ROOT)/bin:$(ROOT)/util:$(PATH)
 
+export GOPRIVATE=github.com/gloathub/*
+
 test ?= test/*.t
 
 tests := $(wildcard $(test))

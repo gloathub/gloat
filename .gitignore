@@ -1,10 +1,8 @@
-/.cache/
 /Changes.tmp
-/.claude/
 /.clj-kondo/
 /.lsp/
 /demo-assets
-/note/
+/gljrepl/
 /*.bb
 /*.clj
 /*.glj
@@ -13,14 +11,7 @@
 /*.js
 /*.md
 /*.ys
-/a
-/a[1-9]
 /app
 /gloat*
-/hello*
-/out*
 /test/call
 /test/call.clj
-/worktree/
-
-*.sw[op]

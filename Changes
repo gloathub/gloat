@@ -1,3 +1,8 @@
+- version: 0.1.28
+  date:    Wed May  6 07:17:34 PM EDT 2026
+  changes:
+  - Use Unicode symbols in comparison table
+
 - version: 0.1.27
   date:    Wed May  6 06:31:42 PM EDT 2026
   changes:

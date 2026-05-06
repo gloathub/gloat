@@ -234,17 +234,19 @@ main() (
       go mod init gloatrepl
     fi
 
-    # Ensure replace directive for glojure
-    glojure_dir=${GLOJURE_DIR:-$(
-      make --quiet --no-print-directory -C "$root" \
-        print-GLOJURE-DIR 2>/dev/null ||
-      echo "$root/../glojure"
-    )}
+    # Ensure glojure dependency in go.mod
     if ! grep -q "gloathub/glojure" go.mod 2>/dev/null; then
-      go mod edit \
-        -replace "github.com/gloathub/glojure=$glojure_dir"
+      glojure_dir=${GLOJURE_DIR:-$(
+        make --quiet --no-print-directory -C "$root" \
+          print-GLOJURE-DIR 2>/dev/null ||
+        echo "$root/../glojure"
+      )}
+      if [[ -d $glojure_dir ]]; then
+        go mod edit \
+          -replace "github.com/gloathub/glojure=$glojure_dir"
+        cp "$glojure_dir/go.sum" go.sum
+      fi
       go get github.com/gloathub/glojure
-      cp "$glojure_dir/go.sum" go.sum
     fi
 
     export GOFLAGS=-mod=mod

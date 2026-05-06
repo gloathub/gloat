@@ -233,20 +233,20 @@ How the Gloat/Glojure REPL compares to other Clojure REPLs.
 
 | Feature | gloat --repl | bb (1.12+) | lein repl | clj |
 |---------|-----|------------|-----------|-----|
-| Syntax highlighting | Yes | No | No | No |
-| Multiline editing | Yes | Yes | No | No |
-| Tab completion (symbols) | Yes | Yes | Yes | No |
-| Tab completion (keywords) | Yes | Yes | Yes | No |
-| Ghost text (autosuggestions) | Yes | Yes | No | No |
-| Auto-indent | Yes | No | No | No |
-| Smart indent/dedent (Tab/Backspace) | Yes | No | No | No |
-| Completion descriptions | Yes | No | No | No |
-| Persistent history | Yes | Yes | Yes | No |
-| Reverse search (Ctrl+R) | Yes | Yes | Yes | Yes |
-| Suspend/resume (Ctrl+Z) | Yes | Yes | Yes | Yes |
-| Interrupt evaluation (Ctrl+C) | Yes | Yes | Yes | Yes |
-| Emacs editing mode | Yes | Yes | Yes | No |
-| Vi editing mode | Yes | No | No | No |
+| Syntax highlighting | **✓** | **✗** | ✗ | **✗** |
+| Multiline editing | **✓** | ✓ | **✗** | ✗ |
+| Tab completion (symbols) | **✓** | ✓ | **✓** | **✗** |
+| Tab completion (keywords) | **✓** | ✓ | **✓** | **✗** |
+| Ghost text (autosuggestions) | **✓** | ✓ | **✗** | ✗ |
+| Auto-indent | **✓** | **✗** | ✗ | **✗** |
+| Smart indent/dedent (Tab/Backspace) | **✓** | **✗** | ✗ | **✗** |
+| Completion descriptions | **✓** | **✗** | ✗ | **✗** |
+| Persistent history | **✓** | ✓ | **✓** | **✗** |
+| Reverse search (Ctrl+R) | **✓** | ✓ | **✓** | ✓ |
+| Suspend/resume (Ctrl+Z) | **✓** | ✓ | **✓** | ✓ |
+| Interrupt evaluation (Ctrl+C) | **✓** | ✓ | **✓** | ✓ |
+| Emacs editing mode | **✓** | ✓ | **✓** | **✗** |
+| Vi editing mode | **✓** | **✗** | ✗ | **✗** |
 
 **Notes:**
 

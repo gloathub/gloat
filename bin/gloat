@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-export GLOAT_VERSION=0.1.29
+export GLOAT_VERSION=0.1.30
 
 # Go 1.26 has a linker bug on arm64 that crashes when building with CGO
 export CGO_ENABLED=0
@@ -245,8 +245,12 @@ main() (
         go mod edit \
           -replace "github.com/gloathub/glojure=$glojure_dir"
         cp "$glojure_dir/go.sum" go.sum
+        go get github.com/gloathub/glojure
+      else
+        glj_ver=$(glj --version 2>/dev/null |
+          grep -oP 'v\d+\.\d+\.\S+' | head -1)
+        go get "github.com/gloathub/glojure@${glj_ver:-latest}"
       fi
-      go get github.com/gloathub/glojure
     fi
 
     export GOFLAGS=-mod=mod

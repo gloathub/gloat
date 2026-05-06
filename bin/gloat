@@ -253,11 +253,16 @@ main() (
     : "${GOARCH:=$(go env GOARCH)}"
     export GOARCH
 
-    # Run glj (detects gljdeps.edn, generates imports, starts REPL)
-    if command -v rlwrap &>/dev/null; then
-      exec rlwrap --always-readline glj
-    fi
-    exec glj
+    # Run glj in a restart loop so crashes (e.g. stack overflow) don't
+    # lose the session. History is persisted to ~/.glj_history.
+    while true; do
+      glj
+      rc=$?
+      [[ $rc -eq 0 ]] && break
+      echo "" >&2
+      echo "REPL crashed (exit $rc), restarting..." >&2
+    done
+    exit 0
   fi
 
   # Pass parsed opts to gloat.clj via env var — no re-parsing needed

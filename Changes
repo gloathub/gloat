@@ -1,3 +1,8 @@
+- version: 0.1.29
+  date:    Wed May  6 07:33:05 PM EDT 2026
+  changes:
+  - Fix REPL setup for non-dev installs
+
 - version: 0.1.28
   date:    Wed May  6 07:17:34 PM EDT 2026
   changes:

@@ -30,15 +30,15 @@
 
 (def TEMPLATE (str GLOAT-ROOT "/template"))
 (def SRC (str GLOAT-ROOT "/ys/src"))
-(def GLOAT-TMP (str GLOAT-ROOT "/.cache/.local/tmp"))
+(def GLOAT-TMP (str GLOAT-ROOT "/.cache/local/tmp"))
 (fs/create-dirs GLOAT-TMP)
 
 (def VALID-EXTENSIONS #{"gzip" "brotli" "prune" "deps" "html" "serve" "open" "goimports" "report"})
 
 (def go-env
-  {"GOPATH"     (str GLOAT-ROOT "/.cache/.local/go")
-   "GOMODCACHE" (str GLOAT-ROOT "/.cache/.local/go/pkg/mod")
-   "GOCACHE"    (str GLOAT-ROOT "/.cache/.local/cache/go-build")})
+  {"GOPATH"     (str GLOAT-ROOT "/.cache/local/go")
+   "GOMODCACHE" (str GLOAT-ROOT "/.cache/local/go/pkg/mod")
+   "GOCACHE"    (str GLOAT-ROOT "/.cache/local/cache/go-build")})
 
 ;;------------------------------------------------------------------------------
 ;; Shell Completion Scripts

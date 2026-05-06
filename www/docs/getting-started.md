@@ -64,7 +64,7 @@ The `source gloat/.rc` command adds the `gloat` command to your PATH, enables
 the `man gloat` help and sets up `gloat` tab completion.
 
 On first run, Gloat will automatically install all required tools (Go, Glojure,
-YAMLScript, Babashka, etc) to `.cache/.local/` within the project directory.
+YAMLScript, Babashka, etc) to `.cache/local/` within the project directory.
 Just run `gloat --help` once to complete the setup.
 
 To make Gloat available permanently, simply add this to your shell's rc file

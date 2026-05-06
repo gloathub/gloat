@@ -195,13 +195,13 @@ All subsequent `include` directives load `.mk` modules from there.
 - `clean.mk` — Provides clean/distclean targets
 - `shell.mk` — Provides `make shell` for running commands with tools
 
-All tools are installed under `.cache/.local/`:
+All tools are installed under `.cache/local/`:
 ```
 .cache/
 ├── makes/                    # Makes repo (cloned)
 │   ├── *.mk                  # Module definitions
 │   └── share/                # Shared assets (configs, etc.)
-└── .local/
+└── local/
     ├── bin/                  # Tool binaries (bb, glj, go, ys, etc.)
     ├── go/                   # GOPATH
     ├── cache/                # Build caches
@@ -645,7 +645,7 @@ The `.rc` file adds `bin/` to your PATH.
 gloat --help
 ```
 
-This prompts you to install dependencies (bb, glj, go, ys) into `.cache/.local/`.
+This prompts you to install dependencies (bb, glj, go, ys) into `.cache/local/`.
 After installation, all tools are available via the PATH from `make path`.
 
 ### Running Tests

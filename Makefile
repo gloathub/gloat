@@ -1,5 +1,6 @@
+R := https://github.com/makeplus/makes
 M := .cache/makes
-$(shell [ -d $M ] || (git clone -q https://github.com/makeplus/makes $M))
+$(shell [ -d '$M' ] || git clone -q $R '$M')
 
 include $M/init.mk
 
@@ -149,7 +150,7 @@ test-so-bindings:
 	$(MAKE) --no-p -C demo/so-bindings test
 
 test-docker:
-ifneq (,$(wildcard .cache/.local/bin/bb))
+ifneq (,$(wildcard .cache/local/bin/bb))
 	@echo 'Run first: make distclean'
 	@exit 1
 endif

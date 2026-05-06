@@ -36,7 +36,7 @@ save-patch() (
 )
 
 test-docker() (
-  if [[ -d .cache/.local/bin/bb ]]; then
+  if [[ -d .cache/local/bin/bb ]]; then
     echo 'Run first: make distclean'
     exit 1
   fi

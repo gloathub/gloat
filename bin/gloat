@@ -265,7 +265,7 @@ main() (
 )
 
 setup() (
-  [[ $(command -v bb) == "$root/.cache/.local/bin/bb" ]] && return
+  [[ $(command -v bb) == "$root/.cache/local/bin/bb" ]] && return
 
   if interactive; then
     GREEN=$'\e[1;92m'
@@ -279,7 +279,7 @@ setup() (
     >&2 cat <<...
 $BLUE==> Installing gloat dependencies $deps$BLUE locally into:$RESET
 
-    $root/.cache/.local/
+    $root/.cache/local/
 
 ${BOLD}Press Enter to continue (or Ctrl-C to cancel)...$RESET
 ...

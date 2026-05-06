@@ -590,8 +590,17 @@ gloat --shell-all -- go-md2man --help
 
 ## The Glojure REPL
 
-`gloat --repl` starts an interactive [Glojure](https://github.com/glojurelang/glojure)
+`gloat --repl` starts an interactive [Glojure](
+https://github.com/glojurelang/glojure)
 REPL with full access to Go packages.
+Unlike typical Clojure REPLs, this one features full vi and emacs editing with
+multiline support, namespace-aware tab completion with descriptive menus, smart
+2-space indentation, Ctrl+Z job control with clean terminal restore, Ctrl+R
+reverse history search, bracketed paste, and Ctrl+C interrupt of long-running
+evaluations.
+
+See [doc/gloat-repl.md](doc/gloat-repl.md) or `man gloat-repl` for the
+full reference.
 
 ```bash
 gloat --repl            # Start REPL (auto-detects ./gljdeps.edn)
@@ -680,6 +689,11 @@ export GLOJURE_FROM_SOURCE=true
 | `GLOAT_REPL` | Default build directory for `--repl`. Overridden by `--repl=dir`. |
 | `GLOAT_SHELL` | Preferred shell for `--shell` when the parent shell cannot be detected (default: `bash`). |
 | `GLOAT_X_PRUNE` | Set to any non-empty value to enable the `prune` extension without `-Xprune`. |
+
+
+## See Also
+
+* **gloat-repl**(1) -- full REPL reference (`man gloat-repl`)
 
 
 ## Copyright and License

@@ -1,0 +1,299 @@
+'\" t
+.nh
+.TH gloat-repl -- Gloat/Glojure REPL Reference
+.SH Synopsis
+.EX
+gloat --repl [=dir]
+glj
+.EE
+
+.SH Description
+The Gloat/Glojure REPL is a rich interactive environment for evaluating
+Clojure expressions with full access to Go packages.
+It is built on the reeflective/readline library and supports vi and
+emacs editing modes, multiline editing with auto-indent, tab completion
+with namespace-aware descriptions, ghost text autosuggestions,
+persistent history, job control, and bracketed paste.
+
+.SH Startup
+On launch the REPL prints a banner with version and platform
+information, followed by quick-reference hints:
+
+.EX
+Glojure v0.6.5-rc17
+Go 1.24.0 linux/amd64
+    Docs: (doc function-name)
+  Source: (source function-name)
+    Exit: Ctrl+D or :repl/exit
+
+user=>
+.EE
+
+.PP
+The prompt shows the current namespace (\fBuser\fR by default).
+Switch namespaces with \fB(ns my-ns)\fR and the prompt updates
+accordingly.
+
+.SH Editing Modes
+The REPL defaults to \fBvi\fP editing mode.
+All standard vi-insert and vi-command keybindings are available (h/j/k/l
+navigation, word motions, text objects, visual mode, yank/put, etc.).
+
+.PP
+To switch to \fBemacs\fP mode, add the following to your \fB~/.inputrc\fR:
+
+.EX
+set editing-mode emacs
+.EE
+
+.PP
+The REPL respects all standard inputrc settings.
+
+.SH Multiline Editing
+The REPL automatically detects incomplete expressions.
+If you press Enter on an unfinished form (unclosed parentheses, missing
+string delimiter, etc.), a continuation prompt appears:
+
+.EX
+user=> (defn greet [name]
+\&...   (str "Hello, " name "!"))
+#'user/greet
+.EE
+
+.PP
+When the cursor is not at the end of the buffer, Enter always inserts a
+newline regardless of whether the expression is complete.
+This lets you go back and add lines in the middle of a multiline form.
+
+.PP
+New lines automatically inherit the leading whitespace of the current
+line, keeping your code aligned.
+
+.SH Indentation
+\fBTab\fP inserts two spaces when the cursor is at the beginning of a
+line or follows whitespace.
+This makes it easy to indent code inside multiline forms.
+
+.PP
+\fBBackspace\fP is indent-aware: when two consecutive spaces precede the
+cursor, both are deleted at once to undo a single indent level.
+
+.PP
+When the cursor follows a symbol character, Tab triggers completion
+instead (see below).
+
+.SH Tab Completion
+Pressing Tab after one or more symbol characters opens a completion
+menu.
+The common prefix of all matches is inserted first, then subsequent Tab
+presses cycle through the remaining candidates.
+
+.PP
+Completions include:
+.IP \(bu 2
+\fBSymbols\fP from the current namespace (includes referred vars).
+Each candidate shows the namespace it was defined in.
+.IP \(bu 2
+\fBNamespace aliases\fP (e.g. \fBstr/\fR) with an "alias" label.
+.IP \(bu 2
+\fBFull namespace names\fP (e.g. \fBclojure.string/\fR) with a "namespace"
+label.
+.IP \(bu 2
+\fBQualified symbols\fP -- typing \fBstr/\fR then Tab completes symbols
+within that namespace or alias.
+
+.SS Examples
+.EX
+user=> doc<TAB>          ; completes to (doc ...) candidates
+user=> ns-<TAB>          ; shows ns-name, ns-aliases, ns-map, ...
+user=> str/<TAB>         ; shows clojure.string functions
+user=> clojure.set/<TAB> ; shows clojure.set functions
+.EE
+
+.SH Key Bindings
+The following keys have special behavior in the REPL.
+Vi-command-mode bindings (h/j/k/l, w/b/e, etc.) work as expected and
+are not listed here.
+
+.TS
+allbox;
+l l 
+l l .
+\fBKey\fP	\fBAction\fP
+\fBTab\fP	T{
+Insert 2-space indent (after whitespace) or open completion menu (after symbol chars)
+T}
+\fBBackspace\fP	T{
+Delete 2 spaces if both precede cursor, otherwise delete 1 character
+T}
+\fBEnter\fP	T{
+Submit expression (cursor at end and expression complete) or insert newline
+T}
+\fBCtrl+C\fP	T{
+Cancel current input; on empty prompt, shows exit hint; press twice to exit
+T}
+\fBCtrl+D\fP	Exit the REPL (EOF)
+\fBCtrl+E\fP	T{
+Move cursor to end of line (vi-insert and emacs modes)
+T}
+\fBCtrl+R\fP	T{
+Reverse incremental history search
+T}
+\fBCtrl+Z\fP	T{
+Suspend the REPL process; resume with \fBfg\fR
+T}
+\fBUp/Down\fP	T{
+Navigate history or move between lines in multiline input
+T}
+\fBEscape\fP	Switch to vi-command mode
+.TE
+
+.SH History
+Command history is saved to \fB~/.glj_history\fR and persists across
+sessions.
+Use the Up and Down arrow keys (or \fBk\fR and \fBj\fR in vi-command mode) to
+navigate previous entries.
+Press \fBCtrl+R\fP to start a reverse incremental search -- type a
+substring and the most recent matching entry is recalled.
+
+.PP
+History entries can span multiple lines.
+
+.SS Ghost Text (Autosuggestions)
+As you type, the REPL shows faded "ghost text" after the cursor when
+there is exactly one matching completion.
+For example, typing \fB(ze\fR shows \fBro?\fR ghosted, completing \fBzero?\fR\&.
+Press \fBRight arrow\fP to accept the full suggestion, or \fBCtrl+Right\fP
+to accept just the next word.
+
+.PP
+This feature can be toggled off by adding \fBset history-autosuggest off\fR
+to your \fB~/.inputrc\fR\&.
+
+.SH Suspend and Resume
+Press \fBCtrl+Z\fP to suspend the REPL and return to your shell.
+The REPL saves and restores terminal state automatically, so resuming
+with \fBfg\fR returns you to a working prompt with no garbled output.
+
+.SH Bracketed Paste
+Bracketed paste is enabled by default.
+When you paste a block of code from your clipboard, it is inserted
+instantly as a single unit rather than being interpreted character by
+character.
+Carriage returns in pasted text are normalized to newlines.
+
+.SH Exiting
+There are three ways to exit the REPL:
+.IP \(bu 2
+\fBCtrl+D\fP -- sends EOF, exits immediately.
+.IP \(bu 2
+\fB:repl/exit\fP -- type this command and press Enter.
+.IP \(bu 2
+\fBCtrl+C twice\fP -- press Ctrl+C on an empty prompt to see a hint,
+then press it again to exit.
+
+.PP
+If you press Ctrl+C while editing an expression, it cancels the current
+input and returns to a fresh prompt.
+
+.SH Interrupting Evaluation
+Press \fBCtrl+C\fP during evaluation to interrupt a long-running
+expression.
+The REPL prints "Interrupted" and returns to the prompt.
+
+.SH Syntax Highlighting
+The REPL highlights Clojure syntax as you type.
+Token types and their colors:
+
+.TS
+allbox;
+l l l 
+l l l .
+\fBToken\fP	\fBExamples\fP	\fBColor\fP
+Strings	\fB"hello"\fR	Green
+Keywords	\fB:foo\fR, \fB::bar\fR, \fB:ns/key\fR	Cyan
+Comments	\fB; note\fR	Gray
+Numbers	\fB42\fR, \fB3.14\fR, \fB1/3\fR, \fB0xFF\fR	Magenta
+Booleans/nil	\fBtrue\fR, \fBfalse\fR, \fBnil\fR	Magenta
+Special forms	\fBdef\fR, \fBfn\fR, \fBlet\fR, \fBif\fR, \fBwhen\fR, \fBcond\fR	Bold yellow
+Brackets	\fB()[]{}\fR	Default
+Symbols	everything else	Default
+.TE
+
+.PP
+Special forms include \fBdef\fR, \fBdefn\fR, \fBdefmacro\fR, \fBfn\fR, \fBlet\fR, \fBloop\fR,
+\fBrecur\fR, \fBif\fR, \fBwhen\fR, \fBcond\fR, \fBdo\fR, \fBns\fR, \fBrequire\fR, \fBimport\fR,
+\fBtry\fR, \fBcatch\fR, \fBthrow\fR, and others.
+
+.PP
+Highlighting works correctly with multiline editing, ghost text, and
+tab completion.
+
+.SH REPL Build Directory
+When launched via \fBgloat --repl\fR, the REPL needs a Go module directory
+to bootstrap dependencies and generate import glue code.
+The build directory is resolved in this priority order:
+.IP "  1." 5
+\fB--repl=dir\fR -- explicit directory
+.IP "  2." 5
+\fBGLOAT_REPL=dir\fR -- environment variable
+.IP "  3." 5
+\fB\&.\fR (current directory) -- when \fB\&./gljdeps.edn\fR is present
+.IP "  4." 5
+\fB\&./gljrepl/\fR -- default fallback (created automatically)
+
+.SH External Go Dependencies
+To make Go packages available in the REPL, declare them in a
+\fBgljdeps.edn\fR file:
+
+.EX
+{:deps {gopkg.in/yaml.v3      {:mvn/version "v3.0.1"}
+        github.com/some/other  {:mvn/version "v1.2.3"}}}
+.EE
+
+.PP
+On first run, \fBglj\fR fetches the declared packages, generates import
+glue code, and re-launches with the new packages available.
+Subsequent runs skip the fetch if versions match.
+
+.SH Feature Comparison
+How the Gloat/Glojure REPL compares to other Clojure REPLs.
+
+.TS
+allbox;
+l l l l l 
+l l l l l .
+\fBFeature\fP	\fBgloat --repl\fP	\fBbb (1.12+)\fP	\fBlein repl\fP	\fBclj\fP
+Syntax highlighting	Yes	No	No	No
+Multiline editing	Yes	Yes	No	No
+Tab completion (symbols)	Yes	Yes	Yes	No
+Tab completion (keywords)	Yes	Yes	Yes	No
+Ghost text (autosuggestions)	Yes	Yes	No	No
+Auto-indent	Yes	No	No	No
+T{
+Smart indent/dedent (Tab/Backspace)
+T}	Yes	No	No	No
+Completion descriptions	Yes	No	No	No
+Persistent history	Yes	Yes	Yes	No
+Reverse search (Ctrl+R)	Yes	Yes	Yes	Yes
+Suspend/resume (Ctrl+Z)	Yes	Yes	Yes	Yes
+Interrupt evaluation (Ctrl+C)	Yes	Yes	Yes	Yes
+Emacs editing mode	Yes	Yes	Yes	No
+Vi editing mode	Yes	No	No	No
+.TE
+
+.PP
+\fBNotes:\fP
+.IP \(bu 2
+\fBclj\fP refers to the bare \fBclojure\fR CLI REPL without third-party
+tools.
+With rebel-readline, clj gains completion, multiline editing, and
+syntax highlighting.
+.IP \(bu 2
+\fBbb\fP refers to Babashka v1.12+ which uses JLine3 for its console
+REPL.
+.IP \(bu 2
+\fBlein repl\fP uses REPL-y (JLine-based) for its console interface.
+
+.SH See Also
+\fBgloat\fP(1)

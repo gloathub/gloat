@@ -46,7 +46,9 @@ YS-PKG-VERSION ?= v0.1.26
 # Mark GLJ files as precious (don't auto-delete intermediate files)
 .PRECIOUS: $(YS-CLJ-FILES) $(YS-GLJ-FILES)
 
-MAN-PAGE := man/man1/gloat.1
+MAN-PAGES := \
+  man/man1/gloat.1 \
+  man/man1/gloat-repl.1 \
 
 PATH-DEPS := \
   $(BB) \
@@ -117,9 +119,9 @@ path:
 env:
 	@echo 'export PATH="$(PATH)"'
 
-man: $(MAN-PAGE)
+man: $(MAN-PAGES)
 
-update: $(YS-GO-FILES) $(MAN-PAGE)
+update: $(YS-GO-FILES) $(MAN-PAGES)
 
 ys-pkg: $(YS-GO-FILES) $(GO)
 	@echo "Syncing ys/go/ to ys/pkg/"
@@ -244,12 +246,19 @@ ys/go/%/loader.go: ys/glj/%.glj $(GLJ)
 	@echo "Compiling $< to $@"
 	make-do compile-glj $* $@
 
-$(MAN-PAGE): ReadMe.md $(MD2MAN)
+man/man1/gloat.1: ReadMe.md $(MD2MAN)
 	@mkdir -p man/man1
 	perl -0777 -pe \
 	    's/^\[!\[.*?\)\n\n//msg; s/\[([^\]]+)\]\([^)]+\)/$$1/g' \
 	    ReadMe.md | \
 	  grep -v '^<img ' | \
+	  $(MD2MAN) > $@
+
+man/man1/gloat-repl.1: doc/gloat-repl.md $(MD2MAN)
+	@mkdir -p man/man1
+	perl -0777 -pe \
+	    's/\[([^\]]+)\]\([^)]+\)/$$1/g' \
+	    doc/gloat-repl.md | \
 	  $(MD2MAN) > $@
 
 # std depends on fs and ipc being compiled first

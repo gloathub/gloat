@@ -628,6 +628,15 @@ gloat --shell-all -- go-md2man --help
 .SH The Glojure REPL
 \fBgloat --repl\fR starts an interactive Glojure
 REPL with full access to Go packages.
+Unlike typical Clojure REPLs, this one features full vi and emacs editing with
+multiline support, namespace-aware tab completion with descriptive menus, smart
+2-space indentation, Ctrl+Z job control with clean terminal restore, Ctrl+R
+reverse history search, bracketed paste, and Ctrl+C interrupt of long-running
+evaluations.
+
+.PP
+See doc/gloat-repl.md or \fBman gloat-repl\fR for the
+full reference.
 
 .EX
 gloat --repl            # Start REPL (auto-detects ./gljdeps.edn)
@@ -725,6 +734,10 @@ T}
 Set to any non-empty value to enable the \fBprune\fR extension without \fB-Xprune\fR\&.
 T}
 .TE
+
+.SH See Also
+.IP \(bu 2
+\fBgloat-repl\fP(1) -- full REPL reference (\fBman gloat-repl\fR)
 
 .SH Copyright and License
 Copyright 2026 - Ingy dot Net

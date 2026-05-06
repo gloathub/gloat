@@ -1,3 +1,11 @@
+- version: 0.1.27
+  date:    Wed May  6 06:31:42 PM EDT 2026
+  changes:
+  - Add REPL reference documentation
+  - Remove rlwrap, add REPL restart loop
+  - Massively improved CLI REPL
+  - New blog post about Clojurists Together funding
+
 - version: 0.1.26
   date:    Sat Apr 18 02:26:33 PM PDT 2026
   changes:

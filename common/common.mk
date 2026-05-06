@@ -1,4 +1,4 @@
-GLOJURE-VERSION := 0.6.5-rc17
+GLOJURE-VERSION := 0.6.5-rc18
 GLOJURE-REPO := https://github.com/gloathub/glojure
 
 # Go 1.26 has a linker bug on macOS arm64 for shared library builds

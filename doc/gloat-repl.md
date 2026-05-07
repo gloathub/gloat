@@ -19,13 +19,12 @@ persistent history, job control, and bracketed paste.
 ## Startup
 
 On launch the REPL prints a banner with version and platform
-information, the active editing mode, and quick-reference hints:
+information and quick-reference hints:
 
 ```
 🐐 Gloat: 0.1.30 🐐
  Glojure: v0.6.5-rc17
       Go: 1.24.0 linux/amd64
-  Editor: vi mode
     Help: C-h or :repl/help
     Exit: C-d or :repl/exit
 
@@ -34,8 +33,6 @@ user=>
 
 When launched with `--deps`, the banner also shows the build
 directory.
-The editing mode shown reflects the `editing-mode` setting in
-`~/.inputrc`.
 
 The prompt shows the current namespace (`user` by default).
 Switch namespaces with `(ns my-ns)` and the prompt updates
@@ -129,10 +126,11 @@ are not listed here.
 | **Enter** | Submit expression (cursor at end and expression complete) or insert newline; in vi-command mode, always submits |
 | **Ctrl+C** | Cancel current input; on empty prompt, shows exit hint; press twice to exit |
 | **Ctrl+D** | Show inline documentation for symbol under cursor; on empty prompt, exit the REPL. In emacs mode use **Ctrl+X Ctrl+D**. |
-| **Ctrl+H** | Show inline help with key bindings and commands. In emacs mode use **Ctrl+X Ctrl+H**. |
+| **Ctrl+P** | Format, print and copy current form to clipboard. In emacs mode use **Ctrl+X Ctrl+P**. |
 | **Ctrl+E** | Move cursor to end of line (vi-insert and emacs modes) |
 | **Ctrl+R** | Reverse incremental history search |
 | **Ctrl+Z** | Suspend the REPL process; resume with `fg` |
+| **Ctrl+H** | Show inline help with key bindings and commands. In emacs mode use **Ctrl+X Ctrl+H**. |
 | **Up** | Move up a line in multiline input; on first line, move to beginning of line; at beginning or end of buffer, navigate history |
 | **Down** | Move down a line in multiline input; on last line, move to end of line; at end of buffer, navigate history |
 | **Escape** | Switch to vi-command mode; if inline doc is showing, dismiss it instead |
@@ -288,6 +286,28 @@ Like inline documentation, the help hint is transient and disappears
 on the next keypress.
 Press **Escape** to dismiss it without leaving insert mode.
 
+## Format and Print
+
+Press **Ctrl+P** (vi mode) or **Ctrl+X Ctrl+P** (emacs mode) to
+format the current form, print it as plain text, copy it to the
+system clipboard, save it to history, and start a fresh prompt.
+
+The form is piped through an external format command before printing
+and copying.
+The default format command is `cat` (no formatting).
+To use a Clojure formatter like `zprint`:
+
+```
+:repl/fmt zprint
+```
+
+The format command can also be set via the `GLJ_REPL_FORMATTER`
+environment variable.
+The command is run with `sh -c`, so arguments are supported (e.g.
+`:repl/fmt zprint '{:width 40}'`).
+
+Type `:repl/fmt` with no argument to show the current format command.
+
 ## REPL Commands
 
 The following colon-commands can be typed at the prompt.
@@ -299,7 +319,19 @@ available commands.
 | `:repl/help` | Print key bindings and commands (mode-aware) |
 | `:repl/vi` | Switch to vi editing mode |
 | `:repl/emacs` | Switch to emacs editing mode |
+| `:repl/fmt cmd` | Set the format command (used by Ctrl+P) |
+| `:repl/fmt` | Show the current format command |
 | `:repl/exit` | Exit the REPL |
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `GLJ_REPL_EDITOR` | Set editing mode (`vi` or `emacs`). Overrides `~/.inputrc`. |
+| `GLJ_REPL_FORMATTER` | Format command for Ctrl+P (default: `cat`). |
+| `GLJ_REPL_NO_BANNER` | Suppress the startup banner when set. |
+| `GLOAT_REPL` | Set the REPL build directory. |
+| `INPUTRC` | Path to inputrc config file (default: `~/.inputrc`). |
 
 ## Feature Comparison
 
@@ -308,21 +340,21 @@ How the Gloat/Glojure REPL compares to other Clojure REPLs.
 | Feature | gloat --repl | bb (1.12+) | lein repl | clj |
 |---------|-----|------------|-----------|-----|
 | Syntax highlighting | **✓** | **✗** | **✗** | **✗** |
+| Format and clipboard (Ctrl+P) | **✓** | **✗** | **✗** | **✗** |
 | Multiline editing | **✓** | **✓** | **✗** | **✗** |
-| Tab completion (symbols) | **✓** | **✓** | **✓** | **✗** |
-| Tab completion (keywords) | **✓** | **✓** | **✓** | **✗** |
-| Ghost text (autosuggestions) | **✓** | **✓** | **✗** | **✗** |
-| Inline documentation (Ctrl+D) | **✓** | **✓** | **✗** | **✗** |
-| Auto-indent | **✓** | **✗** | **✗** | **✗** |
-| Smart indent/dedent (Tab/Backspace) | **✓** | **✗** | **✗** | **✗** |
+| Tab completion (syms & keys) | **✓** | **✓** | **✓** | **✗** |
 | Smart up/down arrow navigation | **✓** | **✗** | **✗** | **✗** |
+| Smart indent/dedent (Tab/Backspace) | **✓** | **✗** | **✗** | **✗** |
+| Auto-indent | **✓** | **✗** | **✗** | **✗** |
+| Auto-suggest (ghost text) | **✓** | **✓** | **✗** | **✗** |
+| Instant docs at cursor (Ctrl+D) | **✓** | **✓** | **✗** | **✗** |
 | Completion descriptions | **✓** | **✗** | **✗** | **✗** |
 | Persistent history | **✓** | **✓** | **✓** | **✗** |
 | Reverse search (Ctrl+R) | **✓** | **✓** | **✓** | **✓** |
 | Suspend/resume (Ctrl+Z) | **✓** | **✓** | **✓** | **✓** |
 | Interrupt evaluation (Ctrl+C) | **✓** | **✓** | **✓** | **✓** |
-| Emacs editing mode | **✓** | **✓** | **✓** | **✗** |
 | Vi editing mode | **✓** | **✗** | **✗** | **✗** |
+| Emacs editing mode | **✓** | **✓** | **✓** | **✗** |
 | Runtime mode switching | **✓** | **✗** | **✗** | **✗** |
 
 **Notes:**

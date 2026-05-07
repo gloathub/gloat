@@ -273,9 +273,11 @@ main() (
     go_ver=$(go env GOVERSION 2>/dev/null)
     go_ver=${go_ver#go}
 
-    # Detect editing mode from inputrc
+    # Detect editing mode: GLJ_REPL_EDITOR > inputrc > vi default
     edit_mode=vi
-    if grep -qsE '^\s*set\s+editing-mode\s+emacs' \
+    if [[ -n ${GLJ_REPL_EDITOR-} ]]; then
+      edit_mode=$GLJ_REPL_EDITOR
+    elif grep -qsE '^\s*set\s+editing-mode\s+emacs' \
         "${INPUTRC:-$HOME/.inputrc}" 2>/dev/null; then
       edit_mode=emacs
     fi
@@ -292,7 +294,6 @@ main() (
       if [[ -n $explicit_deps ]]; then
         echo "   Build: $build_dir"
       fi
-      echo "  Editor: $edit_mode mode"
       echo "    Help: $help_keys or :repl/help"
       echo "    Exit: C-d or :repl/exit"
       echo

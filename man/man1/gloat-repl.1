@@ -17,13 +17,12 @@ persistent history, job control, and bracketed paste.
 
 .SH Startup
 On launch the REPL prints a banner with version and platform
-information, the active editing mode, and quick-reference hints:
+information and quick-reference hints:
 
 .EX
 🐐 Gloat: 0.1.30 🐐
  Glojure: v0.6.5-rc17
       Go: 1.24.0 linux/amd64
-  Editor: vi mode
     Help: C-h or :repl/help
     Exit: C-d or :repl/exit
 
@@ -33,8 +32,6 @@ user=>
 .PP
 When launched with \fB--deps\fR, the banner also shows the build
 directory.
-The editing mode shown reflects the \fBediting-mode\fR setting in
-\fB~/.inputrc\fR\&.
 
 .PP
 The prompt shows the current namespace (\fBuser\fR by default).
@@ -147,8 +144,8 @@ T}
 \fBCtrl+D\fP	T{
 Show inline documentation for symbol under cursor; on empty prompt, exit the REPL. In emacs mode use \fBCtrl+X Ctrl+D\fP\&.
 T}
-\fBCtrl+H\fP	T{
-Show inline help with key bindings and commands. In emacs mode use \fBCtrl+X Ctrl+H\fP\&.
+\fBCtrl+P\fP	T{
+Format, print and copy current form to clipboard. In emacs mode use \fBCtrl+X Ctrl+P\fP\&.
 T}
 \fBCtrl+E\fP	T{
 Move cursor to end of line (vi-insert and emacs modes)
@@ -158,6 +155,9 @@ Reverse incremental history search
 T}
 \fBCtrl+Z\fP	T{
 Suspend the REPL process; resume with \fBfg\fR
+T}
+\fBCtrl+H\fP	T{
+Show inline help with key bindings and commands. In emacs mode use \fBCtrl+X Ctrl+H\fP\&.
 T}
 \fBUp\fP	T{
 Move up a line in multiline input; on first line, move to beginning of line; at beginning or end of buffer, navigate history
@@ -328,6 +328,30 @@ Like inline documentation, the help hint is transient and disappears
 on the next keypress.
 Press \fBEscape\fP to dismiss it without leaving insert mode.
 
+.SH Format and Print
+Press \fBCtrl+P\fP (vi mode) or \fBCtrl+X Ctrl+P\fP (emacs mode) to
+format the current form, print it as plain text, copy it to the
+system clipboard, save it to history, and start a fresh prompt.
+
+.PP
+The form is piped through an external format command before printing
+and copying.
+The default format command is \fBcat\fR (no formatting).
+To use a Clojure formatter like \fBzprint\fR:
+
+.EX
+:repl/fmt zprint
+.EE
+
+.PP
+The format command can also be set via the \fBGLJ_REPL_FORMATTER\fR
+environment variable.
+The command is run with \fBsh -c\fR, so arguments are supported (e.g.
+\fB:repl/fmt zprint '{:width 40}'\fR).
+
+.PP
+Type \fB:repl/fmt\fR with no argument to show the current format command.
+
 .SH REPL Commands
 The following colon-commands can be typed at the prompt.
 They support tab completion -- type \fB:repl/\fR and press Tab to see all
@@ -343,7 +367,32 @@ Print key bindings and commands (mode-aware)
 T}
 \fB:repl/vi\fR	Switch to vi editing mode
 \fB:repl/emacs\fR	Switch to emacs editing mode
+\fB:repl/fmt cmd\fR	T{
+Set the format command (used by Ctrl+P)
+T}
+\fB:repl/fmt\fR	T{
+Show the current format command
+T}
 \fB:repl/exit\fR	Exit the REPL
+.TE
+
+.SH Environment Variables
+.TS
+allbox;
+l l 
+l l .
+\fBVariable\fP	\fBDescription\fP
+\fBGLJ_REPL_EDITOR\fR	Set editing mode (\fBvi\fR or \fBemacs\fR). Overrides \fB~/.inputrc\fR\&.
+\fBGLJ_REPL_FORMATTER\fR	T{
+Format command for Ctrl+P (default: \fBcat\fR).
+T}
+\fBGLJ_REPL_NO_BANNER\fR	T{
+Suppress the startup banner when set.
+T}
+\fBGLOAT_REPL\fR	Set the REPL build directory.
+\fBINPUTRC\fR	T{
+Path to inputrc config file (default: \fB~/.inputrc\fR).
+T}
 .TE
 
 .SH Feature Comparison
@@ -355,23 +404,25 @@ l l l l l
 l l l l l .
 \fBFeature\fP	\fBgloat --repl\fP	\fBbb (1.12+)\fP	\fBlein repl\fP	\fBclj\fP
 Syntax highlighting	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
+Format and clipboard (Ctrl+P)	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
 Multiline editing	\fB✓\fP	\fB✓\fP	\fB✗\fP	\fB✗\fP
-Tab completion (symbols)	\fB✓\fP	\fB✓\fP	\fB✓\fP	\fB✗\fP
-Tab completion (keywords)	\fB✓\fP	\fB✓\fP	\fB✓\fP	\fB✗\fP
-Ghost text (autosuggestions)	\fB✓\fP	\fB✓\fP	\fB✗\fP	\fB✗\fP
-Inline documentation (Ctrl+D)	\fB✓\fP	\fB✓\fP	\fB✗\fP	\fB✗\fP
-Auto-indent	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
+Tab completion (syms & keys)	\fB✓\fP	\fB✓\fP	\fB✓\fP	\fB✗\fP
+Smart up/down arrow navigation	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
 T{
 Smart indent/dedent (Tab/Backspace)
 T}	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
-Smart up/down arrow navigation	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
+Auto-indent	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
+Auto-suggest (ghost text)	\fB✓\fP	\fB✓\fP	\fB✗\fP	\fB✗\fP
+T{
+Instant docs at cursor (Ctrl+D)
+T}	\fB✓\fP	\fB✓\fP	\fB✗\fP	\fB✗\fP
 Completion descriptions	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
 Persistent history	\fB✓\fP	\fB✓\fP	\fB✓\fP	\fB✗\fP
 Reverse search (Ctrl+R)	\fB✓\fP	\fB✓\fP	\fB✓\fP	\fB✓\fP
 Suspend/resume (Ctrl+Z)	\fB✓\fP	\fB✓\fP	\fB✓\fP	\fB✓\fP
 Interrupt evaluation (Ctrl+C)	\fB✓\fP	\fB✓\fP	\fB✓\fP	\fB✓\fP
-Emacs editing mode	\fB✓\fP	\fB✓\fP	\fB✓\fP	\fB✗\fP
 Vi editing mode	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
+Emacs editing mode	\fB✓\fP	\fB✓\fP	\fB✓\fP	\fB✗\fP
 Runtime mode switching	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
 .TE
 

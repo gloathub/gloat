@@ -1,4 +1,4 @@
---- /dev/fd/63
+--- ys/src/ys/dwim.clj.orig
 +++ ys/src/ys/dwim.clj
 @@ -3,14 +3,15 @@
  

@@ -1,4 +1,4 @@
---- /dev/fd/63
+--- ys/src/yamlscript/common.clj.orig
 +++ ys/src/yamlscript/common.clj
 @@ -3,11 +3,11 @@
  

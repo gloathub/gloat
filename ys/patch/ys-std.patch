@@ -1,4 +1,4 @@
---- /dev/fd/63
+--- ys/src/ys/std.clj.orig
 +++ ys/src/ys/std.clj
 @@ -5,6 +5,16 @@
  

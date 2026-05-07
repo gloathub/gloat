@@ -1254,7 +1254,9 @@ Less common:
                                      {"GONOSUMCHECK" "*"}
                                      (when (= format "lib") {"CGO_ENABLED" "1"})
                                      (when goos {"GOOS" goos})
-                                     (when goarch {"GOARCH" goarch}))]
+                                     (when goarch {"GOARCH" goarch})
+                                     (when (= goos "plan9")
+                                       {"GOEXPERIMENT" "nospinbitmutex"}))]
 
                 (msg "Building" format "...")
 

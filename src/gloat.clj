@@ -433,6 +433,7 @@ Common platforms:
 Less common:
   linux      ppc64le, s390x, riscv64, mips64le
   dragonfly  amd64
+  plan9      amd64, 386, arm
 ")
     (System/exit 0)))
 

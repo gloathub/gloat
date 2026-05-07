@@ -52,6 +52,8 @@ help:
 	@echo '  PREFIX=<path>    Installation prefix (default: ~/.local)'
 	@echo '  VERSION=<tag>    Version to install (default: latest tag)'
 
+# User might have a ./install file or dir, so use PHONY here.
+.PHONY: help install install-glj install-gloat uninstall uninstall-glj uninstall-gloat
 install:
 	@echo 'Installing Gloat to $(PREFIX)...'
 	@# Create directories

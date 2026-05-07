@@ -61,9 +61,10 @@ user=> (defn greet [name]
 #'user/greet
 ```
 
-When the cursor is not at the end of the buffer, Enter always inserts a
+When the cursor is not at the end of the buffer, Enter inserts a
 newline regardless of whether the expression is complete.
 This lets you go back and add lines in the middle of a multiline form.
+In vi-command mode, Enter always submits the expression.
 
 New lines automatically inherit the leading whitespace of the current
 line, keeping your code aligned.
@@ -116,14 +117,16 @@ are not listed here.
 |-----|--------|
 | **Tab** | Insert 2-space indent (after whitespace) or open completion menu (after symbol chars) |
 | **Backspace** | Delete 2 spaces if both precede cursor, otherwise delete 1 character |
-| **Enter** | Submit expression (cursor at end and expression complete) or insert newline |
+| **Enter** | Submit expression (cursor at end and expression complete) or insert newline; in vi-command mode, always submits |
 | **Ctrl+C** | Cancel current input; on empty prompt, shows exit hint; press twice to exit |
-| **Ctrl+D** | Exit the REPL (EOF) |
+| **Ctrl+D** | Show inline documentation for symbol under cursor; on empty prompt, exit the REPL |
+| **Ctrl+H** | Show inline help with key bindings and commands |
 | **Ctrl+E** | Move cursor to end of line (vi-insert and emacs modes) |
 | **Ctrl+R** | Reverse incremental history search |
 | **Ctrl+Z** | Suspend the REPL process; resume with `fg` |
-| **Up/Down** | Navigate history or move between lines in multiline input |
-| **Escape** | Switch to vi-command mode |
+| **Up** | Move up a line in multiline input; on first line, move to beginning of line; at beginning or end of buffer, navigate history |
+| **Down** | Move down a line in multiline input; on last line, move to end of line; at end of buffer, navigate history |
+| **Escape** | Switch to vi-command mode; if inline doc is showing, dismiss it instead |
 
 ## History
 
@@ -135,6 +138,19 @@ Press **Ctrl+R** to start a reverse incremental search -- type a
 substring and the most recent matching entry is recalled.
 
 History entries can span multiple lines.
+
+### Smart Arrow Navigation
+
+The Up and Down arrows have context-sensitive behavior in multiline
+forms:
+
+- **Down** on the last line moves to end-of-line first, then to
+  history on the next press.
+- **Up** on the first line moves to beginning-of-line first, then to
+  history on the next press.
+- **Up** at the end of the buffer jumps straight to history, letting
+  you scan through previous forms (including multiline ones) without
+  scrolling line by line.
 
 ### Ghost Text (Autosuggestions)
 
@@ -165,7 +181,8 @@ Carriage returns in pasted text are normalized to newlines.
 
 There are three ways to exit the REPL:
 
-- **Ctrl+D** -- sends EOF, exits immediately.
+- **Ctrl+D** -- on an empty prompt, sends EOF and exits immediately.
+  On a non-empty prompt, shows inline documentation (see below).
 - **:repl/exit** -- type this command and press Enter.
 - **Ctrl+C twice** -- press Ctrl+C on an empty prompt to see a hint,
   then press it again to exit.
@@ -227,26 +244,59 @@ On first run, `glj` fetches the declared packages, generates import
 glue code, and re-launches with the new packages available.
 Subsequent runs skip the fetch if versions match.
 
+## Inline Documentation
+
+Press **Ctrl+D** with the cursor on or inside a symbol to display its
+documentation below the input line.
+The hint shows the ClojureDocs URL (for `clojure.*` symbols), the
+fully qualified name, arglists, and docstring.
+
+```
+user=> (zero? 42)
+https://clojuredocs.org/clojure.core/zero_q
+clojure.core/zero?
+([num])
+  Returns true if num is zero, else false
+```
+
+The documentation appears as a transient hint that disappears on the
+next keypress.
+Press **Escape** to dismiss the hint without leaving insert mode.
+The cursor can be anywhere on the symbol (not just at the end).
+
+If the cursor is on a number, bracket, or whitespace, nothing is shown.
+On an empty prompt, Ctrl+D exits the REPL as usual.
+
+## Inline Help
+
+Press **Ctrl+H** to display a quick-reference card showing key bindings
+and useful commands below the input line.
+Like inline documentation, the help hint is transient and disappears on
+the next keypress.
+Press **Escape** to dismiss it without leaving insert mode.
+
 ## Feature Comparison
 
 How the Gloat/Glojure REPL compares to other Clojure REPLs.
 
 | Feature | gloat --repl | bb (1.12+) | lein repl | clj |
 |---------|-----|------------|-----------|-----|
-| Syntax highlighting | **✓** | **✗** | ✗ | **✗** |
-| Multiline editing | **✓** | ✓ | **✗** | ✗ |
-| Tab completion (symbols) | **✓** | ✓ | **✓** | **✗** |
-| Tab completion (keywords) | **✓** | ✓ | **✓** | **✗** |
-| Ghost text (autosuggestions) | **✓** | ✓ | **✗** | ✗ |
-| Auto-indent | **✓** | **✗** | ✗ | **✗** |
-| Smart indent/dedent (Tab/Backspace) | **✓** | **✗** | ✗ | **✗** |
-| Completion descriptions | **✓** | **✗** | ✗ | **✗** |
-| Persistent history | **✓** | ✓ | **✓** | **✗** |
-| Reverse search (Ctrl+R) | **✓** | ✓ | **✓** | ✓ |
-| Suspend/resume (Ctrl+Z) | **✓** | ✓ | **✓** | ✓ |
-| Interrupt evaluation (Ctrl+C) | **✓** | ✓ | **✓** | ✓ |
-| Emacs editing mode | **✓** | ✓ | **✓** | **✗** |
-| Vi editing mode | **✓** | **✗** | ✗ | **✗** |
+| Syntax highlighting | **✓** | **✗** | **✗** | **✗** |
+| Multiline editing | **✓** | **✓** | **✗** | **✗** |
+| Tab completion (symbols) | **✓** | **✓** | **✓** | **✗** |
+| Tab completion (keywords) | **✓** | **✓** | **✓** | **✗** |
+| Ghost text (autosuggestions) | **✓** | **✓** | **✗** | **✗** |
+| Inline documentation (Ctrl+D) | **✓** | **✓** | **✗** | **✗** |
+| Auto-indent | **✓** | **✗** | **✗** | **✗** |
+| Smart indent/dedent (Tab/Backspace) | **✓** | **✗** | **✗** | **✗** |
+| Smart up/down arrow navigation | **✓** | **✗** | **✗** | **✗** |
+| Completion descriptions | **✓** | **✗** | **✗** | **✗** |
+| Persistent history | **✓** | **✓** | **✓** | **✗** |
+| Reverse search (Ctrl+R) | **✓** | **✓** | **✓** | **✓** |
+| Suspend/resume (Ctrl+Z) | **✓** | **✓** | **✓** | **✓** |
+| Interrupt evaluation (Ctrl+C) | **✓** | **✓** | **✓** | **✓** |
+| Emacs editing mode | **✓** | **✓** | **✓** | **✗** |
+| Vi editing mode | **✓** | **✗** | **✗** | **✗** |
 
 **Notes:**
 

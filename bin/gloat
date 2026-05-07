@@ -104,6 +104,11 @@ main() (
     exit
   fi
 
+  if [[ $* == --root ]]; then
+    echo "$root"
+    exit
+  fi
+
   PATH=$(make --quiet --no-print-directory -C "$root" path)
   export PATH
 
@@ -201,7 +206,7 @@ main() (
 
     # Determine build directory:
     #   --repl=dir  >  GLOAT_REPL=dir  >  . (if ./gljdeps.edn, no explicit deps)
-    #   >  ./gljrepl/
+    #   >  .cache/repl-$GLOAT_VERSION/
     if [[ -n $repl_dir ]]; then
       build_dir=$repl_dir
     elif [[ -n ${GLOAT_REPL-} ]]; then
@@ -209,19 +214,10 @@ main() (
     elif [[ -z $explicit_deps && -f ./gljdeps.edn ]]; then
       build_dir=.
     else
-      build_dir=./gljrepl
-      if [[ -e $build_dir && ! -d $build_dir ]]; then
-        echo "Error: $build_dir exists but is not a directory" >&2
-        exit 1
-      fi
-      if [[ -d $build_dir && ! -f $build_dir/go.mod && -z $force ]]; then
-        echo "Error: $build_dir exists but has no go.mod (use --force to override)" >&2
-        exit 1
-      fi
+      build_dir=$root/.cache/repl-$GLOAT_VERSION
     fi
 
     mkdir -p "$build_dir"
-    echo "gloat repl build dir: $build_dir" >&2
     cd "$build_dir"
 
     # Write gljdeps.edn if provided
@@ -229,28 +225,33 @@ main() (
       printf '%s\n' "$deps_content" > gljdeps.edn
     fi
 
-    # Ensure go.mod exists
-    if [[ ! -f go.mod ]]; then
-      go mod init gloatrepl
-    fi
-
-    # Ensure glojure dependency in go.mod
-    if ! grep -q "gloathub/glojure" go.mod 2>/dev/null; then
-      glojure_dir=${GLOJURE_DIR:-$(
-        make --quiet --no-print-directory -C "$root" \
-          print-GLOJURE-DIR 2>/dev/null ||
-        echo "$root/../glojure"
-      )}
-      if [[ -d $glojure_dir ]]; then
-        go mod edit \
-          -replace "github.com/gloathub/glojure=$glojure_dir"
-        cp "$glojure_dir/go.sum" go.sum
-        go get github.com/gloathub/glojure
-      else
-        glj_ver=$(glj --version 2>/dev/null |
-          grep -oP 'v\d+\.\d+\.\S+' | head -1)
-        go get "github.com/gloathub/glojure@${glj_ver:-latest}"
+    # Set up go module (suppress output when no explicit deps)
+    setup-go-module() {
+      if [[ ! -f go.mod ]]; then
+        go mod init gloatrepl
       fi
+      if ! grep -q "gloathub/glojure" go.mod 2>/dev/null; then
+        glojure_dir=${GLOJURE_DIR:-$(
+          make --quiet --no-print-directory -C "$root" \
+            print-GLOJURE-DIR 2>/dev/null ||
+          echo "$root/../glojure"
+        )}
+        if [[ -d $glojure_dir ]]; then
+          go mod edit \
+            -replace "github.com/gloathub/glojure=$glojure_dir"
+          cp "$glojure_dir/go.sum" go.sum
+          go get github.com/gloathub/glojure
+        else
+          glj_ver=$(glj --version 2>/dev/null |
+            grep -oP 'v\d+\.\d+\.\S+' | head -1)
+          go get "github.com/gloathub/glojure@${glj_ver:-latest}"
+        fi
+      fi
+    }
+    if [[ -n $explicit_deps ]]; then
+      setup-go-module
+    else
+      setup-go-module 2>/dev/null
     fi
 
     export GOFLAGS=-mod=mod
@@ -258,6 +259,30 @@ main() (
     # Set GOARCH if not set
     : "${GOARCH:=$(go env GOARCH)}"
     export GOARCH
+
+    # Prefer local glojure binary if available
+    local_glj=$root/../glojure/bin/$(go env GOOS)_$(go env GOARCH)/glj
+    if [[ -x $local_glj ]]; then
+      PATH=$(dirname "$local_glj"):$PATH
+    fi
+
+    export GLJ_REPL_NO_BANNER=1
+
+    glj_ver=$(glj --version 2>/dev/null |
+      grep -oP 'v\d+\.\d+\.\S+' | head -1)
+    go_ver=$(go env GOVERSION 2>/dev/null)
+    go_ver=${go_ver#go}
+
+    cat >&2 <<EOS
+🐐 Gloat: $GLOAT_VERSION 🐐
+ Glojure: ${glj_ver:-unknown}
+      Go: $go_ver $(go env GOOS)/$(go env GOARCH)
+   Build: $build_dir
+    Docs: (doc function-name)
+  Source: (source function-name)
+    Exit: Ctrl+D or :repl/exit
+
+EOS
 
     # Run glj in a restart loop so crashes (e.g. stack overflow) don't
     # lose the session. History is persisted to ~/.glj_history.

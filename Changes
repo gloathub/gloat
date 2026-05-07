@@ -1,3 +1,8 @@
+- version: 0.1.33
+  date:    Thu May  7 05:36:15 PM EDT 2026
+  changes:
+  - Set nospinbitmutex for Plan 9 builds
+
 - version: 0.1.32
   date:    Thu May  7 04:30:08 PM EDT 2026
   changes:

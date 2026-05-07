@@ -1255,7 +1255,14 @@ Less common:
                                      (when (= format "lib") {"CGO_ENABLED" "1"})
                                      (when goos {"GOOS" goos})
                                      (when goarch {"GOARCH" goarch})
-                                     (when (= goos "plan9")
+                                     (when (and (= goos "plan9")
+                                                (str/starts-with?
+                                                  (str/trim
+                                                    (:out (process/shell
+                                                            {:out :string
+                                                             :err :string}
+                                                            go-bin "version")))
+                                                  "go version go1.24"))
                                        {"GOEXPERIMENT" "nospinbitmutex"}))]
 
                 (msg "Building" format "...")

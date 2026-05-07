@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-export GLOAT_VERSION=0.1.30
+export GLOAT_VERSION=0.1.31
 
 # Go 1.26 has a linker bug on arm64 that crashes when building with CGO
 export CGO_ENABLED=0
@@ -274,7 +274,7 @@ main() (
     go_ver=${go_ver#go}
 
     # Detect editing mode: GLJ_REPL_EDITOR > inputrc > vi default
-    edit_mode=vi
+    edit_mode='vi'
     if [[ -n ${GLJ_REPL_EDITOR-} ]]; then
       edit_mode=$GLJ_REPL_EDITOR
     elif grep -qsE '^\s*set\s+editing-mode\s+emacs' \

@@ -19,17 +19,23 @@ persistent history, job control, and bracketed paste.
 ## Startup
 
 On launch the REPL prints a banner with version and platform
-information, followed by quick-reference hints:
+information, the active editing mode, and quick-reference hints:
 
 ```
-Glojure v0.6.5-rc17
-Go 1.24.0 linux/amd64
-    Docs: (doc function-name)
-  Source: (source function-name)
-    Exit: Ctrl+D or :repl/exit
+🐐 Gloat: 0.1.30 🐐
+ Glojure: v0.6.5-rc17
+      Go: 1.24.0 linux/amd64
+  Editor: vi mode
+    Help: C-h or :repl/help
+    Exit: C-d or :repl/exit
 
 user=>
 ```
+
+When launched with `--deps`, the banner also shows the build
+directory.
+The editing mode shown reflects the `editing-mode` setting in
+`~/.inputrc`.
 
 The prompt shows the current namespace (`user` by default).
 Switch namespaces with `(ns my-ns)` and the prompt updates
@@ -48,6 +54,9 @@ set editing-mode emacs
 ```
 
 The REPL respects all standard inputrc settings.
+
+You can also switch modes at runtime with `:repl/vi` and
+`:repl/emacs` (see **REPL Commands** below).
 
 ## Multiline Editing
 
@@ -119,8 +128,8 @@ are not listed here.
 | **Backspace** | Delete 2 spaces if both precede cursor, otherwise delete 1 character |
 | **Enter** | Submit expression (cursor at end and expression complete) or insert newline; in vi-command mode, always submits |
 | **Ctrl+C** | Cancel current input; on empty prompt, shows exit hint; press twice to exit |
-| **Ctrl+D** | Show inline documentation for symbol under cursor; on empty prompt, exit the REPL |
-| **Ctrl+H** | Show inline help with key bindings and commands |
+| **Ctrl+D** | Show inline documentation for symbol under cursor; on empty prompt, exit the REPL. In emacs mode use **Ctrl+X Ctrl+D**. |
+| **Ctrl+H** | Show inline help with key bindings and commands. In emacs mode use **Ctrl+X Ctrl+H**. |
 | **Ctrl+E** | Move cursor to end of line (vi-insert and emacs modes) |
 | **Ctrl+R** | Reverse incremental history search |
 | **Ctrl+Z** | Suspend the REPL process; resume with `fg` |
@@ -246,8 +255,9 @@ Subsequent runs skip the fetch if versions match.
 
 ## Inline Documentation
 
-Press **Ctrl+D** with the cursor on or inside a symbol to display its
-documentation below the input line.
+Press **Ctrl+D** (vi mode) or **Ctrl+X Ctrl+D** (emacs mode) with the
+cursor on or inside a symbol to display its documentation below the
+input line.
 The hint shows the ClojureDocs URL (for `clojure.*` symbols), the
 fully qualified name, arglists, and docstring.
 
@@ -269,11 +279,27 @@ On an empty prompt, Ctrl+D exits the REPL as usual.
 
 ## Inline Help
 
-Press **Ctrl+H** to display a quick-reference card showing key bindings
-and useful commands below the input line.
-Like inline documentation, the help hint is transient and disappears on
-the next keypress.
+Press **Ctrl+H** (vi mode) or **Ctrl+X Ctrl+H** (emacs mode) to
+display a quick-reference card showing key bindings and REPL commands
+below the input line.
+The help content adapts to the current editing mode, showing the
+appropriate key bindings.
+Like inline documentation, the help hint is transient and disappears
+on the next keypress.
 Press **Escape** to dismiss it without leaving insert mode.
+
+## REPL Commands
+
+The following colon-commands can be typed at the prompt.
+They support tab completion -- type `:repl/` and press Tab to see all
+available commands.
+
+| Command | Action |
+|---------|--------|
+| `:repl/help` | Print key bindings and commands (mode-aware) |
+| `:repl/vi` | Switch to vi editing mode |
+| `:repl/emacs` | Switch to emacs editing mode |
+| `:repl/exit` | Exit the REPL |
 
 ## Feature Comparison
 
@@ -297,6 +323,7 @@ How the Gloat/Glojure REPL compares to other Clojure REPLs.
 | Interrupt evaluation (Ctrl+C) | **✓** | **✓** | **✓** | **✓** |
 | Emacs editing mode | **✓** | **✓** | **✓** | **✗** |
 | Vi editing mode | **✓** | **✗** | **✗** | **✗** |
+| Runtime mode switching | **✓** | **✗** | **✗** | **✗** |
 
 **Notes:**
 

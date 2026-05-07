@@ -273,16 +273,30 @@ main() (
     go_ver=$(go env GOVERSION 2>/dev/null)
     go_ver=${go_ver#go}
 
-    cat >&2 <<EOS
-🐐 Gloat: $GLOAT_VERSION 🐐
- Glojure: ${glj_ver:-unknown}
-      Go: $go_ver $(go env GOOS)/$(go env GOARCH)
-   Build: $build_dir
-    Docs: (doc function-name)
-  Source: (source function-name)
-    Exit: Ctrl+D or :repl/exit
+    # Detect editing mode from inputrc
+    edit_mode=vi
+    if grep -qsE '^\s*set\s+editing-mode\s+emacs' \
+        "${INPUTRC:-$HOME/.inputrc}" 2>/dev/null; then
+      edit_mode=emacs
+    fi
+    if [[ $edit_mode == emacs ]]; then
+      help_keys="C-x C-h"
+    else
+      help_keys="C-h"
+    fi
 
-EOS
+    {
+      echo "🐐 Gloat: $GLOAT_VERSION 🐐"
+      echo " Glojure: ${glj_ver:-unknown}"
+      echo "      Go: $go_ver $(go env GOOS)/$(go env GOARCH)"
+      if [[ -n $explicit_deps ]]; then
+        echo "   Build: $build_dir"
+      fi
+      echo "  Editor: $edit_mode mode"
+      echo "    Help: $help_keys or :repl/help"
+      echo "    Exit: C-d or :repl/exit"
+      echo
+    } >&2
 
     # Run glj in a restart loop so crashes (e.g. stack overflow) don't
     # lose the session. History is persisted to ~/.glj_history.

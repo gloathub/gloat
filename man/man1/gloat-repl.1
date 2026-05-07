@@ -17,17 +17,24 @@ persistent history, job control, and bracketed paste.
 
 .SH Startup
 On launch the REPL prints a banner with version and platform
-information, followed by quick-reference hints:
+information, the active editing mode, and quick-reference hints:
 
 .EX
-Glojure v0.6.5-rc17
-Go 1.24.0 linux/amd64
-    Docs: (doc function-name)
-  Source: (source function-name)
-    Exit: Ctrl+D or :repl/exit
+🐐 Gloat: 0.1.30 🐐
+ Glojure: v0.6.5-rc17
+      Go: 1.24.0 linux/amd64
+  Editor: vi mode
+    Help: C-h or :repl/help
+    Exit: C-d or :repl/exit
 
 user=>
 .EE
+
+.PP
+When launched with \fB--deps\fR, the banner also shows the build
+directory.
+The editing mode shown reflects the \fBediting-mode\fR setting in
+\fB~/.inputrc\fR\&.
 
 .PP
 The prompt shows the current namespace (\fBuser\fR by default).
@@ -48,6 +55,10 @@ set editing-mode emacs
 
 .PP
 The REPL respects all standard inputrc settings.
+
+.PP
+You can also switch modes at runtime with \fB:repl/vi\fR and
+\fB:repl/emacs\fR (see \fBREPL Commands\fP below).
 
 .SH Multiline Editing
 The REPL automatically detects incomplete expressions.
@@ -134,10 +145,10 @@ T}
 Cancel current input; on empty prompt, shows exit hint; press twice to exit
 T}
 \fBCtrl+D\fP	T{
-Show inline documentation for symbol under cursor; on empty prompt, exit the REPL
+Show inline documentation for symbol under cursor; on empty prompt, exit the REPL. In emacs mode use \fBCtrl+X Ctrl+D\fP\&.
 T}
 \fBCtrl+H\fP	T{
-Show inline help with key bindings and commands
+Show inline help with key bindings and commands. In emacs mode use \fBCtrl+X Ctrl+H\fP\&.
 T}
 \fBCtrl+E\fP	T{
 Move cursor to end of line (vi-insert and emacs modes)
@@ -283,8 +294,9 @@ glue code, and re-launches with the new packages available.
 Subsequent runs skip the fetch if versions match.
 
 .SH Inline Documentation
-Press \fBCtrl+D\fP with the cursor on or inside a symbol to display its
-documentation below the input line.
+Press \fBCtrl+D\fP (vi mode) or \fBCtrl+X Ctrl+D\fP (emacs mode) with the
+cursor on or inside a symbol to display its documentation below the
+input line.
 The hint shows the ClojureDocs URL (for \fBclojure.*\fR symbols), the
 fully qualified name, arglists, and docstring.
 
@@ -307,11 +319,32 @@ If the cursor is on a number, bracket, or whitespace, nothing is shown.
 On an empty prompt, Ctrl+D exits the REPL as usual.
 
 .SH Inline Help
-Press \fBCtrl+H\fP to display a quick-reference card showing key bindings
-and useful commands below the input line.
-Like inline documentation, the help hint is transient and disappears on
-the next keypress.
+Press \fBCtrl+H\fP (vi mode) or \fBCtrl+X Ctrl+H\fP (emacs mode) to
+display a quick-reference card showing key bindings and REPL commands
+below the input line.
+The help content adapts to the current editing mode, showing the
+appropriate key bindings.
+Like inline documentation, the help hint is transient and disappears
+on the next keypress.
 Press \fBEscape\fP to dismiss it without leaving insert mode.
+
+.SH REPL Commands
+The following colon-commands can be typed at the prompt.
+They support tab completion -- type \fB:repl/\fR and press Tab to see all
+available commands.
+
+.TS
+allbox;
+l l 
+l l .
+\fBCommand\fP	\fBAction\fP
+\fB:repl/help\fR	T{
+Print key bindings and commands (mode-aware)
+T}
+\fB:repl/vi\fR	Switch to vi editing mode
+\fB:repl/emacs\fR	Switch to emacs editing mode
+\fB:repl/exit\fR	Exit the REPL
+.TE
 
 .SH Feature Comparison
 How the Gloat/Glojure REPL compares to other Clojure REPLs.
@@ -339,6 +372,7 @@ Suspend/resume (Ctrl+Z)	\fB✓\fP	\fB✓\fP	\fB✓\fP	\fB✓\fP
 Interrupt evaluation (Ctrl+C)	\fB✓\fP	\fB✓\fP	\fB✓\fP	\fB✓\fP
 Emacs editing mode	\fB✓\fP	\fB✓\fP	\fB✓\fP	\fB✗\fP
 Vi editing mode	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
+Runtime mode switching	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
 .TE
 
 .PP

@@ -1,4 +1,10 @@
 - version: 0.1.31
+  date:    Thu May  7 03:05:18 PM EDT 2026
+  changes:
+  - Add Plan 9 to --platforms
+  - Improve REPL experience
+
+- version: 0.1.31
   date:    Thu May  7 02:59:15 PM EDT 2026
   changes:
   - Add Plan 9 to --platforms list

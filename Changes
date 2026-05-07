@@ -1,3 +1,8 @@
+- version: 0.1.32
+  date:    Thu May  7 04:30:08 PM EDT 2026
+  changes:
+  - Fix gloat -t go <<<'...'
+
 - version: 0.1.31
   date:    Thu May  7 03:05:18 PM EDT 2026
   changes:

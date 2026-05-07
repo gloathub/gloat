@@ -799,7 +799,21 @@ Less common:
 ;;------------------------------------------------------------------------------
 
 (defn convert-to-stdout [input format namespace]
-  (let [tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))
+  (let [;; Materialize stdin into a temp file when input is "-"
+        [input stdin?]
+        (if (= input "-")
+          (let [content (slurp *in*)
+                clj? (re-find #"^\s*\(" content)
+                suffix (if clj? ".clj" ".ys")
+                content (if (and clj? (not (re-find #"(?m)^\s*\(ns\s" content)))
+                          (str "(ns main.core)\n" content)
+                          content)
+                tmpfile (str (fs/create-temp-file
+                               {:dir GLOAT-TMP :suffix suffix}))]
+            (spit tmpfile content)
+            [tmpfile true])
+          [input false])
+        tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))
         input-type (get-file-type input)
         clj-file (str tmpdir "/temp.clj")
         glj-file (str tmpdir "/temp.glj")]
@@ -841,7 +855,8 @@ Less common:
         (die "Format '" format "' requires -o output"))
 
       (finally
-        (fs/delete-tree tmpdir)))))
+        (fs/delete-tree tmpdir)
+        (when stdin? (fs/delete input))))))
 
 (defn convert-file [input output format namespace module platform]
   (let [input-type (get-file-type input)]
@@ -1467,11 +1482,9 @@ Less common:
           (System/exit 0)))
 
       ;; Validate input
-      (let [input (if (and (nil? input) (nil? output))
+      (let [input (if (and (nil? input) (nil? output) (nil? to))
                     (die "Missing input file")
-                    (or input
-                        (when output "-")
-                        nil))]
+                    (or input "-"))]
 
         ;; Auto-detect file extension if file doesn't exist
         (let [input (if (and input

@@ -38,6 +38,7 @@ body:has(#repl-container) .md-tabs {
 }
 
 #repl-input {
+  display: inline-block;
   background: transparent;
   color: #e0e0e0;
   font-family: inherit;

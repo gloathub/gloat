@@ -26,6 +26,7 @@ MAKES-CLEAN := \
   site \
   docs/build-report \
   docs/demo-assets \
+  docs/repl \
   build-report \
 
 MAKES-REALCLEAN := $(PYTHON-VENV)

@@ -25,11 +25,11 @@
       };
     }
 
-    var WASM_URL = 'https://glojurelang.github.io/glojure/repl/glj.wasm';
+    var WASM_URL = '/repl/glj.wasm';
 
     var p = wasmLoaded
       ? Promise.resolve()
-      : loadScript('/demo-assets/wasm_exec.js').then(function() {
+      : loadScript('/repl/wasm_exec.js').then(function() {
           wasmLoaded = true;
         });
 
@@ -53,6 +53,22 @@
     var encoder = new TextEncoder();
     var output = document.getElementById('repl-output');
     var inputEl = document.getElementById('repl-input');
+
+    // Hook fstat so os.Stdin.Stat() reports a character device (terminal).
+    // Without this, fstat returns ENOSYS, Stat() returns (nil, err), and
+    // gljmain panics on nil.Mode().
+    globalThis.fs.fstat = function(fd, callback) {
+      callback(null, { dev: 0, ino: 0, mode: 8592, nlink: 0, uid: 0, gid: 0,
+                        rdev: 0, size: 0, blksize: 0, blocks: 0,
+                        atimeMs: 0, mtimeMs: 0, ctimeMs: 0,
+                        isDirectory: function() { return false; },
+                        isFile: function() { return false; },
+                        isBlockDevice: function() { return false; },
+                        isCharacterDevice: function() { return fd < 3; },
+                        isSymbolicLink: function() { return false; },
+                        isFIFO: function() { return false; },
+                        isSocket: function() { return false; } });
+    };
 
     // Hook stdout/stderr: insert text before the input element
     globalThis.fs.writeSync = function(fd, buf) {

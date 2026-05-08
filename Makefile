@@ -158,7 +158,23 @@ ifneq (,$(wildcard .cache/local/bin/bb))
 endif
 	make-do $@
 
-serve-www publish-www:
+GLJ-WASM := www/docs/repl/glj.wasm
+GLJ-WASM-EXEC := www/docs/repl/wasm_exec.js
+
+$(GLJ-WASM): $(GLJ) $(GLOJURE-DIR)
+	@mkdir -p $(dir $@)
+	cd $(GLOJURE-DIR)/cmd/glj && \
+	  GOOS=js GOARCH=wasm CGO_ENABLED=0 $(GO) build \
+	    -ldflags "-X github.com/gloathub/glojure/pkg/runtime.version=$(GLOJURE-VERSION)" \
+	    -o $(ROOT)/$@ .
+
+$(GLJ-WASM-EXEC): $(GO)
+	@mkdir -p $(dir $@)
+	cp $(GOROOT)/lib/wasm/wasm_exec.js $@
+
+glj-wasm: $(GLJ-WASM) $(GLJ-WASM-EXEC)
+
+serve-www publish-www: glj-wasm
 	$(MAKE) -C www $(@:%-www=%)
 
 serve-demo:

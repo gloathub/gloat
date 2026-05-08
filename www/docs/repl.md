@@ -94,6 +94,15 @@ body:has(#repl-container) .md-tabs {
 .repl-prompt {
   color: var(--gl-accent);
 }
+
+/* Syntax highlighting - matches CLI ANSI colors */
+.hl-string  { color: #22c55e; }  /* green - \x1b[32m */
+.hl-keyword { color: #06b6d4; }  /* cyan  - \x1b[36m */
+.hl-literal { color: #c084fc; }  /* magenta - \x1b[35m */
+.hl-special { color: #facc15; font-weight: bold; }  /* bold yellow - \x1b[1;33m */
+.hl-comment { color: #6b7280; }  /* gray - \x1b[90m */
+.hl-core    { color: #5b8dd9; }  /* blue - \x1b[38;5;69m */
+.hl-symbol  { color: #e0e0e0; }  /* default text */
 </style>
 
 <div id="repl-loading">

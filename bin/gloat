@@ -261,43 +261,13 @@ main() (
     export GOARCH
 
     # Prefer local glojure binary if available
-    local_glj=$root/../glojure/bin/$(go env GOOS)_$(go env GOARCH)/glj
+    glojure_dir=${GLOJURE_DIR:-$root/../glojure}
+    local_glj=$glojure_dir/bin/$(go env GOOS)_$(go env GOARCH)/glj
     if [[ -x $local_glj ]]; then
       PATH=$(dirname "$local_glj"):$PATH
     fi
 
-    export GLJ_REPL_NO_BANNER=1
-
-    glj_ver=$(glj --version 2>/dev/null |
-      grep -oP 'v\d+\.\d+\.\S+' | head -1)
-    go_ver=$(go env GOVERSION 2>/dev/null)
-    go_ver=${go_ver#go}
-
-    # Detect editing mode: GLJ_REPL_EDITOR > inputrc > vi default
-    edit_mode='vi'
-    if [[ -n ${GLJ_REPL_EDITOR-} ]]; then
-      edit_mode=$GLJ_REPL_EDITOR
-    elif grep -qsE '^\s*set\s+editing-mode\s+emacs' \
-        "${INPUTRC:-$HOME/.inputrc}" 2>/dev/null; then
-      edit_mode=emacs
-    fi
-    if [[ $edit_mode == emacs ]]; then
-      help_keys="C-x C-h"
-    else
-      help_keys="C-h"
-    fi
-
-    {
-      echo "🐐 Gloat: $GLOAT_VERSION 🐐"
-      echo " Glojure: ${glj_ver:-unknown}"
-      echo "      Go: $go_ver $(go env GOOS)/$(go env GOARCH)"
-      if [[ -n $explicit_deps ]]; then
-        echo "   Build: $build_dir"
-      fi
-      echo "    Help: $help_keys or :repl/help"
-      echo "    Exit: C-d or :repl/exit"
-      echo
-    } >&2
+    echo "🐐 Gloat: $GLOAT_VERSION 🐐" >&2
 
     # Run glj in a restart loop so crashes (e.g. stack overflow) don't
     # lose the session. History is persisted to ~/.glj_history.

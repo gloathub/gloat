@@ -81,6 +81,7 @@ MAKES-CLEAN := \
 export CGO_ENABLED := 0
 
 override PATH := $(ROOT)/bin:$(ROOT)/util:$(PATH)
+export PATH
 
 export GOPRIVATE=github.com/gloathub/*
 
@@ -161,9 +162,11 @@ endif
 GLJ-WASM := www/docs/repl/glj.wasm
 GLJ-WASM-EXEC := www/docs/repl/wasm_exec.js
 
-$(GLJ-WASM): $(GLJ) $(GLOJURE-DIR)
+GLOJURE-BUILD-DIR := $(or $(GLOJURE_REPO_CLONE),$(GLOJURE-DIR))
+
+$(GLJ-WASM): $(GLJ) $(GLOJURE-BUILD-DIR)
 	@mkdir -p $(dir $@)
-	cd $(GLOJURE-DIR)/cmd/glj && \
+	cd $(GLOJURE-BUILD-DIR)/cmd/glj && \
 	  GOOS=js GOARCH=wasm CGO_ENABLED=0 $(GO) build \
 	    -ldflags "-X github.com/gloathub/glojure/pkg/runtime.version=$(GLOJURE-VERSION)" \
 	    -o $(ROOT)/$@ .
@@ -230,6 +233,22 @@ release: $(GH)
 	$(eval RELEASE_VER := $(patsubst v%,%,$(VERSION)))
 	$(eval GLJ_VER := $(patsubst v%,%,$(GLJ-VERSION)))
 	make-do $@ $(RELEASE_VER) "$(MESSAGE)" "$(GLJ_VER)"
+
+GLJ-PLATFORM-linux-int64 := linux_amd64
+GLJ-PLATFORM-linux-arm64 := linux_arm64
+GLJ-PLATFORM-macos-int64 := darwin_amd64
+GLJ-PLATFORM-macos-arm64 := darwin_arm64
+GLJ-PLATFORM := $(GLJ-PLATFORM-$(OS-ARCH))
+
+ifdef GLOJURE_REPO_CLONE
+override PATH := $(GLOJURE_REPO_CLONE)/bin/$(GLJ-PLATFORM):$(PATH)
+endif
+
+repl:
+	@$(if $(GLOJURE_REPO_CLONE),,\
+	  $(error GLOJURE_REPO_CLONE is required (path to local glojure repo)))
+	GLJ_VERSION=$(GLOJURE-VERSION) $(MAKE) --no-print -C $(GLOJURE_REPO_CLONE) build
+	GLOJURE_DIR=$(GLOJURE_REPO_CLONE) gloat --repl
 
 build-glj-from-source: $(GO) $(GLOJURE-DIR)
 	cd $(GLOJURE-DIR) && \

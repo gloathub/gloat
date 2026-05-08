@@ -1,3 +1,12 @@
+- version: 0.1.35
+  date:    Fri May  8 12:52:04 PM EDT 2026
+  changes:
+  - Add syntax highlighting to browser REPL
+  - Improve browser REPL input handling
+  - Build REPL WASM from Glojure fork
+  - Add Glojure REPL page to website
+  - Add favicon to GloatHub website
+
 - version: 0.1.34
   date:    Thu May  7 06:47:51 PM EDT 2026
   changes:

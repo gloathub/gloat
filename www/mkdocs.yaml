@@ -11,6 +11,7 @@ edit_uri: ""
 theme:
   name: material
   custom_dir: theme
+  favicon: img/favicon.png
   features:
     - navigation.instant
     - navigation.tracking

@@ -61,7 +61,7 @@ docs/build-report/index.html: docs/hello-world.clj
 	  -Xprune,report=$@ </dev/null
 	@$(RM) /tmp/gloat-hello
 
-GLOJURE-TEST-REPORT := ../../glojure/test/clojure-test-suite/report.html
+GLOJURE-TEST-REPORT := $(wildcard ../../glojure/test/clojure-test-suite/report.html)
 ifneq (,$(GLOJURE-TEST-REPORT))
 TEST-REPORT := docs/test-report/index.html
 $(TEST-REPORT): $(GLOJURE-TEST-REPORT)

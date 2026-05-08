@@ -38,7 +38,9 @@ _gloat() {
         '(- *)--shell[Start a sub-shell with gloat tools on PATH]' \
         '(- *)--shell-all[Like --shell but install all dev tools]' \
         '--repl=[Start the glj REPL]::build directory:_files -/' \
-        '--deps=[Path to gljdeps.edn (for --repl)]:deps file:_files -g "*.edn"' \
+        '(- *)--nrepl[Start nREPL server for editor integration (Calva, CIDER)]' \
+        '--port=[Port for nREPL server (default: auto)]:port:' \
+        '--deps=[Path to gljdeps.edn (for --repl or --nrepl)]:deps file:_files -g "*.edn"' \
         '(- *)--reset[Remove all cached dependencies]' \
         '(- *)--upgrade[Upgrade gloat to the latest version]' \
         '(-r --run)'{-r,--run}'[Compile and run]' \

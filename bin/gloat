@@ -34,6 +34,8 @@ See https://gloathub.org
     gloat --repl                        Start Glojure REPL
     gloat --repl=dir                    Start REPL with build directory
     gloat --repl --deps=gljdeps.edn     Start REPL with deps
+    gloat --nrepl                       Start nREPL server (for Calva/CIDER)
+    gloat --nrepl --port=7888           Start nREPL on specific port
     gloat --reset                       Remove all cached dependencies
 --
 t,to=         Output format (inferred from -o; see --formats)
@@ -52,7 +54,9 @@ platforms     List available cross-compilation platforms
 shell         Start a sub-shell or run a command (-- cmd...)
 shell-all     Like --shell but install all dev tools
 repl          Start the glj REPL with Go interop (use --repl=dir for build dir)
-deps=         Path to gljdeps.edn (for --repl)
+nrepl         Start nREPL server for editor integration (Calva, CIDER)
+port=         Port for nREPL server (default: auto)
+deps=         Path to gljdeps.edn (for --repl or --nrepl)
 complete=     Generate shell completion script (bash, fish, zsh)
 
 r,run         Compile and run (pass program args after --)
@@ -120,6 +124,8 @@ main() (
   # Args after -- are captured as run_args for --shell handling.
   repl_dir=
   opt_repl=
+  opt_nrepl=
+  opt_port=
   opt_deps=
   opt_force=
   opt_shell=
@@ -139,6 +145,8 @@ main() (
         --repl=*)    opt_repl=true
                      repl_dir=${arg#--repl=}
                      proc_args+=(--repl)       ;;
+        --nrepl)     opt_nrepl=true;            proc_args+=("$arg") ;;
+        --port=*)    opt_port=${arg#--port=};  proc_args+=("$arg") ;;
         --deps=*)    opt_deps=${arg#--deps=}
                      proc_args+=("$arg")       ;;
         --force|-f)  opt_force=true;           proc_args+=("$arg") ;;
@@ -153,9 +161,15 @@ main() (
   opts_edn=$(printf '%s\n' "$GETOPT_SPEC" | \
     "$root/util/getopt" "${proc_args[@]}") || exit $?
 
-  # --deps without --repl is an error
-  if [[ -n $opt_deps && -z $opt_repl ]]; then
-    echo "Error: --deps requires --repl" >&2
+  # --deps without --repl or --nrepl is an error
+  if [[ -n $opt_deps && -z $opt_repl && -z $opt_nrepl ]]; then
+    echo "Error: --deps requires --repl or --nrepl" >&2
+    exit 1
+  fi
+
+  # --port without --nrepl is an error
+  if [[ -n $opt_port && -z $opt_nrepl ]]; then
+    echo "Error: --port requires --nrepl" >&2
     exit 1
   fi
 
@@ -279,6 +293,90 @@ main() (
       echo "REPL crashed (exit $rc), restarting..." >&2
     done
     exit 0
+  fi
+
+  # Handle --nrepl
+  if [[ -n $opt_nrepl ]]; then
+    # Resolve deps file (same logic as --repl)
+    deps_file=$opt_deps
+    explicit_deps=
+    if [[ -n $deps_file ]]; then
+      explicit_deps=1
+    elif [[ -n ${GLOAT_GLJDEPS-} ]]; then
+      deps_file=$GLOAT_GLJDEPS
+      explicit_deps=1
+    elif [[ -f ./gljdeps.edn ]]; then
+      deps_file=$(pwd)/gljdeps.edn
+    fi
+
+    if [[ -n $deps_file && ! -r $deps_file ]]; then
+      echo "Error: $deps_file not found" >&2
+      exit 1
+    fi
+
+    deps_content=
+    [[ -n $deps_file ]] && deps_content=$(cat "$deps_file")
+
+    # Build directory for nREPL (reuse REPL build dir)
+    if [[ -n ${GLOAT_REPL-} ]]; then
+      build_dir=$GLOAT_REPL
+    elif [[ -z $explicit_deps && -f ./gljdeps.edn ]]; then
+      build_dir=.
+    else
+      build_dir=$root/.cache/repl-$GLOAT_VERSION
+    fi
+
+    mkdir -p "$build_dir"
+    cd "$build_dir"
+
+    if [[ -n $deps_content ]]; then
+      printf '%s\n' "$deps_content" > gljdeps.edn
+    fi
+
+    # Set up go module (same as --repl)
+    setup-go-module() {
+      if [[ ! -f go.mod ]]; then
+        go mod init gloatrepl
+      fi
+      if ! grep -q "gloathub/glojure" go.mod 2>/dev/null; then
+        glojure_dir=${GLOJURE_DIR:-$(
+          make --quiet --no-print-directory -C "$root" \
+            print-GLOJURE-DIR 2>/dev/null ||
+          echo "$root/../glojure"
+        )}
+        if [[ -d $glojure_dir ]]; then
+          go mod edit \
+            -replace "github.com/gloathub/glojure=$glojure_dir"
+          cp "$glojure_dir/go.sum" go.sum
+          go get github.com/gloathub/glojure
+        else
+          glj_ver=$(glj --version 2>/dev/null |
+            grep -oP 'v\d+\.\d+\.\S+' | head -1)
+          go get "github.com/gloathub/glojure@${glj_ver:-latest}"
+        fi
+      fi
+    }
+    if [[ -n $explicit_deps ]]; then
+      setup-go-module
+    else
+      setup-go-module 2>/dev/null
+    fi
+
+    export GOFLAGS=-mod=mod
+
+    : "${GOARCH:=$(go env GOARCH)}"
+    export GOARCH
+
+    # Prefer local glojure binary if available
+    glojure_dir=${GLOJURE_DIR:-$root/../glojure}
+    local_glj=$glojure_dir/bin/$(go env GOOS)_$(go env GOARCH)/glj
+    if [[ -x $local_glj ]]; then
+      PATH=$(dirname "$local_glj"):$PATH
+    fi
+
+    port_args=()
+    [[ -n ${opt_port-} ]] && port_args=(--port "$opt_port")
+    exec glj --nrepl "${port_args[@]}"
   fi
 
   # Pass parsed opts to gloat.clj via env var — no re-parsing needed

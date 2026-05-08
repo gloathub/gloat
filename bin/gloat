@@ -34,7 +34,8 @@ See https://gloathub.org
     gloat --repl                        Start Glojure REPL
     gloat --repl=dir                    Start REPL with build directory
     gloat --repl --deps=gljdeps.edn     Start REPL with deps
-    gloat --nrepl                       Start nREPL server (for Calva/CIDER)
+    gloat --nrepl                       Start nREPL server
+    gloat --nrepl=.nrepl-port           Write port to file
     gloat --nrepl --port=7888           Start nREPL on specific port
     gloat --reset                       Remove all cached dependencies
 --
@@ -54,7 +55,7 @@ platforms     List available cross-compilation platforms
 shell         Start a sub-shell or run a command (-- cmd...)
 shell-all     Like --shell but install all dev tools
 repl          Start the glj REPL with Go interop (use --repl=dir for build dir)
-nrepl         Start nREPL server for editor integration (Calva, CIDER)
+nrepl         Start nREPL server (use --nrepl=FILE to write port to file)
 port=         Port for nREPL server (default: auto)
 deps=         Path to gljdeps.edn (for --repl or --nrepl)
 complete=     Generate shell completion script (bash, fish, zsh)
@@ -125,6 +126,7 @@ main() (
   repl_dir=
   opt_repl=
   opt_nrepl=
+  nrepl_port_file=
   opt_port=
   opt_deps=
   opt_force=
@@ -146,6 +148,9 @@ main() (
                      repl_dir=${arg#--repl=}
                      proc_args+=(--repl)       ;;
         --nrepl)     opt_nrepl=true;            proc_args+=("$arg") ;;
+        --nrepl=*)   opt_nrepl=true
+                     nrepl_port_file=${arg#--nrepl=}
+                     proc_args+=(--nrepl)      ;;
         --port=*)    opt_port=${arg#--port=};  proc_args+=("$arg") ;;
         --deps=*)    opt_deps=${arg#--deps=}
                      proc_args+=("$arg")       ;;
@@ -374,9 +379,11 @@ main() (
       PATH=$(dirname "$local_glj"):$PATH
     fi
 
+    nrepl_flag=--nrepl
+    [[ -n $nrepl_port_file ]] && nrepl_flag="--nrepl=$nrepl_port_file"
     port_args=()
     [[ -n ${opt_port-} ]] && port_args=(--port "$opt_port")
-    exec glj --nrepl "${port_args[@]}"
+    exec glj "$nrepl_flag" "${port_args[@]}"
   fi
 
   # Pass parsed opts to gloat.clj via env var — no re-parsing needed

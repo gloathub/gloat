@@ -51,10 +51,12 @@ extra_css:
 
 extra_javascript:
   - javascripts/external-links.js
+  - javascripts/repl.js
 
 nav:
   - GloatHub: index.md
   - Demo: demo.md
+  - REPL: repl.md
   - Blog: blog/index.md
   - Getting Started: getting-started.md
   - Examples: examples.md

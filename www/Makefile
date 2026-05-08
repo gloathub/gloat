@@ -2,7 +2,7 @@ M := ../.cache/makes
 $(shell [ -d $M ] || (git clone -q https://github.com/makeplus/makes $M))
 include $M/init.mk
 include $M/clean.mk
-PYTHON-VENV := venv
+PYTHON-VENV := $(ROOT)/venv
 include $M/python.mk
 include $M/typos.mk
 SHELL-DEPS += $(PYTHON-VENV)

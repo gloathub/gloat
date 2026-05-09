@@ -508,10 +508,111 @@
       }
     }
 
-    // Show the terminal, hide loading
+    // Show the terminal and toolbar, hide loading
     document.getElementById('repl-loading').style.display = 'none';
+    document.getElementById('repl-toolbar').style.display = 'flex';
     document.getElementById('repl-container').style.display = 'block';
     inputEl.focus();
+
+    // Toolbar action handler (shared by inline buttons and dropdown)
+    function handleAction(action) {
+      if (action === 'clear') {
+        var spans = output.querySelectorAll('span:not(#repl-input)');
+        spans.forEach(function(s) { s.remove(); });
+        var prompt = document.createElement('span');
+        prompt.innerText = 'user=> ';
+        output.insertBefore(prompt, inputEl);
+      } else if (action === 'history-prev') {
+        if (historyIndex > 0) {
+          if (historyIndex === history.length) {
+            currentLine = inputEl.innerText;
+          }
+          historyIndex--;
+          inputEl.innerText = history[historyIndex];
+        }
+      } else if (action === 'history-next') {
+        if (historyIndex < history.length) {
+          historyIndex++;
+          if (historyIndex === history.length) {
+            inputEl.innerText = currentLine;
+          } else {
+            inputEl.innerText = history[historyIndex];
+          }
+        }
+      } else if (action === 'home') {
+        var sel = window.getSelection();
+        var range = document.createRange();
+        range.selectNodeContents(inputEl);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } else if (action === 'end') {
+        var sel = window.getSelection();
+        var range = document.createRange();
+        range.selectNodeContents(inputEl);
+        range.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } else if (action === 'kill-before') {
+        var sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+          var range = sel.getRangeAt(0);
+          var delRange = document.createRange();
+          delRange.selectNodeContents(inputEl);
+          delRange.setEnd(range.startContainer, range.startOffset);
+          delRange.deleteContents();
+        }
+      } else if (action === 'kill-after') {
+        var sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+          var range = sel.getRangeAt(0);
+          var delRange = document.createRange();
+          delRange.setStart(range.startContainer, range.startOffset);
+          var endRange = document.createRange();
+          endRange.selectNodeContents(inputEl);
+          delRange.setEnd(endRange.endContainer, endRange.endOffset);
+          delRange.deleteContents();
+        }
+      } else if (action === 'copy-last') {
+        // Copy the last input form (the most recent highlighted echo span)
+        var spans = output.querySelectorAll('span:not(#repl-input)');
+        for (var si = spans.length - 1; si >= 0; si--) {
+          if (spans[si].querySelector('[class^="hl-"]')) {
+            var text = spans[si].innerText.replace(/\n$/, '');
+            if (text) navigator.clipboard.writeText(text);
+            break;
+          }
+        }
+      }
+      inputEl.focus();
+    }
+
+    // Inline toolbar buttons
+    document.querySelector('.repl-buttons').addEventListener('click', function(e) {
+      var btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      handleAction(btn.getAttribute('data-action'));
+    });
+
+    // Dropdown menu (if present)
+    var ctrlMenu = document.getElementById('repl-ctrl-menu');
+    if (ctrlMenu) {
+      var menuBtn = ctrlMenu.querySelector('.repl-menu-btn');
+      menuBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        ctrlMenu.classList.toggle('open');
+      });
+      document.addEventListener('click', function() {
+        ctrlMenu.classList.remove('open');
+      });
+      ctrlMenu.querySelector('.repl-menu-items').addEventListener('click', function(e) {
+        var btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+        e.stopPropagation();
+        ctrlMenu.classList.remove('open');
+        handleAction(btn.getAttribute('data-action'));
+      });
+    }
 
     // Print Gloat banner line (matches bin/gloat output)
     var gloatBanner = document.createElement('span');

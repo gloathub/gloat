@@ -188,8 +188,9 @@ main() (
 
   # Find local glj binary and add to PATH
   find-glj() {
-    local glojure_dir=${GLOJURE_DIR:-$root/../glojure}
-    local local_glj=$glojure_dir/bin/$(go env GOOS)_$(go env GOARCH)/glj
+    local glojure_dir local_glj
+    glojure_dir=${GLOJURE_DIR:-$root/../glojure}
+    local_glj=$glojure_dir/bin/$(go env GOOS)_$(go env GOARCH)/glj
     if [[ -x $local_glj ]]; then
       PATH=$(dirname "$local_glj"):$PATH
     fi

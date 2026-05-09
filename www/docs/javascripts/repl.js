@@ -70,9 +70,16 @@
                         isSocket: function() { return false; } });
     };
 
+    // Suppress whitespace-only WASM output during multi-line input
+    var suppressContinuation = false;
+
     // Hook stdout/stderr: insert text before the input element
     globalThis.fs.writeSync = function(fd, buf) {
       var text = decoder.decode(buf);
+      if (suppressContinuation) {
+        if (text.trim() === '') return buf.length;
+        suppressContinuation = false;
+      }
       var span = document.createElement('span');
       span.innerText = text;
       output.insertBefore(span, inputEl);
@@ -80,8 +87,8 @@
       return buf.length;
     };
 
-    // Parse shared session from URL hash
-    var replayQueue = null;
+    // Queue for replaying shared URL expressions
+    var replayQueue = [];
     var replayLast = '';
     var hash = window.location.hash.slice(1);
     if (hash.indexOf('s:') === 0) {
@@ -103,28 +110,22 @@
         return originalRead(fd, buffer, offset, length, position, callback);
       }
       // Replay queued expressions from shared URL
-      if (replayQueue && replayQueue.length > 0) {
-        var line = replayQueue.shift();
+      if (replayQueue.length > 0) {
+        var expr = replayQueue.shift();
         var span = document.createElement('span');
-        span.innerHTML = highlightSyntax(line) + '\n';
+        span.innerHTML = highlightSyntax(expr) + '\n';
         output.insertBefore(span, inputEl);
-        history.push(line);
+        history.push(expr);
         historyIndex = history.length;
-        var view = encoder.encode(line + '\n');
+        if (expr.indexOf('\n') >= 0) suppressContinuation = true;
+        var view = encoder.encode(expr + '\n');
         buffer.set(view, offset);
         callback(null, view.length);
         return;
       }
       // Place last shared expression in input for user to run
-      if (replayQueue !== null && replayLast) {
-        replayQueue = null;
-        inputEl.innerHTML = highlightSyntax(replayLast);
-        var sel = window.getSelection();
-        var range = document.createRange();
-        range.selectNodeContents(inputEl);
-        range.collapse(false);
-        sel.removeAllRanges();
-        sel.addRange(range);
+      if (replayLast) {
+        setInput(replayLast);
         inputEl.scrollIntoView({ block: 'nearest' });
         replayLast = '';
       }
@@ -140,6 +141,33 @@
     var historyIndex = 0;
     var currentLine = '';
     var exprBuf = '';
+
+    // Remove common leading whitespace from multi-line text
+    function dedent(text) {
+      var lines = text.split('\n');
+      var min = Infinity;
+      for (var i = 0; i < lines.length; i++) {
+        if (lines[i].trim() === '') continue;
+        var m = lines[i].match(/^( *)/);
+        if (m && m[1].length < min) min = m[1].length;
+      }
+      if (min === 0 || min === Infinity) return text;
+      return lines.map(function(l) { return l.slice(min); }).join('\n');
+    }
+
+    // Set input element content with highlighting, multi-line on new line
+    function setInput(text) {
+      var isMulti = text.indexOf('\n') >= 0;
+      inputEl.style.display = isMulti ? 'block' : 'inline-block';
+      inputEl.innerHTML = highlightSyntax(isMulti ? dedent(text) : text);
+      // Place cursor at end
+      var sel = window.getSelection();
+      var range = document.createRange();
+      range.selectNodeContents(inputEl);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
 
     function nestingDepth(text) {
       var depth = 0;
@@ -202,42 +230,9 @@
     inputEl.addEventListener('paste', function(event) {
       event.preventDefault();
       var text = (event.clipboardData || window.clipboardData).getData('text/plain');
-      var lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
-      // Remove trailing empty lines
-      while (lines.length > 0 && lines[lines.length - 1].trim() === '') {
-        lines.pop();
-      }
-      if (lines.length === 0) return;
-      if (lines.length === 1) {
-        // Single line: insert at cursor
-        document.execCommand('insertText', false, lines[0]);
-      } else {
-        // Multi-line: feed each line through the REPL as if typed + Enter
-        for (var i = 0; i < lines.length; i++) {
-          inputEl.innerText = lines[i];
-          processInput(lines[i]);
-          exprBuf += lines[i] + '\n';
-        }
-        // Pre-fill indent if expression is still incomplete
-        var depth = nestingDepth(exprBuf);
-        if (depth > 0) {
-          var indent = new Array(depth * 2 + 1).join(' ');
-          inputEl.innerText = indent;
-          var range = document.createRange();
-          var sel = window.getSelection();
-          range.selectNodeContents(inputEl);
-          range.collapse(false);
-          sel.removeAllRanges();
-          sel.addRange(range);
-        } else {
-          exprBuf = '';
-          inputEl.innerText = '';
-        }
-        if (text.trim() !== '') {
-          history.push(text.trim());
-          historyIndex = history.length;
-        }
-      }
+      // Strip trailing newlines and insert at cursor
+      text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n+$/, '');
+      if (text) document.execCommand('insertText', false, text);
     });
 
     inputEl.addEventListener('keydown', function(event) {
@@ -245,6 +240,7 @@
         event.preventDefault();
         var input = this.innerText;
         this.innerText = '';
+        this.style.display = 'inline-block';
         processInput(input);
         if (input.trim() !== '') {
           history.push(input);
@@ -275,7 +271,7 @@
             currentLine = this.innerText;
           }
           historyIndex--;
-          this.innerText = history[historyIndex];
+          setInput(history[historyIndex]);
         }
       } else if (event.key === 'ArrowDown' ||
                  (event.ctrlKey && event.key === 'n')) {
@@ -283,9 +279,9 @@
         if (historyIndex < history.length) {
           historyIndex++;
           if (historyIndex === history.length) {
-            this.innerText = currentLine;
+            setInput(currentLine);
           } else {
-            this.innerText = history[historyIndex];
+            setInput(history[historyIndex]);
           }
         }
       } else if (event.key === 'Tab') {
@@ -356,7 +352,8 @@
         event.preventDefault();
         handleAction('clear');
       }
-      if (typeof updateShareBtn === 'function') updateShareBtn();
+      inputEl.scrollIntoView({ block: 'nearest' });
+      if (typeof updateShareUrl === 'function') updateShareUrl();
     });
 
     var coreSymbols = {
@@ -532,15 +529,22 @@
     }
 
     function processInput(input) {
-      // Echo the input line with syntax highlighting
+      var isMultiLine = input.indexOf('\n') >= 0;
+      // Echo the input with syntax highlighting
       var span = document.createElement('span');
+      if (isMultiLine) span.style.display = 'block';
       span.innerHTML = highlightSyntax(input) + '\n';
       output.insertBefore(span, inputEl);
+
+      // Suppress WASM continuation prompts for multi-line input
+      if (isMultiLine) suppressContinuation = true;
 
       if (pendingRead) {
         var pr = pendingRead;
         pendingRead = null;
-        var view = encoder.encode(input + '\n');
+        // Strip trailing newlines to avoid extra empty line → double prompt
+        var cleaned = input.replace(/\n+$/, '');
+        var view = encoder.encode(cleaned + '\n');
         pr.buffer.set(view, pr.offset);
         pr.callback(null, view.length);
       }
@@ -560,23 +564,23 @@
         var prompt = document.createElement('span');
         prompt.innerText = 'user=> ';
         output.insertBefore(prompt, inputEl);
-        var cleanUrl = window.location.href.replace(/#.*$/, '');
-        window.history.replaceState(null, '', cleanUrl);
+        historyIndex = history.length;
+        currentLine = '';
       } else if (action === 'history-prev') {
         if (historyIndex > 0) {
           if (historyIndex === history.length) {
             currentLine = inputEl.innerText;
           }
           historyIndex--;
-          inputEl.innerText = history[historyIndex];
+          setInput(history[historyIndex]);
         }
       } else if (action === 'history-next') {
         if (historyIndex < history.length) {
           historyIndex++;
           if (historyIndex === history.length) {
-            inputEl.innerText = currentLine;
+            setInput(currentLine);
           } else {
-            inputEl.innerText = history[historyIndex];
+            setInput(history[historyIndex]);
           }
         }
       } else if (action === 'home') {
@@ -613,33 +617,21 @@
           delRange.setEnd(endRange.endContainer, endRange.endOffset);
           delRange.deleteContents();
         }
-      } else if (action === 'copy-last') {
-        // Copy the last input form (the most recent highlighted echo span)
-        var spans = output.querySelectorAll('span:not(#repl-input)');
-        for (var si = spans.length - 1; si >= 0; si--) {
-          if (spans[si].querySelector('[class^="hl-"]')) {
-            var text = spans[si].innerText.replace(/\n$/, '');
-            if (text) navigator.clipboard.writeText(text);
-            break;
-          }
+      } else if (action === 'copy-form') {
+        // Copy current form: input text, history entry, or last form
+        var text = inputEl.innerText.trim();
+        if (!text && historyIndex < history.length) {
+          text = history[historyIndex];
         }
+        if (!text && history.length > 0) {
+          text = history[history.length - 1];
+        }
+        if (text) navigator.clipboard.writeText(text);
       } else if (action === 'share') {
-        // Share history from current historyIndex to end
-        var exprs = history.slice(historyIndex);
-        // Only append current input if not browsing history
-        if (historyIndex === history.length) {
-          var current = inputEl.innerText;
-          if (current.trim()) exprs.push(current);
-        }
-        if (exprs.length > 0) {
-          var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(exprs))));
-          var url = window.location.href.replace(/#.*$/, '') + '#s:' + b64;
-          window.history.replaceState(null, '', url);
-          navigator.clipboard.writeText(url);
-        }
+        navigator.clipboard.writeText(window.location.href);
       }
       inputEl.focus();
-      if (typeof updateShareBtn === 'function') updateShareBtn();
+      inputEl.scrollIntoView({ block: 'nearest' });
     }
 
     // Inline toolbar buttons
@@ -649,17 +641,22 @@
       handleAction(btn.getAttribute('data-action'));
     });
 
-    // Share button (right side, shown conditionally)
-    var shareBtn = document.querySelector('.repl-share-btn');
-    shareBtn.addEventListener('click', function() {
-      handleAction('share');
-    });
-    function updateShareBtn() {
-      var hasInput = inputEl.innerText.trim() !== '';
-      var inHistory = historyIndex < history.length;
-      shareBtn.style.display = (hasInput || inHistory) ? '' : 'none';
+    // Keep URL hash in sync with share state
+    function updateShareUrl() {
+      var exprs = history.slice(historyIndex);
+      if (historyIndex === history.length) {
+        var current = inputEl.innerText;
+        if (current.trim()) exprs.push(current);
+      }
+      var base = window.location.href.replace(/#.*$/, '');
+      if (exprs.length > 0) {
+        var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(exprs))));
+        window.history.replaceState(null, '', base + '#s:' + b64);
+      } else {
+        window.history.replaceState(null, '', base);
+      }
     }
-    inputEl.addEventListener('input', updateShareBtn);
+    inputEl.addEventListener('input', updateShareUrl);
 
     // Dropdown menu (if present)
     var ctrlMenu = document.getElementById('repl-ctrl-menu');

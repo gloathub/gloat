@@ -31,7 +31,7 @@ body:has(#repl-container) .md-tabs {
 /* Inline toolbar buttons */
 .repl-buttons {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.5rem;
 }
 
 .repl-btn {
@@ -150,6 +150,7 @@ body:has(#repl-container) .md-tabs {
 
 #repl-input {
   display: inline-block;
+  vertical-align: top;
   background: transparent;
   color: #e0e0e0;
   font-family: inherit;
@@ -222,15 +223,14 @@ body:has(#repl-container) .md-tabs {
 
 <div id="repl-toolbar" style="display:none">
   <div class="repl-buttons">
-    <button class="repl-btn" data-action="copy-last" title="Copy last form">&#x29C9;</button>
+    <button class="repl-btn" data-action="share" title="Copy share URL">&#x21D7;</button>
+    <button class="repl-btn" data-action="copy-form" title="Copy current form">&#x29C9;</button>
     <button class="repl-btn" data-action="history-prev" title="History prev (Up)">&uarr;</button>
     <button class="repl-btn" data-action="history-next" title="History next (Down)">&darr;</button>
     <button class="repl-btn" data-action="kill-before" title="Kill before cursor (^U)">&lArr;</button>
     <button class="repl-btn" data-action="kill-after" title="Kill after cursor (^K)">&rArr;</button>
     <button class="repl-btn" data-action="clear" title="Clear screen (^L)">&#x2715;</button>
   </div>
-  <button class="repl-btn repl-share-btn" data-action="share"
-          title="Share from here" style="display:none">&#x21D7;</button>
   <!--
   <div class="repl-menu" id="repl-ctrl-menu">
     <button class="repl-menu-btn" title="More controls">&#9776;</button>
@@ -257,7 +257,7 @@ body:has(#repl-container) .md-tabs {
 </div>
 
 <div id="repl-container" style="display:none"
-     onclick="document.getElementById('repl-input').focus()">
+     onclick="if (!window.getSelection().toString()) document.getElementById('repl-input').focus()">
   <div id="repl-output">
     <span id="repl-input" contenteditable="true"
           autocomplete="off" spellcheck="false"></span>

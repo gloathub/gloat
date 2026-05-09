@@ -229,6 +229,8 @@ body:has(#repl-container) .md-tabs {
     <button class="repl-btn" data-action="kill-after" title="Kill after cursor (^K)">&rArr;</button>
     <button class="repl-btn" data-action="clear" title="Clear screen (^L)">&#x2715;</button>
   </div>
+  <button class="repl-btn repl-share-btn" data-action="share"
+          title="Share from here" style="display:none">&#x21D7;</button>
   <!--
   <div class="repl-menu" id="repl-ctrl-menu">
     <button class="repl-menu-btn" title="More controls">&#9776;</button>

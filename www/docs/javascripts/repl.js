@@ -80,12 +80,53 @@
       return buf.length;
     };
 
+    // Parse shared session from URL hash
+    var replayQueue = null;
+    var replayLast = '';
+    var hash = window.location.hash.slice(1);
+    if (hash.indexOf('s:') === 0) {
+      try {
+        var json = decodeURIComponent(escape(atob(hash.slice(2))));
+        var exprs = JSON.parse(json);
+        if (exprs.length > 0) {
+          replayLast = exprs.pop();
+          replayQueue = exprs;
+        }
+      } catch(e) {}
+    }
+
     // Hook stdin: wait for user input via contenteditable
     var pendingRead = null;
     var originalRead = globalThis.fs.read;
     globalThis.fs.read = function(fd, buffer, offset, length, position, callback) {
       if (fd !== 0) {
         return originalRead(fd, buffer, offset, length, position, callback);
+      }
+      // Replay queued expressions from shared URL
+      if (replayQueue && replayQueue.length > 0) {
+        var line = replayQueue.shift();
+        var span = document.createElement('span');
+        span.innerHTML = highlightSyntax(line) + '\n';
+        output.insertBefore(span, inputEl);
+        history.push(line);
+        historyIndex = history.length;
+        var view = encoder.encode(line + '\n');
+        buffer.set(view, offset);
+        callback(null, view.length);
+        return;
+      }
+      // Place last shared expression in input for user to run
+      if (replayQueue !== null && replayLast) {
+        replayQueue = null;
+        inputEl.innerHTML = highlightSyntax(replayLast);
+        var sel = window.getSelection();
+        var range = document.createRange();
+        range.selectNodeContents(inputEl);
+        range.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        inputEl.scrollIntoView({ block: 'nearest' });
+        replayLast = '';
       }
       if (pendingRead) {
         throw new Error('multiple reads');
@@ -311,14 +352,11 @@
           delRange.deleteContents();
         }
       } else if (event.key === 'l' && event.ctrlKey) {
-        // Ctrl-L: clear screen, then re-add the prompt
+        // Ctrl-L: clear screen
         event.preventDefault();
-        var spans = output.querySelectorAll('span:not(#repl-input)');
-        spans.forEach(function(s) { s.remove(); });
-        var prompt = document.createElement('span');
-        prompt.innerText = 'user=> ';
-        output.insertBefore(prompt, inputEl);
+        handleAction('clear');
       }
+      if (typeof updateShareBtn === 'function') updateShareBtn();
     });
 
     var coreSymbols = {
@@ -522,6 +560,8 @@
         var prompt = document.createElement('span');
         prompt.innerText = 'user=> ';
         output.insertBefore(prompt, inputEl);
+        var cleanUrl = window.location.href.replace(/#.*$/, '');
+        window.history.replaceState(null, '', cleanUrl);
       } else if (action === 'history-prev') {
         if (historyIndex > 0) {
           if (historyIndex === history.length) {
@@ -583,8 +623,23 @@
             break;
           }
         }
+      } else if (action === 'share') {
+        // Share history from current historyIndex to end
+        var exprs = history.slice(historyIndex);
+        // Only append current input if not browsing history
+        if (historyIndex === history.length) {
+          var current = inputEl.innerText;
+          if (current.trim()) exprs.push(current);
+        }
+        if (exprs.length > 0) {
+          var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(exprs))));
+          var url = window.location.href.replace(/#.*$/, '') + '#s:' + b64;
+          window.history.replaceState(null, '', url);
+          navigator.clipboard.writeText(url);
+        }
       }
       inputEl.focus();
+      if (typeof updateShareBtn === 'function') updateShareBtn();
     }
 
     // Inline toolbar buttons
@@ -593,6 +648,18 @@
       if (!btn) return;
       handleAction(btn.getAttribute('data-action'));
     });
+
+    // Share button (right side, shown conditionally)
+    var shareBtn = document.querySelector('.repl-share-btn');
+    shareBtn.addEventListener('click', function() {
+      handleAction('share');
+    });
+    function updateShareBtn() {
+      var hasInput = inputEl.innerText.trim() !== '';
+      var inHistory = historyIndex < history.length;
+      shareBtn.style.display = (hasInput || inHistory) ? '' : 'none';
+    }
+    inputEl.addEventListener('input', updateShareBtn);
 
     // Dropdown menu (if present)
     var ctrlMenu = document.getElementById('repl-ctrl-menu');

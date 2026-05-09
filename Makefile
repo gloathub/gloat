@@ -84,6 +84,7 @@ override PATH := $(ROOT)/bin:$(ROOT)/util:$(PATH)
 export PATH
 
 export GOPRIVATE=github.com/gloathub/*
+unexport PERL5OPT
 
 test ?= test/*.t
 

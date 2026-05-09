@@ -32,11 +32,9 @@ See https://gloathub.org
     gloat foo.ys -o foo --platform=freebsd/amd64  Cross-compile
     gloat --run foo.ys -- arg1 arg2     Compile and run
     gloat --repl                        Start Glojure REPL
-    gloat --repl=dir                    Start REPL with build directory
-    gloat --repl --deps=gljdeps.edn     Start REPL with deps
+    gloat --repl=7888                   Connect REPL to nREPL server
     gloat --nrepl                       Start nREPL server
-    gloat --nrepl=.nrepl-port           Write port to file
-    gloat --nrepl --port=7888           Start nREPL on specific port
+    gloat --nrepl=7888                  Start nREPL on specific port
     gloat --reset                       Remove all cached dependencies
 --
 t,to=         Output format (inferred from -o; see --formats)
@@ -52,12 +50,11 @@ formats       List available output formats
 extensions    List available processing extensions
 platforms     List available cross-compilation platforms
 
+repl          Start REPL client; see 'man gloat-repl'
+nrepl         Start nREPL server; see 'man gloat-repl'
+deps=         Path to gljdeps.edn (for --repl or --nrepl)
 shell         Start a sub-shell or run a command (-- cmd...)
 shell-all     Like --shell but install all dev tools
-repl          Start the glj REPL with Go interop (use --repl=dir for build dir)
-nrepl         Start nREPL server (use --nrepl=FILE to write port to file)
-port=         Port for nREPL server (default: auto)
-deps=         Path to gljdeps.edn (for --repl or --nrepl)
 complete=     Generate shell completion script (bash, fish, zsh)
 
 r,run         Compile and run (pass program args after --)
@@ -123,11 +120,10 @@ main() (
   # --repl=dir has an optional value getopt doesn't support, so we normalize
   # --repl=dir → --repl (boolean) and save the dir separately.
   # Args after -- are captured as run_args for --shell handling.
-  repl_dir=
+  repl_val=
   opt_repl=
   opt_nrepl=
-  nrepl_port_file=
-  opt_port=
+  nrepl_val=
   opt_deps=
   opt_force=
   opt_shell=
@@ -145,13 +141,12 @@ main() (
         --)          past_dashdash=1;          proc_args+=("$arg") ;;
         --repl)      opt_repl=true;            proc_args+=("$arg") ;;
         --repl=*)    opt_repl=true
-                     repl_dir=${arg#--repl=}
+                     repl_val=${arg#--repl=}
                      proc_args+=(--repl)       ;;
         --nrepl)     opt_nrepl=true;            proc_args+=("$arg") ;;
         --nrepl=*)   opt_nrepl=true
-                     nrepl_port_file=${arg#--nrepl=}
+                     nrepl_val=${arg#--nrepl=}
                      proc_args+=(--nrepl)      ;;
-        --port=*)    opt_port=${arg#--port=};  proc_args+=("$arg") ;;
         --deps=*)    opt_deps=${arg#--deps=}
                      proc_args+=("$arg")       ;;
         --force|-f)  opt_force=true;           proc_args+=("$arg") ;;
@@ -169,12 +164,6 @@ main() (
   # --deps without --repl or --nrepl is an error
   if [[ -n $opt_deps && -z $opt_repl && -z $opt_nrepl ]]; then
     echo "Error: --deps requires --repl or --nrepl" >&2
-    exit 1
-  fi
-
-  # --port without --nrepl is an error
-  if [[ -n $opt_port && -z $opt_nrepl ]]; then
-    echo "Error: --port requires --nrepl" >&2
     exit 1
   fi
 
@@ -197,8 +186,44 @@ main() (
     fi
   fi
 
+  # Find local glj binary and add to PATH
+  find-glj() {
+    local glojure_dir=${GLOJURE_DIR:-$root/../glojure}
+    local local_glj=$glojure_dir/bin/$(go env GOOS)_$(go env GOARCH)/glj
+    if [[ -x $local_glj ]]; then
+      PATH=$(dirname "$local_glj"):$PATH
+    fi
+  }
+
   # Handle --repl
   if [[ -n $opt_repl ]]; then
+    # --repl=VALUE heuristic: digits=port, file=portfile, dir=builddir
+    if [[ -n $repl_val ]]; then
+      if [[ $repl_val =~ ^[0-9]+$ ]]; then
+        # Port number -- connect to nREPL server
+        find-glj
+        exec glj --nrepl-connect "localhost:$repl_val"
+      elif [[ $repl_val =~ : && ${repl_val##*:} =~ ^[0-9]+$ ]]; then
+        # host:port -- connect to nREPL server
+        find-glj
+        exec glj --nrepl-connect "$repl_val"
+      elif [[ -f $repl_val ]]; then
+        # Existing file -- read port from it
+        port=$(cat "$repl_val")
+        if [[ ! $port =~ ^[0-9]+$ ]]; then
+          echo "Error: $repl_val does not contain a valid port number" >&2
+          exit 1
+        fi
+        find-glj
+        exec glj --nrepl-connect "localhost:$port"
+      elif [[ ! -d $repl_val && $repl_val != */ ]]; then
+        # Not a directory and no trailing slash -- error
+        echo "Error: $repl_val not found" >&2
+        exit 1
+      fi
+      # Fall through: repl_val is a directory or ends with /
+    fi
+
     force=
     [[ -n $opt_force ]] && force=1
 
@@ -226,8 +251,8 @@ main() (
     # Determine build directory:
     #   --repl=dir  >  GLOAT_REPL=dir  >  . (if ./gljdeps.edn, no explicit deps)
     #   >  .cache/repl-$GLOAT_VERSION/
-    if [[ -n $repl_dir ]]; then
-      build_dir=$repl_dir
+    if [[ -n $repl_val ]]; then
+      build_dir=$repl_val
     elif [[ -n ${GLOAT_REPL-} ]]; then
       build_dir=$GLOAT_REPL
     elif [[ -z $explicit_deps && -f ./gljdeps.edn ]]; then
@@ -279,12 +304,7 @@ main() (
     : "${GOARCH:=$(go env GOARCH)}"
     export GOARCH
 
-    # Prefer local glojure binary if available
-    glojure_dir=${GLOJURE_DIR:-$root/../glojure}
-    local_glj=$glojure_dir/bin/$(go env GOOS)_$(go env GOARCH)/glj
-    if [[ -x $local_glj ]]; then
-      PATH=$(dirname "$local_glj"):$PATH
-    fi
+    find-glj
 
     echo "🐐 Gloat: $GLOAT_VERSION 🐐" >&2
 
@@ -302,6 +322,13 @@ main() (
 
   # Handle --nrepl
   if [[ -n $opt_nrepl ]]; then
+    # Resolve relative port file path before cd into build dir
+    if [[ -n $nrepl_val && ! $nrepl_val =~ ^[0-9]+$ &&
+          ! ($nrepl_val =~ : && ${nrepl_val##*:} =~ ^[0-9]+$) &&
+          $nrepl_val != /* ]]; then
+      nrepl_val=$(pwd)/$nrepl_val
+    fi
+
     # Resolve deps file (same logic as --repl)
     deps_file=$opt_deps
     explicit_deps=
@@ -372,18 +399,11 @@ main() (
     : "${GOARCH:=$(go env GOARCH)}"
     export GOARCH
 
-    # Prefer local glojure binary if available
-    glojure_dir=${GLOJURE_DIR:-$root/../glojure}
-    local_glj=$glojure_dir/bin/$(go env GOOS)_$(go env GOARCH)/glj
-    if [[ -x $local_glj ]]; then
-      PATH=$(dirname "$local_glj"):$PATH
-    fi
+    find-glj
 
     nrepl_flag=--nrepl
-    [[ -n $nrepl_port_file ]] && nrepl_flag="--nrepl=$nrepl_port_file"
-    port_args=()
-    [[ -n ${opt_port-} ]] && port_args=(--port "$opt_port")
-    exec glj "$nrepl_flag" "${port_args[@]}"
+    [[ -n $nrepl_val ]] && nrepl_flag="--nrepl=$nrepl_val"
+    exec glj "$nrepl_flag"
   fi
 
   # Pass parsed opts to gloat.clj via env var — no re-parsing needed

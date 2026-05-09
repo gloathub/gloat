@@ -16,9 +16,8 @@ complete -c gloat -l complete -d 'Generate shell completion' -x -a 'bash zsh fis
 
 complete -c gloat -l shell -d 'Start a sub-shell with gloat tools on PATH'
 complete -c gloat -l shell-all -d 'Like --shell but install all dev tools'
-complete -c gloat -l repl -d 'Start the glj REPL (optionally: --repl=DIR)' -F
-complete -c gloat -l nrepl -d 'Start nREPL server for editor integration (Calva, CIDER)'
-complete -c gloat -l port -d 'Port for nREPL server (default: auto)' -x
+complete -c gloat -l repl -d 'Start REPL (see man gloat-repl)' -x
+complete -c gloat -l nrepl -d 'Start nREPL server (see man gloat-repl)' -x
 complete -c gloat -l deps -d 'Path to gljdeps.edn (for --repl or --nrepl)' -r -F
 complete -c gloat -l reset -d 'Remove all cached dependencies'
 complete -c gloat -l upgrade -d 'Upgrade gloat to the latest version'

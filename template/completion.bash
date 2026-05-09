@@ -7,7 +7,7 @@ _gloat() {
     opts="-h --help --version -t --to -o --out -r --run -f --force
           -v --verbose -q --quiet --platform -X --ext --ns --module
           --formats --extensions --platforms --complete --shell --shell-all
-          --repl --nrepl --port --deps --reset --upgrade"
+          --repl --nrepl --deps --reset --upgrade"
 
     formats="clj bb glj go dir bin lib wasm js"
     platforms="linux/amd64 linux/arm64 darwin/amd64 darwin/arm64

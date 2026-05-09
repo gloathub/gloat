@@ -3,7 +3,9 @@
 ## Synopsis
 
 ```
-gloat --repl [=dir]
+gloat --repl[=VALUE]
+gloat --nrepl[=VALUE]
+gloat --repl --deps=gljdeps.edn
 glj
 ```
 
@@ -226,6 +228,135 @@ Special forms include `def`, `defn`, `defmacro`, `fn`, `let`, `loop`,
 Highlighting works correctly with multiline editing, ghost text, and
 tab completion.
 
+## nREPL Server
+
+Start an nREPL server with `gloat --nrepl`.
+Editors like Calva and CIDER connect to the server for interactive
+development.
+
+### `--nrepl` Forms
+
+| Form | Meaning |
+|------|---------|
+| `--nrepl` | Start server on localhost, random port |
+| `--nrepl=7888` | Start server on localhost:7888 |
+| `--nrepl=0.0.0.0:7888` | Bind to all network interfaces, port 7888 |
+| `--nrepl=0.0.0.0` | Bind to all interfaces, random port |
+| `--nrepl=.nrepl-port` | Random port, write port number to file |
+
+The value heuristic:
+all digits = port number,
+contains `:` with trailing digits = host:port,
+valid IP address = host with random port,
+anything else = port file path.
+
+The server prints its address on startup in the format that Calva
+expects for jack-in:
+
+```
+nREPL server started on port 7888 on host localhost - nrepl://localhost:7888
+```
+
+Press Ctrl+C to shut down the server.
+If a port file was specified, it is removed on shutdown.
+
+### Editor Integration
+
+**Calva (VS Code):**
+Run `gloat --nrepl` in a terminal.
+Use "Calva: Connect to a Running REPL Server" and enter the port.
+Alternatively, configure Calva's jack-in to run `gloat --nrepl`.
+
+**CIDER (Emacs):**
+Run `gloat --nrepl` in a terminal, then `M-x cider-connect` and
+enter the host and port.
+
+### Supported nREPL Operations
+
+The server implements the following nREPL ops:
+clone, close, describe, eval, completions, interrupt, load-file,
+ls-sessions.
+
+## REPL Client Mode
+
+Connect a readline-enabled REPL to a running nREPL server with
+`gloat --repl=PORT`.
+This gives you the full interactive REPL experience (multiline editing,
+tab completion, history) while evaluating code on the remote server.
+
+### `--repl` Forms
+
+| Form | Meaning |
+|------|---------|
+| `--repl` | Start local interactive REPL |
+| `--repl=7888` | Connect to nREPL at localhost:7888 |
+| `--repl=host:7888` | Connect to nREPL at host:7888 |
+| `--repl=.nrepl-port` | Read port from file, connect |
+| `--repl=dir/` | Use `dir` as build directory (trailing slash) |
+| `--repl=dir` | Existing directory = build dir; existing file = port file |
+
+The value heuristic:
+1. All digits = port number (connect to nREPL)
+2. Contains `:` with trailing digits = host:port (connect to nREPL)
+3. Existing file = port file (read port, connect)
+4. Ends with `/` = build directory (create if needed)
+5. Existing directory = build directory
+6. Does not exist = error
+
+### Piped Input
+
+When stdin is not a terminal, the client evaluates the input and exits
+without starting an interactive REPL:
+
+```
+gloat --repl=7888 <<<'(+ 1 2)'
+# prints: 3
+
+gloat --repl=7888 < script.clj
+```
+
+This is useful for scripting against a running server.
+
+### Workflow Example
+
+Terminal 1 -- start the server:
+```
+gloat --nrepl=7888
+```
+
+Terminal 2 -- connect the CLI REPL:
+```
+gloat --repl=7888
+```
+
+Both terminals share the same evaluation state.
+An editor (Calva, CIDER) can connect to the same server simultaneously.
+
+## Embedded nREPL Server
+
+Every `gloat --repl` session automatically starts an embedded nREPL
+server on a random port.
+This means editors can connect to your REPL session without any extra
+setup.
+
+The server URL is shown in the startup banner:
+
+```
+ Glojure: v0.6.5
+      Go: 1.24.0 linux/amd64
+  Server: nrepl://localhost:38291
+    Help: C-h or :repl/help
+    Exit: C-d or :repl/exit
+```
+
+Use `:repl/server` to display the server URL at any time.
+The server URL also appears in `C-h` help under Current Settings.
+
+The embedded server does not write a port file.
+If you need a port file, use `gloat --nrepl=.nrepl-port` instead.
+
+When you exit the REPL, the embedded server shuts down automatically.
+
 ## REPL Build Directory
 
 When launched via `gloat --repl`, the REPL needs a Go module directory
@@ -321,6 +452,7 @@ available commands.
 | `:repl/emacs` | Switch to emacs editing mode |
 | `:repl/fmt cmd` | Set the format command (used by Ctrl+P) |
 | `:repl/fmt` | Show the current format command |
+| `:repl/server` | Show the nREPL server URL |
 | `:repl/exit` | Exit the REPL |
 
 ## Environment Variables

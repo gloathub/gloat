@@ -3,7 +3,9 @@
 .TH gloat-repl -- Gloat/Glojure REPL Reference
 .SH Synopsis
 .EX
-gloat --repl [=dir]
+gloat --repl[=VALUE]
+gloat --nrepl[=VALUE]
+gloat --repl --deps=gljdeps.edn
 glj
 .EE
 
@@ -266,6 +268,160 @@ Special forms include \fBdef\fR, \fBdefn\fR, \fBdefmacro\fR, \fBfn\fR, \fBlet\fR
 Highlighting works correctly with multiline editing, ghost text, and
 tab completion.
 
+.SH nREPL Server
+Start an nREPL server with \fBgloat --nrepl\fR\&.
+Editors like Calva and CIDER connect to the server for interactive
+development.
+
+.SS \fB--nrepl\fR Forms
+.TS
+allbox;
+l l 
+l l .
+\fBForm\fP	\fBMeaning\fP
+\fB--nrepl\fR	T{
+Start server on localhost, random port
+T}
+\fB--nrepl=7888\fR	Start server on localhost:7888
+\fB--nrepl=0.0.0.0:7888\fR	T{
+Bind to all network interfaces, port 7888
+T}
+\fB--nrepl=0.0.0.0\fR	T{
+Bind to all interfaces, random port
+T}
+\fB--nrepl=.nrepl-port\fR	T{
+Random port, write port number to file
+T}
+.TE
+
+.PP
+The value heuristic:
+all digits = port number,
+contains \fB:\fR with trailing digits = host:port,
+valid IP address = host with random port,
+anything else = port file path.
+
+.PP
+The server prints its address on startup in the format that Calva
+expects for jack-in:
+
+.EX
+nREPL server started on port 7888 on host localhost - nrepl://localhost:7888
+.EE
+
+.PP
+Press Ctrl+C to shut down the server.
+If a port file was specified, it is removed on shutdown.
+
+.SS Editor Integration
+\fBCalva (VS Code):\fP
+Run \fBgloat --nrepl\fR in a terminal.
+Use "Calva: Connect to a Running REPL Server" and enter the port.
+Alternatively, configure Calva's jack-in to run \fBgloat --nrepl\fR\&.
+
+.PP
+\fBCIDER (Emacs):\fP
+Run \fBgloat --nrepl\fR in a terminal, then \fBM-x cider-connect\fR and
+enter the host and port.
+
+.SS Supported nREPL Operations
+The server implements the following nREPL ops:
+clone, close, describe, eval, completions, interrupt, load-file,
+ls-sessions.
+
+.SH REPL Client Mode
+Connect a readline-enabled REPL to a running nREPL server with
+\fBgloat --repl=PORT\fR\&.
+This gives you the full interactive REPL experience (multiline editing,
+tab completion, history) while evaluating code on the remote server.
+
+.SS \fB--repl\fR Forms
+.TS
+allbox;
+l l 
+l l .
+\fBForm\fP	\fBMeaning\fP
+\fB--repl\fR	Start local interactive REPL
+\fB--repl=7888\fR	T{
+Connect to nREPL at localhost:7888
+T}
+\fB--repl=host:7888\fR	Connect to nREPL at host:7888
+\fB--repl=.nrepl-port\fR	Read port from file, connect
+\fB--repl=dir/\fR	Use \fBdir\fR as build directory (trailing slash)
+\fB--repl=dir\fR	T{
+Existing directory = build dir; existing file = port file
+T}
+.TE
+
+.PP
+The value heuristic:
+1. All digits = port number (connect to nREPL)
+2. Contains \fB:\fR with trailing digits = host:port (connect to nREPL)
+3. Existing file = port file (read port, connect)
+4. Ends with \fB/\fR = build directory (create if needed)
+5. Existing directory = build directory
+6. Does not exist = error
+
+.SS Piped Input
+When stdin is not a terminal, the client evaluates the input and exits
+without starting an interactive REPL:
+
+.EX
+gloat --repl=7888 <<<'(+ 1 2)'
+# prints: 3
+
+gloat --repl=7888 < script.clj
+.EE
+
+.PP
+This is useful for scripting against a running server.
+
+.SS Workflow Example
+Terminal 1 -- start the server:
+
+.EX
+gloat --nrepl=7888
+.EE
+
+.PP
+Terminal 2 -- connect the CLI REPL:
+
+.EX
+gloat --repl=7888
+.EE
+
+.PP
+Both terminals share the same evaluation state.
+An editor (Calva, CIDER) can connect to the same server simultaneously.
+
+.SH Embedded nREPL Server
+Every \fBgloat --repl\fR session automatically starts an embedded nREPL
+server on a random port.
+This means editors can connect to your REPL session without any extra
+setup.
+
+.PP
+The server URL is shown in the startup banner:
+
+.EX
+ Glojure: v0.6.5
+      Go: 1.24.0 linux/amd64
+  Server: nrepl://localhost:38291
+    Help: C-h or :repl/help
+    Exit: C-d or :repl/exit
+.EE
+
+.PP
+Use \fB:repl/server\fR to display the server URL at any time.
+The server URL also appears in \fBC-h\fR help under Current Settings.
+
+.PP
+The embedded server does not write a port file.
+If you need a port file, use \fBgloat --nrepl=.nrepl-port\fR instead.
+
+.PP
+When you exit the REPL, the embedded server shuts down automatically.
+
 .SH REPL Build Directory
 When launched via \fBgloat --repl\fR, the REPL needs a Go module directory
 to bootstrap dependencies and generate import glue code.
@@ -373,6 +529,7 @@ T}
 \fB:repl/fmt\fR	T{
 Show the current format command
 T}
+\fB:repl/server\fR	Show the nREPL server URL
 \fB:repl/exit\fR	Exit the REPL
 .TE
 

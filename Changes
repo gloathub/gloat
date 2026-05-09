@@ -1,3 +1,14 @@
+- version: 0.1.36
+  date:    Sat May  9 04:58:53 PM EDT 2026
+  changes:
+  - Add REPL and nREPL documentation
+  - Add --repl=VALUE client mode
+  - Support --nrepl=path for port file
+  - Add --nrepl flag for editor integration
+  - Improve REPL multi-line and toolbar UX
+  - Add share button for REPL sessions
+  - Add control buttons toolbar to REPL
+
 - version: 0.1.35
   date:    Fri May  8 12:52:04 PM EDT 2026
   changes:

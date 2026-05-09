@@ -241,8 +241,12 @@ GLJ-PLATFORM-macos-int64 := darwin_amd64
 GLJ-PLATFORM-macos-arm64 := darwin_arm64
 GLJ-PLATFORM := $(GLJ-PLATFORM-$(OS-ARCH))
 
+GO-READLINE-DIR := $(wildcard $(GLOJURE-DIR)/../go-readline)
+
 repl:
-	GLJ_VERSION=$(GLOJURE-VERSION) $(MAKE) --no-print -C $(GLOJURE-DIR) build
+	$(if $(GO-READLINE-DIR),\
+	  GO_REPLACE="github.com/reeflective/readline=$(GO-READLINE-DIR)") \
+	  GLJ_VERSION=$(GLOJURE-VERSION) $(MAKE) --no-print -C $(GLOJURE-DIR) build
 	PATH=$(GLOJURE-DIR)/bin/$(GLJ-PLATFORM):$(PATH) gloat --repl
 
 build-glj-from-source: $(GO) $(GLOJURE-DIR)

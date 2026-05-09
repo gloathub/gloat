@@ -55,7 +55,9 @@ _gloat() {
     fi
 
     # Complete source files (.ys, .clj, .glj) and directories
-    COMPREPLY=( $(compgen -f -X '!*.@(ys|clj|glj)' -- "${cur}")
+    COMPREPLY=( $(compgen -f -X '!*.ys' -- "${cur}")
+                $(compgen -f -X '!*.clj' -- "${cur}")
+                $(compgen -f -X '!*.glj' -- "${cur}")
                 $(compgen -d -- "${cur}") )
 }
 

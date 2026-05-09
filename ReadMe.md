@@ -678,11 +678,31 @@ Set `GLOJURE_FROM_SOURCE` as an environment variable:
 export GLOJURE_FROM_SOURCE=true
 ```
 
+### Using a Local Glojure Checkout
+
+To develop gloat against a local glojure checkout (e.g. to test
+unreleased changes), set `GLOJURE_DIR` to the path of your local
+glojure repository:
+
+```bash
+export GLOJURE_DIR=~/src/glojure
+```
+
+This tells gloat to use your local glojure for `go mod replace`
+directives and to build `glj` from that directory.
+Combined with `make repl`, this builds glj from your local checkout
+and starts a REPL with it:
+
+```bash
+make repl
+```
+
 
 ## Environment Variables
 
 | Variable | Description |
 |----------|-------------|
+| `GLOJURE_DIR` | Path to a local glojure checkout for development. |
 | `GLOAT_GLJDEPS` | Path to a `gljdeps.edn` file for `--repl`. Equivalent to `--deps=`. |
 | `GLOAT_MODULE` | Go module name for compiled output. Equivalent to `--module`. |
 | `GLOAT_NAMESPACE` | Namespace override for compiled output. Equivalent to `--ns`. |

@@ -715,12 +715,34 @@ Set \fBGLOJURE_FROM_SOURCE\fR as an environment variable:
 export GLOJURE_FROM_SOURCE=true
 .EE
 
+.SS Using a Local Glojure Checkout
+To develop gloat against a local glojure checkout (e.g. to test
+unreleased changes), set \fBGLOJURE_DIR\fR to the path of your local
+glojure repository:
+
+.EX
+export GLOJURE_DIR=~/src/glojure
+.EE
+
+.PP
+This tells gloat to use your local glojure for \fBgo mod replace\fR
+directives and to build \fBglj\fR from that directory.
+Combined with \fBmake repl\fR, this builds glj from your local checkout
+and starts a REPL with it:
+
+.EX
+make repl
+.EE
+
 .SH Environment Variables
 .TS
 allbox;
 l l 
 l l .
 \fBVariable\fP	\fBDescription\fP
+\fBGLOJURE_DIR\fR	T{
+Path to a local glojure checkout for development.
+T}
 \fBGLOAT_GLJDEPS\fR	Path to a \fBgljdeps.edn\fR file for \fB--repl\fR\&. Equivalent to \fB--deps=\fR\&.
 \fBGLOAT_MODULE\fR	T{
 Go module name for compiled output. Equivalent to \fB--module\fR\&.

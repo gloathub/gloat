@@ -8,7 +8,12 @@ run: $(BUILD)
 	./$<
 
 $(BUILD): $(PROGRAM)
+ifdef IS-MACOS
+	/usr/bin/c++ -o $@ $< \
+	  -I$(SO-BINDINGS-DIR) \
+	  $(SO-BINDINGS-DIR)/$(NAME).$(SO)
+else
 	g++ -o $@ $< \
 	  -I$(SO-BINDINGS-DIR) \
-	  -L$(SO-BINDINGS-DIR) \
-	  -l:$(NAME).so
+	  $(SO-BINDINGS-DIR)/$(NAME).$(SO)
+endif

@@ -2,9 +2,10 @@ use strict;
 use warnings;
 use FFI::Platypus 2.00;
 
+my $lib_ext = $^O eq 'darwin' ? 'dylib' : 'so';
 my $ffi = FFI::Platypus->new(
     api => 2,
-    lib => 'example.so',
+    lib => "example.$lib_ext",
 );
 
 $ffi->attach(factorial => ['sint64'] => 'sint64');

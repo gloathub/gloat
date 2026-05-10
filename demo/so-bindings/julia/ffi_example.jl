@@ -1,4 +1,4 @@
-lib = "example.so"
+lib = Sys.isapple() ? "example.dylib" : "example.so"
 
 for n in 1:10
     result = ccall((:factorial, lib), Clonglong, (Clonglong,), n)

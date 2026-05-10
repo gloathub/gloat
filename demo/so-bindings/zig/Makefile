@@ -11,7 +11,7 @@ run: $(BUILD)
 	./$<
 
 $(BUILD): $(PROGRAM) $(HEADER)
-	ln -sf $(NAME).$(SO) $(SO-BINDINGS-DIR)/lib$(NAME).so
+	ln -sf $(NAME).$(SO) $(SO-BINDINGS-DIR)/lib$(NAME).$(SO)
 	zig build-exe $< \
 	  -lc \
 	  -I$(SO-BINDINGS-DIR) \

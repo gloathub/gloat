@@ -88,7 +88,6 @@ jobs:
     name: Test so-bindings (Linux)
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    needs: test
 
     steps:
     - uses: actions/checkout@v4
@@ -103,23 +102,19 @@ jobs:
         key: makes-so-Linux-${{ hashFiles('Makefile', 'common/common.mk') }}
         restore-keys: makes-so-Linux-
 
-    - name: Test C bindings
-      run: make -C demo/so-bindings/c/ test
-
-    - name: Test Go bindings
-      run: make -C demo/so-bindings/go/ test
-
-    - name: Test Crystal bindings
-      run: make -C demo/so-bindings/crystal/ test
+    - name: Test so-bindings
+      run: make -C demo/so-bindings/ test
 
   test-so-bindings-macos:
     name: Test so-bindings (macOS)
     runs-on: macos-latest
     timeout-minutes: 45
-    needs: test
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Install macOS dependencies
+      run: brew install gmp
 
     - name: Cache Makes dependencies
       uses: actions/cache@v4
@@ -129,7 +124,7 @@ jobs:
         restore-keys: makes-so-macOS-
 
     - name: Test so-bindings
-      run: make -C demo/so-bindings/ test LANGS='crystal python rust'
+      run: make -C demo/so-bindings/ test
 
   test-slow:
     name: Test slow (Linux, main only)

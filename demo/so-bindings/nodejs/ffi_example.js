@@ -1,6 +1,7 @@
 const koffi = require('koffi');
 
-const lib = koffi.load('example.so');
+const libExt = process.platform === 'darwin' ? 'dylib' : 'so';
+const lib = koffi.load(`example.${libExt}`);
 
 const factorial = lib.func('long long factorial(long long n)');
 const greet = lib.func('const char* greet(const char* name)');

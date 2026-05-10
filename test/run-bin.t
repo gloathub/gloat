@@ -4,7 +4,6 @@
 
 source "$(dirname "${BASH_SOURCE[0]}")/init"
 
-source .rc
 cd demo/ || bail-out "Cannot cd to demo/"
 
 # Clean up binaries on exit

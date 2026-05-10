@@ -18,7 +18,8 @@ typedef MaybeC = Int32 Function();
 typedef MaybeDart = int Function();
 
 void main() {
-  final lib = DynamicLibrary.open('../example.so');
+  final libExt = Platform.isMacOS ? 'dylib' : 'so';
+  final lib = DynamicLibrary.open('../example.$libExt');
 
   final factorial =
       lib.lookupFunction<FactorialC, FactorialDart>('factorial');

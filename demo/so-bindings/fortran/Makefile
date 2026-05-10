@@ -9,4 +9,4 @@ run: $(BUILD)
 
 $(BUILD): $(PROGRAM)
 	$(GFORTRAN) -o $@ $< \
-	  -L$(SO-BINDINGS-DIR) -l:$(NAME).so
+	  $(SO-BINDINGS-DIR)/$(NAME).$(SO)

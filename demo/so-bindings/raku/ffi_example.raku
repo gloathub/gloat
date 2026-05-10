@@ -1,6 +1,7 @@
 use NativeCall;
 
-constant LIB = %*ENV<LD_LIBRARY_PATH> ~ '/example.so';
+constant LIB = (%*ENV<DYLD_LIBRARY_PATH> // %*ENV<LD_LIBRARY_PATH>)
+  ~ '/example.' ~ ($*KERNEL.name eq 'darwin' ?? 'dylib' !! 'so');
 
 sub factorial(int64 --> int64)
   is native(LIB) {*}

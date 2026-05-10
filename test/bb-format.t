@@ -11,7 +11,6 @@ EXAMPLE_DIR=$PROJECT_ROOT/demo/yamlscript
 BB_BIN=$PROJECT_ROOT/.cache/local/bin/bb
 
 cd "$PROJECT_ROOT" || bail-out "Cannot cd to project root"
-source .rc || bail-out "Cannot source .rc"
 
 # Check if babashka is available
 if [[ ! -x $BB_BIN ]]; then

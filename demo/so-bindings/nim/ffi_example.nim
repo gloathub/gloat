@@ -1,4 +1,7 @@
-{.passL: "-l:example.so".}
+when defined(macosx):
+  {.passL: "-lexample".}
+else:
+  {.passL: "-l:example.so".}
 
 proc factorial(n: clonglong): clonglong {.importc, cdecl.}
 proc greet(name: cstring): cstring {.importc, cdecl.}

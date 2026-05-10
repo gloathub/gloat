@@ -159,7 +159,7 @@ main() (
 
   # Run getopt for --help/--version display, flag validation, and GLOAT_OPTS
   opts_edn=$(printf '%s\n' "$GETOPT_SPEC" | \
-    "$root/util/getopt" "${proc_args[@]}") || exit $?
+    "$root/util/getopt" ${proc_args[@]+"${proc_args[@]}"}) || exit $?
 
   # --deps without --repl or --nrepl is an error
   if [[ -n $opt_deps && -z $opt_repl && -z $opt_nrepl ]]; then

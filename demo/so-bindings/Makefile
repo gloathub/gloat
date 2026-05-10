@@ -21,7 +21,7 @@ MAKES-CLEAN := \
   $(HEADER) \
   $(LIB-LIBRARY) \
 
-LANGS ?= \
+ALL-LANGS := \
   ada \
   c \
   cpp \
@@ -45,6 +45,29 @@ LANGS ?= \
   rust \
   v \
   zig \
+
+# Langs with toolchain issues on macOS (bugs in upstream .mk files)
+# delphi: fpc 3.2.2 macOS download missing from SourceForge
+# lua: LuaJIT fails to build on arm64
+# nim: nim.mk OA mapping wrong (macos_arm64 should be macosx_arm64)
+# perl: perl.mk site_perl arch path hardcoded to x86_64-linux
+# v: vlang.mk OA mapping wrong (macos should be macos_arm64)
+SKIP-MACOS := \
+  delphi \
+  lua \
+  nim \
+  perl \
+  v \
+
+# Langs with known issues on Linux CI
+SKIP-LINUX := \
+  delphi \
+
+ifdef IS-MACOS
+LANGS ?= $(filter-out $(SKIP-MACOS),$(ALL-LANGS))
+else
+LANGS ?= $(filter-out $(SKIP-LINUX),$(ALL-LANGS))
+endif
 
 TESTS := $(LANGS:%=test-%)
 CLEAN := $(LANGS:%=clean-%)

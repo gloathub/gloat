@@ -10,7 +10,6 @@ GLOAT_BIN=$PROJECT_ROOT/bin/gloat
 EXAMPLE_DIR=$PROJECT_ROOT/demo/yamlscript
 
 cd "$PROJECT_ROOT" || bail-out "Cannot cd to project root"
-source .rc || bail-out "Cannot source .rc"
 
 # Auto-detect .ys extension with -t bb
 try "$GLOAT_BIN $EXAMPLE_DIR/factorial -t bb"

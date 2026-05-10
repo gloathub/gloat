@@ -2,7 +2,8 @@ package main
 
 /*
 #cgo CFLAGS: -I..
-#cgo LDFLAGS: -L.. -l:example.so
+#cgo linux LDFLAGS: -L.. -l:example.so
+#cgo darwin LDFLAGS: -L.. -lexample
 #include "example.h"
 #include <stdlib.h>
 */

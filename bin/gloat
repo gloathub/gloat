@@ -35,6 +35,8 @@ See https://gloathub.org
     gloat --repl=7888                   Connect REPL to nREPL server
     gloat --nrepl                       Start nREPL server
     gloat --nrepl=7888                  Start nREPL on specific port
+    gloat --srepl                       Start socket REPL server
+    gloat --srepl=7777                  Start socket REPL on specific port
     gloat --reset                       Remove all cached dependencies
 --
 t,to=         Output format (inferred from -o; see --formats)
@@ -52,7 +54,8 @@ platforms     List available cross-compilation platforms
 
 repl          Start REPL client; see 'man gloat-repl'
 nrepl         Start nREPL server; see 'man gloat-repl'
-deps=         Path to gljdeps.edn (for --repl or --nrepl)
+srepl         Start socket REPL server; see 'man gloat-repl'
+deps=         Path to gljdeps.edn (for --repl or --nrepl or --srepl)
 shell         Start a sub-shell or run a command (-- cmd...)
 shell-all     Like --shell but install all dev tools
 complete=     Generate shell completion script (bash, fish, zsh)
@@ -124,6 +127,8 @@ main() (
   opt_repl=
   opt_nrepl=
   nrepl_val=
+  opt_srepl=
+  srepl_val=
   opt_deps=
   opt_force=
   opt_shell=
@@ -147,6 +152,10 @@ main() (
         --nrepl=*)   opt_nrepl=true
                      nrepl_val=${arg#--nrepl=}
                      proc_args+=(--nrepl)      ;;
+        --srepl)     opt_srepl=true;            proc_args+=("$arg") ;;
+        --srepl=*)   opt_srepl=true
+                     srepl_val=${arg#--srepl=}
+                     proc_args+=(--srepl)      ;;
         --deps=*)    opt_deps=${arg#--deps=}
                      proc_args+=("$arg")       ;;
         --force|-f)  opt_force=true;           proc_args+=("$arg") ;;
@@ -162,7 +171,7 @@ main() (
     "$root/util/getopt" ${proc_args[@]+"${proc_args[@]}"}) || exit $?
 
   # --deps without --repl or --nrepl is an error
-  if [[ -n $opt_deps && -z $opt_repl && -z $opt_nrepl ]]; then
+  if [[ -n $opt_deps && -z $opt_repl && -z $opt_nrepl && -z $opt_srepl ]]; then
     echo "Error: --deps requires --repl or --nrepl" >&2
     exit 1
   fi
@@ -405,6 +414,91 @@ main() (
     nrepl_flag=--nrepl
     [[ -n $nrepl_val ]] && nrepl_flag="--nrepl=$nrepl_val"
     exec glj "$nrepl_flag"
+  fi
+
+  if [[ -n $opt_srepl ]]; then
+    # Resolve relative port file path before cd into build dir
+    if [[ -n $srepl_val && ! $srepl_val =~ ^[0-9]+$ &&
+          ! ($srepl_val =~ : && ${srepl_val##*:} =~ ^[0-9]+$) &&
+          $srepl_val != /* ]]; then
+      srepl_val=$(pwd)/$srepl_val
+    fi
+
+    # Resolve deps file (same logic as --repl)
+    deps_file=$opt_deps
+    explicit_deps=
+    if [[ -n $deps_file ]]; then
+      explicit_deps=1
+    elif [[ -n ${GLOAT_GLJDEPS-} ]]; then
+      deps_file=$GLOAT_GLJDEPS
+      explicit_deps=1
+    elif [[ -f ./gljdeps.edn ]]; then
+      deps_file=$(pwd)/gljdeps.edn
+    fi
+
+    if [[ -n $deps_file && ! -r $deps_file ]]; then
+      echo "Error: $deps_file not found" >&2
+      exit 1
+    fi
+
+    deps_content=
+    [[ -n $deps_file ]] && deps_content=$(cat "$deps_file")
+
+    # Build directory for sREPL (reuse REPL build dir)
+    if [[ -n ${GLOAT_REPL-} ]]; then
+      build_dir=$GLOAT_REPL
+    elif [[ -z $explicit_deps && -f ./gljdeps.edn ]]; then
+      build_dir=.
+    else
+      build_dir=$root/.cache/repl-$GLOAT_VERSION
+    fi
+
+    mkdir -p "$build_dir"
+    cd "$build_dir"
+
+    if [[ -n $deps_content ]]; then
+      printf '%s\n' "$deps_content" > gljdeps.edn
+    fi
+
+    # Set up go module (same as --repl)
+    setup-go-module() {
+      if [[ ! -f go.mod ]]; then
+        go mod init gloatrepl
+      fi
+      if ! grep -q "gloathub/glojure" go.mod 2>/dev/null; then
+        glojure_dir=${GLOJURE_DIR:-$(
+          make --quiet --no-print-directory -C "$root" \
+            print-GLOJURE-DIR 2>/dev/null ||
+          echo "$root/../glojure"
+        )}
+        if [[ -d $glojure_dir ]]; then
+          go mod edit \
+            -replace "github.com/gloathub/glojure=$glojure_dir"
+          cp "$glojure_dir/go.sum" go.sum
+          go get github.com/gloathub/glojure
+        else
+          glj_ver=$(glj --version 2>/dev/null |
+            grep -oP 'v\d+\.\d+\.\S+' | head -1)
+          go get "github.com/gloathub/glojure@${glj_ver:-latest}"
+        fi
+      fi
+    }
+    if [[ -n $explicit_deps ]]; then
+      setup-go-module
+    else
+      setup-go-module 2>/dev/null
+    fi
+
+    export GOFLAGS=-mod=mod
+
+    : "${GOARCH:=$(go env GOARCH)}"
+    export GOARCH
+
+    find-glj
+
+    srepl_flag=--srepl
+    [[ -n $srepl_val ]] && srepl_flag="--srepl=$srepl_val"
+    exec glj "$srepl_flag"
   fi
 
   # Pass parsed opts to gloat.clj via env var — no re-parsing needed

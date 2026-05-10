@@ -5,6 +5,7 @@
 ```
 gloat --repl[=VALUE]
 gloat --nrepl[=VALUE]
+gloat --srepl[=VALUE]
 gloat --repl --deps=gljdeps.edn
 glj
 ```
@@ -300,6 +301,107 @@ The server implements the following nREPL ops:
 clone, close, describe, eval, completions, interrupt, load-file,
 ls-sessions.
 
+## Socket REPL
+
+Start a plain-text socket REPL with `gloat --srepl`.
+Clients connect with `nc`, `socat`, `telnet`, or editor plugins like
+Conjure and inf-clojure.
+Each connection gets an independent read-eval-print loop.
+
+Unlike nREPL (which uses a structured bencode protocol), the socket
+REPL is a raw text protocol: send Clojure code, receive printed
+results.
+No special client library is required.
+
+### `--srepl` Forms
+
+| Form | Meaning |
+|------|---------|
+| `--srepl` | Start server on localhost, random port |
+| `--srepl=7777` | Start server on localhost:7777 |
+| `--srepl=0.0.0.0:7777` | Bind to all network interfaces, port 7777 |
+| `--srepl=0.0.0.0` | Bind to all interfaces, random port |
+| `--srepl=.srepl-port` | Random port, write port number to file |
+
+The value heuristic is the same as `--nrepl`:
+all digits = port number,
+contains `:` with trailing digits = host:port,
+valid IP address = host with random port,
+anything else = port file path.
+
+The server prints its address on startup:
+
+```
+Socket REPL started on port 7777 on host localhost - localhost:7777
+```
+
+Press Ctrl+C to shut down the server.
+If a port file was specified, it is removed on shutdown.
+
+### Connecting
+
+Interactive session with readline (via `rlwrap`):
+
+```
+rlwrap nc localhost 7777
+user=> (+ 1 2)
+3
+user=> (defn greet [name]
+  ..    (str "Hello, " name "!"))
+#'user/greet
+user=> (greet "world")
+"Hello, world!"
+```
+
+Piped input:
+
+```
+echo '(+ 1 2)' | nc -q 1 localhost 7777
+```
+
+### Multiline Input
+
+The socket REPL detects incomplete expressions (unclosed brackets
+or strings) and shows a continuation prompt:
+
+```
+user=> (defn f [x]
+  ..    (+ x 1))
+#'user/f
+```
+
+### Namespace Tracking
+
+Each connection starts in the `user` namespace.
+Switching namespaces updates the prompt:
+
+```
+user=> (ns my-app)
+nil
+my-app=>
+```
+
+Each connection has its own namespace state.
+
+### Editor Integration
+
+**Conjure (Neovim):**
+Run `gloat --srepl=7777` in a terminal.
+Configure Conjure to connect to the socket REPL.
+
+**inf-clojure (Emacs):**
+Run `gloat --srepl=7777` in a terminal, then connect with
+`M-x inf-clojure-connect`.
+
+### nREPL vs Socket REPL
+
+| | nREPL | Socket REPL |
+|---|---|---|
+| Protocol | Bencode (structured) | Plain text |
+| Clients | Calva, CIDER | nc, Conjure, inf-clojure |
+| Features | Eval, completions, docs, interrupt | Eval only |
+| Use case | IDE integration | Lightweight debugging, scripting |
+
 ## REPL Client Mode
 
 Connect a readline-enabled REPL to a running nREPL server with
@@ -355,30 +457,33 @@ gloat --repl=7888
 Both terminals share the same evaluation state.
 An editor (Calva, CIDER) can connect to the same server simultaneously.
 
-## Embedded nREPL Server
+## Embedded Servers
 
 Every `gloat --repl` session automatically starts an embedded nREPL
-server on a random port.
-This means editors can connect to your REPL session without any extra
-setup.
+server and an embedded socket REPL server, both on random ports.
+This means editors can connect to your REPL session without any
+extra setup.
 
-The server URL is shown in the startup banner:
+The server URLs are shown in the startup banner:
 
 ```
  Glojure: v0.6.5
       Go: 1.24.0 linux/amd64
-  Server: nrepl://localhost:38291
+   nREPL: nrepl://localhost:38291
+   sREPL: localhost:35149
     Help: C-h or :repl/help
     Exit: C-d or :repl/exit
 ```
 
-Use `:repl/server` to display the server URL at any time.
-The server URL also appears in `C-h` help under Current Settings.
+Use `:repl/server` to display the server URLs at any time.
+The URLs also appear in `C-h` help under Current Settings.
 
-The embedded server does not write a port file.
-If you need a port file, use `gloat --nrepl=.nrepl-port` instead.
+The embedded servers do not write port files.
+If you need a port file, use `gloat --nrepl=.nrepl-port` or
+`gloat --srepl=.srepl-port` instead.
 
-When you exit the REPL, the embedded server shuts down automatically.
+When you exit the REPL, both embedded servers shut down
+automatically.
 
 ## REPL Build Directory
 

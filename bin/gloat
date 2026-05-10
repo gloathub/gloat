@@ -265,8 +265,26 @@ main() (
     fi
 
     echo "$tool nREPL server on port $port (pid $server_pid)"
+
+    # Resolve tool-specific history file
+    local hist=
+    case $tool in
+      bb)
+        hist=${BABASHKA_REPL_HISTORY:-$HOME/.bb_repl_history}
+        ;;
+      lein)
+        if [[ -f .lein-repl-history ]]; then
+          hist=.lein-repl-history
+        else
+          hist=$HOME/.lein/repl-history
+        fi
+        ;;
+    esac
+
     find-glj
-    glj --nrepl-connect "localhost:$port"
+    local hist_flag=()
+    [[ -n $hist ]] && hist_flag=(--history "$hist" --history-fmt jline)
+    glj --nrepl-connect "localhost:$port" "${hist_flag[@]}"
   }
 
   # Handle --repl

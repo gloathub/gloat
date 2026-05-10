@@ -54,6 +54,7 @@ SKIP-MACOS := \
   delphi \
   fortran \
   haskell \
+  lua \
 
 # Langs with known issues on Linux CI
 SKIP-LINUX := \

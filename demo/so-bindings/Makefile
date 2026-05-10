@@ -46,10 +46,16 @@ ALL-LANGS := \
   v \
   zig \
 
-# Langs that need toolchains unavailable on macOS
+# Langs with toolchain issues on macOS (bugs in upstream .mk files)
+# delphi: fpc 3.2.2 macOS download missing from SourceForge
+# lua: LuaJIT fails to build on arm64
+# perl: perl.mk site_perl arch path hardcoded to x86_64-linux
+# v: vlang.mk OA mapping wrong (macos should be macos_arm64)
 SKIP-MACOS := \
   delphi \
   lua \
+  perl \
+  v \
 
 # Langs with known issues on Linux CI
 SKIP-LINUX := \

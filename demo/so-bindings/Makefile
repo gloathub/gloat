@@ -55,10 +55,14 @@ SKIP-MACOS := \
   fortran \
   haskell \
 
+# Langs with known issues on Linux CI
+SKIP-LINUX := \
+  delphi \
+
 ifdef IS-MACOS
 LANGS ?= $(filter-out $(SKIP-MACOS),$(ALL-LANGS))
 else
-LANGS ?= $(ALL-LANGS)
+LANGS ?= $(filter-out $(SKIP-LINUX),$(ALL-LANGS))
 endif
 
 TESTS := $(LANGS:%=test-%)

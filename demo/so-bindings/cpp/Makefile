@@ -9,7 +9,7 @@ run: $(BUILD)
 
 $(BUILD): $(PROGRAM)
 ifdef IS-MACOS
-	c++ -o $@ $< \
+	/usr/bin/c++ -o $@ $< \
 	  -I$(SO-BINDINGS-DIR) \
 	  $(SO-BINDINGS-DIR)/$(NAME).$(SO)
 else

@@ -46,14 +46,9 @@ ALL-LANGS := \
   v \
   zig \
 
-# Langs that need toolchains broken or unavailable on macOS
+# Langs that need toolchains unavailable on macOS
 SKIP-MACOS := \
-  csharp \
-  d \
-  dart \
   delphi \
-  fortran \
-  haskell \
   lua \
 
 # Langs with known issues on Linux CI

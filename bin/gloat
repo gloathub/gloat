@@ -261,6 +261,7 @@ main() (
 
     "${cmd[@]}" > "$fifo" 2>&1 &
     local server_pid=$!
+    # shellcheck disable=SC2064
     trap "kill $server_pid 2>/dev/null; rm -f '$fifo'" EXIT
 
     # Read lines until we find the port

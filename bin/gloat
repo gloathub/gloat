@@ -266,20 +266,12 @@ main() (
 
     echo "$tool nREPL server on port $port (pid $server_pid)"
 
-    # Resolve tool-specific history file
-    local hist=
-    case $tool in
-      bb)
-        hist=${BABASHKA_REPL_HISTORY:-$HOME/.bb_repl_history}
-        ;;
-      lein)
-        if [[ -f .lein-repl-history ]]; then
-          hist=.lein-repl-history
-        else
-          hist=$HOME/.lein/repl-history
-        fi
-        ;;
-    esac
+    # Use tool-specific history file if env var is set.
+    # e.g. GLOAT_REPL_HISTORY_BB=~/.bb_repl_history
+    local tool_key=${tool^^}
+    tool_key=${tool_key//-/_}
+    local hist_var=GLOAT_REPL_HISTORY_${tool_key}
+    local hist=${!hist_var:-}
 
     find-glj
     local hist_flag=()

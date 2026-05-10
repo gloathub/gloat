@@ -614,6 +614,11 @@ available commands.
 | `GLJ_REPL_FORMATTER` | Format command for Ctrl+P (default: `cat`). |
 | `GLJ_REPL_NO_BANNER` | Suppress the startup banner when set. |
 | `GLOAT_REPL` | Set the REPL build directory. |
+| `GLOAT_REPL_HISTORY_BB` | Babashka history file for `--repl=+bb` (JLine format). |
+| `GLOAT_REPL_HISTORY_LEIN` | Leiningen history file for `--repl=+lein` (JLine format). |
+| `GLOAT_REPL_HISTORY_CLJ` | Clojure CLI history file for `--repl=+clj` (JLine format). |
+| `GLOAT_REPL_HISTORY_LET_GO` | let-go history file for `--repl=+let-go` (JLine format). |
+| `GLOAT_REPL_HISTORY_LG` | let-go history file for `--repl=+lg` (JLine format). |
 | `INPUTRC` | Path to inputrc config file (default: `~/.inputrc`). |
 
 ## Feature Comparison

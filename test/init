@@ -7,7 +7,6 @@ PROJECT_ROOT=$(cd "$TEST_ROOT/.." && pwd)
 
 source "$PROJECT_ROOT/.bpan/lib/bpan.bash" --
 
-source .rc || bail-out "Cannot source .rc"
 PATH=$(make --no-print-directory path):$PATH
 export PATH
 

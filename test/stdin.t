@@ -9,7 +9,6 @@ PROJECT_ROOT=$(cd "$TEST_DIR/.." && pwd)
 GLOAT_BIN=$PROJECT_ROOT/bin/gloat
 
 cd "$PROJECT_ROOT" || bail-out "Cannot cd to project root"
-source .rc || bail-out "Cannot source .rc"
 
 INPUT='(defn -main [] (println "Hello"))'
 

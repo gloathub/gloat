@@ -2,6 +2,7 @@
 /.calva/
 /.clj-kondo/
 /.lsp/
+/.nrepl-port
 /demo-assets
 /gljrepl/
 /*.bb

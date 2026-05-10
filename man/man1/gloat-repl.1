@@ -255,7 +255,7 @@ Comments	\fB; note\fR	Gray
 Numbers	\fB42\fR, \fB3.14\fR, \fB1/3\fR, \fB0xFF\fR	Magenta
 Booleans/nil	\fBtrue\fR, \fBfalse\fR, \fBnil\fR	Magenta
 Special forms	\fBdef\fR, \fBfn\fR, \fBlet\fR, \fBif\fR, \fBwhen\fR, \fBcond\fR	Bold yellow
-Brackets	\fB()[]{}\fR	Default
+Core functions	\fBmap\fR, \fBfilter\fR, \fBreduce\fR, \fBstr\fR	Blue
 Symbols	everything else	Default
 .TE
 
@@ -267,6 +267,34 @@ Special forms include \fBdef\fR, \fBdefn\fR, \fBdefmacro\fR, \fBfn\fR, \fBlet\fR
 .PP
 Highlighting works correctly with multiline editing, ghost text, and
 tab completion.
+
+.SS Rainbow Brackets
+Brackets (\fB()\fR, \fB[]\fR, \fB{}\fR) are colored based on nesting depth using
+the same color scheme as Calva's rainbow brackets.
+The colors cycle through seven levels:
+
+.TS
+allbox;
+l l 
+l l .
+\fBDepth\fP	\fBColor\fP
+0	Light gray
+1	Blue
+2	Salmon
+3	Green
+4	Purple
+5	Gray
+6	Orange
+.TE
+
+.PP
+At depth 7 the cycle repeats from light gray.
+Matching open and close brackets always share the same color.
+
+.PP
+Mismatched brackets (e.g. \fB(\fR closed by \fB]\fR) and unmatched closing
+brackets are shown with white text on a red background, making
+errors easy to spot as you type.
 
 .SH nREPL Server
 Start an nREPL server with \fBgloat --nrepl\fR\&.
@@ -561,6 +589,7 @@ l l l l l
 l l l l l .
 \fBFeature\fP	\fBgloat --repl\fP	\fBbb (1.12+)\fP	\fBlein repl\fP	\fBclj\fP
 Syntax highlighting	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
+Rainbow brackets	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
 Format and clipboard (Ctrl+P)	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
 Multiline editing	\fB✓\fP	\fB✓\fP	\fB✗\fP	\fB✗\fP
 Tab completion (syms & keys)	\fB✓\fP	\fB✓\fP	\fB✓\fP	\fB✗\fP
@@ -595,6 +624,125 @@ syntax highlighting.
 REPL.
 .IP \(bu 2
 \fBlein repl\fP uses REPL-y (JLine-based) for its console interface.
+
+.SH Web REPL
+The Gloat website includes a browser-based REPL powered by Glojure
+compiled to WebAssembly.
+It provides a subset of the CLI REPL's features and requires no
+installation.
+
+.SS How It Works
+The web REPL loads a Glojure Wasm binary (\fBglj.wasm\fR) and runs it
+inside the browser.
+User input is fed to the Wasm runtime through a hooked \fBstdin\fR, and
+evaluation output is captured from \fBstdout\fR/\fBstderr\fR and displayed
+in the terminal pane.
+
+.PP
+The REPL initializes automatically when the page loads.
+A loading spinner is shown while the Wasm binary downloads and
+initializes.
+
+.SS Supported Features
+The web REPL supports the following features:
+.IP \(bu 2
+\fBSyntax highlighting\fP -- the same token types as the CLI REPL
+(strings, keywords, comments, numbers, booleans, special forms,
+core functions) are highlighted as you type.
+.IP \(bu 2
+\fBRainbow brackets\fP -- brackets are colored by nesting depth
+using the same Calva-style color scheme as the CLI REPL.
+Mismatched and unmatched brackets are shown with white text on a
+red background.
+.IP \(bu 2
+\fBMultiline input\fP -- incomplete expressions (unclosed brackets
+or strings) automatically continue on the next line with
+indentation matching the nesting depth.
+.IP \(bu 2
+\fBHistory\fP -- Up/Down arrows (or Ctrl+P/Ctrl+N) navigate through
+previous inputs within the session.
+.IP \(bu 2
+\fBSmart indentation\fP -- Tab inserts two spaces.
+Backspace deletes two spaces at once when preceded by two spaces,
+matching the CLI's indent-aware behavior.
+.IP \(bu 2
+\fBEditing shortcuts\fP -- Ctrl+A (beginning of line), Ctrl+E (end
+of line), Ctrl+U (kill before cursor), Ctrl+K (kill after cursor),
+Ctrl+L (clear screen).
+.IP \(bu 2
+\fBPaste support\fP -- pasted text is inserted as plain text with
+carriage returns normalized and trailing newlines stripped.
+
+.SS Toolbar
+The toolbar above the terminal provides quick-access buttons:
+
+.TS
+allbox;
+l l 
+l l .
+\fBButton\fP	\fBAction\fP
+Share	T{
+Copy a shareable URL (with input state) to clipboard
+T}
+Copy	T{
+Copy the current form (or last history entry) to clipboard
+T}
+Up/Down	Navigate history
+Kill left/right	Delete before/after cursor
+Clear	Clear the terminal output
+.TE
+
+.SS Sharing
+The web REPL supports sharing expressions via URL fragments.
+When you type or evaluate expressions, the URL hash is updated with
+a base64-encoded snapshot of your history.
+Sharing this URL loads the REPL with the same expressions
+pre-evaluated, and the last expression placed in the input field
+ready to run.
+
+.SS Limitations
+The web REPL does not support:
+.IP \(bu 2
+\fBTab completion\fP -- there is no completion menu; Tab inserts
+spaces.
+.IP \(bu 2
+\fBGhost text\fP (autosuggestions).
+.IP \(bu 2
+\fBVi/Emacs editing modes\fP -- only basic editing is available.
+.IP \(bu 2
+\fBPersistent history\fP -- history is lost when the page is
+reloaded.
+.IP \(bu 2
+\fBCtrl+D documentation lookup\fP\&.
+.IP \(bu 2
+\fBnREPL server\fP -- the Wasm runtime runs entirely in the browser.
+.IP \(bu 2
+\fBExternal Go dependencies\fP -- only the built-in standard library
+and clojure.core are available.
+.IP \(bu 2
+\fBSuspend/resume\fP (Ctrl+Z).
+
+.SS CLI vs Web REPL Feature Matrix
+.TS
+allbox;
+l l l 
+l l l .
+\fBFeature\fP	\fBCLI\fP	\fBWeb\fP
+Syntax highlighting	Yes	Yes
+Rainbow brackets	Yes	Yes
+Multiline editing	Yes	Yes
+Smart indent/dedent	Yes	Yes
+History navigation	Yes	Yes (session only)
+Paste support	Yes	Yes
+Shareable URLs	No	Yes
+Tab completion	Yes	No
+Ghost text	Yes	No
+Vi/Emacs modes	Yes	No
+Persistent history	Yes	No
+Inline docs (Ctrl+D)	Yes	No
+nREPL server	Yes	No
+External Go deps	Yes	No
+.TE
 
 .SH See Also
 \fBgloat\fP(1)

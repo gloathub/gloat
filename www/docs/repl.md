@@ -215,6 +215,14 @@ body:has(#repl-container) .md-tabs {
 .hl-comment { color: #6b7280; }  /* gray - \x1b[90m */
 .hl-core    { color: #5b8dd9; }  /* blue - \x1b[38;5;69m */
 .hl-symbol  { color: #e0e0e0; }  /* default text */
+.hl-rb0     { color: #ccc; }     /* rainbow depth 0 - light gray */
+.hl-rb1     { color: #0098e6; }  /* rainbow depth 1 - blue */
+.hl-rb2     { color: #e16d6d; }  /* rainbow depth 2 - salmon */
+.hl-rb3     { color: #3fa455; }  /* rainbow depth 3 - green */
+.hl-rb4     { color: #c968e6; }  /* rainbow depth 4 - purple */
+.hl-rb5     { color: #999; }     /* rainbow depth 5 - gray */
+.hl-rb6     { color: #ce7e00; }  /* rainbow depth 6 - orange */
+.hl-mismatch { color: #fff; background: #c33; } /* mismatched bracket */
 </style>
 
 <div id="repl-loading">

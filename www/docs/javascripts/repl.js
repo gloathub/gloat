@@ -447,10 +447,13 @@
       return s[i] >= '0' && s[i] <= '9';
     }
 
+    var rainbowDepths = 7; // number of rainbow colors (hl-rb0 .. hl-rb6)
+
     function highlightSyntax(text) {
       var out = '';
       var i = 0;
       var n = text.length;
+      var bracketStack = []; // tracks open bracket chars for matching
 
       function esc(s) {
         return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -494,8 +497,38 @@
           continue;
         }
 
-        // Delimiters, whitespace, special chars - pass through
-        if ('()[]{}\'`@^~#,'.indexOf(ch) >= 0 ||
+        // Opening brackets: rainbow color at current depth, then push
+        if (ch === '(' || ch === '[' || ch === '{') {
+          var depth = bracketStack.length;
+          out += wrap('rb' + (depth % rainbowDepths), ch);
+          bracketStack.push(ch);
+          i++;
+          continue;
+        }
+
+        // Closing brackets: check type match, pop, and color
+        if (ch === ')' || ch === ']' || ch === '}') {
+          var depth = bracketStack.length;
+          if (depth === 0) {
+            out += wrap('mismatch', ch);
+          } else {
+            var open = bracketStack[depth - 1];
+            var matched = (open === '(' && ch === ')') ||
+              (open === '[' && ch === ']') ||
+              (open === '{' && ch === '}');
+            if (matched) {
+              bracketStack.pop();
+              out += wrap('rb' + ((depth - 1) % rainbowDepths), ch);
+            } else {
+              out += wrap('mismatch', ch);
+            }
+          }
+          i++;
+          continue;
+        }
+
+        // Whitespace, special chars - pass through
+        if ('\'`@^~#,'.indexOf(ch) >= 0 ||
             ch === ' ' || ch === '\t' || ch === '\n' || ch === '\r') {
           out += esc(ch);
           i++;

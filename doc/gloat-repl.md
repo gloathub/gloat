@@ -218,7 +218,7 @@ Token types and their colors:
 | Numbers | `42`, `3.14`, `1/3`, `0xFF` | Magenta |
 | Booleans/nil | `true`, `false`, `nil` | Magenta |
 | Special forms | `def`, `fn`, `let`, `if`, `when`, `cond` | Bold yellow |
-| Brackets | `()[]{}` | Default |
+| Core functions | `map`, `filter`, `reduce`, `str` | Blue |
 | Symbols | everything else | Default |
 
 Special forms include `def`, `defn`, `defmacro`, `fn`, `let`, `loop`,
@@ -227,6 +227,29 @@ Special forms include `def`, `defn`, `defmacro`, `fn`, `let`, `loop`,
 
 Highlighting works correctly with multiline editing, ghost text, and
 tab completion.
+
+### Rainbow Brackets
+
+Brackets (`()`, `[]`, `{}`) are colored based on nesting depth using
+the same color scheme as Calva's rainbow brackets.
+The colors cycle through seven levels:
+
+| Depth | Color |
+|-------|-------|
+| 0 | Light gray |
+| 1 | Blue |
+| 2 | Salmon |
+| 3 | Green |
+| 4 | Purple |
+| 5 | Gray |
+| 6 | Orange |
+
+At depth 7 the cycle repeats from light gray.
+Matching open and close brackets always share the same color.
+
+Mismatched brackets (e.g. `(` closed by `]`) and unmatched closing
+brackets are shown with white text on a red background, making
+errors easy to spot as you type.
 
 ## nREPL Server
 
@@ -472,6 +495,7 @@ How the Gloat/Glojure REPL compares to other Clojure REPLs.
 | Feature | gloat --repl | bb (1.12+) | lein repl | clj |
 |---------|-----|------------|-----------|-----|
 | Syntax highlighting | **✓** | **✗** | **✗** | **✗** |
+| Rainbow brackets | **✓** | **✗** | **✗** | **✗** |
 | Format and clipboard (Ctrl+P) | **✓** | **✗** | **✗** | **✗** |
 | Multiline editing | **✓** | **✓** | **✗** | **✗** |
 | Tab completion (syms & keys) | **✓** | **✓** | **✓** | **✗** |
@@ -498,6 +522,106 @@ How the Gloat/Glojure REPL compares to other Clojure REPLs.
 - **bb** refers to Babashka v1.12+ which uses JLine3 for its console
   REPL.
 - **lein repl** uses REPL-y (JLine-based) for its console interface.
+
+## Web REPL
+
+The Gloat website includes a browser-based REPL powered by Glojure
+compiled to WebAssembly.
+It provides a subset of the CLI REPL's features and requires no
+installation.
+
+### How It Works
+
+The web REPL loads a Glojure Wasm binary (`glj.wasm`) and runs it
+inside the browser.
+User input is fed to the Wasm runtime through a hooked `stdin`, and
+evaluation output is captured from `stdout`/`stderr` and displayed
+in the terminal pane.
+
+The REPL initializes automatically when the page loads.
+A loading spinner is shown while the Wasm binary downloads and
+initializes.
+
+### Supported Features
+
+The web REPL supports the following features:
+
+- **Syntax highlighting** -- the same token types as the CLI REPL
+  (strings, keywords, comments, numbers, booleans, special forms,
+  core functions) are highlighted as you type.
+- **Rainbow brackets** -- brackets are colored by nesting depth
+  using the same Calva-style color scheme as the CLI REPL.
+  Mismatched and unmatched brackets are shown with white text on a
+  red background.
+- **Multiline input** -- incomplete expressions (unclosed brackets
+  or strings) automatically continue on the next line with
+  indentation matching the nesting depth.
+- **History** -- Up/Down arrows (or Ctrl+P/Ctrl+N) navigate through
+  previous inputs within the session.
+- **Smart indentation** -- Tab inserts two spaces.
+  Backspace deletes two spaces at once when preceded by two spaces,
+  matching the CLI's indent-aware behavior.
+- **Editing shortcuts** -- Ctrl+A (beginning of line), Ctrl+E (end
+  of line), Ctrl+U (kill before cursor), Ctrl+K (kill after cursor),
+  Ctrl+L (clear screen).
+- **Paste support** -- pasted text is inserted as plain text with
+  carriage returns normalized and trailing newlines stripped.
+
+### Toolbar
+
+The toolbar above the terminal provides quick-access buttons:
+
+| Button | Action |
+|--------|--------|
+| Share | Copy a shareable URL (with input state) to clipboard |
+| Copy | Copy the current form (or last history entry) to clipboard |
+| Up/Down | Navigate history |
+| Kill left/right | Delete before/after cursor |
+| Clear | Clear the terminal output |
+
+### Sharing
+
+The web REPL supports sharing expressions via URL fragments.
+When you type or evaluate expressions, the URL hash is updated with
+a base64-encoded snapshot of your history.
+Sharing this URL loads the REPL with the same expressions
+pre-evaluated, and the last expression placed in the input field
+ready to run.
+
+### Limitations
+
+The web REPL does not support:
+
+- **Tab completion** -- there is no completion menu; Tab inserts
+  spaces.
+- **Ghost text** (autosuggestions).
+- **Vi/Emacs editing modes** -- only basic editing is available.
+- **Persistent history** -- history is lost when the page is
+  reloaded.
+- **Ctrl+D documentation lookup**.
+- **nREPL server** -- the Wasm runtime runs entirely in the browser.
+- **External Go dependencies** -- only the built-in standard library
+  and clojure.core are available.
+- **Suspend/resume** (Ctrl+Z).
+
+### CLI vs Web REPL Feature Matrix
+
+| Feature | CLI | Web |
+|---------|-----|-----|
+| Syntax highlighting | Yes | Yes |
+| Rainbow brackets | Yes | Yes |
+| Multiline editing | Yes | Yes |
+| Smart indent/dedent | Yes | Yes |
+| History navigation | Yes | Yes (session only) |
+| Paste support | Yes | Yes |
+| Shareable URLs | No | Yes |
+| Tab completion | Yes | No |
+| Ghost text | Yes | No |
+| Vi/Emacs modes | Yes | No |
+| Persistent history | Yes | No |
+| Inline docs (Ctrl+D) | Yes | No |
+| nREPL server | Yes | No |
+| External Go deps | Yes | No |
 
 ## See Also
 

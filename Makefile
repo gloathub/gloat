@@ -11,6 +11,7 @@ include $M/gh.mk
 include $M/git.mk
 include $M/glojure.mk
 include $M/go.mk
+include $M/lein.mk
 include $M/md2man.mk
 include $M/shellcheck.mk
 include $M/wasmtime.mk
@@ -102,6 +103,9 @@ ifdef slow
   export RUN_SLOW_TESTS := true
 endif
 
+
+lein: $(LEIN)
+	$@ repl
 
 run:
 	$(MAKE) --no-p -C demo run-bin$(if $(FILE), FILE=$(FILE:demo/%=%))$(if $a, a=$a)

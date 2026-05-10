@@ -9,7 +9,9 @@ ffi.cdef[[
   const char* sort_json_array(const char* json);
 ]]
 
-local lib = ffi.load(os.getenv("LD_LIBRARY_PATH") .. "/example.so")
+local lib_dir = os.getenv("DYLD_LIBRARY_PATH") or os.getenv("LD_LIBRARY_PATH")
+local lib_ext = (ffi.os == "OSX") and "dylib" or "so"
+local lib = ffi.load(lib_dir .. "/example." .. lib_ext)
 
 for n = 1, 10 do
   print(string.format("%d! = %d", n, tonumber(lib.factorial(n))))

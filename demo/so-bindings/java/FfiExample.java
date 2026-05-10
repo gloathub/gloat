@@ -4,8 +4,13 @@ import java.lang.invoke.MethodHandle;
 public class FfiExample {
     public static void main(String[] args) throws Throwable {
         var linker = Linker.nativeLinker();
+        var libDir = System.getProperty("os.name").toLowerCase().contains("mac")
+            ? System.getenv("DYLD_LIBRARY_PATH")
+            : System.getenv("LD_LIBRARY_PATH");
+        var libExt = System.getProperty("os.name").toLowerCase().contains("mac")
+            ? "dylib" : "so";
         var lookup = SymbolLookup.libraryLookup(
-            System.getenv("LD_LIBRARY_PATH") + "/example.so",
+            libDir + "/example." + libExt,
             Arena.global());
 
         var factorial = linker.downcallHandle(

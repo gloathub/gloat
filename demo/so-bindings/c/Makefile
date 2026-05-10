@@ -11,4 +11,4 @@ $(BUILD): $(PROGRAM)
 	gcc -o $@ \
 	  $< \
 	  -I$(SO-BINDINGS-DIR) \
-	  -L$(SO-BINDINGS-DIR) -l:$(NAME).so
+	  $(SO-BINDINGS-DIR)/$(NAME).$(SO)

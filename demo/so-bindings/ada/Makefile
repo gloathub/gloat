@@ -15,5 +15,4 @@ $(BUILD): $(PROGRAM)
 	gnatmake $< -o $@ \
 	  -D. \
 	  -largs \
-	  -L$(SO-BINDINGS-DIR) \
-	  -l:$(NAME).so
+	  $(SO-BINDINGS-DIR)/$(NAME).$(SO)

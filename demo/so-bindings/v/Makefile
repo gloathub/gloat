@@ -8,4 +8,7 @@ run: $(BUILD)
 	./$<
 
 $(BUILD): $(PROGRAM) $(HEADER)
+ifdef IS-MACOS
+	ln -sf $(NAME).$(SO) $(SO-BINDINGS-DIR)/lib$(NAME).$(SO)
+endif
 	v -o $@ $<

@@ -3,7 +3,8 @@ require 'fiddle/import'
 
 module Example
   extend Fiddle::Importer
-  dlload 'example.so'
+  lib_ext = RUBY_PLATFORM =~ /darwin/ ? 'dylib' : 'so'
+  dlload "example.#{lib_ext}"
 
   extern 'long long factorial(long long)'
   extern 'const char* greet(const char*)'

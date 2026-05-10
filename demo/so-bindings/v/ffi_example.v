@@ -2,7 +2,8 @@ module main
 
 #flag -I..
 #flag -L..
-#flag -l:example.so
+#flag linux -l:example.so
+#flag darwin -lexample
 
 #include "example.h"
 

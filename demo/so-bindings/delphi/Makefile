@@ -11,7 +11,12 @@ run: $(BUILD)
 	./$<
 
 $(BUILD): $(PROGRAM)
+ifdef IS-MACOS
+	ln -sf $(NAME).$(SO) $(SO-BINDINGS-DIR)/lib$(NAME).dylib
+	ln -sf $(NAME).$(SO) $(SO-BINDINGS-DIR)/$(NAME).so
+else
 	ln -sf $(NAME).$(SO) $(SO-BINDINGS-DIR)/lib$(NAME).so
+endif
 	$(FPC) -o$@ \
 	  -FU. \
 	  -Fl$(SO-BINDINGS-DIR) \

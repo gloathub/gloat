@@ -3,7 +3,7 @@ package main
 /*
 #cgo CFLAGS: -I..
 #cgo linux LDFLAGS: -L.. -l:example.so
-#cgo darwin LDFLAGS: ../example.dylib
+#cgo darwin LDFLAGS: -L.. -lexample
 #include "example.h"
 #include <stdlib.h>
 */

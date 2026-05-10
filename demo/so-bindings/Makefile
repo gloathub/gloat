@@ -21,7 +21,7 @@ MAKES-CLEAN := \
   $(HEADER) \
   $(LIB-LIBRARY) \
 
-LANGS ?= \
+ALL-LANGS := \
   ada \
   c \
   cpp \
@@ -45,6 +45,21 @@ LANGS ?= \
   rust \
   v \
   zig \
+
+# Langs that need toolchains broken or unavailable on macOS
+SKIP-MACOS := \
+  csharp \
+  d \
+  dart \
+  delphi \
+  fortran \
+  haskell \
+
+ifdef IS-MACOS
+LANGS ?= $(filter-out $(SKIP-MACOS),$(ALL-LANGS))
+else
+LANGS ?= $(ALL-LANGS)
+endif
 
 TESTS := $(LANGS:%=test-%)
 CLEAN := $(LANGS:%=clean-%)

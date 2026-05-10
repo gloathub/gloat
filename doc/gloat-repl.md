@@ -417,16 +417,39 @@ tab completion, history) while evaluating code on the remote server.
 | `--repl=7888` | Connect to nREPL at localhost:7888 |
 | `--repl=host:7888` | Connect to nREPL at host:7888 |
 | `--repl=.nrepl-port` | Read port from file, connect |
+| `--repl=+bb` | Start Babashka nREPL, connect |
+| `--repl=+lein` | Start Leiningen nREPL, connect |
+| `--repl=+clj` | Start Clojure CLI nREPL, connect |
+| `--repl=+let-go` | Start let-go nREPL, connect |
 | `--repl=dir/` | Use `dir` as build directory (trailing slash) |
 | `--repl=dir` | Existing directory = build dir; existing file = port file |
 
 The value heuristic:
 1. All digits = port number (connect to nREPL)
 2. Contains `:` with trailing digits = host:port (connect to nREPL)
-3. Existing file = port file (read port, connect)
-4. Ends with `/` = build directory (create if needed)
-5. Existing directory = build directory
-6. Does not exist = error
+3. Starts with `+` = tool name (start tool's nREPL, connect)
+4. Existing file = port file (read port, connect)
+5. Ends with `/` = build directory (create if needed)
+6. Existing directory = build directory
+7. Does not exist = error
+
+### External Tool REPL
+
+The `+tool` forms start an external Clojure tool's nREPL server and
+connect Gloat's readline REPL to it.
+This gives you Gloat's REPL features (syntax highlighting, rainbow
+brackets, ghost text, tab completion, vi/emacs modes) while evaluating
+code in the external tool's runtime.
+
+```
+gloat --repl=+bb      # Babashka
+gloat --repl=+lein    # Leiningen (Clojure + project deps)
+gloat --repl=+clj     # Clojure CLI
+gloat --repl=+let-go  # let-go (Go-based Clojure)
+```
+
+Tools are auto-installed if not already present.
+The external server is stopped automatically when the REPL exits.
 
 ### Piped Input
 

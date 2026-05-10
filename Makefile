@@ -11,8 +11,10 @@ include $M/gh.mk
 include $M/git.mk
 include $M/glojure.mk
 include $M/go.mk
+include $M/lein.mk
 include $M/md2man.mk
 include $M/shellcheck.mk
+include $M/let-go.mk
 include $M/wasmtime.mk
 include $M/yamlscript.mk
 
@@ -124,6 +126,24 @@ env:
 man: $(MAN-PAGES)
 
 update: $(YS-GO-FILES) $(MAN-PAGES)
+
+bb: $(BB)
+	$@
+
+lein: $(LEIN)
+	$@ repl
+
+which-bb: $(BB)
+	@echo $<
+
+which-lein: $(LEIN)
+	@echo $<
+
+which-clj: $(CLOJURE)
+	@echo $<
+
+which-lg: $(LG)
+	@echo $<
 
 ys-pkg: $(YS-GO-FILES) $(GO)
 	@echo "Syncing ys/go/ to ys/pkg/"

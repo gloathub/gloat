@@ -33,6 +33,8 @@ See https://gloathub.org
     gloat --run foo.ys -- arg1 arg2     Compile and run
     gloat --repl                        Start Glojure REPL
     gloat --repl=7888                   Connect REPL to nREPL server
+    gloat --repl=+bb                    REPL connected to Babashka nREPL
+    gloat --repl=+let-go                REPL connected to let-go nREPL
     gloat --nrepl                       Start nREPL server
     gloat --nrepl=7888                  Start nREPL on specific port
     gloat --srepl                       Start socket REPL server
@@ -205,6 +207,68 @@ main() (
     fi
   }
 
+  # Start an external tool's nREPL server and connect to it
+  start-tool-nrepl() {
+    local tool=$1
+    local cmd bin port=
+
+    case $tool in
+      bb)
+        bin=$(make --quiet --no-print-directory -C "$root" which-bb)
+        cmd=("$bin" nrepl-server localhost:0)
+        ;;
+      lein)
+        bin=$(make --quiet --no-print-directory -C "$root" which-lein)
+        cmd=("$bin" repl :headless)
+        ;;
+      clj)
+        bin=$(make --quiet --no-print-directory -C "$root" which-clj)
+        cmd=("$bin"
+          -Sdeps '{:deps {nrepl/nrepl {:mvn/version "1.3.0"}}}'
+          -M -m nrepl.cmdline)
+        ;;
+      let-go|lg)
+        bin=$(make --quiet --no-print-directory -C "$root" which-lg)
+        cmd=("$bin" -n)
+        ;;
+      *)
+        echo "Error: unknown tool '+$tool'" >&2
+        echo "Supported: +bb, +lein, +clj, +let-go" >&2
+        exit 1
+        ;;
+    esac
+
+    # Start nREPL server in background, capture port from output
+    local fifo
+    fifo=$(mktemp -u)
+    mkfifo "$fifo"
+
+    "${cmd[@]}" > "$fifo" 2>&1 &
+    local server_pid=$!
+    trap "kill $server_pid 2>/dev/null; rm -f '$fifo'" EXIT
+
+    # Read lines until we find the port
+    while IFS= read -r line; do
+      if [[ $line =~ :([0-9]+)$ ]] ||
+         [[ $line =~ port\ ([0-9]+) ]]; then
+        port=${BASH_REMATCH[1]}
+        break
+      fi
+    done < "$fifo"
+
+    # Keep draining the fifo in background so server doesn't block
+    cat "$fifo" > /dev/null &
+
+    if [[ -z $port ]]; then
+      echo "Error: could not detect nREPL port from $tool" >&2
+      exit 1
+    fi
+
+    echo "$tool nREPL server on port $port (pid $server_pid)"
+    find-glj
+    glj --nrepl-connect "localhost:$port"
+  }
+
   # Handle --repl
   if [[ -n $opt_repl ]]; then
     # --repl=VALUE heuristic: digits=port, file=portfile, dir=builddir
@@ -217,6 +281,10 @@ main() (
         # host:port -- connect to nREPL server
         find-glj
         exec glj --nrepl-connect "$repl_val"
+      elif [[ $repl_val == +* ]]; then
+        # +tool -- start tool's nREPL server, connect to it
+        start-tool-nrepl "${repl_val#+}"
+        exit
       elif [[ -f $repl_val ]]; then
         # Existing file -- read port from it
         port=$(cat "$repl_val")

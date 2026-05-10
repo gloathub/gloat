@@ -212,23 +212,39 @@ main() (
     local tool=$1
     local cmd bin port=
 
+    local make_target
+    case $tool in
+      bb)       make_target=which-bb ;;
+      lein)     make_target=which-lein ;;
+      clj)      make_target=which-clj ;;
+      let-go|lg) make_target=which-lg ;;
+      *)
+        echo "Error: unknown tool '+$tool'" >&2
+        echo "Supported: +bb, +lein, +clj, +let-go" >&2
+        exit 1
+        ;;
+    esac
+
+    local local_bin=$root/.cache/local/bin
+    local tool_bin=$local_bin/${make_target#which-}
+    if [[ ! -x $tool_bin ]]; then
+      echo "Installing '$tool' locally..." >&2
+    fi
+    bin=$(make --quiet --no-print-directory -C "$root" "$make_target" | tail -1)
+
     case $tool in
       bb)
-        bin=$(make --quiet --no-print-directory -C "$root" which-bb)
         cmd=("$bin" nrepl-server localhost:0)
         ;;
       lein)
-        bin=$(make --quiet --no-print-directory -C "$root" which-lein)
         cmd=("$bin" repl :headless)
         ;;
       clj)
-        bin=$(make --quiet --no-print-directory -C "$root" which-clj)
         cmd=("$bin"
           -Sdeps '{:deps {nrepl/nrepl {:mvn/version "1.3.0"}}}'
           -M -m nrepl.cmdline)
         ;;
       let-go|lg)
-        bin=$(make --quiet --no-print-directory -C "$root" which-lg)
         cmd=("$bin" -n)
         ;;
       *)

@@ -1,3 +1,13 @@
+- version: 0.1.37
+  date:    Sun May 10 01:53:57 PM EDT 2026
+  changes:
+  - Pass tool history files to REPL
+  - Add --repl=+tool for external nREPL servers
+  - Add socket REPL support (--srepl)
+  - Add rainbow brackets and web REPL docs
+  - Fix macOS support for so-bindings
+  - Fix tab completion in bash
+
 - version: 0.1.36
   date:    Sat May  9 04:58:53 PM EDT 2026
   changes:

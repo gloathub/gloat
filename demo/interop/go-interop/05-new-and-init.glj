@@ -1,0 +1,8 @@
+(ns main.core)
+
+(defn -main []
+  (let [srv (new net:http.Server)]
+    (set! (. srv Addr)           "localhost:8080")
+    (set! (. srv MaxHeaderBytes) (int (* 1024 16)))
+    (println "Addr:          " (. srv Addr))
+    (println "MaxHeaderBytes:" (. srv MaxHeaderBytes))))

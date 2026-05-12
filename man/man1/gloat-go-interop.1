@@ -1,0 +1,372 @@
+'\" t
+.nh
+.TH gloat-go-interop -- Calling Go from Glojure
+.SH Synopsis
+Gloat compiles Glojure (a Clojure dialect) to Go.
+Every Go package that the compiler has been linked against is therefore
+visible from Glojure code, and every value flows end-to-end as its
+natural Go type.
+The standard library is always available.
+Third-party Go packages become available when they are declared in a
+\fBgljdeps.edn\fR file (see gloat-repl for using deps from
+the REPL).
+
+.PP
+The interop surface is small and looks a lot like Clojure's Java interop.
+Package functions are called as if they were Glojure functions
+(\fBfmt.Sprintf\fR, \fBstrings.Split\fR).
+Methods, struct fields, and constructors use the dot (\fB\&.\fR), \fBset!\fR, and
+\fBnew\fR forms.
+A reflection escape hatch is available for anything the higher-level
+forms cannot reach.
+
+.PP
+The following short program touches a package function, a method, a
+field, and a constructor.
+Everything else in this page is variations on these four moves.
+
+.EX
+(ns main.core)
+
+(defn -main []
+  (println (fmt.Sprintf "Hello, %s!" "world"))
+  (println (strings.HasPrefix "foobar" "foo"))
+  (let [parts (strings.Split "alpha,beta,gamma" ",")]
+    (println (strings.Join parts " | "))))
+.EE
+
+.PP
+To experiment with interop interactively, start the REPL with
+\fBgloat --repl\fR; see gloat-repl for how to load
+third-party Go packages via \fBgljdeps.edn\fR\&.
+
+.SH Calling Go Package Functions
+A Go package function is called with the form \fB(pkg.Function args...)\fR\&.
+The compiler resolves the identifier directly to the package's exported
+function, so there is no \fBimport\fR form to write and no aliasing step.
+Glojure values cross the boundary as their natural Go counterparts:
+strings as \fBstring\fR, longs as \fBint64\fR, vectors flow into slice
+parameters, and so on.
+
+.EX
+(ns main.core)
+
+(defn -main []
+  (println (fmt.Sprintf "Hello, %s!" "world"))
+  (println (strings.HasPrefix "foobar" "foo"))
+  (let [parts (strings.Split "alpha,beta,gamma" ",")]
+    (println (strings.Join parts " | "))))
+.EE
+
+.PP
+The package portion of the name is a Go import path.
+For short paths (\fBfmt\fR, \fBstrings\fR, \fBbytes\fR, \fBregexp\fR) you write them
+verbatim.
+For paths that contain a \fB/\fR, replace the slashes with \fB:\fR in Glojure
+code: \fBnet:http.Server\fR, \fBnet:url.Parse\fR, \fBcrypto:sha256.Sum256\fR\&.
+Fully-qualified module paths use the same separator throughout.
+
+.EX
+(throw (github.com:gloathub:glojure:pkg:lang.NewError "boom"))
+.EE
+
+.PP
+A Glojure function can be passed wherever Go expects a function value.
+The compiler generates a Go closure that calls back into the Glojure
+runtime, so higher-order Go APIs work the same as Clojure ones.
+
+.EX
+(ns main.core)
+
+(defn -main []
+  (let [parts (strings.FieldsFunc
+                "alpha,beta;gamma|delta"
+                (fn [c] (contains? #{\\, \\; \\|} (char c))))]
+    (doseq [p parts]
+      (println " -" p))))
+.EE
+
+.SH Methods on Values
+Method calls use the dot form, identical to Clojure's Java interop.
+Both shapes are supported and produce the same code:
+
+.EX
+(. instance Method args...)
+(. instance (Method args...))
+.EE
+
+.PP
+The grouped form (parens around the method call) is easier to read in
+nested or chained expressions; the flat form is shorter for one-shot
+calls.
+Pick whichever reads better in context.
+Zero-argument methods take neither parens nor args.
+
+.EX
+(ns main.core)
+
+(defn -main []
+  (let [escaper (strings.NewReplacer "<" "&lt;" ">" "&gt;")]
+    (println (. escaper (Replace "<html>")))
+    (println (. escaper Replace "the <header> tag")))
+  (println "Len of empty Buffer:" (. (new bytes.Buffer) Len)))
+.EE
+
+.PP
+Pointer and value receivers are not distinguished at the call site.
+\fBnew\fR returns \fB*T\fR (see below), and method lookup walks both the
+pointer and value method sets, so calling either kind of method just
+works.
+
+.SH Reading and Writing Struct Fields
+The same dot form reads exported struct fields.
+There is no separate \fB\&.-field\fR form; the compiler decides whether the
+member is a field or a method by looking at the type.
+
+.EX
+(. instance FieldName)
+.EE
+
+.PP
+To assign a field, wrap the field-read in \fBset!\fR:
+
+.EX
+(set! (. instance FieldName) value)
+.EE
+
+.EX
+(ns main.core)
+
+(defn -main []
+  (let [srv (new net:http.Server)]
+    (println "Addr before:" (pr-str (. srv Addr)))
+    (set! (. srv Addr) ":8080")
+    (println "Addr after: " (pr-str (. srv Addr)))))
+.EE
+
+.PP
+Field types must match.
+Assigning an \fBint64\fR to a \fBtime.Duration\fR field will not coerce; cast
+first with \fB(time.Duration ...)\fR or build the value through the package
+that owns the type.
+
+.PP
+One gotcha: if a field's type is itself a function, reading the field
+with the dot form invokes it.
+To inspect a function-typed field without calling it, drop to
+\fBreflect\fR (see \fBReflection Escape Hatch\fP).
+
+.SH Constructing Values with \fBnew\fR
+\fBnew\fR returns a fresh, zero-valued pointer to a Go type.
+
+.EX
+(new pkg.Type)        ;; => *pkg.Type, all fields zero
+.EE
+
+.PP
+Initialise the struct by writing its fields with \fBset!\fR:
+
+.EX
+(ns main.core)
+
+(defn -main []
+  (let [srv (new net:http.Server)]
+    (set! (. srv Addr)           "localhost:8080")
+    (set! (. srv MaxHeaderBytes) (int (* 1024 16)))
+    (println "Addr:          " (. srv Addr))
+    (println "MaxHeaderBytes:" (. srv MaxHeaderBytes))))
+.EE
+
+.PP
+Where a struct field expects a function-typed interface value (the
+canonical example is \fBnet/http.Handler\fR), wrap a Glojure fn in the
+package's \fB*Func\fR adapter:
+
+.EX
+(ns main.core)
+
+(defn handler [w r]
+  (. w (WriteHeader 200)))
+
+(defn -main []
+  (let [srv (new net:http.Server)]
+    (set! (. srv Addr)    "localhost:8080")
+    (set! (. srv Handler) (net:http.HandlerFunc handler))
+    (let [field (.FieldByName (.Elem (reflect.ValueOf srv)) "Handler")]
+      (println "Addr:    " (. srv Addr))
+      (println "Handler: " (if (.IsNil field) "nil" "<set>")))))
+.EE
+
+.PP
+\fBnet/http.HandlerFunc\fR is a Go type whose conversion \fBT(f)\fR adapts a
+plain function into the \fBhttp.Handler\fR interface.
+Calling it on a Glojure fn produces a value the field will accept.
+Construction of non-pointer struct literals and direct assembly of
+typed slices and maps from Glojure values are limited; see
+\fBKnown Limits\fP\&.
+
+.SH Multiple Return Values
+Go functions that return more than one value come back to Glojure as a
+vector.
+Destructure the vector at the binding site to name each return:
+
+.EX
+(ns main.core)
+
+(defn -main []
+  (let [[n   err]  (strconv.Atoi "42")
+        [n2  err2] (strconv.Atoi "not-a-number")]
+    (println "good input ->" n "  err:" err)
+    (println "bad input  ->" n2 "  err:" err2)
+    (when (some? err2)
+      (println "  error message:" (.Error err2)))))
+.EE
+
+.PP
+A \fBnil\fR error is the success case, matching Go convention.
+Test for failure with \fB(some? err)\fR or by truthiness.
+The error value is a Go \fBerror\fR; call \fB(.Error err)\fR to get the
+message string.
+
+.PP
+A common idiomatic shape is to throw on error and keep going:
+
+.EX
+(let [[n err] (strconv.Atoi s)]
+  (when err (throw err))
+  n)
+.EE
+
+.SH Collections: Slices, Arrays, Maps
+Go types do not exist as Glojure literals.
+To construct or cast to a Go collection type, use the type-builder
+functions in the \fBgo/\fR namespace.
+
+.TS
+allbox;
+l l 
+l l .
+\fBBuilder\fP	\fBResult type\fP
+\fB(go/slice-of T)\fR	\fB[]T\fR
+\fB(go/array-of N T)\fR	\fB[N]T\fR
+\fB(go/map-of K V)\fR	\fBmap[K]V\fR
+\fB(go/ptr-to T)\fR	\fB*T\fR
+.TE
+
+.PP
+Each builder returns a \fBreflect.Type\fR\&.
+Applied like a function, it constructs or converts a value:
+
+.EX
+(ns main.core)
+
+(defn -main []
+  (let [bs       ((go/slice-of go/byte) "foo----bar")
+        [m err]  (regexp.Match "foo.*bar" bs)]
+    (println "bytes count:" (count bs))
+    (println "matched?    " m)
+    (println "err:        " err)))
+.EE
+
+.PP
+\fBgo/byte\fR, \fBgo/int\fR, \fBgo/string\fR, \fBgo/int64\fR, and so on are the
+built-in type values you pass to a builder.
+
+.PP
+To allocate a fresh zero-value of any Go type, use \fBgo/make\fR:
+
+.EX
+(let [m (go/make (go/map-of go/string go/int))]
+  ...)
+.EE
+
+.PP
+Constructing a Go slice or map directly from a Glojure vector or map
+literal is not yet supported through the type builders for every type.
+Build incrementally, or use a Go helper.
+
+.SH Reflection Escape Hatch
+A handful of Go features (function-typed field reads, channel
+operations, dynamic field lookup, unexported behaviour, anything that
+needs a \fBreflect.Type\fR at runtime) are not yet reachable through the
+higher-level forms.
+For those, drop to the \fBreflect\fR package directly.
+The pattern is:
+.IP "  1." 5
+\fBreflect.ValueOf\fR to get a \fBreflect.Value\fR for any Go value.
+.IP "  2." 5
+\fB(.Elem v)\fR to dereference a pointer.
+.IP "  3." 5
+\fB(.FieldByName e "Name")\fR, \fB(.MethodByName e "Name")\fR, \fB(.Index e 0)\fR,
+\fB(.MapIndex e k)\fR to navigate.
+.IP "  4." 5
+\fB(.Interface f)\fR to escape back to a Glojure value, or \fB\&.Set\fR to
+write.
+
+.PP
+The example below reads three fields of an HTTP server by name,
+including the function-typed \fBHandler\fR field that the dot form cannot
+inspect:
+
+.EX
+(ns main.core)
+
+(defn -main []
+  (let [srv  (new net:http.Server)
+        _    (set! (. srv Addr) "localhost:8080")
+        elem (.Elem (reflect.ValueOf srv))]
+    (doseq [name ["Addr" "MaxHeaderBytes" "Handler"]]
+      (let [f (.FieldByName elem name)]
+        (println name "->" (.Interface f))))))
+.EE
+
+.PP
+The same pattern works for channels (\fB\&.Send\fR, \fB\&.Recv\fR), tagged unions
+hidden behind unexported types, and any other corner that does not yet
+have a first-class Glojure form.
+Treat it as a temporary bridge; high-traffic uses can usually be
+factored into a small Go helper exposed as a normal package function.
+
+.SH Known Limits
+The forms above cover the common ground.
+A few things look like they should work but do not, or do not yet:
+.IP \(bu 2
+\fB\fBnew\fR with keyword arguments\fP is recognised in the interpreter but
+silently ignored by the compiler.
+Write \fB(new pkg.Type)\fR followed by \fBset!\fR for each field.
+.IP \(bu 2
+\fBNon-pointer struct construction\fP is not exposed.
+\fBnew\fR always returns a pointer; use \fB(.Elem ...)\fR if you need the
+value form via reflection.
+.IP \(bu 2
+\fB\fBdefer\fR and \fBrecover\fR\fP have no Glojure form yet.
+Use \fBtry\fR/\fBfinally\fR for the cleanup case; for \fBrecover\fR semantics,
+catch the panic in a Go helper.
+.IP \(bu 2
+\fBAddress-of (\fB&\fR) and pointer dereference (\fB*\fR)\fP have no syntax of
+their own.
+\fBnew\fR covers most pointer needs; \fBgo/deref\fR (and reflection) covers
+the rest.
+.IP \(bu 2
+\fBThe blank identifier \fB_\fR\fP has no equivalent in destructuring.
+Bind a name you do not use, or pick one that documents the intent
+(\fB[v _err]\fR).
+.IP \(bu 2
+\fBImplementing an arbitrary Go interface from Glojure\fP is supported
+only when the package ships a function-typed adapter (the
+\fBnet/http.HandlerFunc\fR pattern).
+For other interfaces, write a small Go shim.
+.IP \(bu 2
+\fBBuilding Go maps and slices from Glojure literals\fP through the
+type builders is partial.
+Use \fBgo/make\fR and populate with reflection, or build the value in Go
+and return it.
+
+.PP
+These are gaps in the current Glojure compiler, not language
+decisions; expect them to shrink over time.
+
+.PP
+Runnable copies of each example on this page live under
+\fBdemo/interop/go-interop/\fR in the gloat repository.
+Try them with \fBgloat --run path/to/file.glj\fR\&.

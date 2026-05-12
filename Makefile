@@ -50,7 +50,11 @@ YS-PKG-VERSION ?= v0.1.37
 
 MAN-PAGES := \
   man/man1/gloat.1 \
+  man/man1/gloat-install.1 \
   man/man1/gloat-repl.1 \
+  man/man1/gloat-tutorial.1 \
+  man/man1/gloat-go-interop.1 \
+  man/man1/gloat-java-interop.1 \
 
 PATH-DEPS := \
   $(BB) \
@@ -308,11 +312,11 @@ man/man1/gloat.1: ReadMe.md $(MD2MAN)
 	  grep -v '^<img ' | \
 	  $(MD2MAN) > $@
 
-man/man1/gloat-repl.1: doc/gloat-repl.md $(MD2MAN)
+man/man1/%.1: doc/%.md $(MD2MAN)
 	@mkdir -p man/man1
 	perl -0777 -pe \
 	    's/\[([^\]]+)\]\([^)]+\)/$$1/g' \
-	    doc/gloat-repl.md | \
+	    $< | \
 	  $(MD2MAN) > $@
 
 # std depends on fs and ipc being compiled first

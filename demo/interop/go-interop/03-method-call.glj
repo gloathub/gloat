@@ -1,0 +1,7 @@
+(ns main.core)
+
+(defn -main []
+  (let [escaper (strings.NewReplacer "<" "&lt;" ">" "&gt;")]
+    (println (. escaper (Replace "<html>")))
+    (println (. escaper Replace "the <header> tag")))
+  (println "Len of empty Buffer:" (. (new bytes.Buffer) Len)))

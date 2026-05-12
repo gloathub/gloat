@@ -1,0 +1,12 @@
+(ns main.core)
+
+(defn handler [w r]
+  (. w (WriteHeader 200)))
+
+(defn -main []
+  (let [srv (new net:http.Server)]
+    (set! (. srv Addr)    "localhost:8080")
+    (set! (. srv Handler) (net:http.HandlerFunc handler))
+    (let [field (.FieldByName (.Elem (reflect.ValueOf srv)) "Handler")]
+      (println "Addr:    " (. srv Addr))
+      (println "Handler: " (if (.IsNil field) "nil" "<set>")))))

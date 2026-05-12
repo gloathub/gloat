@@ -1,0 +1,855 @@
+.nh
+.TH Gloat Ecosystem Tutorial
+This document explains how the gloat ecosystem works, covering all four
+interconnected repositories and their roles in building YAMLScript applications
+that compile to native Go binaries.
+
+.SH Table of Contents
+.IP \(bu 2
+Overview
+.IP \(bu 2
+Repository Layout
+.IP \(bu 2
+The Makes Build System
+.IP \(bu 2
+How Gloat Generates Output
+.IP \(bu 2
+Downstream Project Setup
+.IP \(bu 2
+Version Management
+.IP \(bu 2
+The YS Standard Library
+.IP \(bu 2
+The Glojure Fork
+.IP \(bu 2
+Development Workflow
+
+.SH Overview
+.SS The Four Repositories
+The gloat ecosystem consists of four interconnected repositories:
+.IP "  1." 5
+\fBgloathub/gloat\fP — The AOT (Ahead-of-Time) compiler
+.RS
+.IP \(bu 2
+Converts YAMLScript, Clojure, or Glojure source files to Go code
+.IP \(bu 2
+Provides the YS standard library as a Go module (\fBys/pkg\fR)
+.IP \(bu 2
+Generates buildable Go directories or compiled binaries
+.RE
+.IP "  2." 5
+\fBgloathub/glojure\fP — Forked Glojure compiler with gloat-specific patches
+.RS
+.IP \(bu 2
+Based on the upstream glojurelang/glojure project
+.IP \(bu 2
+Includes patches for improved Go compilation
+.IP \(bu 2
+Adds 15-20 additional cross-compilation targets beyond upstream
+.IP \(bu 2
+Fixes for issues like \fBseqable?\fR handling
+.RE
+.IP "  3." 5
+\fBmakeplus/makes\fP — Makefile-based dependency and build system
+.RS
+.IP \(bu 2
+Auto-bootstraps all tool dependencies
+.IP \(bu 2
+Provides \fB\&.mk\fR modules for gloat, glojure, go, yamlscript, etc.
+.IP \(bu 2
+Installs everything under \fB\&.cache/\fR (no global pollution)
+.IP \(bu 2
+Powers both gloat itself and downstream projects
+.RE
+.IP "  4." 5
+\fBingydotnet/gist\fP — Flagship downstream project
+.RS
+.IP \(bu 2
+Demonstrates the full gloat toolchain in action
+.IP \(bu 2
+Uses Makes for dependency management
+.IP \(bu 2
+Publishes both source and compiled \fBgo/\fR directory
+.IP \(bu 2
+Cross-platform binary releases via GitHub
+.RE
+
+.SS The Compilation Pipeline
+The gloat compiler orchestrates a multi-stage transformation:
+
+.EX
+YAMLScript (.ys) → Clojure (.clj) → Glojure (.glj) → Go (.go) → Binary/WASM
+.EE
+
+.PP
+Each stage is handled by a specialized tool:
+- \fBYS → CLJ\fP: YAMLScript compiler (from yamlscript repo)
+- \fBCLJ → GLJ\fP: Glojure's rewrite script (transforms Clojure idioms)
+- \fBGLJ → GO\fP: Glojure compiler (generates Go loader files)
+- \fBGO → BIN\fP: Go toolchain (builds native executables)
+
+.SS How Makes Bootstraps Dependencies
+Makes uses a 2-line Makefile preamble that clones itself into \fB\&.cache/makes/\fR:
+
+.EX
+M := .cache/makes
+$(shell [ -d $M ] || git clone -q https://github.com/makeplus/makes $M)
+.EE
+
+.PP
+All tool dependencies are then declared via \fBinclude\fR directives, and Makes
+handles automatic installation on first use.
+Users are prompted interactively before the first installation.
+
+.SH Repository Layout
+.SS Key Directories in gloat
+.EX
+gloat/
+├── bin/
+│   └── gloat              # Bash wrapper (sets GLOAT_VERSION, PATH)
+├── src/                   # Babashka source files
+│   └── gloat.clj          # Main Babashka script (CLI logic)
+├── template/
+│   ├── clojure.clj        # Template for YS→CLJ conversion
+│   ├── go.mod             # Template for generated Go modules
+│   ├── main.go            # Template for binary entry point
+│   ├── lib-main.go        # Template for shared library entry point
+│   └── Makefile           # Template for generated Go directories
+├── ys/                    # YS standard library (multi-stage build)
+│   ├── src/               # Clojure source files
+│   │   ├── yamlscript/    # Upstream YS code (util, common)
+│   │   └── ys/            # Gloat-specific YS runtime (v0, std, fs, etc.)
+│   ├── glj/               # Glojure intermediate files
+│   ├── go/                # Compiled Go loader files
+│   ├── pkg/               # Published Go module (sync from go/)
+│   │   ├── go.mod         # ys/pkg Go module definition
+│   │   └── all/           # Umbrella package for easy import
+│   └── patch/             # Patches for babashka compatibility
+├── common/
+│   └── common.mk          # Version overrides (GLOJURE-VERSION, etc.)
+├── util/                  # Helper scripts (getopt, etc.)
+└── Makefile               # Build system (YS-PKG-VERSION, targets)
+.EE
+
+.SS The \fBys/\fR Subtree: Multi-Stage Build
+The YS standard library undergoes a three-stage build process:
+.IP "  1." 5
+\fB\fBys/src/\fR\fP — Clojure source files
+.RS
+.IP \(bu 2
+\fByamlscript/\fR — Synced from upstream yamlscript repo (util, common)
+.IP \(bu 2
+\fBys/\fR — Gloat-specific runtime (v0, std, fs, ipc, json, http, dwim)
+.RE
+.IP "  2." 5
+\fB\fBys/glj/\fR\fP — Glojure intermediate files
+.RS
+.IP \(bu 2
+Generated via \fBmake update\fR (runs rewrite.clj on each .clj file)
+.RE
+.IP "  3." 5
+\fB\fBys/go/\fR\fP — Compiled Go loader files
+.RS
+.IP \(bu 2
+Generated via \fBmake update\fR (compiles each .glj to Go)
+.IP \(bu 2
+Structure: \fBys/go/namespace/path/loader.go\fR
+.RE
+.IP "  4." 5
+\fB\fBys/pkg/\fR\fP — Published Go module
+.RS
+.IP \(bu 2
+Synced from \fBys/go/\fR via \fBmake ys-pkg\fR (excludes \fBall/\fR)
+.IP \(bu 2
+Tagged as a Go sub-module: \fBys/pkg/v0.1.0\fR
+.IP \(bu 2
+Includes \fBall/all.go\fR umbrella package
+.RE
+
+.SS Templates and Placeholders
+Gloat uses templates in \fBtemplate/\fR with placeholder substitution:
+
+.PP
+\fBgo.mod template\fP (\fBtemplate/go.mod\fR):
+
+.EX
+module GO-MODULE
+
+go 1.24
+
+require (
+	github.com/gloathub/glojure GLOJURE-VERSION
+	github.com/gloathub/gloat/ys/pkg YS-PKG-VERSION
+)
+
+replace github.com/gloathub/gloat/ys/pkg => GLOAT-ROOT/ys/pkg
+.EE
+
+.PP
+Placeholders:
+- \fBGO-MODULE\fR — Generated or user-specified module name
+- \fBGLOJURE-VERSION\fR — From \fBcommon/common.mk\fR (e.g., \fBv0.6.5-rc4\fR)
+- \fBYS-PKG-VERSION\fR — From \fBMakefile\fR (e.g., \fBv0.1.0\fR)
+- \fBGLOAT-ROOT\fR — Absolute path to gloat repo
+- \fBPACKAGE-PATH\fR — User namespace path (e.g., \fBfoo/core\fR)
+- \fBNAMESPACE\fR — User namespace symbol (e.g., \fBfoo.core\fR)
+
+.PP
+The \fBreplace\fR directive enables local development by pointing to the gloat
+repo's \fBys/pkg/\fR directory.
+For published releases, this directive must be removed.
+
+.PP
+\fBmain.go template\fP (\fBtemplate/main.go\fR):
+
+.EX
+package main
+
+import (
+	_ "GO-MODULE/pkg/PACKAGE-PATH"
+	_ "github.com/gloathub/gloat/ys/pkg/all"
+)
+.EE
+
+.PP
+The umbrella import \fBys/pkg/all\fR loads all YS stdlib packages in one line
+(instead of 9 individual imports).
+
+.SH The Makes Build System
+.SS How It Works
+Makes is a dependency management system built on GNU Make.
+It provides a collection of \fB\&.mk\fR modules that handle tool installation,
+version management, and common build tasks.
+
+.PP
+\fBBootstrap Pattern\fP (2-line preamble in every Makefile):
+
+.EX
+M := .cache/makes
+$(shell [ -d $M ] || git clone -q https://github.com/makeplus/makes $M)
+.EE
+
+.PP
+This clones Makes into \fB\&.cache/makes/\fR if it doesn't exist.
+All subsequent \fBinclude\fR directives load \fB\&.mk\fR modules from there.
+
+.PP
+\fBKey \fB\&.mk\fR Modules\fP:
+- \fBinit.mk\fR — Initializes Makes variables and paths
+- \fBgo.mk\fR — Installs and manages Go toolchain
+- \fBglojure.mk\fR — Installs Glojure compiler (gloat fork with extended platform support)
+- \fBbabashka.mk\fR — Installs Babashka (runs gloat.clj)
+- \fByamlscript.mk\fR — Installs YAMLScript compiler
+- \fBgloat.mk\fR — Provides \fBgloat-go\fR, \fBgloat-github-release\fR targets
+- \fBgh.mk\fR — Installs GitHub CLI
+- \fBclean.mk\fR — Provides clean/distclean targets
+- \fBshell.mk\fR — Provides \fBmake shell\fR for running commands with tools
+
+.PP
+All tools are installed under \fB\&.cache/local/\fR:
+
+.EX
+\&.cache/
+├── makes/                    # Makes repo (cloned)
+│   ├── *.mk                  # Module definitions
+│   └── share/                # Shared assets (configs, etc.)
+└── local/
+    ├── bin/                  # Tool binaries (bb, glj, go, ys, etc.)
+    ├── go/                   # GOPATH
+    ├── cache/                # Build caches
+    └── gloat-VERSION/        # Cloned gloat repo (per version)
+.EE
+
+.SS Using Makes
+\fBRun commands with project dependencies\fP:
+
+.EX
+make shell cmd='gloat --version'
+make shell cmd='go version'
+make shell cmd='which bb'
+.EE
+
+.PP
+\fBList installed dependencies\fP:
+
+.EX
+make path-deps
+.EE
+
+.PP
+\fBClean build artifacts\fP:
+
+.EX
+make clean       # Removes MAKES-CLEAN files
+make distclean   # Also removes .cache/
+.EE
+
+.SS Version Management in Makes
+Makes modules define version variables with \fB?=\fR (override-able defaults):
+
+.EX
+# From go.mk
+GO-VERSION ?= 1.25.6
+.EE
+
+.PP
+Projects override these in their own Makefile or \fBcommon/common.mk\fR using \fB:=\fR:
+
+.EX
+# From gloat's common/common.mk
+GLOJURE-VERSION := 0.6.5-rc4
+GLOJURE-COMMIT := gloat
+GLOJURE-REPO := https://github.com/gloathub/glojure
+.EE
+
+.PP
+The \fB:=\fR operator has higher precedence than \fB?=\fR, so project values win.
+
+.SH How Gloat Generates Output
+.SS The \fBgloat -o dir/\fR Flow
+When you run \fBgloat foo.ys -o build/\fR, gloat performs these steps:
+.IP "  1." 5
+\fBCompile user code\fP: YS → CLJ → GLJ → Go
+.IP "  2." 5
+\fBCopy GLJ stdlib\fP: Copies \fBys/glj/\fR tree to temp directory
+.IP "  3." 5
+\fBCompile all namespaces\fP: Runs \fBglj\fR to generate Go loader files
+.IP "  4." 5
+\fBFilter output\fP: Copies only user code from temp dir to \fBbuild/pkg/\fR
+.RS
+.IP \(bu 2
+Excludes \fByamlscript/\fR and \fBys/\fR paths (stdlib)
+.IP \(bu 2
+Stdlib comes from \fBys/pkg\fR module instead
+.RE
+.IP "  5." 5
+\fBRender templates\fP: Generates \fBgo.mod\fR, \fBmain.go\fR, \fBMakefile\fR
+.IP "  6." 5
+\fBPopulate go.mod\fP:
+.RS
+.IP \(bu 2
+Module name (auto-detected or user-specified)
+.IP \(bu 2
+Glojure version (from \fBcommon/common.mk\fR)
+.IP \(bu 2
+YS pkg version (from \fBMakefile\fR)
+.IP \(bu 2
+Replace directive (for local development)
+.RE
+
+.SS The \fBys/pkg\fR Go Module
+The \fBys/pkg\fR directory is a Go module that publishes the YS standard library:
+
+.PP
+\fBStructure\fP:
+
+.EX
+ys/pkg/
+├── go.mod                              # Go module definition
+├── yamlscript/common/loader.go         # Loader for yamlscript.common
+├── yamlscript/util/loader.go           # Loader for yamlscript.util
+├── ys/dwim/loader.go                   # Loader for ys.dwim
+├── ys/fs/loader.go                     # Loader for ys.fs
+├── ys/http/loader.go                   # Loader for ys.http
+├── ys/ipc/loader.go                    # Loader for ys.ipc
+├── ys/json/loader.go                   # Loader for ys.json
+├── ys/std/loader.go                    # Loader for ys.std
+├── ys/v0/loader.go                     # Loader for ys.v0
+└── all/all.go                          # Umbrella package
+.EE
+
+.PP
+\fBThe Umbrella Import\fP (\fBys/pkg/all/all.go\fR):
+
+.EX
+package all
+
+import (
+	_ "github.com/gloathub/gloat/ys/pkg/yamlscript/common"
+	_ "github.com/gloathub/gloat/ys/pkg/yamlscript/util"
+	_ "github.com/gloathub/gloat/ys/pkg/ys/dwim"
+	_ "github.com/gloathub/gloat/ys/pkg/ys/fs"
+	_ "github.com/gloathub/gloat/ys/pkg/ys/http"
+	_ "github.com/gloathub/gloat/ys/pkg/ys/ipc"
+	_ "github.com/gloathub/gloat/ys/pkg/ys/json"
+	_ "github.com/gloathub/gloat/ys/pkg/ys/std"
+	_ "github.com/gloathub/gloat/ys/pkg/ys/v0"
+)
+.EE
+
+.PP
+This allows generated code to import the entire stdlib with a single line:
+
+.EX
+import _ "github.com/gloathub/gloat/ys/pkg/all"
+.EE
+
+.PP
+\fBThe \fBreplace\fR Directive\fP (local development vs published):
+
+.PP
+During development, the generated \fBgo.mod\fR includes:
+
+.EX
+replace github.com/gloathub/gloat/ys/pkg => /abs/path/to/gloat/ys/pkg
+.EE
+
+.PP
+This lets you iterate on stdlib changes without publishing.
+For releases, this directive is stripped (see "Downstream Project Setup" below).
+
+.SS Binary/WASM/Lib Output Modes
+When generating binaries (\fB-o foo\fR, \fB-o foo.wasm\fR, \fB-o foo.so\fR):
+.IP "  1." 5
+\fBGenerate Go directory\fP in a temp location
+.IP "  2." 5
+\fBRun \fBgo mod tidy\fR\fP to fetch dependencies
+.IP "  3." 5
+\fBBuild with \fBgo build\fR\fP:
+.RS
+.IP \(bu 2
+Binary: \fBgo build -ldflags "-s -w" -o foo main.go\fR
+.IP \(bu 2
+Library: \fBgo build -buildmode=c-shared -o foo.so main.go\fR
+.IP \(bu 2
+WASM: \fBGOOS=wasip1 GOARCH=wasm go build -o foo.wasm main.go\fR
+.RE
+.IP "  4." 5
+\fBCopy output\fP to user-specified location
+.IP "  5." 5
+\fBClean up\fP temp directory
+
+.PP
+Cross-compilation uses \fB--platform=OS/ARCH\fR (e.g., \fBlinux/amd64\fR, \fBdarwin/arm64\fR).
+
+.SH Downstream Project Setup
+Downstream projects (like gist) use gloat via Makes to build and release
+compiled binaries.
+
+.SS Minimal Makefile
+.EX
+# Example: gist/Makefile
+
+M := .cache/makes
+$(shell [ -d $M ] || git clone -q https://github.com/makeplus/makes $M)
+
+VERSION := 0.1.37
+FILE := gist
+GLOAT-RELEASE-WITH-GO-DIRECTORY := 1
+
+include $M/init.mk
+include $M/gloat.mk
+.EE
+
+.PP
+\fBKey Variables\fP:
+- \fBFILE\fR — The source file to compile (auto-detected if only one .ys/.clj)
+  - Can omit extension (e.g., \fBFILE := gist\fR will auto-detect \fBgist.ys\fR)
+- \fBVERSION\fR — The release version (used by \fBgloat-github-release\fR)
+- \fBGLOAT-RELEASE-WITH-GO-DIRECTORY\fR — Set to \fB1\fR to include \fBgo/\fR in releases (for \fBgo install\fR)
+
+.SS Platform Configuration
+Create \fB\&.makes/gloat.config\fR to specify target platforms:
+
+.EX
+[gloat.platforms]
+	name = linux/amd64
+	name = linux/arm64
+	name = darwin/amd64
+	name = darwin/arm64
+	name = windows/amd64
+.EE
+
+.PP
+This configures which platforms are built during \fBmake gloat-bin\fR\&.
+
+.SS The \fBgloat-go\fR Target
+The \fBgloat-go\fR target (from \fBgloat.mk\fR) generates the \fBgo/\fR directory:
+
+.EX
+make gloat-go
+.EE
+
+.PP
+\fBWhat it does\fP:
+1. Runs \fBgloat FILE -o go/\fR to generate Go module
+2. Rewrites module path from \fBgithub.com/gloathub/go\fR to the project's path
+   (auto-detected from \fBgit remote get-url origin\fR)
+3. Moves \fBmain.go\fR to \fBgo/cmd/BINARY-NAME/main.go\fR (Go convention)
+4. Updates \fBgo/Makefile\fR with correct binary name
+5. Runs \fBgo mod tidy\fR in \fBgo/\fR
+
+.PP
+\fBKey subtlety\fP: The current \fBgloat.mk\fR does NOT remove the \fBreplace\fR
+directive.
+This is fine for local development, but for published releases, the \fBreplace\fR
+line must be stripped so \fBgo install\fR fetches \fBys/pkg\fR from the Go proxy.
+
+.SS The \fBgloat-github-release\fR Target
+The \fBgloat-github-release\fR target (from \fBgloat.mk\fR) automates the full release
+process:
+
+.EX
+make gloat-github-release VERSION=0.1.5
+.EE
+
+.PP
+\fBWhat it does\fP:
+1. Updates \fBVERSION\fR in Makefile and source file
+2. (If \fBGLOAT-RELEASE-WITH-GO-DIRECTORY\fR is set) Regenerates \fBgo/\fR directory
+3. Commits changes: \fBgit commit -m 'Version v0.1.5'\fR
+4. Tags release: \fBgit tag v0.1.5\fR
+5. (If \fBGLOAT-RELEASE-WITH-GO-DIRECTORY\fR is set) Tags Go submodule: \fBgit tag go/v0.1.5\fR
+6. Pushes code and tags: \fBgit push && git push --tags\fR
+7. Builds binaries for all platforms (via \fBgloat-bin\fR)
+8. Creates GitHub release with binaries attached
+
+.SS How \fBgo install\fR Works
+Once a project publishes its \fBgo/\fR directory with the correct module path
+(and no \fBreplace\fR directive), users can install it via:
+
+.EX
+go install github.com/ingydotnet/gist/go/cmd/gist@v0.1.5
+.EE
+
+.PP
+This works because:
+1. The \fBgo/\fR directory is committed to the repo
+2. The Go submodule tag \fBgo/v0.1.5\fR points to a commit with the correct \fBgo/go.mod\fR
+3. The \fBgo.mod\fR requires \fBgithub.com/gloathub/gloat/ys/pkg\fR (fetched from proxy)
+4. No \fBreplace\fR directive interferes with module resolution
+
+.SH Version Management
+Gloat's version ecosystem has multiple moving parts.
+All versions must be kept in sync for releases.
+
+.SS All Version Locations
+.IP "  1." 5
+\fB\fBbin/gloat\fR\fP — Tool version (Bash wrapper)
+
+.EX
+export GLOAT_VERSION=0.1.0
+.EE
+
+.RS
+.IP "  1." 5
+\fB\fBcommon/common.mk\fR\fP — Glojure fork version
+\fBmakefile
+GLOJURE-VERSION := 0.6.5-rc4
+GLOJURE-COMMIT := gloat
+GLOJURE-REPO := https://github.com/gloathub/glojure
+\fR
+.RE
+.IP "  2." 5
+\fB\fBMakefile\fR\fP — YS pkg Go module version
+
+.EX
+YS-PKG-VERSION ?= v0.1.0
+.EE
+
+.RS
+.IP "  1." 5
+\fB\fBys/pkg/go.mod\fR\fP — Hardcoded Glojure dependency
+\fBgo
+require github.com/gloathub/glojure v0.6.5-rc4
+\fR
+.RE
+.IP "  3." 5
+\fB\fBChanges\fR\fP — Release changelog
+```yaml
+.RS
+.IP \(bu 2
+version: 0.1.0
+date:    Sun Feb  1 06:48:57 PM PST 2026
+changes:
+.RS
+.IP \(bu 2
+Initial release
+\fB
+### How Versions Propagate
+Gloat uses `get-make-var` in `src/gloat.clj` to read Makefile variables:
+\fRclojure
+(def get-make-var
+(memoize
+(fn var-name
+\[la]let [result (process/shell
+       {:out :string}\[ra]")
+       (str "print-" var-name))]
+(str/trim (:out result))))))
+```
+.RE
+.RE
+
+.PP
+This is called during template rendering:
+
+.EX
+(let [glojure-version (get-make-var "GLOJURE-VERSION")
+      ys-pkg-version (get-make-var "YS-PKG-VERSION")
+      result (render-template
+              template-content
+              [["GLOJURE-VERSION" glojure-version]
+               ["YS-PKG-VERSION" ys-pkg-version]])]
+  ...)
+.EE
+
+.PP
+So:
+- \fBcommon/common.mk\fR → \fBGLOJURE-VERSION\fR → \fBgo.mod\fR template
+- \fBMakefile\fR → \fBYS-PKG-VERSION\fR → \fBgo.mod\fR template
+
+.SS Go Module Tagging
+Go uses version tags to identify module versions:
+
+.PP
+\fBMain module\fP (e.g., gloat itself):
+
+.EX
+git tag v0.1.0
+.EE
+
+.PP
+\fBSub-module\fP (e.g., \fBys/pkg\fR):
+
+.EX
+git tag ys/pkg/v0.1.0
+.EE
+
+.PP
+\fBGo sub-directory\fP (e.g., \fBgo/\fR in downstream projects):
+
+.EX
+git tag go/v0.1.5
+.EE
+
+.PP
+The tag path corresponds to the module's location in the repo.
+
+.SH The YS Standard Library
+.SS Build Pipeline
+The YS stdlib is built in multiple stages:
+.IP "  1." 5
+\fB\fBys/src/*.clj\fR\fP — Clojure source files
+.IP "  2." 5
+\fB\fBys/glj/*.glj\fR\fP — Glojure intermediate files (via \fBrewrite.clj\fR)
+.IP "  3." 5
+\fB\fBys/go/*/loader.go\fR\fP — Go loader files (via \fBglj\fR compiler)
+.IP "  4." 5
+\fB\fBys/pkg/\fR\fP — Published Go module (synced from \fBys/go/\fR)
+
+.SS Build Targets
+\fB\fBmake update\fR\fP — Rebuild all Go files from source:
+
+.EX
+make update
+.EE
+
+.PP
+This runs the full pipeline: CLJ → GLJ → GO for all stdlib namespaces.
+
+.PP
+\fB\fBmake ys-pkg\fR\fP — Sync \fBys/go/\fR to \fBys/pkg/\fR and tidy:
+
+.EX
+make ys-pkg
+.EE
+
+.PP
+This copies Go files to \fBys/pkg/\fR, excluding \fBall/\fR and go.mod/go.sum, then
+runs \fBgo mod tidy\fR\&.
+
+.PP
+\fB\fBmake tag-ys-pkg\fR\fP — Create version tag:
+
+.EX
+make tag-ys-pkg YS-PKG-VERSION=0.1.0
+.EE
+
+.PP
+This creates an annotated tag \fBys/pkg/v0.1.0\fR\&.
+
+.SS The \fBys/pkg/all/all.go\fR Umbrella Package
+The \fBall\fR package provides a convenience import for all stdlib packages:
+
+.EX
+package all
+
+import (
+	_ "github.com/gloathub/gloat/ys/pkg/yamlscript/common"
+	_ "github.com/gloathub/gloat/ys/pkg/yamlscript/util"
+	_ "github.com/gloathub/gloat/ys/pkg/ys/dwim"
+	_ "github.com/gloathub/gloat/ys/pkg/ys/fs"
+	_ "github.com/gloathub/gloat/ys/pkg/ys/http"
+	_ "github.com/gloathub/gloat/ys/pkg/ys/ipc"
+	_ "github.com/gloathub/gloat/ys/pkg/ys/json"
+	_ "github.com/gloathub/gloat/ys/pkg/ys/std"
+	_ "github.com/gloathub/gloat/ys/pkg/ys/v0"
+)
+.EE
+
+.PP
+This is manually maintained (not auto-generated).
+It's excluded from the \fBmake ys-pkg\fR sync to avoid overwriting it.
+
+.SS Upstream Sync
+Most YS stdlib files come from the upstream \fByaml/yamlscript\fR repo:
+- \fByamlscript/util.clj\fR
+- \fByamlscript/common.clj\fR
+
+.PP
+These are synced via:
+
+.EX
+make ys/src/yamlscript/util.clj    # Updates from upstream
+.EE
+
+.PP
+Gloat-specific files (no upstream equivalents):
+- \fBys/src/ys/v0.clj\fR — Main YS runtime
+- \fBys/src/ys/fs.clj\fR — Go filesystem interop (not babashka.fs)
+- \fBys/src/ys/ipc.clj\fR — Go IPC interop (not babashka.process)
+- \fBys/src/ys/json.clj\fR — Pure Clojure JSON (not clojure.data.json)
+- \fBys/src/ys/http.clj\fR — Go net/http wrapper (not babashka.http-client)
+
+.SH The Glojure Fork
+.SS Why Fork?
+The gloat project maintains a fork of glojurelang/glojure for several reasons:
+.IP "  1." 5
+\fBGo compilation improvements\fP — Patches to improve generated Go code
+.IP "  2." 5
+\fBExtended platform support\fP — Adds 15-20 additional cross-compilation targets
+.IP "  3." 5
+\fBBug fixes\fP — Fixes for issues like \fBseqable?\fR handling in generated code
+.IP "  4." 5
+\fBStability\fP — Pins a known-good version with gloat-specific features
+
+.SS Fork Details
+\fBRepository\fP: \fBgloathub/glojure\fR
+\fBBranch\fP: \fBgloat\fR
+\fBConfigured in\fP: \fBcommon/common.mk\fR
+
+.EX
+GLOJURE-VERSION := 0.6.5-rc4
+GLOJURE-COMMIT := gloat
+GLOJURE-REPO := https://github.com/gloathub/glojure
+GLOJURE-GET-URL := github.com/gloathub/glojure/cmd/glj
+.EE
+
+.SS Upstream Sync Aspirations
+The long-term goal is to upstream all patches to glojurelang/glojure and
+eliminate the fork.
+This requires:
+1. Extracting patch set from \fBgloat\fR branch
+2. Submitting PRs to upstream
+3. Waiting for upstream releases
+4. Switching gloat to use upstream versions
+
+.SH Development Workflow
+.SS Initial Setup
+\fBAdd gloat to PATH\fP:
+
+.EX
+cd /path/to/gloat
+source .rc
+.EE
+
+.PP
+The \fB\&.rc\fR file adds \fBbin/\fR to your PATH.
+
+.PP
+\fBFirst run installs dependencies\fP:
+
+.EX
+gloat --help
+.EE
+
+.PP
+This prompts you to install dependencies (bb, glj, go, ys) into \fB\&.cache/local/\fR\&.
+After installation, all tools are available via the PATH from \fBmake path\fR\&.
+
+.SS Running Tests
+\fBRun gloat test suite\fP:
+
+.EX
+make test           # Run prove tests
+make test v=1       # Verbose test output
+.EE
+
+.PP
+\fBRun tests in Docker\fP (clean environment):
+
+.EX
+make distclean      # Must clean first
+make test-docker
+.EE
+
+.SS Modifying the Standard Library
+\fBEdit a stdlib file\fP:
+
+.EX
+vim ys/src/ys/std.clj
+.EE
+
+.PP
+\fBRebuild Go files\fP:
+
+.EX
+make update         # Regenerates ys/glj/ and ys/go/
+.EE
+
+.PP
+\fBSync to published module\fP:
+
+.EX
+make ys-pkg         # Copies to ys/pkg/ and runs go mod tidy
+.EE
+
+.PP
+\fBTest your changes\fP:
+
+.EX
+make test
+.EE
+
+.PP
+\fBCommit the changes\fP:
+
+.EX
+git add ys/src/ys/std.clj ys/glj/ys/std.glj ys/go/ys/std/loader.go
+git commit -m "Improve ys.std documentation"
+.EE
+
+.SS Typical Development Cycle
+.IP "  1." 5
+\fBMake changes\fP to gloat source (\fBsrc/gloat.clj\fR) or stdlib (\fBys/src/\fR)
+.IP "  2." 5
+\fBRun tests\fP to verify: \fBmake test\fR
+.IP "  3." 5
+\fBTest with example\fP project: \fBmake run FILE=demo/foo.ys\fR
+.IP "  4." 5
+\fBUpdate stdlib\fP if needed: \fBmake update && make ys-pkg\fR
+.IP "  5." 5
+\fBCommit changes\fP
+
+.SS Working with Downstream Projects
+\fBTest gloat changes with a downstream project\fP:
+
+.EX
+cd /path/to/gist
+rm -rf .cache/makes     # Clear Makes cache
+cd .cache
+ln -s /path/to/gloat gloat-main   # Use local gloat
+cd ..
+make gloat-go           # Regenerate go/ with local gloat
+.EE
+
+.PP
+This bypasses the git clone step in \fBgloat.mk\fR and uses your local gloat repo.
+
+.ti 0
+\l'\n(.lu'
+
+.PP
+This tutorial should provide a comprehensive understanding of how the gloat
+ecosystem works.
+For more specific information about release management, see \fBdoc/release-plan.md\fR\&.

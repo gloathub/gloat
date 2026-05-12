@@ -1,0 +1,9 @@
+(ns main.core)
+
+(defn -main []
+  (let [[n   err]  (strconv.Atoi "42")
+        [n2  err2] (strconv.Atoi "not-a-number")]
+    (println "good input ->" n "  err:" err)
+    (println "bad input  ->" n2 "  err:" err2)
+    (when (some? err2)
+      (println "  error message:" (.Error err2)))))

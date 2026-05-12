@@ -1,0 +1,83 @@
+.nh
+.TH gloat-install -- Installing Gloat
+Gloat has \fBzero dependencies\fP - everything installs automatically on first
+use.
+
+.PP
+There are two main ways to get started: the one-line installer or cloning the
+repository and sourcing the \fB\&.rc\fR file.
+
+.SH One-Line Installer
+Install \fBgloat\fR (or \fBglj\fR) to \fB~/.local/bin/\fR with a single command:
+
+.EX
+make -f <(curl -sL gloathub.org/make) install
+.EE
+
+.PP
+Installing \fBgloat\fR clones the gloat repository to \fB~/.local/share/gloat\fR,
+creates a symlink at \fB~/.local/bin/gloat\fR, and installs all the required
+dependencies automatically.
+
+.PP
+Make sure \fB~/.local/bin\fR is in your \fBPATH\fR, then run \fBgloat --help\fR\&.
+
+.PP
+\fBOptions:\fP
+
+.EX
+# Install to a custom prefix
+make -f <(curl -sL gloathub.org/make) install PREFIX=~/.gloat
+
+# Install a specific version
+make -f <(curl -sL gloathub.org/make) install VERSION=v0.1.37
+
+# Also install the Glojure glj (prebuilt binary) command
+make -f <(curl -sL gloathub.org/make) install-glj
+
+# Uninstall
+make -f <(curl -sL gloathub.org/make) uninstall
+make -f <(curl -sL gloathub.org/make) uninstall-glj
+
+# Show the installer Makefile rules:
+make -f <(curl -sL gloathub.org/make) help
+.EE
+
+.PP
+.RS
+
+.PP
+\fBNote\fP: This installation method does not enable gloat shell completion.
+For that, run \fBsource <(gloat --complete bash)\fR (or \fBfish\fR/\fBzsh\fR) in your
+shell's rc file after installation.
+
+.RE
+
+.SH Clone and Setup
+For Bash, Fish or Zsh:
+
+.EX
+git clone https://github.com/gloathub/gloat
+source gloat/.rc
+gloat --help
+.EE
+
+.PP
+The \fBsource gloat/.rc\fR command adds the \fBgloat\fR command to your PATH, enables
+the \fBman gloat\fR help and sets up \fBgloat\fR tab completion.
+
+.PP
+On first run, Gloat will automatically install all required tools (Go, Glojure,
+YAMLScript, Babashka, etc) to \fB\&.cache/local/\fR within the project directory.
+Just run \fBgloat --help\fR once to complete the setup.
+
+.PP
+To make Gloat available permanently, simply add this to your shell's rc file
+(\fB~/.bashrc\fR, \fB~/.fishrc\fR or \fB~/.zshrc\fR):
+
+.EX
+source /path/to/gloat/.rc
+.EE
+
+.PP
+Yes, that command and \fB\&.rc\fR file actually supports all three shells!

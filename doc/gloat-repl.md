@@ -521,17 +521,81 @@ The build directory is resolved in this priority order:
 
 ## External Go Dependencies
 
-To make Go packages available in the REPL, declare them in a
-`gljdeps.edn` file:
+The Glojure standard library and the Go standard library are available
+to every REPL session out of the box.
+Third-party Go packages -- anything you would normally `go get` --
+become available through a `gljdeps.edn` file.
+
+A minimal `gljdeps.edn` declares the packages you want and the versions
+to pin:
 
 ```clojure
-{:deps {gopkg.in/yaml.v3      {:mvn/version "v3.0.1"}
+{:deps {gopkg.in/yaml.v3 {:mvn/version "v3.0.1"}}}
+```
+
+Multiple packages and pinned versions go in the same map:
+
+```clojure
+{:deps {gopkg.in/yaml.v3       {:mvn/version "v3.0.1"}
         github.com/some/other  {:mvn/version "v1.2.3"}}}
 ```
 
-On first run, `glj` fetches the declared packages, generates import
-glue code, and re-launches with the new packages available.
-Subsequent runs skip the fetch if versions match.
+### Loading deps
+
+There are two ways to point the REPL at a deps file.
+
+**File on disk.**
+If `./gljdeps.edn` exists, `gloat --repl` picks it up automatically.
+Pass `--deps=path/to/file.edn` to use a different name or location.
+
+**Process substitution (one-shot).**
+For ad-hoc experiments, feed the deps inline with shell process
+substitution:
+
+```bash
+gloat --repl --deps=<(echo '{:deps {gopkg.in/yaml.v3 {:mvn/version "v3.0.1"}}}')
+```
+
+On first launch, gloat fetches the declared packages with `go get`,
+generates the Go import glue, and re-execs the REPL with the new
+packages linked in.
+Subsequent launches with the same deps skip the fetch.
+First-run latency is a few seconds; reopens are instantaneous.
+
+### Worked example
+
+Launch a REPL with `gopkg.in/yaml.v3` available:
+
+```
+$ gloat --repl --deps=<(echo '{:deps {gopkg.in/yaml.v3 {:mvn/version "v3.0.1"}}}')
+🐐 Gloat: 0.1.37 🐐
+ Glojure: v0.6.5
+      Go: 1.24.0 linux/amd64
+   Build: /home/me/.cache/gloat/repl/...
+   nREPL: nrepl://localhost:38291
+   sREPL: localhost:35149
+    Help: C-h or :repl/help
+    Exit: C-d or :repl/exit
+
+user=> (def m (go/make (go/map-of go/string go/string)))
+#'user/m
+user=> (.SetMapIndex (reflect.ValueOf m)
+                     (reflect.ValueOf "name") (reflect.ValueOf "world"))
+nil
+user=> (let [[bs err] (yaml.v3.Marshal m)]
+         (when err (throw err))
+         (print (str (yaml.v3.Marshal m))))
+name: world
+```
+
+The banner shows the build directory under `Build:` because `--deps`
+was supplied; an unconfigured REPL omits that line.
+
+### Cross-reference
+
+For the interop forms used above (`pkg.Func`, `.Method`, `(new ...)`,
+destructuring multi-return), see
+[gloat-go-interop](gloat-go-interop.md).
 
 ## Inline Documentation
 

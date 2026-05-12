@@ -1,0 +1,7 @@
+(ns main.core)
+
+(defn -main []
+  (println (fmt.Sprintf "Hello, %s!" "world"))
+  (println (strings.HasPrefix "foobar" "foo"))
+  (let [parts (strings.Split "alpha,beta,gamma" ",")]
+    (println (strings.Join parts " | "))))

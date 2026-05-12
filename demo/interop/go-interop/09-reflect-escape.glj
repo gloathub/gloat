@@ -1,0 +1,9 @@
+(ns main.core)
+
+(defn -main []
+  (let [srv  (new net:http.Server)
+        _    (set! (. srv Addr) "localhost:8080")
+        elem (.Elem (reflect.ValueOf srv))]
+    (doseq [name ["Addr" "MaxHeaderBytes" "Handler"]]
+      (let [f (.FieldByName elem name)]
+        (println name "->" (.Interface f))))))

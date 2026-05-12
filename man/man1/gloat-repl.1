@@ -5,6 +5,7 @@
 .EX
 gloat --repl[=VALUE]
 gloat --nrepl[=VALUE]
+gloat --srepl[=VALUE]
 gloat --repl --deps=gljdeps.edn
 glj
 .EE
@@ -357,6 +358,127 @@ The server implements the following nREPL ops:
 clone, close, describe, eval, completions, interrupt, load-file,
 ls-sessions.
 
+.SH Socket REPL
+Start a plain-text socket REPL with \fBgloat --srepl\fR\&.
+Clients connect with \fBnc\fR, \fBsocat\fR, \fBtelnet\fR, or editor plugins like
+Conjure and inf-clojure.
+Each connection gets an independent read-eval-print loop.
+
+.PP
+Unlike nREPL (which uses a structured bencode protocol), the socket
+REPL is a raw text protocol: send Clojure code, receive printed
+results.
+No special client library is required.
+
+.SS \fB--srepl\fR Forms
+.TS
+allbox;
+l l 
+l l .
+\fBForm\fP	\fBMeaning\fP
+\fB--srepl\fR	T{
+Start server on localhost, random port
+T}
+\fB--srepl=7777\fR	Start server on localhost:7777
+\fB--srepl=0.0.0.0:7777\fR	T{
+Bind to all network interfaces, port 7777
+T}
+\fB--srepl=0.0.0.0\fR	T{
+Bind to all interfaces, random port
+T}
+\fB--srepl=.srepl-port\fR	T{
+Random port, write port number to file
+T}
+.TE
+
+.PP
+The value heuristic is the same as \fB--nrepl\fR:
+all digits = port number,
+contains \fB:\fR with trailing digits = host:port,
+valid IP address = host with random port,
+anything else = port file path.
+
+.PP
+The server prints its address on startup:
+
+.EX
+Socket REPL started on port 7777 on host localhost - localhost:7777
+.EE
+
+.PP
+Press Ctrl+C to shut down the server.
+If a port file was specified, it is removed on shutdown.
+
+.SS Connecting
+Interactive session with readline (via \fBrlwrap\fR):
+
+.EX
+rlwrap nc localhost 7777
+user=> (+ 1 2)
+3
+user=> (defn greet [name]
+  ..    (str "Hello, " name "!"))
+#'user/greet
+user=> (greet "world")
+"Hello, world!"
+.EE
+
+.PP
+Piped input:
+
+.EX
+echo '(+ 1 2)' | nc -q 1 localhost 7777
+.EE
+
+.SS Multiline Input
+The socket REPL detects incomplete expressions (unclosed brackets
+or strings) and shows a continuation prompt:
+
+.EX
+user=> (defn f [x]
+  ..    (+ x 1))
+#'user/f
+.EE
+
+.SS Namespace Tracking
+Each connection starts in the \fBuser\fR namespace.
+Switching namespaces updates the prompt:
+
+.EX
+user=> (ns my-app)
+nil
+my-app=>
+.EE
+
+.PP
+Each connection has its own namespace state.
+
+.SS Editor Integration
+\fBConjure (Neovim):\fP
+Run \fBgloat --srepl=7777\fR in a terminal.
+Configure Conjure to connect to the socket REPL.
+
+.PP
+\fBinf-clojure (Emacs):\fP
+Run \fBgloat --srepl=7777\fR in a terminal, then connect with
+\fBM-x inf-clojure-connect\fR\&.
+
+.SS nREPL vs Socket REPL
+.TS
+allbox;
+l l l 
+l l l .
+\fB\fP	\fBnREPL\fP	\fBSocket REPL\fP
+Protocol	Bencode (structured)	Plain text
+Clients	Calva, CIDER	nc, Conjure, inf-clojure
+Features	T{
+Eval, completions, docs, interrupt
+T}	Eval only
+Use case	IDE integration	T{
+Lightweight debugging, scripting
+T}
+.TE
+
 .SH REPL Client Mode
 Connect a readline-enabled REPL to a running nREPL server with
 \fBgloat --repl=PORT\fR\&.
@@ -375,6 +497,12 @@ Connect to nREPL at localhost:7888
 T}
 \fB--repl=host:7888\fR	Connect to nREPL at host:7888
 \fB--repl=.nrepl-port\fR	Read port from file, connect
+\fB--repl=+bb\fR	Start Babashka nREPL, connect
+\fB--repl=+lein\fR	Start Leiningen nREPL, connect
+\fB--repl=+clj\fR	T{
+Start Clojure CLI nREPL, connect
+T}
+\fB--repl=+let-go\fR	Start let-go nREPL, connect
 \fB--repl=dir/\fR	Use \fBdir\fR as build directory (trailing slash)
 \fB--repl=dir\fR	T{
 Existing directory = build dir; existing file = port file
@@ -385,10 +513,29 @@ T}
 The value heuristic:
 1. All digits = port number (connect to nREPL)
 2. Contains \fB:\fR with trailing digits = host:port (connect to nREPL)
-3. Existing file = port file (read port, connect)
-4. Ends with \fB/\fR = build directory (create if needed)
-5. Existing directory = build directory
-6. Does not exist = error
+3. Starts with \fB+\fR = tool name (start tool's nREPL, connect)
+4. Existing file = port file (read port, connect)
+5. Ends with \fB/\fR = build directory (create if needed)
+6. Existing directory = build directory
+7. Does not exist = error
+
+.SS External Tool REPL
+The \fB+tool\fR forms start an external Clojure tool's nREPL server and
+connect Gloat's readline REPL to it.
+This gives you Gloat's REPL features (syntax highlighting, rainbow
+brackets, ghost text, tab completion, vi/emacs modes) while evaluating
+code in the external tool's runtime.
+
+.EX
+gloat --repl=+bb      # Babashka
+gloat --repl=+lein    # Leiningen (Clojure + project deps)
+gloat --repl=+clj     # Clojure CLI
+gloat --repl=+let-go  # let-go (Go-based Clojure)
+.EE
+
+.PP
+Tools are auto-installed if not already present.
+The external server is stopped automatically when the REPL exits.
 
 .SS Piped Input
 When stdin is not a terminal, the client evaluates the input and exits
@@ -422,33 +569,36 @@ gloat --repl=7888
 Both terminals share the same evaluation state.
 An editor (Calva, CIDER) can connect to the same server simultaneously.
 
-.SH Embedded nREPL Server
+.SH Embedded Servers
 Every \fBgloat --repl\fR session automatically starts an embedded nREPL
-server on a random port.
-This means editors can connect to your REPL session without any extra
-setup.
+server and an embedded socket REPL server, both on random ports.
+This means editors can connect to your REPL session without any
+extra setup.
 
 .PP
-The server URL is shown in the startup banner:
+The server URLs are shown in the startup banner:
 
 .EX
  Glojure: v0.6.5
       Go: 1.24.0 linux/amd64
-  Server: nrepl://localhost:38291
+   nREPL: nrepl://localhost:38291
+   sREPL: localhost:35149
     Help: C-h or :repl/help
     Exit: C-d or :repl/exit
 .EE
 
 .PP
-Use \fB:repl/server\fR to display the server URL at any time.
-The server URL also appears in \fBC-h\fR help under Current Settings.
+Use \fB:repl/server\fR to display the server URLs at any time.
+The URLs also appear in \fBC-h\fR help under Current Settings.
 
 .PP
-The embedded server does not write a port file.
-If you need a port file, use \fBgloat --nrepl=.nrepl-port\fR instead.
+The embedded servers do not write port files.
+If you need a port file, use \fBgloat --nrepl=.nrepl-port\fR or
+\fBgloat --srepl=.srepl-port\fR instead.
 
 .PP
-When you exit the REPL, the embedded server shuts down automatically.
+When you exit the REPL, both embedded servers shut down
+automatically.
 
 .SH REPL Build Directory
 When launched via \fBgloat --repl\fR, the REPL needs a Go module directory
@@ -464,18 +614,84 @@ The build directory is resolved in this priority order:
 \fB\&./gljrepl/\fR -- default fallback (created automatically)
 
 .SH External Go Dependencies
-To make Go packages available in the REPL, declare them in a
-\fBgljdeps.edn\fR file:
+The Glojure standard library and the Go standard library are available
+to every REPL session out of the box.
+Third-party Go packages -- anything you would normally \fBgo get\fR --
+become available through a \fBgljdeps.edn\fR file.
+
+.PP
+A minimal \fBgljdeps.edn\fR declares the packages you want and the versions
+to pin:
 
 .EX
-{:deps {gopkg.in/yaml.v3      {:mvn/version "v3.0.1"}
-        github.com/some/other  {:mvn/version "v1.2.3"}}}
+{:deps {gopkg.in/yaml.v3 {:mvn/version "v3.0.1"}}}
 .EE
 
 .PP
-On first run, \fBglj\fR fetches the declared packages, generates import
-glue code, and re-launches with the new packages available.
-Subsequent runs skip the fetch if versions match.
+Multiple packages and pinned versions go in the same map:
+
+.EX
+{:deps {gopkg.in/yaml.v3       {:mvn/version "v3.0.1"}
+        github.com/some/other  {:mvn/version "v1.2.3"}}}
+.EE
+
+.SS Loading deps
+There are two ways to point the REPL at a deps file.
+
+.PP
+\fBFile on disk.\fP
+If \fB\&./gljdeps.edn\fR exists, \fBgloat --repl\fR picks it up automatically.
+Pass \fB--deps=path/to/file.edn\fR to use a different name or location.
+
+.PP
+\fBProcess substitution (one-shot).\fP
+For ad-hoc experiments, feed the deps inline with shell process
+substitution:
+
+.EX
+gloat --repl --deps=<(echo '{:deps {gopkg.in/yaml.v3 {:mvn/version "v3.0.1"}}}')
+.EE
+
+.PP
+On first launch, gloat fetches the declared packages with \fBgo get\fR,
+generates the Go import glue, and re-execs the REPL with the new
+packages linked in.
+Subsequent launches with the same deps skip the fetch.
+First-run latency is a few seconds; reopens are instantaneous.
+
+.SS Worked example
+Launch a REPL with \fBgopkg.in/yaml.v3\fR available:
+
+.EX
+$ gloat --repl --deps=<(echo '{:deps {gopkg.in/yaml.v3 {:mvn/version "v3.0.1"}}}')
+🐐 Gloat: 0.1.37 🐐
+ Glojure: v0.6.5
+      Go: 1.24.0 linux/amd64
+   Build: /home/me/.cache/gloat/repl/...
+   nREPL: nrepl://localhost:38291
+   sREPL: localhost:35149
+    Help: C-h or :repl/help
+    Exit: C-d or :repl/exit
+
+user=> (def m (go/make (go/map-of go/string go/string)))
+#'user/m
+user=> (.SetMapIndex (reflect.ValueOf m)
+                     (reflect.ValueOf "name") (reflect.ValueOf "world"))
+nil
+user=> (let [[bs err] (yaml.v3.Marshal m)]
+         (when err (throw err))
+         (print (str (yaml.v3.Marshal m))))
+name: world
+.EE
+
+.PP
+The banner shows the build directory under \fBBuild:\fR because \fB--deps\fR
+was supplied; an unconfigured REPL omits that line.
+
+.SS Cross-reference
+For the interop forms used above (\fBpkg.Func\fR, \fB\&.Method\fR, \fB(new ...)\fR,
+destructuring multi-return), see
+gloat-go-interop.
 
 .SH Inline Documentation
 Press \fBCtrl+D\fP (vi mode) or \fBCtrl+X Ctrl+D\fP (emacs mode) with the
@@ -575,6 +791,11 @@ T}
 Suppress the startup banner when set.
 T}
 \fBGLOAT_REPL\fR	Set the REPL build directory.
+\fBGLOAT_REPL_HISTORY_BB\fR	Babashka history file for \fB--repl=+bb\fR (JLine format).
+\fBGLOAT_REPL_HISTORY_LEIN\fR	Leiningen history file for \fB--repl=+lein\fR (JLine format).
+\fBGLOAT_REPL_HISTORY_CLJ\fR	Clojure CLI history file for \fB--repl=+clj\fR (JLine format).
+\fBGLOAT_REPL_HISTORY_LET_GO\fR	let-go history file for \fB--repl=+let-go\fR (JLine format).
+\fBGLOAT_REPL_HISTORY_LG\fR	let-go history file for \fB--repl=+lg\fR (JLine format).
 \fBINPUTRC\fR	T{
 Path to inputrc config file (default: \fB~/.inputrc\fR).
 T}

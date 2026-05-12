@@ -1,0 +1,8 @@
+(ns main.core)
+
+(defn -main []
+  (let [parts (strings.FieldsFunc
+                "alpha,beta;gamma|delta"
+                (fn [c] (contains? #{\, \; \|} (char c))))]
+    (doseq [p parts]
+      (println " -" p))))

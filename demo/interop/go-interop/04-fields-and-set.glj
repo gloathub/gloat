@@ -1,0 +1,7 @@
+(ns main.core)
+
+(defn -main []
+  (let [srv (new net:http.Server)]
+    (println "Addr before:" (pr-str (. srv Addr)))
+    (set! (. srv Addr) ":8080")
+    (println "Addr after: " (pr-str (. srv Addr)))))

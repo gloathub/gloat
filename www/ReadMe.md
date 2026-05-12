@@ -66,7 +66,10 @@ www/
 ├── docs/               # Content pages
 │   ├── index.md        # Homepage
 │   ├── demo.md         # Live demo page
-│   ├── getting-started.md  # Installation guide
+│   ├── doc/
+│   │   ├── index.md             # Documentation hub
+│   │   ├── getting-started.md   # Installation guide
+│   │   └── gloat-*.md           # Symlinks to repo doc/*.md (man-page sources)
 │   ├── examples.md     # Example programs showcase
 │   ├── CNAME           # Custom domain (gloathub.org)
 │   └── css/

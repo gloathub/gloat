@@ -1,0 +1,1 @@
+../../../doc/gloat-go-interop.md

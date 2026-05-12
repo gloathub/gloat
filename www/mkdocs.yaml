@@ -57,9 +57,16 @@ nav:
   - GloatHub: index.md
   - Demo: demo.md
   - REPL: repl.md
-  - Blog: blog/index.md
-  - Getting Started: getting-started.md
+  - Documentation:
+    - doc/index.md
+    - Getting Started: doc/getting-started.md
+    - Installation: doc/gloat-install.md
+    - REPL Reference: doc/gloat-repl.md
+    - Go Interop: doc/gloat-go-interop.md
+    - Java Interop: doc/gloat-java-interop.md
+    - Tutorial: doc/gloat-tutorial.md
   - Examples: examples.md
+  - Blog: blog/index.md
   - Projects:
     - projects/index.md
     - Gist: projects/gist.md

@@ -1,0 +1,8 @@
+(ns main.core)
+
+(defn -main []
+  (let [bs       ((go/slice-of go/byte) "foo----bar")
+        [m err]  (regexp.Match "foo.*bar" bs)]
+    (println "bytes count:" (count bs))
+    (println "matched?    " m)
+    (println "err:        " err)))

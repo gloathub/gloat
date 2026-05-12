@@ -1,3 +1,8 @@
+- version: 0.1.38
+  date:    Tue May 12 06:52:14 PM EDT 2026
+  changes:
+  - Add Go interop docs and web pages
+
 - version: 0.1.37
   date:    Sun May 10 01:53:57 PM EDT 2026
   changes:

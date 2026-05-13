@@ -654,6 +654,20 @@ Subsequent runs in the same build directory skip the fetch if versions match.
 
 ## Advanced Configuration
 
+### Locating the glj Binary
+
+`gloat --glj` prints the absolute path of the `glj` binary that gloat would
+use, and nothing else.
+It is intended for scripting:
+
+```bash
+glj=$(gloat --glj)
+"$glj" --nrepl=.nrepl-port
+```
+
+If `glj` has not yet been installed, gloat will install it first; any install
+output is suppressed so the captured value is just the path.
+
 ### Resetting Dependencies
 
 If your cached dependencies become corrupted or you want a clean reinstall,

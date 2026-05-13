@@ -691,6 +691,20 @@ path.
 Subsequent runs in the same build directory skip the fetch if versions match.
 
 .SH Advanced Configuration
+.SS Locating the glj Binary
+\fBgloat --glj\fR prints the absolute path of the \fBglj\fR binary that gloat would
+use, and nothing else.
+It is intended for scripting:
+
+.EX
+glj=$(gloat --glj)
+"$glj" --nrepl=.nrepl-port
+.EE
+
+.PP
+If \fBglj\fR has not yet been installed, gloat will install it first; any install
+output is suppressed so the captured value is just the path.
+
 .SS Resetting Dependencies
 If your cached dependencies become corrupted or you want a clean reinstall,
 run:

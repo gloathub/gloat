@@ -119,6 +119,16 @@ main() (
   PATH=$(make --quiet --no-print-directory -C "$root" path)
   export PATH
 
+  if [[ $* == --glj ]]; then
+    glj_path=$(make --quiet --no-print-directory -C "$root" path-glj | tail -1)
+    if [[ -x $glj_path ]]; then
+      echo "$glj_path"
+      exit
+    fi
+    echo "Error: could not resolve glj path (got: $glj_path)" >&2
+    exit 1
+  fi
+
   setup
 
   # Single-pass scan: extract bash-level flags and build proc_args for getopt.

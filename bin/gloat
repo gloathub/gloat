@@ -142,7 +142,6 @@ main() (
   opt_srepl=
   srepl_val=
   opt_deps=
-  opt_force=
   opt_shell=
   opt_shellall=
   run_args=()
@@ -170,7 +169,6 @@ main() (
                      proc_args+=(--srepl)      ;;
         --deps=*)    opt_deps=${arg#--deps=}
                      proc_args+=("$arg")       ;;
-        --force|-f)  opt_force=true;           proc_args+=("$arg") ;;
         --shell)     opt_shell=true;           proc_args+=("$arg") ;;
         --shell-all) opt_shellall=true;        proc_args+=("$arg") ;;
         *)           proc_args+=("$arg")       ;;
@@ -306,6 +304,88 @@ main() (
     glj --nrepl-connect "localhost:$port" "${hist_flag[@]}"
   }
 
+  # Set up go.mod in CWD to point at the right glojure source.
+  setup-go-module() {
+    if [[ ! -f go.mod ]]; then
+      go mod init gloatrepl
+    fi
+    if ! grep -q "gloathub/glojure" go.mod 2>/dev/null; then
+      local glojure_dir
+      glojure_dir=${GLOJURE_DIR:-$(
+        make --quiet --no-print-directory -C "$root" path-glojure | tail -1
+      )}
+      if [[ -d $glojure_dir ]]; then
+        go mod edit \
+          -replace "github.com/gloathub/glojure=$glojure_dir"
+        cp "$glojure_dir/go.sum" go.sum
+        go get github.com/gloathub/glojure
+      else
+        local glj_ver
+        glj_ver=$(glj --version 2>/dev/null |
+          grep -oP 'v\d+\.\d+\.\S+' | head -1 || true)
+        go get "github.com/gloathub/glojure@${glj_ver:-latest}"
+      fi
+    fi
+  }
+
+  # Resolve deps file + build dir, write gljdeps.edn, set up go module + env.
+  # Optional first arg: explicit build dir hint (used by --repl=dir).
+  prepare-repl-env() {
+    local build_hint=${1-}
+
+    # Resolve deps file: --deps= flag, GLOAT_GLJDEPS env var, or CWD auto-detect
+    local deps_file=$opt_deps
+    local explicit_deps=
+    if [[ -n $deps_file ]]; then
+      explicit_deps=1
+    elif [[ -n ${GLOAT_GLJDEPS-} ]]; then
+      deps_file=$GLOAT_GLJDEPS
+      explicit_deps=1
+    elif [[ -f ./gljdeps.edn ]]; then
+      deps_file=$(pwd)/gljdeps.edn
+    fi
+
+    if [[ -n $deps_file && ! -r $deps_file ]]; then
+      echo "Error: $deps_file not found" >&2
+      exit 1
+    fi
+
+    # Read deps content before cd (handles /dev/fd/N process substitution)
+    local deps_content=
+    [[ -n $deps_file ]] && deps_content=$(cat "$deps_file")
+
+    # Determine build directory:
+    #   build_hint (--repl=dir)  >  GLOAT_REPL  >
+    #   .  (when ./gljdeps.edn was auto-detected)  >
+    #   .cache/repl-$GLOAT_VERSION/
+    local build_dir
+    if [[ -n $build_hint ]]; then
+      build_dir=$build_hint
+    elif [[ -n ${GLOAT_REPL-} ]]; then
+      build_dir=$GLOAT_REPL
+    elif [[ -z $explicit_deps && -f ./gljdeps.edn ]]; then
+      build_dir=.
+    else
+      build_dir=$root/.cache/repl-$GLOAT_VERSION
+    fi
+
+    mkdir -p "$build_dir"
+    cd "$build_dir"
+
+    if [[ -n $deps_content ]]; then
+      printf '%s\n' "$deps_content" > gljdeps.edn
+    fi
+
+    setup-go-module
+
+    export GOFLAGS=-mod=mod
+
+    : "${GOARCH:=$(go env GOARCH)}"
+    export GOARCH
+
+    find-glj
+  }
+
   # Handle --repl
   if [[ -n $opt_repl ]]; then
     # --repl=VALUE heuristic: digits=port, file=portfile, dir=builddir
@@ -339,87 +419,7 @@ main() (
       # Fall through: repl_val is a directory or ends with /
     fi
 
-    force=
-    [[ -n $opt_force ]] && force=1
-
-    # Resolve deps file: --deps= flag, GLOAT_GLJDEPS env var, or CWD auto-detect
-    deps_file=$opt_deps
-    explicit_deps=
-    if [[ -n $deps_file ]]; then
-      explicit_deps=1
-    elif [[ -n ${GLOAT_GLJDEPS-} ]]; then
-      deps_file=$GLOAT_GLJDEPS
-      explicit_deps=1
-    elif [[ -f ./gljdeps.edn ]]; then
-      deps_file=$(pwd)/gljdeps.edn
-    fi
-
-    if [[ -n $deps_file && ! -r $deps_file ]]; then
-      echo "Error: $deps_file not found" >&2
-      exit 1
-    fi
-
-    # Read deps content now before cd (handles /dev/fd/N process substitution)
-    deps_content=
-    [[ -n $deps_file ]] && deps_content=$(cat "$deps_file")
-
-    # Determine build directory:
-    #   --repl=dir  >  GLOAT_REPL=dir  >  . (if ./gljdeps.edn, no explicit deps)
-    #   >  .cache/repl-$GLOAT_VERSION/
-    if [[ -n $repl_val ]]; then
-      build_dir=$repl_val
-    elif [[ -n ${GLOAT_REPL-} ]]; then
-      build_dir=$GLOAT_REPL
-    elif [[ -z $explicit_deps && -f ./gljdeps.edn ]]; then
-      build_dir=.
-    else
-      build_dir=$root/.cache/repl-$GLOAT_VERSION
-    fi
-
-    mkdir -p "$build_dir"
-    cd "$build_dir"
-
-    # Write gljdeps.edn if provided
-    if [[ -n $deps_content ]]; then
-      printf '%s\n' "$deps_content" > gljdeps.edn
-    fi
-
-    # Set up go module (suppress output when no explicit deps)
-    setup-go-module() {
-      if [[ ! -f go.mod ]]; then
-        go mod init gloatrepl
-      fi
-      if ! grep -q "gloathub/glojure" go.mod 2>/dev/null; then
-        glojure_dir=${GLOJURE_DIR:-$(
-          make --quiet --no-print-directory -C "$root" \
-            print-GLOJURE-DIR 2>/dev/null ||
-          echo "$root/../glojure"
-        )}
-        if [[ -d $glojure_dir ]]; then
-          go mod edit \
-            -replace "github.com/gloathub/glojure=$glojure_dir"
-          cp "$glojure_dir/go.sum" go.sum
-          go get github.com/gloathub/glojure
-        else
-          glj_ver=$(glj --version 2>/dev/null |
-            grep -oP 'v\d+\.\d+\.\S+' | head -1)
-          go get "github.com/gloathub/glojure@${glj_ver:-latest}"
-        fi
-      fi
-    }
-    if [[ -n $explicit_deps ]]; then
-      setup-go-module
-    else
-      setup-go-module 2>/dev/null
-    fi
-
-    export GOFLAGS=-mod=mod
-
-    # Set GOARCH if not set
-    : "${GOARCH:=$(go env GOARCH)}"
-    export GOARCH
-
-    find-glj
+    prepare-repl-env "$repl_val"
 
     echo "🐐 Gloat: $GLOAT_VERSION 🐐" >&2
 
@@ -444,77 +444,7 @@ main() (
       nrepl_val=$(pwd)/$nrepl_val
     fi
 
-    # Resolve deps file (same logic as --repl)
-    deps_file=$opt_deps
-    explicit_deps=
-    if [[ -n $deps_file ]]; then
-      explicit_deps=1
-    elif [[ -n ${GLOAT_GLJDEPS-} ]]; then
-      deps_file=$GLOAT_GLJDEPS
-      explicit_deps=1
-    elif [[ -f ./gljdeps.edn ]]; then
-      deps_file=$(pwd)/gljdeps.edn
-    fi
-
-    if [[ -n $deps_file && ! -r $deps_file ]]; then
-      echo "Error: $deps_file not found" >&2
-      exit 1
-    fi
-
-    deps_content=
-    [[ -n $deps_file ]] && deps_content=$(cat "$deps_file")
-
-    # Build directory for nREPL (reuse REPL build dir)
-    if [[ -n ${GLOAT_REPL-} ]]; then
-      build_dir=$GLOAT_REPL
-    elif [[ -z $explicit_deps && -f ./gljdeps.edn ]]; then
-      build_dir=.
-    else
-      build_dir=$root/.cache/repl-$GLOAT_VERSION
-    fi
-
-    mkdir -p "$build_dir"
-    cd "$build_dir"
-
-    if [[ -n $deps_content ]]; then
-      printf '%s\n' "$deps_content" > gljdeps.edn
-    fi
-
-    # Set up go module (same as --repl)
-    setup-go-module() {
-      if [[ ! -f go.mod ]]; then
-        go mod init gloatrepl
-      fi
-      if ! grep -q "gloathub/glojure" go.mod 2>/dev/null; then
-        glojure_dir=${GLOJURE_DIR:-$(
-          make --quiet --no-print-directory -C "$root" \
-            print-GLOJURE-DIR 2>/dev/null ||
-          echo "$root/../glojure"
-        )}
-        if [[ -d $glojure_dir ]]; then
-          go mod edit \
-            -replace "github.com/gloathub/glojure=$glojure_dir"
-          cp "$glojure_dir/go.sum" go.sum
-          go get github.com/gloathub/glojure
-        else
-          glj_ver=$(glj --version 2>/dev/null |
-            grep -oP 'v\d+\.\d+\.\S+' | head -1)
-          go get "github.com/gloathub/glojure@${glj_ver:-latest}"
-        fi
-      fi
-    }
-    if [[ -n $explicit_deps ]]; then
-      setup-go-module
-    else
-      setup-go-module 2>/dev/null
-    fi
-
-    export GOFLAGS=-mod=mod
-
-    : "${GOARCH:=$(go env GOARCH)}"
-    export GOARCH
-
-    find-glj
+    prepare-repl-env
 
     nrepl_flag=--nrepl
     [[ -n $nrepl_val ]] && nrepl_flag="--nrepl=$nrepl_val"
@@ -529,77 +459,7 @@ main() (
       srepl_val=$(pwd)/$srepl_val
     fi
 
-    # Resolve deps file (same logic as --repl)
-    deps_file=$opt_deps
-    explicit_deps=
-    if [[ -n $deps_file ]]; then
-      explicit_deps=1
-    elif [[ -n ${GLOAT_GLJDEPS-} ]]; then
-      deps_file=$GLOAT_GLJDEPS
-      explicit_deps=1
-    elif [[ -f ./gljdeps.edn ]]; then
-      deps_file=$(pwd)/gljdeps.edn
-    fi
-
-    if [[ -n $deps_file && ! -r $deps_file ]]; then
-      echo "Error: $deps_file not found" >&2
-      exit 1
-    fi
-
-    deps_content=
-    [[ -n $deps_file ]] && deps_content=$(cat "$deps_file")
-
-    # Build directory for sREPL (reuse REPL build dir)
-    if [[ -n ${GLOAT_REPL-} ]]; then
-      build_dir=$GLOAT_REPL
-    elif [[ -z $explicit_deps && -f ./gljdeps.edn ]]; then
-      build_dir=.
-    else
-      build_dir=$root/.cache/repl-$GLOAT_VERSION
-    fi
-
-    mkdir -p "$build_dir"
-    cd "$build_dir"
-
-    if [[ -n $deps_content ]]; then
-      printf '%s\n' "$deps_content" > gljdeps.edn
-    fi
-
-    # Set up go module (same as --repl)
-    setup-go-module() {
-      if [[ ! -f go.mod ]]; then
-        go mod init gloatrepl
-      fi
-      if ! grep -q "gloathub/glojure" go.mod 2>/dev/null; then
-        glojure_dir=${GLOJURE_DIR:-$(
-          make --quiet --no-print-directory -C "$root" \
-            print-GLOJURE-DIR 2>/dev/null ||
-          echo "$root/../glojure"
-        )}
-        if [[ -d $glojure_dir ]]; then
-          go mod edit \
-            -replace "github.com/gloathub/glojure=$glojure_dir"
-          cp "$glojure_dir/go.sum" go.sum
-          go get github.com/gloathub/glojure
-        else
-          glj_ver=$(glj --version 2>/dev/null |
-            grep -oP 'v\d+\.\d+\.\S+' | head -1)
-          go get "github.com/gloathub/glojure@${glj_ver:-latest}"
-        fi
-      fi
-    }
-    if [[ -n $explicit_deps ]]; then
-      setup-go-module
-    else
-      setup-go-module 2>/dev/null
-    fi
-
-    export GOFLAGS=-mod=mod
-
-    : "${GOARCH:=$(go env GOARCH)}"
-    export GOARCH
-
-    find-glj
+    prepare-repl-env
 
     srepl_flag=--srepl
     [[ -n $srepl_val ]] && srepl_flag="--srepl=$srepl_val"

@@ -84,6 +84,85 @@ runtime, so higher-order Go APIs work the same as Clojure ones.
 ```
 
 
+## Packages Are Linked, Not Imported
+
+Glojure has no per-file form for pulling in a Go package.
+There is no `(:import ...)` clause for Go types, no `(:require ... :as
+alias)` for Go packages, and no way to give a Go package a local short
+name that applies only to the current file.
+A Go package is either linked into the binary (in which case every name
+inside it is callable from anywhere) or it is not.
+
+What you *do* still write is the standard Clojure `ns` form for Glojure
+namespaces:
+
+```clojure
+(ns main.core
+  (:require [clojure.string :as str]))
+```
+
+That `:require` only affects Glojure namespaces.
+Go packages are addressed directly by their import path everywhere they
+are used, with `/` rewritten as `:` (see **Calling Go Package
+Functions** above).
+
+The Go standard library is always linked.
+Third-party Go packages are declared in a `gljdeps.edn` file that sits
+next to the program being run; the compiler reads it, fetches the
+modules with `go get`, and links the listed packages into the resulting
+binary.
+
+A minimal `gljdeps.edn`:
+
+```clojure
+{:deps {github.com:google:uuid {:mvn/version "v1.6.0"}}}
+```
+
+The key is a Glojure symbol naming the Go import path, written in the
+same colon-separated form used at call sites.
+The deps loader rewrites `:` back to `/` before handing the path to
+`go get`, so this entry resolves to the module `github.com/google/uuid`.
+The slash form (`github.com/google/uuid`) is also accepted at the
+deps-key level, but at call sites you must use the colon form because
+the dot in a multi-slash slash form would parse as a host expression.
+Stick with the colon form everywhere for consistency.
+
+A program that uses it (saved next to the deps file):
+
+```clojure
+(ns main.core)
+
+(defn -main []
+  (let [id (github.com:google:uuid.New)]
+    (println "Generated UUID:" (.String id))))
+```
+
+Running it:
+
+```
+$ gloat --run greet.glj
+Generated UUID: 69e566b7-f49c-4302-a11f-808ebcd96112
+```
+
+`gloat --run` auto-detects a sibling `gljdeps.edn` in the same
+directory; the `--deps=path` flag is available for the REPL (see
+[gloat-repl](gloat-repl.md)).
+First launch fetches the module; subsequent launches reuse the cache.
+
+If a fully-qualified path is unwieldy at the call site, give it a
+local short name with `def`:
+
+```clojure
+(def uuid-new github.com:google:uuid.New)
+
+(defn -main []
+  (println "Generated UUID:" (.String (uuid-new))))
+```
+
+This is a plain Glojure binding, not a package alias; it lives in the
+current namespace and does not affect resolution anywhere else.
+
+
 ## Methods on Values
 
 Method calls use the dot form, identical to Clojure's Java interop.

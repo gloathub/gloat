@@ -530,14 +530,22 @@ A minimal `gljdeps.edn` declares the packages you want and the versions
 to pin:
 
 ```clojure
-{:deps {gopkg.in/yaml.v3 {:mvn/version "v3.0.1"}}}
+{:deps {github.com:yaml:go-yaml {:mvn/version "v3.0.1"}}}
 ```
+
+Each key is the Go import path written as a Glojure symbol, with `/`
+rewritten as `:`.
+The deps loader rewrites `:` back to `/` before handing the path to
+`go get`, so the example above resolves to the module
+`github.com/yaml/go-yaml`.
+Using the colon form keeps the deps key consistent with how the
+package is named at call sites (see [gloat-go-interop](gloat-go-interop.md)).
 
 Multiple packages and pinned versions go in the same map:
 
 ```clojure
-{:deps {gopkg.in/yaml.v3       {:mvn/version "v3.0.1"}
-        github.com/some/other  {:mvn/version "v1.2.3"}}}
+{:deps {github.com:yaml:go-yaml  {:mvn/version "v3.0.1"}
+        github.com:google:uuid   {:mvn/version "v1.6.0"}}}
 ```
 
 ### Loading deps
@@ -553,7 +561,7 @@ For ad-hoc experiments, feed the deps inline with shell process
 substitution:
 
 ```bash
-gloat --repl --deps=<(echo '{:deps {gopkg.in/yaml.v3 {:mvn/version "v3.0.1"}}}')
+gloat --repl --deps=<(echo '{:deps {github.com:yaml:go-yaml {:mvn/version "v3.0.1"}}}')
 ```
 
 On first launch, gloat fetches the declared packages with `go get`,
@@ -564,12 +572,12 @@ First-run latency is a few seconds; reopens are instantaneous.
 
 ### Worked example
 
-Launch a REPL with `gopkg.in/yaml.v3` available:
+Launch a REPL with `github.com/yaml/go-yaml` available:
 
 ```
-$ gloat --repl --deps=<(echo '{:deps {gopkg.in/yaml.v3 {:mvn/version "v3.0.1"}}}')
-🐐 Gloat: 0.1.37 🐐
- Glojure: v0.6.5
+$ gloat --repl --deps=<(echo '{:deps {github.com:yaml:go-yaml {:mvn/version "v3.0.1"}}}')
+🐐 Gloat: 0.1.39 🐐
+ Glojure: v0.6.5-rc27
       Go: 1.24.0 linux/amd64
    Build: /home/me/.cache/gloat/repl/...
    nREPL: nrepl://localhost:38291
@@ -580,13 +588,20 @@ $ gloat --repl --deps=<(echo '{:deps {gopkg.in/yaml.v3 {:mvn/version "v3.0.1"}}}
 user=> (def m (go/make (go/map-of go/string go/string)))
 #'user/m
 user=> (.SetMapIndex (reflect.ValueOf m)
-                     (reflect.ValueOf "name") (reflect.ValueOf "world"))
+                     (reflect.ValueOf "greeting") (reflect.ValueOf "hello"))
 nil
-user=> (let [[bs err] (yaml.v3.Marshal m)]
+user=> (let [[bs err] (github.com:yaml:go-yaml.Marshal m)]
          (when err (throw err))
-         (print (str (yaml.v3.Marshal m))))
-name: world
+         (print (go/string bs)))
+greeting: hello
+nil
 ```
+
+A Glojure map literal does not yet auto-convert to a Go `map[K]V`, so
+the example builds the map with `go/make` and writes entries through
+`reflect.ValueOf` before passing it to `Marshal`.
+`Marshal` returns `([]byte, error)`, which destructures as a vector;
+`(go/string bs)` casts the bytes back to a Glojure string for display.
 
 The banner shows the build directory under `Build:` because `--deps`
 was supplied; an unconfigured REPL omits that line.

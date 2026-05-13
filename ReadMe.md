@@ -634,8 +634,8 @@ To make Go packages available in the REPL, declare them in a `gljdeps.edn`
 file:
 
 ```clojure
-{:deps {gopkg.in/yaml.v3      {:mvn/version "v3.0.1"}
-        github.com/some/other  {:mvn/version "v1.2.3"}}}
+{:deps {github.com:yaml:go-yaml  {:mvn/version "v3.0.1"}
+        github.com:google:uuid   {:mvn/version "v1.6.0"}}}
 ```
 
 The deps file is located via `--deps`, `GLOAT_GLJDEPS`, or auto-detection of
@@ -643,7 +643,7 @@ The deps file is located via `--deps`, `GLOAT_GLJDEPS`, or auto-detection of
 Process substitution works too, for one-off experiments:
 
 ```bash
-gloat --repl --deps=<(echo '{:deps {gopkg.in/yaml.v3 {:mvn/version "v3.0.1"}}}')
+gloat --repl --deps=<(echo '{:deps {github.com:yaml:go-yaml {:mvn/version "v3.0.1"}}}')
 ```
 
 On first run, `glj` fetches the declared packages with `go get`, generates

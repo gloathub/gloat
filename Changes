@@ -1,3 +1,9 @@
+- version: 0.1.40
+  date:    Wed May 13 09:03:33 AM EDT 2026
+  changes:
+  - Add --glj to print bundled glj path
+  - Update deps docs to colon form and go-yaml
+
 - version: 0.1.39
   date:    Tue May 12 10:50:32 PM EDT 2026
   changes:

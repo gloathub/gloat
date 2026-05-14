@@ -52,8 +52,24 @@ help:
 # User might have a ./install file or dir, so use PHONY here.
 .PHONY: help install install-glj install-gloat uninstall uninstall-glj uninstall-gloat
 install:
+	@# PATH check up front — prompt the user before doing any work so they
+	@# can Ctrl-C and set PATH first if needed.
+	@if ! echo ":$$PATH:" | grep -q ':$(BIN-DIR):'; then \
+	  echo ''; \
+	  echo '⚠ $(BIN-DIR) is not on your PATH yet.'; \
+	  echo ''; \
+	  echo 'After installation you will need this line in your shell rc'; \
+	  echo '(~/.bashrc, ~/.zshrc, or ~/.config/fish/config.fish):'; \
+	  echo ''; \
+	  echo '  export PATH=$(BIN-DIR):$$PATH'; \
+	  echo ''; \
+	  if [ -t 0 ]; then \
+	    printf 'Press Enter to continue, or Ctrl-C to set PATH first... '; \
+	    read -r < /dev/tty; \
+	    echo ''; \
+	  fi; \
+	fi
 	@echo 'Installing Gloat to $(PREFIX)...'
-	@# Create directories
 	@mkdir -p '$(BIN-DIR)' '$(PREFIX)/share'
 	@# Clone repository
 	@if [[ -d '$(INSTALL-DIR)' ]]; then \
@@ -80,22 +96,34 @@ install:
 	@rm -rf '$(INSTALL-DIR)/.cache'
 	@# Create symlink
 	@ln -sf '$(INSTALL-DIR)/bin/gloat' '$(GLOAT-BIN)'
-	@# Trigger first-run deps install
-	'$(GLOAT-BIN)' --version </dev/null || true
+	@# Per-tool quiet deps install, driven from this Makefile (independent
+	@# of which bin/gloat version was cloned). Captures each tool's output
+	@# and only dumps it on failure.
+	@echo ''
+	@echo 'Installing gloat dependencies into $(INSTALL-DIR)/.cache/local/'
+	@for tool in bb go glojure glj ys; do \
+	  printf '==> Installing %s... ' "$$tool"; \
+	  log=$$(mktemp); \
+	  if $(MAKE) --quiet --no-print-directory -C '$(INSTALL-DIR)' \
+	      "path-$$tool" > "$$log" 2>&1; then \
+	    echo 'done'; \
+	    rm -f "$$log"; \
+	  else \
+	    rc=$$?; \
+	    echo 'FAILED'; \
+	    echo ''; \
+	    cat "$$log"; \
+	    rm -f "$$log"; \
+	    exit "$$rc"; \
+	  fi; \
+	done
 	@echo ''
 	@echo '✓ Gloat $(VERSION) installed successfully!'
 	@echo ''
 	@echo '  Installed to: $(INSTALL-DIR)'
 	@echo '  Symlink at:   $(GLOAT-BIN)'
 	@echo ''
-	@# Check if PREFIX/bin is in PATH
-	@if ! echo '$$PATH' | grep -q '$(BIN-DIR)'; then \
-	  echo '⚠ Add $(BIN-DIR) to your PATH:'; \
-	  echo ''; \
-	  echo '  export PATH=$(BIN-DIR):\$$PATH'; \
-	  echo ''; \
-	fi
-	@# Print shell-specific rc hint for man pages and completion
+	@# Shell-specific rc hint for man pages and completion
 	@echo 'To enable man pages and shell completion, add this to your shell rc:'
 	@echo ''
 	@case $$(basename "$${SHELL:-/bin/bash}") in \

@@ -542,7 +542,7 @@ With \fB-Xserve,html\fR, the HTML is generated alongside the output.
 -v, --verbose    Print timing for each compilation step
 -q, --quiet      Suppress progress messages
 
---upgrade        Upgrade gloat to the latest version
+--upgrade        Upgrade gloat (use --upgrade=v1.2.3 to pin a version)
 --reset          Remove all cached dependencies and reinstall
 
 -h, --help       Show this help
@@ -714,8 +714,29 @@ gloat --reset
 .EE
 
 .PP
-This runs \fBmake distclean\fR, removing the \fB\&.cache/\fR directory.
+This removes the \fB\&.cache/\fR directory entirely (binaries, build artifacts,
+REPL working dirs).
 The next invocation of gloat will reinstall all dependencies from scratch.
+
+.SS Upgrading or Pinning a Version
+Move to the latest released version:
+
+.EX
+gloat --upgrade
+.EE
+
+.PP
+Pin (or roll back) to a specific version. Gloat will switch the checkout,
+clear \fB\&.cache/\fR, and reinstall the dependencies that pair with that release
+(including the matching GLJ version) on the next run:
+
+.EX
+gloat --upgrade=v1.2.3
+.EE
+
+.PP
+If your clone has uncommitted changes, \fB--upgrade\fR will refuse and ask you
+to stash or commit them first.
 
 .SS Building Glojure from Source
 By default, gloat downloads a pre-built \fBglj\fR binary from GitHub releases.

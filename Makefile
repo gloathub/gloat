@@ -79,6 +79,7 @@ TEST-CALL-DEPS += \
 endif
 
 MAKES-CLEAN := \
+  .nrepl-port \
   report.* \
   Changes.tmp \
   $(TEST-CALL) \

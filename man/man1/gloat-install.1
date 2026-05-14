@@ -4,8 +4,37 @@ Gloat has \fBzero dependencies\fP - everything installs automatically on first
 use.
 
 .PP
-There are two main ways to get started: the one-line installer or cloning the
-repository and sourcing the \fB\&.rc\fR file.
+There are two main ways to get started: cloning the repository and sourcing
+the \fB\&.rc\fR file (recommended), or the one-line installer.
+
+.SH Clone and Setup (Recommended)
+For Bash, Fish or Zsh:
+
+.EX
+git clone https://github.com/gloathub/gloat
+source gloat/.rc
+gloat --help
+.EE
+
+.PP
+The \fBsource gloat/.rc\fR command adds the \fBgloat\fR command to your PATH, enables
+the \fBman gloat\fR help and sets up \fBgloat\fR tab completion.
+
+.PP
+On first run, Gloat will automatically install all required tools (Go, Glojure,
+YAMLScript, Babashka, etc) to \fB\&.cache/local/\fR within the project directory.
+Just run \fBgloat --help\fR once to complete the setup.
+
+.PP
+To make Gloat available permanently, simply add this to your shell's rc file
+(\fB~/.bashrc\fR, \fB~/.config/fish/config.fish\fR or \fB~/.zshrc\fR):
+
+.EX
+source /path/to/gloat/.rc
+.EE
+
+.PP
+Yes, that command and \fB\&.rc\fR file actually supports all three shells!
 
 .SH One-Line Installer
 Install \fBgloat\fR (or \fBglj\fR) to \fB~/.local/bin/\fR with a single command:
@@ -44,40 +73,78 @@ make -f <(curl -sL gloathub.org/make) help
 .EE
 
 .PP
-.RS
+On success the installer prints the exact \fBsource .../share/gloat/.rc\fR
+line to add to your shell rc — this gives the one-line install the same
+man-page support and shell completion as the clone method.
 
 .PP
-\fBNote\fP: This installation method does not enable gloat shell completion.
-For that, run \fBsource <(gloat --complete bash)\fR (or \fBfish\fR/\fBzsh\fR) in your
-shell's rc file after installation.
+Pass \fBVERSION=v1.2.3\fR to pin to a specific gloat release; the installer
+also picks up the GLJ version that pairs with that gloat tag.
 
-.RE
-
-.SH Clone and Setup
-For Bash, Fish or Zsh:
+.SH Upgrading
+Upgrade gloat to the latest release:
 
 .EX
-git clone https://github.com/gloathub/gloat
-source gloat/.rc
-gloat --help
+gloat --upgrade
 .EE
 
 .PP
-The \fBsource gloat/.rc\fR command adds the \fBgloat\fR command to your PATH, enables
-the \fBman gloat\fR help and sets up \fBgloat\fR tab completion.
-
-.PP
-On first run, Gloat will automatically install all required tools (Go, Glojure,
-YAMLScript, Babashka, etc) to \fB\&.cache/local/\fR within the project directory.
-Just run \fBgloat --help\fR once to complete the setup.
-
-.PP
-To make Gloat available permanently, simply add this to your shell's rc file
-(\fB~/.bashrc\fR, \fB~/.fishrc\fR or \fB~/.zshrc\fR):
+Pin (or roll back) to a specific version:
 
 .EX
-source /path/to/gloat/.rc
+gloat --upgrade=v1.2.3
 .EE
 
 .PP
-Yes, that command and \fB\&.rc\fR file actually supports all three shells!
+In both cases, gloat will:
+.IP "  1." 5
+Switch the local checkout to the target tag.
+.IP "  2." 5
+Remove \fB\&.cache/\fR so all dependencies (including the GLJ version paired
+with that gloat release) reinstall fresh on the next run.
+.IP "  3." 5
+Print what to expect — the next \fBgloat\fR invocation kicks off a quiet
+per-tool install.
+
+.PP
+If your clone has uncommitted changes, \fB--upgrade\fR will refuse and ask you
+to stash or commit them first.
+
+.PP
+If you installed via the one-line installer, the checkout under
+\fB~/.local/share/gloat\fR is detached-HEAD and upgrading there always works.
+
+.SH Resetting the Cache
+If something gets stuck or you want to force a fresh dependency install
+without changing version:
+
+.EX
+gloat --reset
+.EE
+
+.PP
+This removes \fB\&.cache/\fR entirely (binaries, build artifacts, REPL working
+dirs). The next \fBgloat\fR invocation reinstalls everything.
+
+.SH Uninstalling
+If you used the one-line installer:
+
+.EX
+make -f <(curl -sL gloathub.org/make) uninstall
+make -f <(curl -sL gloathub.org/make) uninstall-glj   # if you installed glj
+.EE
+
+.PP
+This removes the \fBgloat\fR symlink from \fB~/.local/bin\fR and the cloned tree
+from \fB~/.local/share/gloat\fR (use \fBPREFIX=...\fR if you installed to a custom
+prefix). After uninstalling, remove the \fBsource .../.rc\fR line you added to
+your shell rc, or new shells will fail to start.
+
+.PP
+If you used the clone method, uninstalling is just removing the clone and
+the \fBsource\fR line:
+
+.EX
+rm -rf /path/to/gloat
+# Then remove the `source /path/to/gloat/.rc` line from your shell rc.
+.EE

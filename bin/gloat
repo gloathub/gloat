@@ -207,229 +207,6 @@ main() (
     fi
   fi
 
-  # Find local glj binary and add to PATH
-  find-glj() {
-    local glojure_dir local_glj
-    glojure_dir=${GLOJURE_DIR:-$root/../glojure}
-    local_glj=$glojure_dir/bin/$(go env GOOS)_$(go env GOARCH)/glj
-    if [[ -x $local_glj ]]; then
-      PATH=$(dirname "$local_glj"):$PATH
-    fi
-  }
-
-  # Start an external tool's nREPL server and connect to it
-  start-tool-nrepl() {
-    local tool=$1
-    local cmd bin port=
-
-    local make_target
-    case $tool in
-      bb)       make_target=which-bb ;;
-      lein)     make_target=which-lein ;;
-      clj)      make_target=which-clj ;;
-      let-go|lg) make_target=which-lg ;;
-      *)
-        echo "Error: unknown tool '+$tool'" >&2
-        echo "Supported: +bb, +lein, +clj, +let-go" >&2
-        exit 1
-        ;;
-    esac
-
-    local local_bin=$root/.cache/local/bin
-    local tool_bin=$local_bin/${make_target#which-}
-    if [[ ! -x $tool_bin ]]; then
-      echo "Installing '$tool' locally..." >&2
-    fi
-    bin=$(make --quiet --no-print-directory -C "$root" "$make_target" | tail -1)
-
-    case $tool in
-      bb)
-        cmd=("$bin" nrepl-server localhost:0)
-        ;;
-      lein)
-        cmd=("$bin" repl :headless)
-        ;;
-      clj)
-        cmd=("$bin"
-          -Sdeps '{:deps {nrepl/nrepl {:mvn/version "1.3.0"}}}'
-          -M -m nrepl.cmdline)
-        ;;
-      let-go|lg)
-        cmd=("$bin" -n)
-        ;;
-      *)
-        echo "Error: unknown tool '+$tool'" >&2
-        echo "Supported: +bb, +lein, +clj, +let-go" >&2
-        exit 1
-        ;;
-    esac
-
-    # Start nREPL server in background, capture port from output
-    local fifo
-    fifo=$(mktemp -u)
-    mkfifo "$fifo"
-
-    "${cmd[@]}" > "$fifo" 2>&1 &
-    local server_pid=$!
-    # shellcheck disable=SC2064
-    trap "kill $server_pid 2>/dev/null; rm -f '$fifo'" EXIT
-
-    # Read lines until we find the port
-    while IFS= read -r line; do
-      if [[ $line =~ :([0-9]+)$ ]] ||
-         [[ $line =~ port\ ([0-9]+) ]]; then
-        port=${BASH_REMATCH[1]}
-        break
-      fi
-    done < "$fifo"
-
-    # Keep draining the fifo in background so server doesn't block
-    cat "$fifo" > /dev/null &
-
-    if [[ -z $port ]]; then
-      echo "Error: could not detect nREPL port from $tool" >&2
-      exit 1
-    fi
-
-    echo "$tool nREPL server on port $port (pid $server_pid)"
-
-    # Use tool-specific history file if env var is set.
-    # e.g. GLOAT_REPL_HISTORY_BB=~/.bb_repl_history
-    local tool_key=${tool^^}
-    tool_key=${tool_key//-/_}
-    local hist_var=GLOAT_REPL_HISTORY_${tool_key}
-    local hist=${!hist_var:-}
-
-    find-glj
-    local hist_flag=()
-    [[ -n $hist ]] && hist_flag=(--history "$hist" --history-fmt jline)
-    glj --nrepl-connect "localhost:$port" "${hist_flag[@]}"
-  }
-
-  # Set up go.mod in CWD to point at the right glojure source.
-  setup-go-module() {
-    if [[ ! -f go.mod ]]; then
-      go mod init gloatrepl
-    fi
-    if ! grep -q "gloathub/glojure" go.mod 2>/dev/null; then
-      local glojure_dir
-      glojure_dir=${GLOJURE_DIR:-$(
-        make --quiet --no-print-directory -C "$root" path-glojure | tail -1
-      )}
-      if [[ -d $glojure_dir ]]; then
-        go mod edit \
-          -replace "github.com/gloathub/glojure=$glojure_dir"
-        cp "$glojure_dir/go.sum" go.sum
-        # Go does not inherit replace directives from required modules,
-        # so mirror glojure's own replaces (e.g. its readline fork).
-        local rep_old rep_new
-        while IFS=$'\t' read -r rep_old rep_new; do
-          [[ -n $rep_old && -n $rep_new ]] || continue
-          go mod edit -replace "$rep_old=$rep_new"
-        done < <(
-          awk '
-            /^replace[[:space:]]*\(/ { inblock=1; next }
-            inblock && /^[[:space:]]*\)/ { inblock=0; next }
-            inblock || /^replace[[:space:]]/ {
-              sub(/^replace[[:space:]]+/, "")
-              sub(/[[:space:]]*\/\/.*$/, "")
-              sub(/^[[:space:]]+/, "")
-              if ($0 == "") next
-              n = split($0, parts, /[[:space:]]+=>[[:space:]]+/)
-              if (n != 2) next
-              old = parts[1]; new = parts[2]
-              if (split(old, op, /[[:space:]]+/) == 2) old = op[1] "@" op[2]
-              if (split(new, np, /[[:space:]]+/) == 2) new = np[1] "@" np[2]
-              print old "\t" new
-            }
-          ' "$glojure_dir/go.mod"
-        )
-        go get github.com/gloathub/glojure
-      else
-        local glj_ver
-        glj_ver=$(glj --version 2>/dev/null |
-          grep -oP 'v\d+\.\d+\.\S+' | head -1 || true)
-        go get "github.com/gloathub/glojure@${glj_ver:-latest}"
-      fi
-    fi
-  }
-
-  # Resolve deps file + build dir, write gljdeps.edn, set up go module + env.
-  # Optional first arg: explicit build dir hint (used by --repl=dir).
-  prepare-repl-env() {
-    local build_hint=${1-}
-
-    # Resolve deps file: --deps= flag, GLOAT_GLJDEPS env var, or CWD auto-detect
-    local deps_file=$opt_deps
-    local explicit_deps=
-    if [[ -n $deps_file ]]; then
-      explicit_deps=1
-    elif [[ -n ${GLOAT_GLJDEPS-} ]]; then
-      deps_file=$GLOAT_GLJDEPS
-      explicit_deps=1
-    elif [[ -f ./gljdeps.edn ]]; then
-      deps_file=$(pwd)/gljdeps.edn
-    fi
-
-    if [[ -n $deps_file && ! -r $deps_file ]]; then
-      echo "Error: $deps_file not found" >&2
-      exit 1
-    fi
-
-    # Read deps content before cd (handles /dev/fd/N process substitution)
-    local deps_content=
-    [[ -n $deps_file ]] && deps_content=$(cat "$deps_file")
-
-    # Reject empty / whitespace / comment-only deps files; glj can't parse them
-    if [[ -n $deps_file ]]; then
-      local deps_stripped
-      deps_stripped=$(printf '%s' "$deps_content" | sed 's/;.*$//' |
-        tr -d '[:space:]')
-      if [[ -z $deps_stripped ]]; then
-        cat >&2 <<EOF
-Error: $deps_file has no edn content.
-
-A minimal gljdeps.edn declares zero or more Go module deps as edn. Try:
-
-  {:deps {}}                  ; no extra deps
-  {:deps {github.com:google:uuid {:mvn/version "v1.6.0"}}}
-EOF
-        exit 1
-      fi
-    fi
-
-    # Determine build directory:
-    #   build_hint (--repl=dir)  >  GLOAT_REPL  >
-    #   ./gljrepl/  (when ./gljdeps.edn was auto-detected)  >
-    #   .cache/repl-$GLOAT_VERSION/
-    local build_dir
-    if [[ -n $build_hint ]]; then
-      build_dir=$build_hint
-    elif [[ -n ${GLOAT_REPL-} ]]; then
-      build_dir=$GLOAT_REPL
-    elif [[ -z $explicit_deps && -f ./gljdeps.edn ]]; then
-      build_dir=./gljrepl
-    else
-      build_dir=$root/.cache/repl-$GLOAT_VERSION
-    fi
-
-    mkdir -p "$build_dir"
-    cd "$build_dir"
-
-    if [[ -n $deps_content ]]; then
-      printf '%s\n' "$deps_content" > gljdeps.edn
-    fi
-
-    setup-go-module
-
-    export GOFLAGS=-mod=mod
-
-    : "${GOARCH:=$(go env GOARCH)}"
-    export GOARCH
-
-    find-glj
-  }
-
   # Handle --repl
   if [[ -n $opt_repl ]]; then
     # --repl=VALUE heuristic: digits=port, file=portfile, dir=builddir
@@ -516,6 +293,229 @@ EOF
   # Pass parsed opts to gloat.clj via env var — no re-parsing needed
   GLOAT_OPTS="$opts_edn" exec bb "$root/src/gloat.clj"
 )
+
+# Resolve deps file + build dir, write gljdeps.edn, set up go module + env.
+# Optional first arg: explicit build dir hint (used by --repl=dir).
+prepare-repl-env() {
+  local build_hint=${1-}
+
+  # Resolve deps file: --deps= flag, GLOAT_GLJDEPS env var, or CWD auto-detect
+  local deps_file=$opt_deps
+  local explicit_deps=
+  if [[ -n $deps_file ]]; then
+    explicit_deps=1
+  elif [[ -n ${GLOAT_GLJDEPS-} ]]; then
+    deps_file=$GLOAT_GLJDEPS
+    explicit_deps=1
+  elif [[ -f ./gljdeps.edn ]]; then
+    deps_file=$(pwd)/gljdeps.edn
+  fi
+
+  if [[ -n $deps_file && ! -r $deps_file ]]; then
+    echo "Error: $deps_file not found" >&2
+    exit 1
+  fi
+
+  # Read deps content before cd (handles /dev/fd/N process substitution)
+  local deps_content=
+  [[ -n $deps_file ]] && deps_content=$(cat "$deps_file")
+
+  # Reject empty / whitespace / comment-only deps files; glj can't parse them
+  if [[ -n $deps_file ]]; then
+    local deps_stripped
+    deps_stripped=$(printf '%s' "$deps_content" | sed 's/;.*$//' |
+      tr -d '[:space:]')
+    if [[ -z $deps_stripped ]]; then
+      cat >&2 <<EOF
+Error: $deps_file has no edn content.
+
+A minimal gljdeps.edn declares zero or more Go module deps as edn. Try:
+
+  {:deps {}}                  ; no extra deps
+  {:deps {github.com:google:uuid {:mvn/version "v1.6.0"}}}
+EOF
+      exit 1
+    fi
+  fi
+
+  # Determine build directory:
+  #   build_hint (--repl=dir)  >  GLOAT_REPL  >
+  #   ./gljrepl/  (when ./gljdeps.edn was auto-detected)  >
+  #   .cache/repl-$GLOAT_VERSION/
+  local build_dir
+  if [[ -n $build_hint ]]; then
+    build_dir=$build_hint
+  elif [[ -n ${GLOAT_REPL-} ]]; then
+    build_dir=$GLOAT_REPL
+  elif [[ -z $explicit_deps && -f ./gljdeps.edn ]]; then
+    build_dir=./gljrepl
+  else
+    build_dir=$root/.cache/repl-$GLOAT_VERSION
+  fi
+
+  mkdir -p "$build_dir"
+  cd "$build_dir"
+
+  if [[ -n $deps_content ]]; then
+    printf '%s\n' "$deps_content" > gljdeps.edn
+  fi
+
+  setup-go-module
+
+  export GOFLAGS=-mod=mod
+
+  : "${GOARCH:=$(go env GOARCH)}"
+  export GOARCH
+
+  find-glj
+}
+
+# Set up go.mod in CWD to point at the right glojure source.
+setup-go-module() {
+  if [[ ! -f go.mod ]]; then
+    go mod init gloatrepl
+  fi
+  if ! grep -q "gloathub/glojure" go.mod 2>/dev/null; then
+    local glojure_dir
+    glojure_dir=${GLOJURE_DIR:-$(
+      make --quiet --no-print-directory -C "$root" path-glojure | tail -1
+    )}
+    if [[ -d $glojure_dir ]]; then
+      go mod edit \
+        -replace "github.com/gloathub/glojure=$glojure_dir"
+      cp "$glojure_dir/go.sum" go.sum
+      # Go does not inherit replace directives from required modules,
+      # so mirror glojure's own replaces (e.g. its readline fork).
+      local rep_old rep_new
+      while IFS=$'\t' read -r rep_old rep_new; do
+        [[ -n $rep_old && -n $rep_new ]] || continue
+        go mod edit -replace "$rep_old=$rep_new"
+      done < <(
+        awk '
+          /^replace[[:space:]]*\(/ { inblock=1; next }
+          inblock && /^[[:space:]]*\)/ { inblock=0; next }
+          inblock || /^replace[[:space:]]/ {
+            sub(/^replace[[:space:]]+/, "")
+            sub(/[[:space:]]*\/\/.*$/, "")
+            sub(/^[[:space:]]+/, "")
+            if ($0 == "") next
+            n = split($0, parts, /[[:space:]]+=>[[:space:]]+/)
+            if (n != 2) next
+            old = parts[1]; new = parts[2]
+            if (split(old, op, /[[:space:]]+/) == 2) old = op[1] "@" op[2]
+            if (split(new, np, /[[:space:]]+/) == 2) new = np[1] "@" np[2]
+            print old "\t" new
+          }
+        ' "$glojure_dir/go.mod"
+      )
+      go get github.com/gloathub/glojure
+    else
+      local glj_ver
+      glj_ver=$(glj --version 2>/dev/null |
+        grep -oP 'v\d+\.\d+\.\S+' | head -1 || true)
+      go get "github.com/gloathub/glojure@${glj_ver:-latest}"
+    fi
+  fi
+}
+
+# Start an external tool's nREPL server and connect to it
+start-tool-nrepl() {
+  local tool=$1
+  local cmd bin port=
+
+  local make_target
+  case $tool in
+    bb)       make_target=which-bb ;;
+    lein)     make_target=which-lein ;;
+    clj)      make_target=which-clj ;;
+    let-go|lg) make_target=which-lg ;;
+    *)
+      echo "Error: unknown tool '+$tool'" >&2
+      echo "Supported: +bb, +lein, +clj, +let-go" >&2
+      exit 1
+      ;;
+  esac
+
+  local local_bin=$root/.cache/local/bin
+  local tool_bin=$local_bin/${make_target#which-}
+  if [[ ! -x $tool_bin ]]; then
+    echo "Installing '$tool' locally..." >&2
+  fi
+  bin=$(make --quiet --no-print-directory -C "$root" "$make_target" | tail -1)
+
+  case $tool in
+    bb)
+      cmd=("$bin" nrepl-server localhost:0)
+      ;;
+    lein)
+      cmd=("$bin" repl :headless)
+      ;;
+    clj)
+      cmd=("$bin"
+        -Sdeps '{:deps {nrepl/nrepl {:mvn/version "1.3.0"}}}'
+        -M -m nrepl.cmdline)
+      ;;
+    let-go|lg)
+      cmd=("$bin" -n)
+      ;;
+    *)
+      echo "Error: unknown tool '+$tool'" >&2
+      echo "Supported: +bb, +lein, +clj, +let-go" >&2
+      exit 1
+      ;;
+  esac
+
+  # Start nREPL server in background, capture port from output
+  local fifo
+  fifo=$(mktemp -u)
+  mkfifo "$fifo"
+
+  "${cmd[@]}" > "$fifo" 2>&1 &
+  local server_pid=$!
+  # shellcheck disable=SC2064
+  trap "kill $server_pid 2>/dev/null; rm -f '$fifo'" EXIT
+
+  # Read lines until we find the port
+  while IFS= read -r line; do
+    if [[ $line =~ :([0-9]+)$ ]] ||
+       [[ $line =~ port\ ([0-9]+) ]]; then
+      port=${BASH_REMATCH[1]}
+      break
+    fi
+  done < "$fifo"
+
+  # Keep draining the fifo in background so server doesn't block
+  cat "$fifo" > /dev/null &
+
+  if [[ -z $port ]]; then
+    echo "Error: could not detect nREPL port from $tool" >&2
+    exit 1
+  fi
+
+  echo "$tool nREPL server on port $port (pid $server_pid)"
+
+  # Use tool-specific history file if env var is set.
+  # e.g. GLOAT_REPL_HISTORY_BB=~/.bb_repl_history
+  local tool_key=${tool^^}
+  tool_key=${tool_key//-/_}
+  local hist_var=GLOAT_REPL_HISTORY_${tool_key}
+  local hist=${!hist_var:-}
+
+  find-glj
+  local hist_flag=()
+  [[ -n $hist ]] && hist_flag=(--history "$hist" --history-fmt jline)
+  glj --nrepl-connect "localhost:$port" "${hist_flag[@]}"
+}
+
+# Find local glj binary and add to PATH
+find-glj() {
+  local glojure_dir local_glj
+  glojure_dir=${GLOJURE_DIR:-$root/../glojure}
+  local_glj=$glojure_dir/bin/$(go env GOOS)_$(go env GOARCH)/glj
+  if [[ -x $local_glj ]]; then
+    PATH=$(dirname "$local_glj"):$PATH
+  fi
+}
 
 setup() (
   [[ $(command -v bb) == "$root/.cache/local/bin/bb" ]] && return

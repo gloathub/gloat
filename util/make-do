@@ -109,6 +109,14 @@ release() (
     exit 1
   fi
 
+  # Releases must be cut from the main branch
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
+  if [[ $current_branch != main ]]; then
+    echo "Error: 'make release' must be run on the main branch" >&2
+    echo "  Current branch: $current_branch" >&2
+    exit 1
+  fi
+
   # --- Update Glojure version if specified ---
   # common/common.mk is the single source of truth; ys/pkg/go.mod is
   # re-pinned automatically by the Makefile's ys-pkg target.

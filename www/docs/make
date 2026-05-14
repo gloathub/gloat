@@ -124,6 +124,10 @@ uninstall-gloat:
 	fi
 	@echo ''
 	@echo '✓ Gloat uninstalled successfully!'
+	@echo ''
+	@echo 'If you added a "source $(INSTALL-DIR)/.rc" line to your shell rc'
+	@echo '(~/.bashrc, ~/.zshrc, or ~/.config/fish/config.fish), remove it'
+	@echo 'now or new shells will fail to start.'
 
 uninstall-glj:
 	@echo 'Uninstalling glj from $(PREFIX)...'

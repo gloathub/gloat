@@ -116,3 +116,26 @@ gloat --reset
 
 This removes `.cache/` entirely (binaries, build artifacts, REPL working
 dirs). The next `gloat` invocation reinstalls everything.
+
+
+## Uninstalling
+
+If you used the one-line installer:
+
+```bash
+make -f <(curl -sL gloathub.org/make) uninstall
+make -f <(curl -sL gloathub.org/make) uninstall-glj   # if you installed glj
+```
+
+This removes the `gloat` symlink from `~/.local/bin` and the cloned tree
+from `~/.local/share/gloat` (use `PREFIX=...` if you installed to a custom
+prefix). After uninstalling, remove the `source .../.rc` line you added to
+your shell rc, or new shells will fail to start.
+
+If you used the clone method, uninstalling is just removing the clone and
+the `source` line:
+
+```bash
+rm -rf /path/to/gloat
+# Then remove the `source /path/to/gloat/.rc` line from your shell rc.
+```

@@ -2,7 +2,15 @@
 
 set -euo pipefail
 
-export GLOAT_VERSION=0.1.40
+# Single source of truth: GLOAT-VERSION lives in common/common.mk.
+__src=${BASH_SOURCE[0]}
+[[ -L $__src ]] && __src=$(readlink -f "$__src")
+GLOAT_VERSION=$(
+  make --quiet --no-print-directory \
+    -C "$(dirname "$__src")/.." gloat-version
+)
+export GLOAT_VERSION
+unset __src
 
 # Go 1.26 has a linker bug on arm64 that crashes when building with CGO
 export CGO_ENABLED=0
@@ -105,7 +113,7 @@ main() (
       git rev-parse --verify --quiet "$target^{commit}" >/dev/null ||
         die "Error: '$target' is not a known git ref or tag." \
             "Recent tags:" \
-            "$(git tag -l 'v*' --sort=-v:refname | head -5 | sed 's/^/  /')"
+            "$(git tag -l 'v*' --sort=-v:refname | head -5 | perl -pe 's/^/  /')"
     fi
 
     if [[ $target == "v$GLOAT_VERSION" ]]; then
@@ -438,21 +446,22 @@ setup-go-module() {
         [[ $rep_old && $rep_new ]] || continue
         go mod edit -replace "$rep_old=$rep_new"
       done < <(
-        awk '
-          /^replace[[:space:]]*\(/ { inblock=1; next }
-          inblock && /^[[:space:]]*\)/ { inblock=0; next }
-          inblock || /^replace[[:space:]]/ {
-            sub(/^replace[[:space:]]+/, "")
-            sub(/[[:space:]]*\/\/.*$/, "")
-            sub(/^[[:space:]]+/, "")
-            if ($0 == "") next
-            n = split($0, parts, /[[:space:]]+=>[[:space:]]+/)
-            if (n != 2) next
-            old = parts[1]; new = parts[2]
-            if (split(old, op, /[[:space:]]+/) == 2) old = op[1] "@" op[2]
-            if (split(new, np, /[[:space:]]+/) == 2) new = np[1] "@" np[2]
-            print old "\t" new
-          }
+        perl -ne '
+          $b=1, next if /^replace\s*\(/;
+          $b=0, next if $b && /^\s*\)/;
+          next unless $b || /^replace\s/;
+          s/^replace\s+//;
+          s{\s*//.*}{};
+          s/^\s+//;
+          s/\s+$//;
+          next unless length;
+          my ($o, $n) = split /\s+=>\s+/, $_, 2;
+          next unless defined $n && length $n;
+          my @op = split /\s+/, $o;
+          $o = @op == 2 ? "$op[0]\@$op[1]" : $o;
+          my @np = split /\s+/, $n;
+          $n = @np == 2 ? "$np[0]\@$np[1]" : $n;
+          print "$o\t$n\n";
         ' "$glojure_dir/go.mod"
       )
       go get github.com/gloathub/glojure
@@ -492,7 +501,7 @@ prepare-repl-env() {
   # Reject empty / whitespace / comment-only deps files; glj can't parse them
   if [[ $deps_file ]]; then
     local deps_stripped
-    deps_stripped=$(printf '%s' "$deps_content" | sed 's/;.*$//' |
+    deps_stripped=$(printf '%s' "$deps_content" | perl -pe 's/;.*//' |
       tr -d '[:space:]')
     [[ $deps_stripped ]] ||
       die "Error: $deps_file has no edn content." \

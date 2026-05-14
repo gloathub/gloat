@@ -110,18 +110,18 @@ release() (
   fi
 
   # --- Update Glojure version if specified ---
+  # common/common.mk is the single source of truth; ys/pkg/go.mod is
+  # re-pinned automatically by the Makefile's ys-pkg target.
   if [[ -n $glj_version ]]; then
     perl -i -pe "s/^GLOJURE-VERSION := .*/GLOJURE-VERSION := $glj_version/" \
       common/common.mk
-    perl -i -pe \
-      "s{^require github\.com/gloathub/glojure .*}{require github.com/gloathub/glojure v$glj_version}" \
-      ys/pkg/go.mod
   fi
 
   # --- Update version in all files ---
-  perl -i -pe "s/^YS-PKG-VERSION .*/YS-PKG-VERSION ?= v$version/" Makefile
-  perl -i -pe "s/^export GLOAT_VERSION=.*/export GLOAT_VERSION=$version/" \
-    bin/gloat
+  # Single source of truth: common/common.mk. bin/gloat, .rc, and the
+  # Makefile's YS-PKG-VERSION all derive from GLOAT-VERSION here.
+  perl -i -pe "s/^GLOAT-VERSION := .*/GLOAT-VERSION := $version/" \
+    common/common.mk
   perl -i -pe \
     "s/VERSION=v[0-9]+\\.[0-9]+\\.[0-9]+/VERSION=v$version/" \
     www/docs/doc/getting-started.md
@@ -167,10 +167,8 @@ release() (
   GLOAT_X_PRUNE=1 make test
 
   # --- Commit and tag ys/pkg ---
-  [[ -n $glj_version ]] && git add common/common.mk
   git add \
-    Makefile \
-    bin/gloat \
+    common/common.mk \
     Changes \
     man/man1/gloat.1 \
     man/man1/gloat-install.1 \
@@ -205,10 +203,11 @@ release() (
 
   # Extract changes for this version from Changes file
   release_notes=$(
-    awk '
-      /^- version:/ { if (found) exit; }
-      /^- version: '"$version"'/ { found=1; next }
-      found && /^  - / { print "- " substr($0, 5) }
+    version=$version perl -ne '
+      BEGIN { $v = $ENV{version} }
+      if (/^- version:/) { exit if $found }
+      if (/^- version:\s+\Q$v\E\s*$/) { $found = 1; next }
+      print "- $1\n" if $found && /^  - (.*)/;
     ' Changes
   )
   release_notes+=$'\n\n'"**Full Changelog**: https://github.com/gloathub/gloat/compare/${prev_tag}...v${version}"
@@ -231,13 +230,15 @@ release() (
 
 annoucement() (
   glj_version=$1
-  version=$(awk '/^- version:/ { print $3; exit }' Changes)
+  version=$(
+    perl -ne 'if (/^- version:\s+(\S+)/) { print "$1\n"; exit }' Changes
+  )
   echo "#gloat version v$version"
   echo "#glojure version $glj_version"
-  awk '
-    /^- version:/ { if (found) exit }
-    /^  changes:/ { found=1; next }
-    found && /^  - / { sub(/^  - /, ""); print "* " $0 }
+  perl -ne '
+    if (/^- version:/) { exit if $found }
+    if (/^  changes:/) { $found = 1; next }
+    if ($found && s/^  - //) { print "* $_" }
   ' Changes
   echo "https://gloathub.org/"
 )

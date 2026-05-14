@@ -43,7 +43,7 @@ YS-GLOAT-ONLY := \
 YS-REPO-URL := \
   https://raw.githubusercontent.com/yaml/yamlscript/v0/core/src
 
-YS-PKG-VERSION ?= v0.1.40
+YS-PKG-VERSION ?= v$(GLOAT-VERSION)
 
 # Mark GLJ files as precious (don't auto-delete intermediate files)
 .PRECIOUS: $(YS-CLJ-FILES) $(YS-GLJ-FILES)
@@ -128,6 +128,9 @@ path:
 env:
 	@echo 'export PATH="$(PATH)"'
 
+gloat-version:
+	@echo '$(GLOAT-VERSION)'
+
 man: $(MAN-PAGES)
 
 update: $(YS-GO-FILES) $(MAN-PAGES)
@@ -154,6 +157,10 @@ ys-pkg: $(YS-GO-FILES) $(GO)
 	@echo "Syncing ys/go/ to ys/pkg/"
 	@mkdir -p ys/pkg
 	rsync -a --delete --exclude='all/' --exclude='go.mod' --exclude='go.sum' ys/go/ ys/pkg/
+	@echo "Pinning glojure $(GLOJURE-VERSION) in ys/pkg/go.mod"
+	@perl -i -pe \
+	  's{^require github\.com/gloathub/glojure .*}{require github.com/gloathub/glojure $(GLOJURE-VERSION)}' \
+	  ys/pkg/go.mod
 	@echo "Running go mod tidy in ys/pkg/"
 	cd ys/pkg && go mod tidy
 

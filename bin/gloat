@@ -69,7 +69,7 @@ f,force       Overwrite existing output files
 v,verbose     Print timing for each compilation step
 q,quiet       Suppress progress messages
 
-upgrade       Upgrade gloat to the latest version
+upgrade       Upgrade gloat (use --upgrade=v1.2.3 to pin a version)
 reset         Remove all cached dependencies and reinstall
 
 h,help        Show this help
@@ -84,30 +84,49 @@ main() (
   root=$(cd -P "$(dirname "$self")/.." && pwd -P)
 
   if [[ $* == --reset ]]; then
-    make --quiet --no-print-directory -C "$root" distclean
+    nuke-cache
+    echo "Cache cleared. Next 'gloat' run will reinstall dependencies."
     exit
   fi
 
-  if [[ $* == --upgrade ]]; then
-    echo "Upgrading gloat..."
+  if [[ $# -eq 1 && ( $1 == --upgrade || $1 == --upgrade=* ) ]]; then
+    target=
+    [[ $1 == --upgrade=* ]] && target=${1#--upgrade=}
     cd "$root"
-    git fetch --tags
-    latest=$(git tag -l 'v*' --sort=-v:refname | head -1)
-    [[ $latest ]] ||
-      die "Error: Could not determine latest version"
-    if [[ $latest == "v$GLOAT_VERSION" ]]; then
-      echo "Already at latest version ($GLOAT_VERSION)"
+    git fetch --tags --quiet
+
+    if [[ -z $target ]]; then
+      target=$(git tag -l 'v*' --sort=-v:refname | head -1)
+      [[ $target ]] ||
+        die "Error: Could not determine latest version"
+    else
+      # Normalize: 1.2.3 -> v1.2.3
+      [[ $target == v* ]] || target=v$target
+      git rev-parse --verify --quiet "$target^{commit}" >/dev/null ||
+        die "Error: '$target' is not a known git ref or tag." \
+            "Recent tags:" \
+            "$(git tag -l 'v*' --sort=-v:refname | head -5 | sed 's/^/  /')"
+    fi
+
+    if [[ $target == "v$GLOAT_VERSION" ]]; then
+      echo "Already at $target. Nothing to do."
+      echo "(Use 'gloat --reset' to force a cache rebuild.)"
       exit
     fi
-    if [[ -L ${BASH_SOURCE[0]} ]]; then
-      # Curl-based install: checkout latest tag
-      git -c advice.detachedHead=false checkout "$latest"
-    else
-      # Clone-based install: pull current branch
-      git pull
+
+    # Refuse to clobber uncommitted work in clone-install mode.
+    if [[ ! -L ${BASH_SOURCE[0]} ]]; then
+      if ! git diff --quiet || ! git diff --cached --quiet; then
+        die "Error: working tree has uncommitted changes." \
+            "Commit, stash, or reset them, then retry."
+      fi
     fi
-    make --quiet --no-print-directory distclean
-    echo "Upgraded to $latest — run 'gloat --version' to verify"
+
+    echo "Switching gloat checkout to $target..."
+    git -c advice.detachedHead=false checkout "$target"
+    nuke-cache
+    echo "Now at $target. Next 'gloat' run will reinstall the matching"
+    echo "dependencies (including the GLJ version paired with $target)."
     exit
   fi
 
@@ -340,31 +359,59 @@ setup() {
   # If deps are already installed locally, we're done
   [[ $(command -v bb) == "$root/.cache/local/bin/bb" ]] && return
 
-  if interactive; then
-    GREEN=$'\e[1;92m'
-    YELLOW=$'\e[1;93m'
-    BLUE=$'\e[1;96m'
-    BOLD=$'\e[1m'
-    RESET=$'\e[0m'
+  check-on-path
 
-    deps="$YELLOW(bb, glj, go, ys)"
+  >&2 echo "Installing gloat dependencies into $root/.cache/local/"
+  install-one bb       path-bb
+  install-one go       path-go
+  install-one glojure  path-glojure
+  install-one glj      path-glj
+  install-one ys       path-ys
+  >&2 echo "All gloat dependencies installed."
+}
 
-    >&2 cat <<...
-$BLUE==> Installing gloat dependencies $deps$BLUE locally into:$RESET
-
-    $root/.cache/local/
-
-${BOLD}Press Enter to continue (or Ctrl-C to cancel)...$RESET
-...
-
-      read -r < /dev/tty
+# Install one dependency via its existing make target. Capture output and
+# print '==> Installing <label>... done' (or FAILED with the captured log).
+install-one() {
+  local label=$1 target=$2 log rc
+  log=$(mktemp)
+  printf '==> Installing %s... ' "$label" >&2
+  if make --quiet --no-print-directory -C "$root" "$target" \
+      >"$log" 2>&1; then
+    printf 'done\n' >&2
+    rm -f "$log"
+  else
+    rc=$?
+    printf 'FAILED\n\n' >&2
+    cat "$log" >&2
+    rm -f "$log"
+    exit "$rc"
   fi
+}
 
-  make -C "$root" path-deps
+# If the gloat the user invoked isn't reachable as 'gloat' on PATH, warn
+# them with the .rc source line and wait for Enter before doing the long
+# first-run deps install.
+check-on-path() {
+  interactive || return 0
+  local resolved
+  resolved=$(command -v gloat 2>/dev/null || true)
+  [[ $resolved ]] && resolved=$(readlink -f "$resolved" 2>/dev/null || echo "$resolved")
+  [[ $resolved == "$self" ]] && return 0
 
-  if interactive; then
-    >&2 echo -e "\n$GREEN==> All gloat dependencies installed.$RESET"
-  fi
+  >&2 cat <<EOF
+
+Warning: 'gloat' is not on your PATH yet.
+
+To make it permanent, add this line to your shell rc
+(~/.bashrc, ~/.zshrc, or ~/.config/fish/config.fish):
+
+    source $root/.rc
+
+Press Enter to continue with first-run deps install,
+or Ctrl-C to set up PATH first.
+EOF
+  read -r < /dev/tty
 }
 
 # Set up go.mod in CWD to point at the right glojure source.
@@ -589,5 +636,14 @@ die() {
 }
 
 interactive() { [[ -t 0 && -t 1 && -t 2 ]]; }
+
+# Remove .cache/ entirely. Some subdirs (Go module cache) are read-only,
+# so make them writable first. The makes system re-clones .cache/makes/
+# on demand, so this is safe.
+nuke-cache() {
+  [[ -d $root/.cache ]] || return 0
+  chmod -R u+w "$root/.cache" 2>/dev/null || true
+  rm -rf "$root/.cache"
+}
 
 main "$@"

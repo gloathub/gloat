@@ -507,7 +507,7 @@ With `-Xserve,html`, the HTML is generated alongside the output.
 -v, --verbose    Print timing for each compilation step
 -q, --quiet      Suppress progress messages
 
---upgrade        Upgrade gloat to the latest version
+--upgrade        Upgrade gloat (use --upgrade=v1.2.3 to pin a version)
 --reset          Remove all cached dependencies and reinstall
 
 -h, --help       Show this help
@@ -677,8 +677,28 @@ run:
 gloat --reset
 ```
 
-This runs `make distclean`, removing the `.cache/` directory.
+This removes the `.cache/` directory entirely (binaries, build artifacts,
+REPL working dirs).
 The next invocation of gloat will reinstall all dependencies from scratch.
+
+### Upgrading or Pinning a Version
+
+Move to the latest released version:
+
+```bash
+gloat --upgrade
+```
+
+Pin (or roll back) to a specific version. Gloat will switch the checkout,
+clear `.cache/`, and reinstall the dependencies that pair with that release
+(including the matching GLJ version) on the next run:
+
+```bash
+gloat --upgrade=v1.2.3
+```
+
+If your clone has uncommitted changes, `--upgrade` will refuse and ask you
+to stash or commit them first.
 
 ### Building Glojure from Source
 

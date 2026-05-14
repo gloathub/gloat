@@ -3,8 +3,35 @@
 Gloat has **zero dependencies** - everything installs automatically on first
 use.
 
-There are two main ways to get started: the one-line installer or cloning the
-repository and sourcing the `.rc` file.
+There are two main ways to get started: cloning the repository and sourcing
+the `.rc` file (recommended), or the one-line installer.
+
+
+## Clone and Setup (Recommended)
+
+For Bash, Fish or Zsh:
+
+```bash
+git clone https://github.com/gloathub/gloat
+source gloat/.rc
+gloat --help
+```
+
+The `source gloat/.rc` command adds the `gloat` command to your PATH, enables
+the `man gloat` help and sets up `gloat` tab completion.
+
+On first run, Gloat will automatically install all required tools (Go, Glojure,
+YAMLScript, Babashka, etc) to `.cache/local/` within the project directory.
+Just run `gloat --help` once to complete the setup.
+
+To make Gloat available permanently, simply add this to your shell's rc file
+(`~/.bashrc`, `~/.config/fish/config.fish` or `~/.zshrc`):
+
+```bash
+source /path/to/gloat/.rc
+```
+
+Yes, that command and `.rc` file actually supports all three shells!
 
 
 ## One-Line Installer
@@ -41,33 +68,51 @@ make -f <(curl -sL gloathub.org/make) uninstall-glj
 make -f <(curl -sL gloathub.org/make) help
 ```
 
-> **Note**: This installation method does not enable gloat shell completion.
-> For that, run `source <(gloat --complete bash)` (or `fish`/`zsh`) in your
-> shell's rc file after installation.
+On success the installer prints the exact `source .../share/gloat/.rc`
+line to add to your shell rc — this gives the one-line install the same
+man-page support and shell completion as the clone method.
+
+Pass `VERSION=v1.2.3` to pin to a specific gloat release; the installer
+also picks up the GLJ version that pairs with that gloat tag.
 
 
-## Clone and Setup
+## Upgrading
 
-For Bash, Fish or Zsh:
-
-```bash
-git clone https://github.com/gloathub/gloat
-source gloat/.rc
-gloat --help
-```
-
-The `source gloat/.rc` command adds the `gloat` command to your PATH, enables
-the `man gloat` help and sets up `gloat` tab completion.
-
-On first run, Gloat will automatically install all required tools (Go, Glojure,
-YAMLScript, Babashka, etc) to `.cache/local/` within the project directory.
-Just run `gloat --help` once to complete the setup.
-
-To make Gloat available permanently, simply add this to your shell's rc file
-(`~/.bashrc`, `~/.fishrc` or `~/.zshrc`):
+Upgrade gloat to the latest release:
 
 ```bash
-source /path/to/gloat/.rc
+gloat --upgrade
 ```
 
-Yes, that command and `.rc` file actually supports all three shells!
+Pin (or roll back) to a specific version:
+
+```bash
+gloat --upgrade=v1.2.3
+```
+
+In both cases, gloat will:
+
+1. Switch the local checkout to the target tag.
+2. Remove `.cache/` so all dependencies (including the GLJ version paired
+   with that gloat release) reinstall fresh on the next run.
+3. Print what to expect — the next `gloat` invocation kicks off a quiet
+   per-tool install.
+
+If your clone has uncommitted changes, `--upgrade` will refuse and ask you
+to stash or commit them first.
+
+If you installed via the one-line installer, the checkout under
+`~/.local/share/gloat` is detached-HEAD and upgrading there always works.
+
+
+## Resetting the Cache
+
+If something gets stuck or you want to force a fresh dependency install
+without changing version:
+
+```bash
+gloat --reset
+```
+
+This removes `.cache/` entirely (binaries, build artifacts, REPL working
+dirs). The next `gloat` invocation reinstalls everything.

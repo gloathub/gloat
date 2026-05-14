@@ -15,22 +15,19 @@ M := $T/makes
 $(shell git clone -q https://github.com/makeplus/makes $M)
 include $M/init.mk
 
-# Configure glojure to use gloat's custom fork
-GLOJURE-VERSION := 0.6.5-rc7
-GLOJURE-REPO := https://github.com/gloathub/glojure
-
-include $M/glojure.mk
-
 # Installation prefix (default: ~/.local)
 PREFIX ?= $(HOME)/.local
 
 # Git repository URL
 GLOAT-REPO ?= https://github.com/gloathub/gloat
 
-# Version to install (default: latest tag)
-VERSION ?= $(shell \
+# Version to install (default: latest tag). If user passes VERSION=, skip
+# the remote tag lookup.
+ifeq ($(origin VERSION),undefined)
+VERSION := $(shell \
   git ls-remote --tags --sort=-v:refname $(GLOAT-REPO) 'refs/tags/v*' | \
     grep -v '\^{}' | head -n1 | sed 's/.*refs\/tags\///')
+endif
 override VERSION := $(if $(filter v%,$(VERSION)),$(VERSION),v$(VERSION))
 
 # Installation paths
@@ -61,19 +58,29 @@ install:
 	@# Clone repository
 	@if [[ -d '$(INSTALL-DIR)' ]]; then \
 	  echo 'Updating existing installation at $(INSTALL-DIR)...'; \
-	  cd '$(INSTALL-DIR)' && git fetch --tags; \
+	  cd '$(INSTALL-DIR)' && git fetch --tags --quiet; \
 	else \
 	  echo 'Cloning Gloat from $(GLOAT-REPO)...'; \
-	  git clone '$(GLOAT-REPO)' '$(INSTALL-DIR)'; \
+	  git clone --quiet '$(GLOAT-REPO)' '$(INSTALL-DIR)'; \
 	fi
+	@# Validate the requested version exists as a tag
+	@cd '$(INSTALL-DIR)' && \
+	  git rev-parse --verify --quiet '$(VERSION)^{commit}' >/dev/null || { \
+	    echo "Error: '$(VERSION)' is not a known gloat tag." >&2; \
+	    echo "Recent tags:" >&2; \
+	    cd '$(INSTALL-DIR)' && \
+	      git tag -l 'v*' --sort=-v:refname | head -5 | sed 's/^/  /' >&2; \
+	    exit 1; \
+	  }
 	@# Checkout version
-	@cd '$(INSTALL-DIR)' && git -c advice.detachedHead=false checkout '$(VERSION)'
-	@# Clean old dependencies (may be stale after version change)
-	@make -C '$(INSTALL-DIR)' distclean &>/dev/null || true
+	@cd '$(INSTALL-DIR)' && \
+	  git -c advice.detachedHead=false checkout --quiet '$(VERSION)'
+	@# Clear cache so the correct paired dependency versions install
+	@chmod -R u+w '$(INSTALL-DIR)/.cache' 2>/dev/null || true
+	@rm -rf '$(INSTALL-DIR)/.cache'
 	@# Create symlink
 	@ln -sf '$(INSTALL-DIR)/bin/gloat' '$(GLOAT-BIN)'
-	@# Install dependencies
-	@echo 'Installing gloat dependencies...'
+	@# Trigger first-run deps install
 	'$(GLOAT-BIN)' --version </dev/null || true
 	@echo ''
 	@echo '✓ Gloat $(VERSION) installed successfully!'
@@ -88,6 +95,16 @@ install:
 	  echo '  export PATH=$(BIN-DIR):\$$PATH'; \
 	  echo ''; \
 	fi
+	@# Print shell-specific rc hint for man pages and completion
+	@echo 'To enable man pages and shell completion, add this to your shell rc:'
+	@echo ''
+	@case $$(basename "$${SHELL:-/bin/bash}") in \
+	  fish) echo '  # ~/.config/fish/config.fish' ;; \
+	  zsh)  echo '  # ~/.zshrc' ;; \
+	  *)    echo '  # ~/.bashrc' ;; \
+	esac
+	@echo '  source $(INSTALL-DIR)/.rc'
+	@echo ''
 	@echo "Run 'gloat --help' to get started."
 
 uninstall: uninstall-gloat
@@ -119,20 +136,19 @@ uninstall-glj:
 
 install-gloat: install
 
-install-glj: $(GLJ)
-	@echo 'Installing glj to $(PREFIX)...'
-	@mkdir -p '$(BIN-DIR)'
-	@cp '$(GLJ)' '$(BIN-DIR)/glj'
+# install-glj reuses install (which clones + checks out the right tag),
+# then copies the glj that the cloned gloat checkout considers correct
+# (i.e., the GLOJURE-VERSION pinned in that tag's common/common.mk).
+install-glj: install
+	@echo 'Locating paired glj for gloat $(VERSION)...'
+	@glj_path=$$('$(GLOAT-BIN)' --glj) && \
+	  cp "$$glj_path" '$(BIN-DIR)/glj'
 	@echo ''
-	@echo '✓ glj installed successfully!'
-	@echo ''
-	@echo '  Installed to: $(BIN-DIR)/glj'
-	@echo ''
-	@# Check if PREFIX/bin is in PATH
+	@echo '✓ glj (paired with $(VERSION)) installed to $(BIN-DIR)/glj'
 	@if ! echo '$$PATH' | grep -q '$(BIN-DIR)'; then \
+	  echo ''; \
 	  echo '⚠ Add $(BIN-DIR) to your PATH:'; \
-	  echo ''; \
 	  echo '  export PATH=$(BIN-DIR):\$$PATH'; \
-	  echo ''; \
 	fi
+	@echo ''
 	@echo "Run 'glj --help' to get started."

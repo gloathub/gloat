@@ -31,15 +31,17 @@ See https://gloathub.org
     gloat foo.ys -o foo.so              Shared library + headers
     gloat foo.ys -o foo --platform=freebsd/amd64  Cross-compile
     gloat --run foo.ys -- arg1 arg2     Compile and run
+
+  REPL Usage:
     gloat --repl                        Start Glojure REPL
-    gloat --repl=7888                   Connect REPL to nREPL server
-    gloat --repl=+bb                    REPL connected to Babashka nREPL
-    gloat --repl=+let-go                REPL connected to let-go nREPL
-    gloat --nrepl                       Start nREPL server
+    gloat --repl=dir/                   REPL with 'dir' as build directory
+    gloat --repl=port-file              Connect REPL to nREPL port in file
+    gloat --repl=7888                   Connect REPL to nREPL server port
+    gloat --repl=+bb                    REPL for bb, clj, lein or let-go
+    gloat --nrepl                       Start nREPL server; print port
+    gloat --nrepl=port-file             Start nREPL; write port to file
     gloat --nrepl=7888                  Start nREPL on specific port
-    gloat --srepl                       Start socket REPL server
-    gloat --srepl=7777                  Start socket REPL on specific port
-    gloat --reset                       Remove all cached dependencies
+    gloat --srepl                       Socket server (w/ --nrepl= opts)
 --
 t,to=         Output format (inferred from -o; see --formats)
 o,out=        Output file or directory
@@ -398,7 +400,7 @@ EOF
 
     # Determine build directory:
     #   build_hint (--repl=dir)  >  GLOAT_REPL  >
-    #   .  (when ./gljdeps.edn was auto-detected)  >
+    #   ./gljrepl/  (when ./gljdeps.edn was auto-detected)  >
     #   .cache/repl-$GLOAT_VERSION/
     local build_dir
     if [[ -n $build_hint ]]; then
@@ -406,7 +408,7 @@ EOF
     elif [[ -n ${GLOAT_REPL-} ]]; then
       build_dir=$GLOAT_REPL
     elif [[ -z $explicit_deps && -f ./gljdeps.edn ]]; then
-      build_dir=.
+      build_dir=./gljrepl
     else
       build_dir=$root/.cache/repl-$GLOAT_VERSION
     fi
@@ -454,8 +456,11 @@ EOF
         find-glj
         exec glj --nrepl-connect "localhost:$port"
       elif [[ ! -d $repl_val && $repl_val != */ ]]; then
-        # Not a directory and no trailing slash -- error
-        echo "Error: $repl_val not found" >&2
+        # Not a directory and no trailing slash -- error.
+        # Trailing slash signals "use as build dir, create if missing".
+        echo "Error: '$repl_val' is not a directory or port file." >&2
+        echo "To use a new build directory, add a trailing slash:" >&2
+        echo "    gloat --repl=$repl_val/" >&2
         exit 1
       fi
       # Fall through: repl_val is a directory or ends with /

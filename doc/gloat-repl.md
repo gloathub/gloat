@@ -6,7 +6,7 @@
 gloat --repl[=VALUE]
 gloat --nrepl[=VALUE]
 gloat --srepl[=VALUE]
-gloat --repl --deps=gljdeps.edn
+gloat (--repl|--nrepl|--srepl) --deps=gljdeps.edn
 glj
 ```
 
@@ -14,10 +14,11 @@ glj
 
 The Gloat/Glojure REPL is a rich interactive environment for evaluating
 Clojure expressions with full access to Go packages.
-It is built on the reeflective/readline library and supports vi and
-emacs editing modes, multiline editing with auto-indent, tab completion
-with namespace-aware descriptions, ghost text autosuggestions,
-persistent history, job control, and bracketed paste.
+It is built on the `gloathub/readline` library (a fork of
+`reeflective/readline`) and supports vi and emacs editing modes,
+multiline editing with auto-indent, tab completion with namespace-aware
+descriptions, ghost text autosuggestions, persistent history, job
+control, and bracketed paste.
 
 ## Startup
 
@@ -25,17 +26,19 @@ On launch the REPL prints a banner with version and platform
 information and quick-reference hints:
 
 ```
-🐐 Gloat: 0.1.30 🐐
- Glojure: v0.6.5-rc17
+🐐 Gloat: 0.1.40 🐐
+ Glojure: v0.6.4
       Go: 1.24.0 linux/amd64
+   nREPL: nrepl://localhost:38291
+   sREPL: localhost:35149
     Help: C-h or :repl/help
     Exit: C-d or :repl/exit
 
 user=>
 ```
 
-When launched with `--deps`, the banner also shows the build
-directory.
+The `nREPL` and `sREPL` URLs are for the embedded servers automatically
+started for every `gloat --repl` session (see **Embedded Servers**).
 
 The prompt shows the current namespace (`user` by default).
 Switch namespaces with `(ns my-ns)` and the prompt updates
@@ -490,7 +493,7 @@ extra setup.
 The server URLs are shown in the startup banner:
 
 ```
- Glojure: v0.6.5
+ Glojure: v0.6.4
       Go: 1.24.0 linux/amd64
    nREPL: nrepl://localhost:38291
    sREPL: localhost:35149
@@ -514,10 +517,19 @@ When launched via `gloat --repl`, the REPL needs a Go module directory
 to bootstrap dependencies and generate import glue code.
 The build directory is resolved in this priority order:
 
-1. `--repl=dir` -- explicit directory
+1. `gloat --repl=dir/` -- explicit directory (trailing slash creates it
+   if missing; without the slash the directory must already exist)
 2. `GLOAT_REPL=dir` -- environment variable
-3. `.` (current directory) -- when `./gljdeps.edn` is present
-4. `./gljrepl/` -- default fallback (created automatically)
+3. `./gljrepl/` -- auto-selected when `./gljdeps.edn` is present in the
+   current directory; the subdirectory keeps generated `go.mod`,
+   `go.sum`, and Go glue out of your project root
+4. Shared cache (e.g. `~/.cache/gloat/.../repl-VERSION/`) -- fallback
+   when no deps file is in sight, so an ad-hoc REPL leaves no files
+   behind in the current directory
+
+The build directory is created automatically if it does not exist.
+If `./gljdeps.edn` exists, its contents are copied into the build
+directory as `gljdeps.edn`; an explicit `--deps=FILE` does the same.
 
 ## External Go Dependencies
 
@@ -576,10 +588,9 @@ Launch a REPL with `github.com/yaml/go-yaml` available:
 
 ```
 $ gloat --repl --deps=<(echo '{:deps {github.com:yaml:go-yaml {:mvn/version "v3.0.1"}}}')
-🐐 Gloat: 0.1.39 🐐
- Glojure: v0.6.5-rc27
+🐐 Gloat: 0.1.40 🐐
+ Glojure: v0.6.4
       Go: 1.24.0 linux/amd64
-   Build: /home/me/.cache/gloat/repl/...
    nREPL: nrepl://localhost:38291
    sREPL: localhost:35149
     Help: C-h or :repl/help
@@ -602,9 +613,6 @@ the example builds the map with `go/make` and writes entries through
 `reflect.ValueOf` before passing it to `Marshal`.
 `Marshal` returns `([]byte, error)`, which destructures as a vector;
 `(go/string bs)` casts the bytes back to a Glojure string for display.
-
-The banner shows the build directory under `Build:` because `--deps`
-was supplied; an unconfigured REPL omits that line.
 
 ### Cross-reference
 
@@ -692,6 +700,7 @@ available commands.
 | `GLJ_REPL_EDITOR` | Set editing mode (`vi` or `emacs`). Overrides `~/.inputrc`. |
 | `GLJ_REPL_FORMATTER` | Format command for Ctrl+P (default: `cat`). |
 | `GLJ_REPL_NO_BANNER` | Suppress the startup banner when set. |
+| `GLOAT_GLJDEPS` | Path to a `gljdeps.edn` file (alternative to `--deps=FILE`). |
 | `GLOAT_REPL` | Set the REPL build directory. |
 | `GLOAT_REPL_HISTORY_BB` | Babashka history file for `--repl=+bb` (JLine format). |
 | `GLOAT_REPL_HISTORY_LEIN` | Leiningen history file for `--repl=+lein` (JLine format). |

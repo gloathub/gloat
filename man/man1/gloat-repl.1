@@ -6,26 +6,29 @@
 gloat --repl[=VALUE]
 gloat --nrepl[=VALUE]
 gloat --srepl[=VALUE]
-gloat --repl --deps=gljdeps.edn
+gloat (--repl|--nrepl|--srepl) --deps=gljdeps.edn
 glj
 .EE
 
 .SH Description
 The Gloat/Glojure REPL is a rich interactive environment for evaluating
 Clojure expressions with full access to Go packages.
-It is built on the reeflective/readline library and supports vi and
-emacs editing modes, multiline editing with auto-indent, tab completion
-with namespace-aware descriptions, ghost text autosuggestions,
-persistent history, job control, and bracketed paste.
+It is built on the \fBgloathub/readline\fR library (a fork of
+\fBreeflective/readline\fR) and supports vi and emacs editing modes,
+multiline editing with auto-indent, tab completion with namespace-aware
+descriptions, ghost text autosuggestions, persistent history, job
+control, and bracketed paste.
 
 .SH Startup
 On launch the REPL prints a banner with version and platform
 information and quick-reference hints:
 
 .EX
-🐐 Gloat: 0.1.30 🐐
- Glojure: v0.6.5-rc17
+🐐 Gloat: 0.1.40 🐐
+ Glojure: v0.6.4
       Go: 1.24.0 linux/amd64
+   nREPL: nrepl://localhost:38291
+   sREPL: localhost:35149
     Help: C-h or :repl/help
     Exit: C-d or :repl/exit
 
@@ -33,8 +36,8 @@ user=>
 .EE
 
 .PP
-When launched with \fB--deps\fR, the banner also shows the build
-directory.
+The \fBnREPL\fR and \fBsREPL\fR URLs are for the embedded servers automatically
+started for every \fBgloat --repl\fR session (see \fBEmbedded Servers\fP).
 
 .PP
 The prompt shows the current namespace (\fBuser\fR by default).
@@ -579,7 +582,7 @@ extra setup.
 The server URLs are shown in the startup banner:
 
 .EX
- Glojure: v0.6.5
+ Glojure: v0.6.4
       Go: 1.24.0 linux/amd64
    nREPL: nrepl://localhost:38291
    sREPL: localhost:35149
@@ -605,13 +608,23 @@ When launched via \fBgloat --repl\fR, the REPL needs a Go module directory
 to bootstrap dependencies and generate import glue code.
 The build directory is resolved in this priority order:
 .IP "  1." 5
-\fB--repl=dir\fR -- explicit directory
+\fBgloat --repl=dir/\fR -- explicit directory (trailing slash creates it
+if missing; without the slash the directory must already exist)
 .IP "  2." 5
 \fBGLOAT_REPL=dir\fR -- environment variable
 .IP "  3." 5
-\fB\&.\fR (current directory) -- when \fB\&./gljdeps.edn\fR is present
+\fB\&./gljrepl/\fR -- auto-selected when \fB\&./gljdeps.edn\fR is present in the
+current directory; the subdirectory keeps generated \fBgo.mod\fR,
+\fBgo.sum\fR, and Go glue out of your project root
 .IP "  4." 5
-\fB\&./gljrepl/\fR -- default fallback (created automatically)
+Shared cache (e.g. \fB~/.cache/gloat/.../repl-VERSION/\fR) -- fallback
+when no deps file is in sight, so an ad-hoc REPL leaves no files
+behind in the current directory
+
+.PP
+The build directory is created automatically if it does not exist.
+If \fB\&./gljdeps.edn\fR exists, its contents are copied into the build
+directory as \fBgljdeps.edn\fR; an explicit \fB--deps=FILE\fR does the same.
 
 .SH External Go Dependencies
 The Glojure standard library and the Go standard library are available
@@ -673,10 +686,9 @@ Launch a REPL with \fBgithub.com/yaml/go-yaml\fR available:
 
 .EX
 $ gloat --repl --deps=<(echo '{:deps {github.com:yaml:go-yaml {:mvn/version "v3.0.1"}}}')
-🐐 Gloat: 0.1.39 🐐
- Glojure: v0.6.5-rc27
+🐐 Gloat: 0.1.40 🐐
+ Glojure: v0.6.4
       Go: 1.24.0 linux/amd64
-   Build: /home/me/.cache/gloat/repl/...
    nREPL: nrepl://localhost:38291
    sREPL: localhost:35149
     Help: C-h or :repl/help
@@ -700,10 +712,6 @@ the example builds the map with \fBgo/make\fR and writes entries through
 \fBreflect.ValueOf\fR before passing it to \fBMarshal\fR\&.
 \fBMarshal\fR returns \fB([]byte, error)\fR, which destructures as a vector;
 \fB(go/string bs)\fR casts the bytes back to a Glojure string for display.
-
-.PP
-The banner shows the build directory under \fBBuild:\fR because \fB--deps\fR
-was supplied; an unconfigured REPL omits that line.
 
 .SS Cross-reference
 For the interop forms used above (\fBpkg.Func\fR, \fB\&.Method\fR, \fB(new ...)\fR,
@@ -807,6 +815,7 @@ T}
 \fBGLJ_REPL_NO_BANNER\fR	T{
 Suppress the startup banner when set.
 T}
+\fBGLOAT_GLJDEPS\fR	Path to a \fBgljdeps.edn\fR file (alternative to \fB--deps=FILE\fR).
 \fBGLOAT_REPL\fR	Set the REPL build directory.
 \fBGLOAT_REPL_HISTORY_BB\fR	Babashka history file for \fB--repl=+bb\fR (JLine format).
 \fBGLOAT_REPL_HISTORY_LEIN\fR	Leiningen history file for \fB--repl=+lein\fR (JLine format).

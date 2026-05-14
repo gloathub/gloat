@@ -1,3 +1,17 @@
+- version: 0.1.41
+  date:    Thu May 14 05:31:09 PM EDT 2026
+  changes:
+- Require main branch for make release
+- Single-source versions via common.mk
+- Tighten installer errors and complete docs
+- Quiet installer and PATH prompt up front
+- Document uninstall and warn about rc line
+- Polish installer, --upgrade flow, and docs
+- Improve REPL UX and refresh REPL docs
+- Propagate glojure go.mod replaces
+- Reject empty gljdeps.edn with example
+- Dedupe REPL setup and fix glojure lookup
+
 - version: 0.1.40
   date:    Wed May 13 09:03:33 AM EDT 2026
   changes:

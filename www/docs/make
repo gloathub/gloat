@@ -35,6 +35,27 @@ INSTALL-DIR := $(PREFIX)/share/gloat
 BIN-DIR := $(PREFIX)/bin
 GLOAT-BIN := $(BIN-DIR)/gloat
 
+define PATH_ERROR
+
+Error: '$(BIN-DIR)' is not on your PATH.
+
+You have two options:
+
+  1. Add '$(BIN-DIR)' to your PATH. Put this line in your shell rc
+     (~/.bashrc, ~/.zshrc, or ~/.config/fish/config.fish),
+     start a new shell, then retry the install:
+
+         export PATH=$(BIN-DIR):$$PATH
+
+  2. Re-run the install with PREFIX set to a directory whose 'bin/'
+     is already on your PATH.
+     For example, if '/path/to/bin' is on your PATH:
+
+         make -f <(curl -sL gloathub.org/make) install PREFIX=/path/to
+
+endef
+export PATH_ERROR
+
 help:
 	@echo 'Gloat Installer Makefile targets:'
 	@echo ''
@@ -52,22 +73,11 @@ help:
 # User might have a ./install file or dir, so use PHONY here.
 .PHONY: help install install-glj install-gloat uninstall uninstall-glj uninstall-gloat
 install:
-	@# PATH check up front — prompt the user before doing any work so they
-	@# can Ctrl-C and set PATH first if needed.
+	@# PATH check up front — refuse to install if BIN-DIR isn't on PATH so
+	@# the user doesn't end up with a 'gloat' they can't run.
 	@if ! echo ":$$PATH:" | grep -q ':$(BIN-DIR):'; then \
-	  echo ''; \
-	  echo '⚠ $(BIN-DIR) is not on your PATH yet.'; \
-	  echo ''; \
-	  echo 'After installation you will need this line in your shell rc'; \
-	  echo '(~/.bashrc, ~/.zshrc, or ~/.config/fish/config.fish):'; \
-	  echo ''; \
-	  echo '  export PATH=$(BIN-DIR):$$PATH'; \
-	  echo ''; \
-	  if [ -t 0 ]; then \
-	    printf 'Press Enter to continue, or Ctrl-C to set PATH first... '; \
-	    read -r < /dev/tty; \
-	    echo ''; \
-	  fi; \
+	  echo "$$PATH_ERROR" >&2; \
+	  exit 1; \
 	fi
 	@echo 'Installing Gloat to $(PREFIX)...'
 	@mkdir -p '$(BIN-DIR)' '$(PREFIX)/share'
@@ -138,13 +148,16 @@ install:
 uninstall: uninstall-gloat
 
 uninstall-gloat:
+	@if [[ ! -L '$(GLOAT-BIN)' && ! -d '$(INSTALL-DIR)' ]]; then \
+	  echo "Gloat is not installed at '$(PREFIX)'." >&2; \
+	  echo "(No symlink at '$(GLOAT-BIN)' and no directory at '$(INSTALL-DIR)'.)" >&2; \
+	  exit 1; \
+	fi
 	@echo 'Uninstalling Gloat from $(PREFIX)...'
-	@# Remove symlink
 	@if [[ -L '$(GLOAT-BIN)' ]]; then \
 	  rm -f '$(GLOAT-BIN)'; \
 	  echo '✓ Removed symlink: $(GLOAT-BIN)'; \
 	fi
-	@# Remove installation directory
 	@if [[ -d '$(INSTALL-DIR)' ]]; then \
 	  chmod -R +w '$(INSTALL-DIR)'; \
 	  rm -rf '$(INSTALL-DIR)'; \
@@ -158,11 +171,13 @@ uninstall-gloat:
 	@echo 'now or new shells will fail to start.'
 
 uninstall-glj:
-	@echo 'Uninstalling glj from $(PREFIX)...'
-	@if [[ -f '$(BIN-DIR)/glj' ]]; then \
-	  rm -f '$(BIN-DIR)/glj'; \
-	  echo '✓ Removed: $(BIN-DIR)/glj'; \
+	@if [[ ! -f '$(BIN-DIR)/glj' ]]; then \
+	  echo "glj is not installed at '$(BIN-DIR)/glj'." >&2; \
+	  exit 1; \
 	fi
+	@echo 'Uninstalling glj from $(PREFIX)...'
+	@rm -f '$(BIN-DIR)/glj'
+	@echo '✓ Removed: $(BIN-DIR)/glj'
 	@echo ''
 	@echo '✓ glj uninstalled successfully!'
 

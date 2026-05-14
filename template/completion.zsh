@@ -37,11 +37,12 @@ _gloat() {
         '--complete[Generate shell completion]:shell:->shells' \
         '(- *)--shell[Start a sub-shell with gloat tools on PATH]' \
         '(- *)--shell-all[Like --shell but install all dev tools]' \
-        '--repl=[Start REPL (see man gloat-repl)]::value:' \
+        '--repl=[Start REPL client (see man gloat-repl)]::value:' \
         '--nrepl=[Start nREPL server (see man gloat-repl)]::value:' \
-        '--deps=[Path to gljdeps.edn (for --repl or --nrepl)]:deps file:_files -g "*.edn"' \
+        '--srepl=[Start socket REPL server (see man gloat-repl)]::value:' \
+        '--deps=[Path to gljdeps.edn (for --repl/--nrepl/--srepl)]:deps file:_files -g "*.edn"' \
         '(- *)--reset[Remove all cached dependencies]' \
-        '(- *)--upgrade[Upgrade gloat to the latest version]' \
+        '(- *)--upgrade[Upgrade gloat (use --upgrade=v1.2.3 to pin a version)]' \
         '(-r --run)'{-r,--run}'[Compile and run]' \
         '(-f --force)'{-f,--force}'[Overwrite existing output]' \
         '(-v --verbose)'{-v,--verbose}'[Print timing information]' \

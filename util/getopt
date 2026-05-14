@@ -17,13 +17,16 @@ main() (
   init "$@"
   set -- "${args[@]}"
 
-  # Redirect getopt output (which uses pager) to stderr so stdout stays clean
-  # for EDN.
-  # If getopt failed (help shown, parse error), exit with same code.
-  getopt "$@" >&2 || exit
-
-  # Generate EDN output
-  cat <<...
+  # bpan's getopt() calls exit on parse error/help — wrap in a subshell
+  # so we can intercept the error case. Stderr from git rev-parse
+  # --parseopt (which dumps the whole usage block on bad options) is
+  # captured to a file; on parse error we replace it with a short
+  # message pointing at --help.
+  local errfile emit rc=0
+  errfile=$(mktemp)
+  emit=$(
+    getopt "$@" 2>"$errfile" >&2
+    cat <<...
 {
  :to       $(value-to-edn option_to)
  :out      $(value-to-edn option_out)
@@ -47,6 +50,20 @@ main() (
  :run-args $(array-to-edn run_args)
 }
 ...
+  ) || rc=$?
+
+  if [[ $rc -ne 0 ]]; then
+    if grep -q '^error:' "$errfile"; then
+      grep '^error:' "$errfile" >&2
+      echo "Run 'gloat --help' for usage." >&2
+    else
+      cat "$errfile" >&2
+    fi
+    rm -f "$errfile"
+    exit "$rc"
+  fi
+  rm -f "$errfile"
+  echo "$emit"
 )
 
 # Always split args at -- to separate gloat args from run args

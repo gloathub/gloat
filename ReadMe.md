@@ -495,8 +495,10 @@ With `-Xserve,html`, the HTML is generated alongside the output.
 --extensions     List available processing extensions
 --platforms      List available cross-compilation platforms
 
---repl[=dir]     Start the Glojure REPL (optional build directory)
---deps=file      Path to gljdeps.edn for --repl (also accepts /dev/fd/N)
+--repl[=value]   Start REPL client (see man gloat-repl)
+--nrepl[=value]  Start nREPL server (see man gloat-repl)
+--srepl[=value]  Start socket REPL server (see man gloat-repl)
+--deps=file      Path to gljdeps.edn for --repl/--nrepl/--srepl
 
 --shell          Start a sub-shell or run a command (-- cmd...)
 --shell-all      Like --shell but install all dev tools

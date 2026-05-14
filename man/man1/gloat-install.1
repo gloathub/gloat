@@ -49,7 +49,10 @@ creates a symlink at \fB~/.local/bin/gloat\fR, and installs all the required
 dependencies automatically.
 
 .PP
-Make sure \fB~/.local/bin\fR is in your \fBPATH\fR, then run \fBgloat --help\fR\&.
+The installer refuses to run if \fB~/.local/bin\fR is not on your \fBPATH\fR —
+add \fBexport PATH=~/.local/bin:$PATH\fR to your shell rc and start a new
+shell, or pass \fBPREFIX=/path/to\fR where \fB/path/to/bin\fR is already on your
+\fBPATH\fR\&. Then run \fBgloat --help\fR\&.
 
 .PP
 \fBOptions:\fP

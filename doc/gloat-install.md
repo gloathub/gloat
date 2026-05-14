@@ -46,7 +46,10 @@ Installing `gloat` clones the gloat repository to `~/.local/share/gloat`,
 creates a symlink at `~/.local/bin/gloat`, and installs all the required
 dependencies automatically.
 
-Make sure `~/.local/bin` is in your `PATH`, then run `gloat --help`.
+The installer refuses to run if `~/.local/bin` is not on your `PATH` —
+add `export PATH=~/.local/bin:$PATH` to your shell rc and start a new
+shell, or pass `PREFIX=/path/to` where `/path/to/bin` is already on your
+`PATH`. Then run `gloat --help`.
 
 **Options:**
 

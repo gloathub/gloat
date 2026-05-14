@@ -318,6 +318,30 @@ main() (
         go mod edit \
           -replace "github.com/gloathub/glojure=$glojure_dir"
         cp "$glojure_dir/go.sum" go.sum
+        # Go does not inherit replace directives from required modules,
+        # so mirror glojure's own replaces (e.g. its readline fork).
+        local rep_old rep_new
+        while IFS=$'\t' read -r rep_old rep_new; do
+          [[ -n $rep_old && -n $rep_new ]] || continue
+          go mod edit -replace "$rep_old=$rep_new"
+        done < <(
+          awk '
+            /^replace[[:space:]]*\(/ { inblock=1; next }
+            inblock && /^[[:space:]]*\)/ { inblock=0; next }
+            inblock || /^replace[[:space:]]/ {
+              sub(/^replace[[:space:]]+/, "")
+              sub(/[[:space:]]*\/\/.*$/, "")
+              sub(/^[[:space:]]+/, "")
+              if ($0 == "") next
+              n = split($0, parts, /[[:space:]]+=>[[:space:]]+/)
+              if (n != 2) next
+              old = parts[1]; new = parts[2]
+              if (split(old, op, /[[:space:]]+/) == 2) old = op[1] "@" op[2]
+              if (split(new, np, /[[:space:]]+/) == 2) new = np[1] "@" np[2]
+              print old "\t" new
+            }
+          ' "$glojure_dir/go.mod"
+        )
         go get github.com/gloathub/glojure
       else
         local glj_ver

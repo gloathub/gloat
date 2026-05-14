@@ -131,168 +131,121 @@ main() (
     exit 1
   fi
 
-  setup
+  setup "$@"
 
-  # Single-pass scan: extract bash-level flags and build proc_args for getopt.
-  # --repl=dir has an optional value getopt doesn't support, so we normalize
-  # --repl=dir → --repl (boolean) and save the dir separately.
-  # Args after -- are captured as run_args for --shell handling.
-  repl_val=
-  opt_repl=
-  opt_nrepl=
-  nrepl_val=
-  opt_srepl=
-  srepl_val=
-  opt_deps=
-  opt_shell=
-  opt_shellall=
-  run_args=()
-  proc_args=()
-  past_dashdash=
-
-  for arg in "$@"; do
-    if [[ -n $past_dashdash ]]; then
-      run_args+=("$arg")
-      proc_args+=("$arg")
-    else
-      case $arg in
-        --)          past_dashdash=1;          proc_args+=("$arg") ;;
-        --repl)      opt_repl=true;            proc_args+=("$arg") ;;
-        --repl=*)    opt_repl=true
-                     repl_val=${arg#--repl=}
-                     proc_args+=(--repl)       ;;
-        --nrepl)     opt_nrepl=true;            proc_args+=("$arg") ;;
-        --nrepl=*)   opt_nrepl=true
-                     nrepl_val=${arg#--nrepl=}
-                     proc_args+=(--nrepl)      ;;
-        --srepl)     opt_srepl=true;            proc_args+=("$arg") ;;
-        --srepl=*)   opt_srepl=true
-                     srepl_val=${arg#--srepl=}
-                     proc_args+=(--srepl)      ;;
-        --deps=*)    opt_deps=${arg#--deps=}
-                     proc_args+=("$arg")       ;;
-        --shell)     opt_shell=true;           proc_args+=("$arg") ;;
-        --shell-all) opt_shellall=true;        proc_args+=("$arg") ;;
-        *)           proc_args+=("$arg")       ;;
-      esac
-    fi
-  done
-
-  # Run getopt for --help/--version display, flag validation, and GLOAT_OPTS
-  opts_edn=$(printf '%s\n' "$GETOPT_SPEC" | \
-    "$root/util/getopt" ${proc_args[@]+"${proc_args[@]}"}) || exit $?
-
-  # --deps without --repl or --nrepl is an error
-  if [[ -n $opt_deps && -z $opt_repl && -z $opt_nrepl && -z $opt_srepl ]]; then
-    echo "Error: --deps requires --repl or --nrepl" >&2
-    exit 1
-  fi
-
-  # Handle --shell-all / --shell
-  if [[ -n $opt_shellall || -n $opt_shell ]]; then
-    if [[ -n $opt_shellall ]]; then
-      make --quiet --no-print-directory -C "$root" shell-deps
-    else
-      make --quiet --no-print-directory -C "$root" shell-deps-min
-    fi
-
-    if [[ ${#run_args[@]} -gt 0 ]]; then
-      if [[ ${#run_args[@]} -eq 1 ]]; then
-        exec bash -c "${run_args[0]}"
-      else
-        exec "${run_args[@]}"
-      fi
-    else
-      do-shell
-    fi
-  fi
-
-  # Handle --repl
-  if [[ -n $opt_repl ]]; then
-    # --repl=VALUE heuristic: digits=port, file=portfile, dir=builddir
-    if [[ -n $repl_val ]]; then
-      if [[ $repl_val =~ ^[0-9]+$ ]]; then
-        # Port number -- connect to nREPL server
-        find-glj
-        exec glj --nrepl-connect "localhost:$repl_val"
-      elif [[ $repl_val =~ : && ${repl_val##*:} =~ ^[0-9]+$ ]]; then
-        # host:port -- connect to nREPL server
-        find-glj
-        exec glj --nrepl-connect "$repl_val"
-      elif [[ $repl_val == +* ]]; then
-        # +tool -- start tool's nREPL server, connect to it
-        start-tool-nrepl "${repl_val#+}"
-        exit
-      elif [[ -f $repl_val ]]; then
-        # Existing file -- read port from it
-        port=$(cat "$repl_val")
-        if [[ ! $port =~ ^[0-9]+$ ]]; then
-          echo "Error: $repl_val does not contain a valid port number" >&2
-          exit 1
-        fi
-        find-glj
-        exec glj --nrepl-connect "localhost:$port"
-      elif [[ ! -d $repl_val && $repl_val != */ ]]; then
-        # Not a directory and no trailing slash -- error.
-        # Trailing slash signals "use as build dir, create if missing".
-        echo "Error: '$repl_val' is not a directory or port file." >&2
-        echo "To use a new build directory, add a trailing slash:" >&2
-        echo "    gloat --repl=$repl_val/" >&2
-        exit 1
-      fi
-      # Fall through: repl_val is a directory or ends with /
-    fi
-
-    prepare-repl-env "$repl_val"
-
-    echo "🐐 Gloat: $GLOAT_VERSION 🐐" >&2
-
-    # Run glj in a restart loop so crashes (e.g. stack overflow) don't
-    # lose the session. History is persisted to ~/.glj_history.
-    while true; do
-      glj
-      rc=$?
-      [[ $rc -eq 0 ]] && break
-      echo "" >&2
-      echo "REPL crashed (exit $rc), restarting..." >&2
-    done
-    exit 0
-  fi
-
-  # Handle --nrepl
-  if [[ -n $opt_nrepl ]]; then
-    # Resolve relative port file path before cd into build dir
-    if [[ -n $nrepl_val && ! $nrepl_val =~ ^[0-9]+$ &&
-          ! ($nrepl_val =~ : && ${nrepl_val##*:} =~ ^[0-9]+$) &&
-          $nrepl_val != /* ]]; then
-      nrepl_val=$(pwd)/$nrepl_val
-    fi
-
-    prepare-repl-env
-
-    nrepl_flag=--nrepl
-    [[ -n $nrepl_val ]] && nrepl_flag="--nrepl=$nrepl_val"
-    exec glj "$nrepl_flag"
-  fi
-
-  if [[ -n $opt_srepl ]]; then
-    # Resolve relative port file path before cd into build dir
-    if [[ -n $srepl_val && ! $srepl_val =~ ^[0-9]+$ &&
-          ! ($srepl_val =~ : && ${srepl_val##*:} =~ ^[0-9]+$) &&
-          $srepl_val != /* ]]; then
-      srepl_val=$(pwd)/$srepl_val
-    fi
-
-    prepare-repl-env
-
-    srepl_flag=--srepl
-    [[ -n $srepl_val ]] && srepl_flag="--srepl=$srepl_val"
-    exec glj "$srepl_flag"
-  fi
+  [[ -n $opt_shell || -n $opt_shellall ]] && do-shell-all
+  [[ -n $opt_repl  ]]                     && do-repl
+  [[ -n $opt_nrepl ]]                     && do-nrepl
+  [[ -n $opt_srepl ]]                     && do-srepl
 
   # Pass parsed opts to gloat.clj via env var — no re-parsing needed
   GLOAT_OPTS="$opts_edn" exec bb "$root/src/gloat.clj"
 )
+
+# Handle --shell-all / --shell
+do-shell-all() {
+  if [[ -n $opt_shellall ]]; then
+    make --quiet --no-print-directory -C "$root" shell-deps
+  else
+    make --quiet --no-print-directory -C "$root" shell-deps-min
+  fi
+
+  if [[ ${#run_args[@]} -gt 0 ]]; then
+    if [[ ${#run_args[@]} -eq 1 ]]; then
+      exec bash -c "${run_args[0]}"
+    else
+      exec "${run_args[@]}"
+    fi
+  else
+    do-shell
+  fi
+}
+
+# Handle --repl
+do-repl() {
+  # --repl=VALUE heuristic: digits=port, file=portfile, dir=builddir
+  if [[ -n $repl_val ]]; then
+    if [[ $repl_val =~ ^[0-9]+$ ]]; then
+      # Port number -- connect to nREPL server
+      find-glj
+      exec glj --nrepl-connect "localhost:$repl_val"
+    elif [[ $repl_val =~ : && ${repl_val##*:} =~ ^[0-9]+$ ]]; then
+      # host:port -- connect to nREPL server
+      find-glj
+      exec glj --nrepl-connect "$repl_val"
+    elif [[ $repl_val == +* ]]; then
+      # +tool -- start tool's nREPL server, connect to it
+      start-tool-nrepl "${repl_val#+}"
+      exit
+    elif [[ -f $repl_val ]]; then
+      # Existing file -- read port from it
+      local port
+      port=$(cat "$repl_val")
+      if [[ ! $port =~ ^[0-9]+$ ]]; then
+        echo "Error: $repl_val does not contain a valid port number" >&2
+        exit 1
+      fi
+      find-glj
+      exec glj --nrepl-connect "localhost:$port"
+    elif [[ ! -d $repl_val && $repl_val != */ ]]; then
+      # Not a directory and no trailing slash -- error.
+      # Trailing slash signals "use as build dir, create if missing".
+      echo "Error: '$repl_val' is not a directory or port file." >&2
+      echo "To use a new build directory, add a trailing slash:" >&2
+      echo "    gloat --repl=$repl_val/" >&2
+      exit 1
+    fi
+    # Fall through: repl_val is a directory or ends with /
+  fi
+
+  prepare-repl-env "$repl_val"
+
+  echo "🐐 Gloat: $GLOAT_VERSION 🐐" >&2
+
+  # Run glj in a restart loop so crashes (e.g. stack overflow) don't
+  # lose the session. History is persisted to ~/.glj_history.
+  local rc
+  while true; do
+    glj
+    rc=$?
+    [[ $rc -eq 0 ]] && break
+    echo "" >&2
+    echo "REPL crashed (exit $rc), restarting..." >&2
+  done
+  exit 0
+}
+
+# Handle --nrepl
+do-nrepl() {
+  # Resolve relative port file path before cd into build dir
+  if [[ -n $nrepl_val && ! $nrepl_val =~ ^[0-9]+$ &&
+        ! ($nrepl_val =~ : && ${nrepl_val##*:} =~ ^[0-9]+$) &&
+        $nrepl_val != /* ]]; then
+    nrepl_val=$(pwd)/$nrepl_val
+  fi
+
+  prepare-repl-env
+
+  local nrepl_flag=--nrepl
+  [[ -n $nrepl_val ]] && nrepl_flag="--nrepl=$nrepl_val"
+  exec glj "$nrepl_flag"
+}
+
+# Handle --srepl
+do-srepl() {
+  # Resolve relative port file path before cd into build dir
+  if [[ -n $srepl_val && ! $srepl_val =~ ^[0-9]+$ &&
+        ! ($srepl_val =~ : && ${srepl_val##*:} =~ ^[0-9]+$) &&
+        $srepl_val != /* ]]; then
+    srepl_val=$(pwd)/$srepl_val
+  fi
+
+  prepare-repl-env
+
+  local srepl_flag=--srepl
+  [[ -n $srepl_val ]] && srepl_flag="--srepl=$srepl_val"
+  exec glj "$srepl_flag"
+}
 
 # Resolve deps file + build dir, write gljdeps.edn, set up go module + env.
 # Optional first arg: explicit build dir hint (used by --repl=dir).
@@ -517,7 +470,63 @@ find-glj() {
   fi
 }
 
-setup() (
+setup() {
+  # Single-pass scan: extract bash-level flags and build proc_args for getopt.
+  # --repl=dir has an optional value getopt doesn't support, so we normalize
+  # --repl=dir → --repl (boolean) and save the dir separately.
+  # Args after -- are captured as run_args for --shell handling.
+  repl_val=
+  opt_repl=
+  opt_nrepl=
+  nrepl_val=
+  opt_srepl=
+  srepl_val=
+  opt_deps=
+  opt_shell=
+  opt_shellall=
+  run_args=()
+  proc_args=()
+  past_dashdash=
+
+  for arg in "$@"; do
+    if [[ -n $past_dashdash ]]; then
+      run_args+=("$arg")
+      proc_args+=("$arg")
+    else
+      case $arg in
+        --)          past_dashdash=1;          proc_args+=("$arg") ;;
+        --repl)      opt_repl=true;            proc_args+=("$arg") ;;
+        --repl=*)    opt_repl=true
+                     repl_val=${arg#--repl=}
+                     proc_args+=(--repl)       ;;
+        --nrepl)     opt_nrepl=true;            proc_args+=("$arg") ;;
+        --nrepl=*)   opt_nrepl=true
+                     nrepl_val=${arg#--nrepl=}
+                     proc_args+=(--nrepl)      ;;
+        --srepl)     opt_srepl=true;            proc_args+=("$arg") ;;
+        --srepl=*)   opt_srepl=true
+                     srepl_val=${arg#--srepl=}
+                     proc_args+=(--srepl)      ;;
+        --deps=*)    opt_deps=${arg#--deps=}
+                     proc_args+=("$arg")       ;;
+        --shell)     opt_shell=true;           proc_args+=("$arg") ;;
+        --shell-all) opt_shellall=true;        proc_args+=("$arg") ;;
+        *)           proc_args+=("$arg")       ;;
+      esac
+    fi
+  done
+
+  # Run getopt for --help/--version display, flag validation, and GLOAT_OPTS
+  opts_edn=$(printf '%s\n' "$GETOPT_SPEC" | \
+    "$root/util/getopt" ${proc_args[@]+"${proc_args[@]}"}) || exit $?
+
+  # --deps without --repl or --nrepl is an error
+  if [[ -n $opt_deps && -z $opt_repl && -z $opt_nrepl && -z $opt_srepl ]]; then
+    echo "Error: --deps requires --repl or --nrepl" >&2
+    exit 1
+  fi
+
+  # If deps are already installed locally, we're done
   [[ $(command -v bb) == "$root/.cache/local/bin/bb" ]] && return
 
   if interactive; then
@@ -545,7 +554,7 @@ ${BOLD}Press Enter to continue (or Ctrl-C to cancel)...$RESET
   if interactive; then
     >&2 echo -e "\n$GREEN==> All gloat dependencies installed.$RESET"
   fi
-)
+}
 
 interactive() { [[ -t 0 && -t 1 && -t 2 ]]; }
 

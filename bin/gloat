@@ -354,6 +354,24 @@ main() (
     local deps_content=
     [[ -n $deps_file ]] && deps_content=$(cat "$deps_file")
 
+    # Reject empty / whitespace / comment-only deps files; glj can't parse them
+    if [[ -n $deps_file ]]; then
+      local deps_stripped
+      deps_stripped=$(printf '%s' "$deps_content" | sed 's/;.*$//' |
+        tr -d '[:space:]')
+      if [[ -z $deps_stripped ]]; then
+        cat >&2 <<EOF
+Error: $deps_file has no edn content.
+
+A minimal gljdeps.edn declares zero or more Go module deps as edn. Try:
+
+  {:deps {}}                  ; no extra deps
+  {:deps {github.com:google:uuid {:mvn/version "v1.6.0"}}}
+EOF
+        exit 1
+      fi
+    fi
+
     # Determine build directory:
     #   build_hint (--repl=dir)  >  GLOAT_REPL  >
     #   .  (when ./gljdeps.edn was auto-detected)  >

@@ -566,7 +566,14 @@ prepare-repl-env() {
   cd "$build_dir"
 
   if [[ $deps_content ]]; then
+    local prev_deps=
+    [[ -f gljdeps.edn ]] && prev_deps=$(cat gljdeps.edn)
     printf '%s\n' "$deps_content" > gljdeps.edn
+    # If deps changed, wipe go.mod/go.sum so setup-go-module rebuilds
+    # them from scratch, dropping require entries for removed deps.
+    if [[ $prev_deps != "$deps_content" ]]; then
+      rm -f go.mod go.sum
+    fi
   fi
 
   setup-go-module

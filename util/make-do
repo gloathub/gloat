@@ -236,6 +236,42 @@ release() (
   make publish-www
 )
 
+glojure-worktree() (
+  cur=$1
+  glojure_dir=${GLOJURE_DIR:-}
+  if [[ -z $glojure_dir ]] ||
+     ! git -C "$glojure_dir" show-ref --verify --quiet \
+         refs/heads/gloat 2>/dev/null; then
+    exit 0
+  fi
+  # Resolve to the main glojure repo root so re-running from inside an
+  # already-set worktree doesn't try to nest worktrees within worktrees.
+  git_common=$(git -C "$glojure_dir" rev-parse --git-common-dir)
+  [[ $git_common != /* ]] && git_common=$glojure_dir/$git_common
+  glojure_root=$(cd "$git_common/.." && pwd -P)
+  parent=$(dirname "$cur")
+  grand=$(dirname "$parent")
+  if [[ $(basename "$parent") != worktree ||
+        $(basename "$grand") != gloat ]]; then
+    exit 0
+  fi
+  name=$(basename "$cur")
+  dest=$glojure_root/worktree/$name
+  if ! git -C "$glojure_root" show-ref --verify --quiet \
+       "refs/heads/$name"; then
+    git -C "$glojure_root" branch "$name" gloat >&2 || true
+  fi
+  if [[ ! -d $dest ]]; then
+    git -C "$glojure_root" worktree add "$dest" "$name" >&2 || exit 0
+  fi
+  # Build glj inside the worktree if find-glj wouldn't already find one.
+  glj_resolved=$(GLOJURE_DIR=$dest "$cur/bin/gloat" --glj 2>/dev/null || true)
+  if [[ $glj_resolved != "$dest"/bin/*/glj ]]; then
+    GLOJURE_DIR=$dest "$cur/bin/gloat" --glj-build >&2
+  fi
+  echo "export GLOJURE_DIR=$dest"
+)
+
 annoucement() (
   glj_version=$1
   version=$(

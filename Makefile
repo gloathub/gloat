@@ -131,6 +131,12 @@ env:
 gloat-version:
 	@echo '$(GLOAT-VERSION)'
 
+gloat-git-dir:
+	@echo '$(GIT-REPO-DIR)'
+
+glojure-worktree:
+	@make-do $@ '$(CURDIR)'
+
 man: $(MAN-PAGES)
 
 update: $(YS-GO-FILES) $(MAN-PAGES)

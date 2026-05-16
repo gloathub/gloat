@@ -147,12 +147,35 @@ main() (
   export PATH
 
   if [[ $* == --glj ]]; then
-    glj_path=$(make --quiet --no-print-directory -C "$root" path-glj | tail -1)
+    find-glj
+    glj_path=$(command -v glj)
     if [[ -x $glj_path ]]; then
       echo "$glj_path"
       exit
     fi
     die "Error: could not resolve glj path (got: $glj_path)"
+  fi
+
+  if [[ $* == --glj-build ]]; then
+    [[ -n $GLOJURE_DIR ]] && [[ -d $GLOJURE_DIR ]] ||
+      die "Error: GLOJURE_DIR is not set to a glojure source directory"
+    [[ -x $GLOJURE_DIR/scripts/build-glj.sh ]] ||
+      die "Error: $GLOJURE_DIR/scripts/build-glj.sh not found"
+    install-deps
+    os=$(go env GOOS)
+    arch=$(go env GOARCH)
+    out=$GLOJURE_DIR/bin/${os}_${arch}/glj
+    mkdir -p "$(dirname "$out")"
+    glj_describe=$(git -C "$GLOJURE_DIR" describe --tags --always --dirty 2>/dev/null) || glj_describe=
+    glj_ts=$(git -C "$GLOJURE_DIR" log -1 --format=%cd --date=format:%Y%m%d%H%M%S HEAD 2>/dev/null) || glj_ts=
+    if [[ -n $glj_describe ]]; then
+      glj_version=$glj_describe${glj_ts:+-$glj_ts}
+      [[ $glj_version == v* ]] || glj_version=v$glj_version
+    fi
+    echo "==> Building glj${glj_version:+ $glj_version} in $GLOJURE_DIR" >&2
+    (cd "$GLOJURE_DIR" && GLJ_VERSION=$glj_version scripts/build-glj.sh "$out" "${os}_${arch}") >&2
+    echo "==> Built $out" >&2
+    exit
   fi
 
   setup "$@"
@@ -364,6 +387,10 @@ setup() {
   [[ $opt_deps && -z $opt_repl && -z $opt_nrepl && -z $opt_srepl ]] &&
     die "Error: --deps requires --repl or --nrepl"
 
+  install-deps
+}
+
+install-deps() {
   # If deps are already installed locally, we're done
   [[ $(command -v bb) == "$root/.cache/local/bin/bb" ]] && return
 

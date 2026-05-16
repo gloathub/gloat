@@ -137,6 +137,9 @@ gloat-git-dir:
 glojure-worktree:
 	@make-do $@ '$(CURDIR)'
 
+go-readline-worktree:
+	@make-do $@ '$(CURDIR)'
+
 man: $(MAN-PAGES)
 
 update: $(YS-GO-FILES) $(MAN-PAGES)
@@ -279,7 +282,7 @@ GLJ-PLATFORM-macos-int64 := darwin_amd64
 GLJ-PLATFORM-macos-arm64 := darwin_arm64
 GLJ-PLATFORM := $(GLJ-PLATFORM-$(OS-ARCH))
 
-GO-READLINE-DIR := $(wildcard $(GLOJURE-DIR)/../go-readline)
+GO-READLINE-DIR := $(if $(GO_READLINE_DIR),$(GO_READLINE_DIR),$(wildcard $(GLOJURE-DIR)/../go-readline))
 
 repl:
 	$(if $(GO-READLINE-DIR),\

@@ -13,6 +13,12 @@ PATH=$GLOAT_ROOT/bin:$PATH
 MANPATH=$GLOAT_ROOT/man:$(manpath 2>/dev/null)
 GLOAT_SHELL=bash
 export GLOAT_ROOT GLOAT_VERSION GLOAT_GIT_DIR PATH MANPATH GLOAT_SHELL
+if [[ -d $GLOAT_GIT_DIR/../go-readline ]]; then
+  GO_READLINE_DIR=$(cd "$GLOAT_GIT_DIR/../go-readline" && pwd -P)
+  export GO_READLINE_DIR
+  source <(make --quiet --no-print-directory \
+    -C "$GLOAT_ROOT" go-readline-worktree)
+fi
 if [[ -d $GLOAT_GIT_DIR/../glojure ]]; then
   GLOJURE_DIR=$(cd "$GLOAT_GIT_DIR/../glojure" && pwd -P)
   export GLOJURE_DIR
@@ -38,6 +44,11 @@ set -gx GLOAT_ROOT $GLOAT_ROOT
 set -gx GLOAT_VERSION $GLOAT_VERSION
 set -gx GLOAT_GIT_DIR $GLOAT_GIT_DIR
 set -gx GLOAT_SHELL fish
+if test -d $GLOAT_GIT_DIR/../go-readline
+  set -gx GO_READLINE_DIR (cd $GLOAT_GIT_DIR/../go-readline; and pwd -P)
+  make --quiet --no-print-directory \
+    -C $GLOAT_ROOT go-readline-worktree | source
+end
 if test -d $GLOAT_GIT_DIR/../glojure
   set -gx GLOJURE_DIR (cd $GLOAT_GIT_DIR/../glojure; and pwd -P)
   make --quiet --no-print-directory \
@@ -59,6 +70,12 @@ PATH=$GLOAT_ROOT/bin:$GLOAT_ROOT/local/bin:$PATH
 MANPATH=$GLOAT_ROOT/man:$GLOAT_ROOT/local/man:$(manpath 2>/dev/null)
 GLOAT_SHELL=zsh
 export GLOAT_ROOT GLOAT_VERSION GLOAT_GIT_DIR PATH MANPATH GLOAT_SHELL
+if [[ -d $GLOAT_GIT_DIR/../go-readline ]]; then
+  GO_READLINE_DIR=$(cd "$GLOAT_GIT_DIR/../go-readline" && pwd -P)
+  export GO_READLINE_DIR
+  source <(make --quiet --no-print-directory \
+    -C "$GLOAT_ROOT" go-readline-worktree)
+fi
 if [[ -d $GLOAT_GIT_DIR/../glojure ]]; then
   GLOJURE_DIR=$(cd "$GLOAT_GIT_DIR/../glojure" && pwd -P)
   export GLOJURE_DIR

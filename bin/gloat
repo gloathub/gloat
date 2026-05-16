@@ -172,8 +172,16 @@ main() (
       glj_version=$glj_describe${glj_ts:+-$glj_ts}
       [[ $glj_version == v* ]] || glj_version=v$glj_version
     fi
-    echo "==> Building glj${glj_version:+ $glj_version} in $GLOJURE_DIR" >&2
-    (cd "$GLOJURE_DIR" && GLJ_VERSION=$glj_version scripts/build-glj.sh "$out" "${os}_${arch}") >&2
+    go_replace=
+    if [[ -n ${GO_READLINE_DIR:-} && -d $GO_READLINE_DIR ]]; then
+      go_replace="github.com/reeflective/readline=$GO_READLINE_DIR"
+    fi
+    goflags=${GOFLAGS:-}
+    if [[ -n ${FORCE:-} ]]; then
+      goflags="${goflags:+$goflags }-a"
+    fi
+    echo "==> Building glj${glj_version:+ $glj_version} in $GLOJURE_DIR${go_replace:+ with GO_REPLACE=$go_replace}${FORCE:+ (FORCE=$FORCE)}" >&2
+    (cd "$GLOJURE_DIR" && GLJ_VERSION=$glj_version GO_REPLACE=$go_replace GOFLAGS=$goflags scripts/build-glj.sh "$out" "${os}_${arch}") >&2
     echo "==> Built $out" >&2
     exit
   fi

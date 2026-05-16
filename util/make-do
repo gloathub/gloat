@@ -236,6 +236,35 @@ release() (
   make publish-www
 )
 
+go-readline-worktree() (
+  cur=$1
+  go_readline_dir=${GO_READLINE_DIR:-}
+  if [[ -z $go_readline_dir ]] ||
+     ! git -C "$go_readline_dir" show-ref --verify --quiet \
+         refs/heads/main 2>/dev/null; then
+    exit 0
+  fi
+  git_common=$(git -C "$go_readline_dir" rev-parse --git-common-dir)
+  [[ $git_common != /* ]] && git_common=$go_readline_dir/$git_common
+  go_readline_root=$(cd "$git_common/.." && pwd -P)
+  parent=$(dirname "$cur")
+  grand=$(dirname "$parent")
+  if [[ $(basename "$parent") != worktree ||
+        $(basename "$grand") != gloat ]]; then
+    exit 0
+  fi
+  name=$(basename "$cur")
+  dest=$go_readline_root/worktree/$name
+  if ! git -C "$go_readline_root" show-ref --verify --quiet \
+       "refs/heads/$name"; then
+    git -C "$go_readline_root" branch "$name" main >&2 || true
+  fi
+  if [[ ! -d $dest ]]; then
+    git -C "$go_readline_root" worktree add "$dest" "$name" >&2 || exit 0
+  fi
+  echo "export GO_READLINE_DIR=$dest"
+)
+
 glojure-worktree() (
   cur=$1
   glojure_dir=${GLOJURE_DIR:-}

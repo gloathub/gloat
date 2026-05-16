@@ -1,3 +1,10 @@
+- version: 0.1.42
+  date:    Sat May 16 02:14:29 PM EDT 2026
+  changes:
+  - Refresh REPL go.mod on deps change
+  - Add go-readline worktree and FORCE build
+  - Add GLOJURE_DIR auto-setup and worktree rule
+
 - version: 0.1.41
   date:    Thu May 14 05:31:09 PM EDT 2026
   changes:

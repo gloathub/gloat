@@ -103,6 +103,131 @@
       (constantly (edn/read-string (str/trim (:out result)))))))
 
 ;;------------------------------------------------------------------------------
+;; gljdeps.edn Resolution
+;;------------------------------------------------------------------------------
+
+(defn resolve-deps-file
+  "Locate gljdeps.edn. Precedence: --deps= flag, GLOAT_GLJDEPS env var,
+  ./gljdeps.edn in CWD. Returns absolute path string, or nil if none.
+  Dies if an explicitly-named file is missing."
+  []
+  (let [explicit (or (:deps *opts*)
+                     (System/getenv "GLOAT_GLJDEPS"))
+        cwd-file (str (fs/cwd) "/gljdeps.edn")]
+    (cond
+      explicit
+      (do
+        (when-not (fs/exists? explicit)
+          (die "Error: " explicit " not found"))
+        (str (fs/absolutize explicit)))
+
+      (fs/exists? cwd-file)
+      cwd-file
+
+      :else nil)))
+
+(defn- deps-stripped
+  "Strip EDN comments and whitespace; used to detect empty deps files."
+  [content]
+  (-> content
+      (str/replace #";[^\n]*" "")
+      (str/replace #"\s+" "")))
+
+(defn- normalize-dep-key
+  "Glojure dep keys use ':' to escape '/' in Go import paths. Rewrite
+  back to slashes. Accepts symbol or string."
+  [k]
+  (-> k str (str/replace #":" "/")))
+
+(defn parse-gljdeps
+  "Read a gljdeps.edn file and return a vector of [module-path version]
+  pairs for the deps it declares. Validates emptiness and structure the
+  same way prepare-repl-env does in bin/gloat."
+  [path]
+  (let [content (slurp path)]
+    (when (str/blank? (deps-stripped content))
+      (die (str "Error: " path " has no edn content.\n"
+                "\n"
+                "A minimal gljdeps.edn declares zero or more Go module deps as edn. Try:\n"
+                "\n"
+                "  {:deps {}}                  ; no extra deps\n"
+                "  {:deps {github.com:google:uuid {:mvn/version \"v1.6.0\"}}}")))
+    (let [edn (try
+                (edn/read-string {:default (fn [_tag v] v)} content)
+                (catch Exception e
+                  (die "Error parsing " path ": " (.getMessage e))))
+          deps (:deps edn)]
+      (when-not (map? deps)
+        (die "Error: " path " must contain a {:deps {...}} map"))
+      (mapv (fn [[k v]]
+              (let [path-str (normalize-dep-key k)
+                    version  (:mvn/version v)]
+                (when-not version
+                  (die "Error: " path ": dep " k
+                       " missing :mvn/version"))
+                [path-str version]))
+            deps))))
+
+(defn render-extra-deps
+  "Render parsed deps as a require(...) block for go.mod. Returns empty
+  string when there are no deps (template absorbs the empty line)."
+  [deps]
+  (if (seq deps)
+    (str "require (\n"
+         (str/join "\n"
+                   (map (fn [[path version]]
+                          (str "\t" path " " version))
+                        deps))
+         "\n)\n")
+    ""))
+
+(defn- parse-glojure-replaces
+  "Extract replace directives from glojure's go.mod so the same fork
+  pinning bash's setup-go-module installs is honoured in AOT too."
+  [glojure-mod-path]
+  (let [text (slurp glojure-mod-path)
+        block (some->> (re-find #"(?s)replace\s*\(([^)]*)\)" text) second)
+        block-lines (when block
+                      (->> (str/split-lines block)
+                           (map #(str/replace % #"\s*//.*" ""))
+                           (map str/trim)
+                           (remove str/blank?)))
+        single-lines (->> (str/split-lines text)
+                          (map #(str/replace % #"\s*//.*" ""))
+                          (map str/trim)
+                          (filter #(re-find #"^replace\s+\S" %))
+                          (map #(str/replace % #"^replace\s+" "")))]
+    (->> (concat block-lines single-lines)
+         (keep (fn [line]
+                 (when-let [[_ left right]
+                            (re-find #"^(\S.*?)\s*=>\s*(\S.*?)$" line)]
+                   [(str/trim left) (str/trim right)]))))))
+
+(defn write-glj-workspace-mod
+  "Write a go.mod into the glj compile workspace so `glj compile` can
+  `go get` user-declared deps and build the generated wrapper code.
+  Mirrors what prepare-repl-env's setup-go-module produces."
+  [tmpdir glojure-dir glojure-version extra-deps]
+  (let [replaces (parse-glojure-replaces (str glojure-dir "/go.mod"))
+        replace-lines (->> replaces
+                           (map (fn [[old new]]
+                                  (str "replace " old " => " new)))
+                           (str/join "\n"))
+        extra-block (render-extra-deps extra-deps)
+        body (str "module gloataot\n\n"
+                  "go 1.24\n\n"
+                  "require github.com/gloathub/glojure " glojure-version
+                  "\n\n"
+                  "replace github.com/gloathub/glojure => " glojure-dir "\n"
+                  (when (seq replaces) (str replace-lines "\n"))
+                  (when (seq extra-block) (str "\n" extra-block)))]
+    (spit (str tmpdir "/go.mod") body)
+    (let [glj-sum (str glojure-dir "/go.sum")]
+      (when (fs/exists? glj-sum)
+        (fs/copy glj-sum (str tmpdir "/go.sum")
+                 {:replace-existing true})))))
+
+;;------------------------------------------------------------------------------
 ;; Option Parsing
 ;;------------------------------------------------------------------------------
 
@@ -975,7 +1100,9 @@ Less common:
         (fs/delete-tree tmpdir)))))
 
 (defn convert-directory [input-dir output format namespace module platform]
-  (let [is-dir-output (= format "dir")
+  (let [deps-file (resolve-deps-file)
+        extra-deps (when deps-file (parse-gljdeps deps-file))
+        is-dir-output (= format "dir")
         is-binary (contains? #{"bin" "lib" "wasm" "js"} format)
         output-dir (cond
                      is-dir-output (str/replace output #"/$" "")
@@ -1090,14 +1217,50 @@ Less common:
                   (fs/create-dirs (fs/parent target))
                   (fs/copy file target {:replace-existing true})))))
 
-          (let [glj (:GLJ make-vars)]
+          ;; Make gljdeps.edn visible to glj compile in its CWD so it can
+          ;; resolve third-party Go package call sites. glj invokes
+          ;; `go get` for declared deps and compiles a small wrapper
+          ;; against glojure, so the workspace needs a go.mod with the
+          ;; same glojure replace/fork pinning prepare-repl-env writes.
+          (when deps-file
+            (fs/copy deps-file (str shared-tmpdir "/gljdeps.edn")
+                     {:replace-existing true})
+            (write-glj-workspace-mod
+              shared-tmpdir
+              (:GLOJURE-DIR make-vars)
+              (:GLOJURE-VERSION make-vars)
+              extra-deps))
+
+          (let [glj (:GLJ make-vars)
+                ;; glj genpkg (triggered by extra Go deps) reads GOARCH at
+                ;; runtime; mirror prepare-repl-env which does the same.
+                host-goarch (-> (process/shell {:out :string}
+                                               (:GO make-vars) "env" "GOARCH")
+                                :out
+                                str/trim)
+                compile-env (cond-> go-env
+                              (seq extra-deps)
+                              (assoc "GOARCH" host-goarch
+                                     "GOFLAGS" "-mod=mod"))]
+            ;; When deps are present the workspace go.mod we wrote needs
+            ;; a tidy pass so the user's deps appear before glj compiles.
+            (when (seq extra-deps)
+              (let [tidy (process/shell
+                           {:dir shared-tmpdir
+                            :extra-env compile-env
+                            :out :string :err :string
+                            :continue true}
+                           (:GO make-vars) "mod" "tidy")]
+                (when-not (zero? (:exit tidy))
+                  (die "go mod tidy failed in glj workspace:\n"
+                       (or (not-empty (:err tidy)) (:out tidy))))))
             ;; Compile all user namespaces
             (doseq [ns @all-namespaces]
               (msg "  Compiling" ns "...")
               (let [compile-cmd (str "(compile (quote " ns "))")
                     opts {:in compile-cmd
                           :dir shared-tmpdir
-                          :extra-env go-env
+                          :extra-env compile-env
                           :out :string
                           :err :string}]
                 (try
@@ -1153,9 +1316,15 @@ Less common:
                           [["GO-MODULE" go-module]
                            ["GLOJURE-VERSION" glojure-version]
                            ["YS-PKG-VERSION" ys-pkg-version]
-                           ["GLOAT-ROOT" GLOAT-ROOT]])]
+                           ["GLOAT-ROOT" GLOAT-ROOT]
+                           ["EXTRA-DEPS" (render-extra-deps extra-deps)]])]
               (spit (str output-dir "/go.mod") result)
-              (msg "Generated:" (str output-dir "/go.mod")))
+              (msg "Generated:" (str output-dir "/go.mod"))
+              (when (seq extra-deps)
+                (msg "Extra deps:"
+                     (str/join ", "
+                               (map (fn [[p v]] (str p "@" v))
+                                    extra-deps)))))
 
             ;; Run deep prune before generating main.go
             ;; (prune needs user's pkg/ files; main.go needs prune results)

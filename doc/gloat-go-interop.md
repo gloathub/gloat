@@ -144,10 +144,12 @@ $ gloat --run greet.glj
 Generated UUID: 69e566b7-f49c-4302-a11f-808ebcd96112
 ```
 
-`gloat --run` auto-detects a sibling `gljdeps.edn` in the same
-directory; the `--deps=path` flag is available for the REPL (see
-[gloat-repl](gloat-repl.md)).
-First launch fetches the module; subsequent launches reuse the cache.
+All compile modes (including `gloat --run` and binary builds) and the
+REPL look for `gljdeps.edn` the same way: an explicit `--deps=path`
+takes precedence, then `GLOAT_GLJDEPS` from the environment, then a
+`gljdeps.edn` in the current working directory.
+See [gloat-repl](gloat-repl.md) for REPL specifics.
+First launch fetches each module; subsequent launches reuse the cache.
 
 If a fully-qualified path is unwieldy at the call site, give it a
 local short name with `def`:

@@ -67,7 +67,7 @@ platforms     List available cross-compilation platforms
 repl          Start REPL client; see 'man gloat-repl'
 nrepl         Start nREPL server; see 'man gloat-repl'
 srepl         Start socket REPL server; see 'man gloat-repl'
-deps=         Path to gljdeps.edn (for --repl or --nrepl or --srepl)
+deps=         Path to gljdeps.edn (Go module deps; AOT or REPL)
 shell         Start a sub-shell or run a command (-- cmd...)
 shell-all     Like --shell but install all dev tools
 complete=     Generate shell completion script (bash, fish, zsh)
@@ -390,10 +390,6 @@ setup() {
   # Run getopt for --help/--version display, flag validation, and GLOAT_OPTS
   opts_edn=$(printf '%s\n' "$GETOPT_SPEC" | \
     "$root/util/getopt" ${proc_args[@]+"${proc_args[@]}"}) || exit $?
-
-  # --deps without --repl or --nrepl is an error
-  [[ $opt_deps && -z $opt_repl && -z $opt_nrepl && -z $opt_srepl ]] &&
-    die "Error: --deps requires --repl or --nrepl"
 
   install-deps
 }

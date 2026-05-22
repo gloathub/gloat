@@ -13,6 +13,7 @@ include $M/glojure.mk
 include $M/go.mk
 include $M/lein.mk
 include $M/md2man.mk
+include $M/perl.mk
 include $M/shellcheck.mk
 include $M/let-go.mk
 include $M/wasmtime.mk
@@ -104,6 +105,7 @@ endif
 ifneq (,$(filter %-bb.t %-bin.t,$(tests)))
 TEST-DEPS += $(TEST-CALL)
 endif
+TEST-DEPS += $(PERL)
 
 ifdef slow
   export RUN_SLOW_TESTS := true

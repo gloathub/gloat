@@ -1,3 +1,12 @@
+// Bubbletea interop shim for the picker demo.
+//
+// All application logic lives in picker.clj; this shim only implements
+// tea.Model and delegates each callback to a Clojure var via glj.Var.
+// To build the demo: run gloat on picker.clj with
+// --module=gloat-demo/picker, copy this file over the generated
+// build/main.go, and `go build` from the build directory.
+// The accompanying Makefile is a convenience wrapper around those
+// steps; the shim itself is plain Go.
 package main
 
 import (
@@ -7,7 +16,10 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/gloathub/glojure/pkg/glj"
 	"github.com/gloathub/glojure/pkg/lang"
-	_ "GO-MODULE/pkg/picker/core"
+	// Blank-import the gloat-compiled picker.core package so its init()
+	// runs and registers the namespace loader. The path matches gloat's
+	// --module value plus the namespace path under pkg/.
+	_ "gloat-demo/picker/pkg/picker/core"
 	_ "github.com/gloathub/gloat/ys/pkg/all"
 )
 

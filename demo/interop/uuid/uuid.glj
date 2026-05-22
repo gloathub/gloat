@@ -1,0 +1,12 @@
+(ns main.core)
+
+(def uuid-pkg 'github.com:google:uuid)
+
+(defn -main []
+  (let [id           (github.com:google:uuid.New)
+        s            (.String id)
+        [parsed err] (github.com:google:uuid.Parse s)]
+    (println "package:" uuid-pkg)
+    (println "new    :" s)
+    (println "parsed :" (.String parsed))
+    (println "err    :" err)))

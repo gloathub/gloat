@@ -1,1 +1,0 @@
-{:deps {github.com:google:uuid {:mvn/version "v1.6.0"}}}

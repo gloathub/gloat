@@ -40,6 +40,8 @@ third-party Go packages via `gljdeps.edn`.
 
 ## Calling Go Package Functions
 
+Runnable: [`01-hello-package-fn.glj`](../demo/interop/go-interop/01-hello-package-fn.glj)
+
 A Go package function is called with the form `(pkg.Function args...)`.
 The compiler resolves the identifier directly to the package's exported
 function, so there is no `import` form to write and no aliasing step.
@@ -71,6 +73,8 @@ Fully-qualified module paths use the same separator throughout.
 A Glojure function can be passed wherever Go expects a function value.
 The compiler generates a Go closure that calls back into the Glojure
 runtime, so higher-order Go APIs work the same as Clojure ones.
+
+Runnable: [`02-fn-into-go-hof.glj`](../demo/interop/go-interop/02-fn-into-go-hof.glj)
 
 ```clojure
 (ns main.core)
@@ -167,6 +171,8 @@ current namespace and does not affect resolution anywhere else.
 
 ## Methods on Values
 
+Runnable: [`03-method-call.glj`](../demo/interop/go-interop/03-method-call.glj)
+
 Method calls use the dot form, identical to Clojure's Java interop.
 Both shapes are supported and produce the same code:
 
@@ -198,6 +204,8 @@ works.
 
 
 ## Reading and Writing Struct Fields
+
+Runnable: [`04-fields-and-set.glj`](../demo/interop/go-interop/04-fields-and-set.glj)
 
 The same dot form reads exported struct fields.
 There is no separate `.-field` form; the compiler decides whether the
@@ -236,6 +244,8 @@ To inspect a function-typed field without calling it, drop to
 
 ## Constructing Values with `new`
 
+Runnable: [`05-new-and-init.glj`](../demo/interop/go-interop/05-new-and-init.glj)
+
 `new` returns a fresh, zero-valued pointer to a Go type.
 
 ```clojure
@@ -257,7 +267,8 @@ Initialise the struct by writing its fields with `set!`:
 
 Where a struct field expects a function-typed interface value (the
 canonical example is `net/http.Handler`), wrap a Glojure fn in the
-package's `*Func` adapter:
+package's `*Func` adapter
+(see [`06-handler-func-wrap.glj`](../demo/interop/go-interop/06-handler-func-wrap.glj)):
 
 ```clojure
 (ns main.core)
@@ -283,6 +294,8 @@ typed slices and maps from Glojure values are limited; see
 
 
 ## Multiple Return Values
+
+Runnable: [`07-multi-return.glj`](../demo/interop/go-interop/07-multi-return.glj)
 
 Go functions that return more than one value come back to Glojure as a
 vector.
@@ -315,6 +328,8 @@ A common idiomatic shape is to throw on error and keep going:
 
 
 ## Collections: Slices, Arrays, Maps
+
+Runnable: [`08-slice-of-byte.glj`](../demo/interop/go-interop/08-slice-of-byte.glj)
 
 Go types do not exist as Glojure literals.
 To construct or cast to a Go collection type, use the type-builder
@@ -357,6 +372,8 @@ Build incrementally, or use a Go helper.
 
 
 ## Reflection Escape Hatch
+
+Runnable: [`09-reflect-escape.glj`](../demo/interop/go-interop/09-reflect-escape.glj)
 
 A handful of Go features (function-typed field reads, channel
 operations, dynamic field lookup, unexported behaviour, anything that
@@ -429,5 +446,6 @@ These are gaps in the current Glojure compiler, not language
 decisions; expect them to shrink over time.
 
 Runnable copies of each example on this page live under
-`demo/interop/go-interop/` in the gloat repository.
+[`demo/interop/go-interop/`](../demo/interop/go-interop/ReadMe.md)
+in the gloat repository.
 Try them with `gloat --run path/to/file.glj`.

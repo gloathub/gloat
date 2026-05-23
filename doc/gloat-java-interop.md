@@ -9,8 +9,8 @@ that unmodified `.clj` source written for Clojure-on-the-JVM behaves the
 same way when compiled by gloat, even where Go's standard library would
 give a different answer.
 
-The supported surface today is `java.lang.Math`. Other classes follow
-the same pattern as gojava grows.
+The supported surface today is `java.lang.Math` and `java.lang.System`.
+Other classes follow the same pattern as gojava grows.
 
 ```clojure
 (ns main.core)
@@ -31,17 +31,20 @@ JVM symbols flow through three layers:
 1. **Rewrite** -- the `.clj` -> `.glj` transform translates each
    `Math/*` symbol to a fully-qualified Go reference into the bridge
    package.
-2. **Bridge** -- a small Go package inside glojure
-   (`pkg/javacompat/math/`) that handles JVM-specific semantics:
-   polymorphic dispatch on argument type, JVM-faithful rounding rules,
-   exact-arithmetic overflow detection.
+2. **Bridge** -- small Go packages inside glojure
+   (`pkg/javacompat/math/`, `pkg/javacompat/system/`) that handle
+   JVM-specific semantics: polymorphic dispatch on argument type,
+   JVM-faithful rounding rules, exact-arithmetic overflow detection,
+   nil-on-unset env/property lookups, conversion of Go return values
+   into Clojure-friendly forms.
 3. **gojava** -- the typed Go port of `java.lang.*`, with one Go name
    per JVM overload (`AbsInt`, `AbsLong`, `FloorDivInt`, `FloorDivLong`,
    ...).
 
-At the REPL the rewrite step is skipped; the bridge registers each Math
-symbol under the JVM-style `Math.<name>` key in glojure's pkgmap so
-`(Math/sqrt 144)` resolves the same way without translation.
+At the REPL the rewrite step is skipped; each bridge registers its
+symbols under the JVM-style `Math.<name>` and `System.<name>` keys in
+glojure's pkgmap so `(Math/sqrt 144)` and `(System/getenv "PATH")`
+resolve the same way without translation.
 
 ## Static method calls
 
@@ -121,9 +124,68 @@ Use the JVM form when you want JVM-faithful semantics or when you are
 porting Clojure source. Use the Go form when you want to call the Go
 stdlib directly (or any third-party Go package).
 
+## java.lang.System
+
+Runnable: [`06-system.clj`](../demo/interop/java-interop/06-system.clj)
+
+The supported surface covers time, environment variables, system
+properties, process exit, the standard streams, and a couple of
+housekeeping helpers.
+
+```clojure
+(System/currentTimeMillis)            ; ms since epoch (long)
+(System/nanoTime)                     ; high-resolution time source (long)
+
+(System/getenv "PATH")                ; value, or nil if unset
+(System/getenv)                       ; full env as a Clojure map
+
+(System/getProperty "user.home")      ; value, or nil
+(System/getProperty "x" "fallback")   ; value, or "fallback"
+(System/setProperty "k" "v")          ; returns previous value or nil
+(System/clearProperty "k")            ; returns previous value or nil
+
+(System/lineSeparator)                ; "\n" on Unix, "\r\n" on Windows
+(System/gc)                           ; runs Go's runtime.GC()
+(System/exit 0)                       ; calls os.Exit
+```
+
+`System/getenv` follows JVM semantics: a missing variable returns `nil`,
+not the empty string. `System/getProperty` works the same way, and the
+two-argument form returns its default.
+
+The property table is seeded with the JVM-style keys most often read by
+Clojure code: `user.home`, `user.dir`, `os.name`, `file.separator`,
+`line.separator`, `path.separator`. Use `setProperty` to extend it.
+
+### Standard streams
+
+`System/out`, `System/err`, and `System/in` are thin wrappers over
+`os.Stdout`, `os.Stderr`, and `os.Stdin`. They expose the most-reached-for
+methods of `java.io.PrintStream` / `java.io.InputStream`. Glojure's
+instance-method resolution capitalizes the first letter, so JVM-style
+calls land on the Go method:
+
+```clojure
+(.println System/out "hello")         ; -> os.Stdout.Println
+(.print   System/err "oops")          ; -> os.Stderr.Print
+(.printf  System/out "%d\n" 42)       ; -> os.Stdout.Printf
+(.flush   System/out)                 ; -> os.Stdout.Flush (best-effort)
+(.read    System/in  buf)             ; -> os.Stdin.Read
+```
+
+Note that idiomatic Clojure code usually goes through `(println ...)`
+and friends (which route via `*out*`), not the streams directly. The
+streams are here for code that asks for them by name.
+
+### Not yet supported
+
+`arraycopy`, `identityHashCode`, the security-manager / finalization
+APIs. Open an issue if you have a Clojure codebase that needs any of
+these.
+
 ## Supported symbols
 
-All of `java.lang.Math`:
+### java.lang.Math (complete)
 
 - Constants: `Math/PI`, `Math/E`
 - Powers and roots: `Math/sqrt`, `Math/cbrt`, `Math/pow`, `Math/exp`,
@@ -143,9 +205,22 @@ All of `java.lang.Math`:
   `Math/decrementExact`, `Math/toIntExact`
 - Random: `Math/random`
 
+### java.lang.System
+
+- Time: `System/currentTimeMillis`, `System/nanoTime`
+- Environment: `System/getenv` (0-arg map, 1-arg lookup)
+- Properties: `System/getProperty` (1+2 arg), `System/setProperty`,
+  `System/clearProperty`
+- Lifecycle: `System/exit`, `System/gc`
+- Misc: `System/lineSeparator`
+- Streams: `System/out`, `System/err`, `System/in` (with `.println`,
+  `.print`, `.printf`, `.flush`, `.write`, `.read`)
+
 ## Status
 
-`java.lang.Math` is complete. `java.lang.String`, `java.lang.Integer`,
-`java.lang.Float`, and related classes are on the roadmap and will
-follow the same three-layer pattern. Until then, use the dot-method
-forms (`(.toUpperCase s)`) on Go strings or Go-style package calls.
+`java.lang.Math` and `java.lang.System` are usable.
+`java.lang.String`, `java.lang.Integer`, `java.lang.Long`,
+`java.lang.Double`, `java.lang.Boolean`, and related classes are on the
+roadmap and will follow the same three-layer pattern. Until then, use
+the dot-method forms (`(.toUpperCase s)`) on Go strings or Go-style
+package calls.

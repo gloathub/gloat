@@ -12,6 +12,7 @@ include $M/git.mk
 include $M/glojure.mk
 include $M/go.mk
 include $M/lein.mk
+include $M/let-go.mk
 include $M/md2man.mk
 include $M/perl.mk
 include $M/shellcheck.mk
@@ -149,8 +150,14 @@ update: $(YS-GO-FILES) $(MAN-PAGES)
 bb: $(BB)
 	$@
 
+clj: $(CLJ)
+	$@
+
 lein: $(LEIN)
 	$@ repl
+
+lg: $(LG)
+	$@
 
 which-bb: $(BB)
 	@echo $<

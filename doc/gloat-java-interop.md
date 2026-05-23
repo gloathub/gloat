@@ -24,6 +24,13 @@ Other classes follow the same pattern as gojava grows.
 JVM-style and Go-style interop are additive: `(Math/sqrt x)` and
 `(math.Sqrt x)` both compile and can appear in the same file.
 
+Fully-qualified `java.lang.X/y` symbols are also accepted and resolve
+identically to the bare form, mirroring standard Clojure where
+`java.lang.*` is auto-imported. So `(java.lang.Math/abs -1)` and
+`(Math/abs -1)` produce the same result. The same applies to
+constructors: `(java.lang.Integer. 100)` and `(Integer. 100)` are
+equivalent.
+
 ## How it works
 
 JVM symbols flow through three layers:

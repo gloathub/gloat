@@ -10,7 +10,7 @@ include $M/shell.mk
 
 override PATH := $R/bin:$(PATH)
 
-SOURCE-FILE := ulid.glj
+SOURCE-FILE := ulid.clj
 BINARY := ulid
 
 MAKES-CLEAN := \

@@ -13,17 +13,17 @@ resolution path rather than coincidentally finding a bundled module.
 ## Running
 
 ```bash
-gloat --run ulid.glj          # AOT compile and run
-gloat ulid.glj -o ulid        # produce a standalone binary
+gloat --run ulid.clj          # AOT compile and run
+gloat ulid.clj -o ulid        # produce a standalone binary
 ./ulid
 ```
 
 All three resolution mechanisms for `gljdeps.edn` work here:
 
 ```bash
-gloat --run ulid.glj                                    # auto-detects ./gljdeps.edn
-gloat --deps=./gljdeps.edn --run ulid.glj               # explicit path
-GLOAT_GLJDEPS=./gljdeps.edn gloat --run ulid.glj        # via env var
+gloat --run ulid.clj                                    # auto-detects ./gljdeps.edn
+gloat --deps=./gljdeps.edn --run ulid.clj               # explicit path
+GLOAT_GLJDEPS=./gljdeps.edn gloat --run ulid.clj        # via env var
 ```
 
 ## What This Demonstrates
@@ -40,7 +40,7 @@ the syntax Glojure uses when calling into Go packages
 (see [`doc/gloat-go-interop.md`](../../../../doc/gloat-go-interop.md)).
 The value is a Clojure deps-style map naming the module version.
 
-When Gloat AOT-compiles `ulid.glj`, it:
+When Gloat AOT-compiles `ulid.clj`, it:
 
 1. Resolves `gljdeps.edn` (from `--deps=`, `GLOAT_GLJDEPS`, or the CWD).
 2. Copies it into the temporary glj workspace so `glj compile` sees it.
@@ -53,7 +53,7 @@ without changing or duplicating the dep declaration.
 
 ## The Program
 
-`ulid.glj` exercises three different interop shapes against the ulid
+`ulid.clj` exercises three different interop shapes against the ulid
 module to confirm the dep is wired up end-to-end:
 
 - Package function: `(github.com:oklog:ulid:v2.Make)`
@@ -88,9 +88,9 @@ or load-bearing:
 Try it both ways from this directory:
 
 ```bash
-gloat --run ulid.glj                  # uses ./gljdeps.edn -> v2.1.0
+gloat --run ulid.clj                  # uses ./gljdeps.edn -> v2.1.0
 mv gljdeps.edn gljdeps.edn.bak
-gloat --run ulid.glj                  # works via auto-discovery -> v2.1.x latest
+gloat --run ulid.clj                  # works via auto-discovery -> v2.1.x latest
 mv gljdeps.edn.bak gljdeps.edn
 ```
 

@@ -1,3 +1,11 @@
+;; Wrapping a Glojure fn as a typed Go function value.
+;;
+;; A bare Glojure fn satisfies a Go `func(...)` signature but does not
+;; automatically satisfy an *interface* like `http.Handler`. Go's
+;; `http.HandlerFunc` is an adapter type that turns a function into a
+;; handler; calling `(net:http.HandlerFunc handler)` wraps the Glojure
+;; fn the same way `http.HandlerFunc(handler)` does in Go.
+
 (ns main.core)
 
 (defn handler [w r]

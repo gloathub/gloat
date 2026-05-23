@@ -1,3 +1,10 @@
+;; Destructuring Go's `(value, error)` returns.
+;;
+;; Functions returning multiple values, like `strconv.Atoi`, come back
+;; as a Glojure vector and bind with normal destructuring. A successful
+;; call has `nil` in the error slot; a failed call holds a Go `error`
+;; whose message is read with `(.Error err)`.
+
 (ns main.core)
 
 (defn -main []

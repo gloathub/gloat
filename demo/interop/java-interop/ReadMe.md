@@ -3,13 +3,15 @@ Java Interop Examples
 
 Short, runnable Clojure programs that demonstrate calling `java.lang.*`
 from Glojure. Today the supported surface is `java.lang.Math`,
-`java.lang.System`, `java.lang.Integer`, and `java.lang.Long`; the
-pattern generalises to other classes as the
+`java.lang.System`, `java.lang.Integer`, `java.lang.Long`, and
+`java.lang.String`; the pattern generalises to other classes as the
 [gojava](https://github.com/gloathub/gojava) port grows.
 
 Files are `.clj` (not `.glj`) so they go through the rewrite step that
-translates JVM-style `Math/*`, `System/*`, `Integer/*`, and `Long/*`
-symbols into calls on the glojure-internal javacompat bridge. The
+translates JVM-style `Math/*`, `System/*`, `Integer/*`, `Long/*`, and
+`String/*` symbols into calls on the glojure-internal javacompat bridge.
+String instance methods like `(.toUpperCase s)` dispatch at runtime
+through a string-method registry. The
 bridge then forwards to gojava's typed Go port of `java.lang.*`,
 returning JVM-faithful results.
 
@@ -37,3 +39,4 @@ done
 | `05-dual-interop.clj`           | JVM-style `Math/sqrt` and Go-style `math.Sqrt` together |
 | `06-system.clj`                 | `java.lang.System`: time, env, properties, streams |
 | `07-integer-long.clj`           | `java.lang.Integer` and `java.lang.Long`: parsing, constants, bit ops |
+| `08-string.clj`                 | `java.lang.String`: instance methods, statics, JVM semantics |

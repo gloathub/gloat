@@ -9,8 +9,9 @@ that unmodified `.clj` source written for Clojure-on-the-JVM behaves the
 same way when compiled by gloat, even where Go's standard library would
 give a different answer.
 
-The supported surface today is `java.lang.Math` and `java.lang.System`.
-Other classes follow the same pattern as gojava grows.
+The supported surface today is `java.lang.Math`, `java.lang.System`,
+`java.lang.Integer`, `java.lang.Long`, and `java.lang.String`. Other
+classes follow the same pattern as gojava grows.
 
 ```clojure
 (ns main.core)
@@ -231,6 +232,42 @@ compile time to the matching `valueOf`, which accepts either a number
 failures raise a runtime error with `NumberFormatException` in the
 message, matching JVM behavior.
 
+## java.lang.String
+
+Runnable: [`08-string.clj`](../demo/interop/java-interop/08-string.clj)
+
+`String/*` statics rewrite to the javacompat bridge like `Math/*` does.
+Instance methods (`(.length s)`, `(.toUpperCase s)`, `(.substring s 1
+4)`, ...) take a different path: glojure has no Go-side methods on the
+primitive `string` type, so the bridge registers each JVM method with
+the runtime, and `lang.FieldOrMethod` consults that registry when the
+receiver is a Go string. The dispatch is case-insensitive on the first
+letter so both the original (`.equals`) and the rewrite-renamed
+(`.Equals`) spellings reach the same handler.
+
+```clojure
+(.length "naïve")              ; 5 (UTF-16 code units, JVM semantics)
+(.toUpperCase "hello")         ; "HELLO"
+(.substring "hello world" 6)   ; "world"
+(.indexOf "hello" "lo")        ; 3
+(.replace "foobar" "oo" "OO")  ; "fOObar"
+(.split "a,b,c" ",")           ; ["a" "b" "c"]
+(.hashCode "hello")            ; 99162322  (JVM int32 algorithm)
+(.trim "  hi  ")               ; "hi"      (ASCII whitespace only)
+(.strip "  hi  ")              ; "hi"      (Unicode whitespace)
+
+(String/format "%s=%d" "x" 42) ; "x=42"
+(String/join "-" ["a" "b"])    ; "a-b"
+(String/valueOf nil)           ; "null"
+(String. "hello")              ; "hello"   (rewrites to valueOf)
+```
+
+The format string for `String/format` accepts `%n` (newline), `%b`
+(boolean as "true"/"false"), and positional `%N$x` indices in addition
+to Go's standard verbs. Regex methods (`.matches`, `.replaceAll`,
+`.replaceFirst`, `.split`) compile their pattern through Go's `regexp`
+package; the supported syntax is Go's RE2, not Java's regex.
+
 ## Supported symbols
 
 ### java.lang.Math (complete)
@@ -286,11 +323,29 @@ return types. Includes `Long/MIN_VALUE`, `Long/MAX_VALUE`,
 `Long/parseLong`, `Long/valueOf`, `Long/toBinaryString`,
 `Long/toHexString`, `Long/bitCount`, etc.
 
+### java.lang.String
+
+- Statics: `String/format`, `String/join`, `String/valueOf`,
+  `String/copyValueOf`
+- Constructor: `(String. x)` (rewrites to `valueOf`)
+- Length and predicates: `.length`, `.isEmpty`, `.isBlank`
+- Case: `.toUpperCase`, `.toLowerCase`
+- Trimming: `.trim`, `.strip`, `.stripLeading`, `.stripTrailing`
+- Substrings: `.substring` (1+2 arg), `.charAt`, `.codePointAt`
+- Search: `.indexOf`, `.lastIndexOf` (string or char, with optional
+  from-index), `.startsWith` (1+2 arg), `.endsWith`, `.contains`
+- Compare: `.equals`, `.equalsIgnoreCase`, `.compareTo`,
+  `.compareToIgnoreCase`
+- Build: `.concat`, `.repeat`, `.replace` (char or string),
+  `.replaceAll`, `.replaceFirst`, `.matches`, `.split` (1+2 arg)
+- Convert: `.toCharArray`, `.getBytes`, `.chars`, `.codePoints`,
+  `.lines`, `.toString`, `.intern`
+- Hash: `.hashCode` (JVM int32 algorithm)
+
 ## Status
 
-`java.lang.Math`, `java.lang.System`, `java.lang.Integer`, and
-`java.lang.Long` are usable.
-`java.lang.String`, `java.lang.Double`, `java.lang.Boolean`,
-`java.lang.Character`, and related classes are on the roadmap and will
-follow the same three-layer pattern. Until then, use the dot-method
-forms (`(.toUpperCase s)`) on Go strings or Go-style package calls.
+`java.lang.Math`, `java.lang.System`, `java.lang.Integer`,
+`java.lang.Long`, and `java.lang.String` are usable.
+`java.lang.Double`, `java.lang.Boolean`, `java.lang.Character`,
+`java.lang.Class`, `java.lang.Thread`, and related classes are on the
+roadmap and will follow the same three-layer pattern.

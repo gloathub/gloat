@@ -37,7 +37,7 @@ into. The EDN shape is:
 
 The symbol key is a Go module path with `:` substituted for `/`, matching
 the syntax Glojure uses when calling into Go packages
-(see [`doc/gloat-go-interop.md`](../../../doc/gloat-go-interop.md)).
+(see [`doc/gloat-go-interop.md`](../../../../doc/gloat-go-interop.md)).
 The value is a Clojure deps-style map naming the module version.
 
 When Gloat AOT-compiles `ulid.glj`, it:
@@ -60,9 +60,42 @@ module to confirm the dep is wired up end-to-end:
 - Method on a returned value: `(.String id)`
 - Multi-return tuple: `[parsed err] (github.com:oklog:ulid:v2.Parse s)`
 
-Each cross-package call here would fail at compile time without
-`gljdeps.edn`, because the generated Go code references
-`github.com/oklog/ulid/v2` as an import path that has to be in `go.mod`.
+## What `gljdeps.edn` Actually Buys You
+
+Gloat's AOT pipeline runs `go mod tidy` before `go build`, and Go's
+own tooling will resolve missing imports against the public module
+proxy on demand. That means the demo will *also* build successfully
+with `gljdeps.edn` renamed or absent: Go discovers
+`github.com/oklog/ulid/v2` via the proxy, picks the latest version,
+and adds it to the generated `go.mod` automatically.
+
+So `gljdeps.edn` is not strictly required for an AOT build to
+succeed when the public proxy is reachable. Where it *is* required
+or load-bearing:
+
+1. **Version pinning.** Without the deps file you get whatever is
+   currently latest on the proxy. With it, you get the version you
+   declared. Pinning matters for reproducible builds.
+2. **REPL mode (`gloat --repl`).** There is no `go build` step at the
+   end of the REPL flow, so `go mod tidy` never runs to discover the
+   dep. The deps file is genuinely required here.
+3. **Private modules.** The public proxy cannot resolve them; an
+   explicit declaration plus `GOPRIVATE` is needed.
+4. **Offline or restricted builds (`GOPROXY=off`).** Auto-discovery
+   only works when the proxy is reachable. Pinned versions can come
+   from the local module cache without a network round-trip.
+
+Try it both ways from this directory:
+
+```bash
+gloat --run ulid.glj                  # uses ./gljdeps.edn -> v2.1.0
+mv gljdeps.edn gljdeps.edn.bak
+gloat --run ulid.glj                  # works via auto-discovery -> v2.1.x latest
+mv gljdeps.edn.bak gljdeps.edn
+```
+
+The second run produces a `go: finding module for package ...` line
+from `go mod tidy`, which is the signature of the proxy fallback.
 
 ## A Note on `v2`
 

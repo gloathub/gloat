@@ -4,7 +4,7 @@
 /.lsp/
 /.nrepl-port
 /demo-assets
-/gljrepl/
+gljrepl/
 /*.bb
 /*.clj
 /*.glj

@@ -344,6 +344,40 @@
           template-str
           replacements))
 
+(defn extract-replaces
+  "Return the replace directives from a go.mod as a seq of [old new] strings.
+  Handles both single-line `replace X => Y` and block `replace ( ... )` forms."
+  [go-mod-content]
+  (let [strip-comment #(str/trim (str/replace % #"//.*$" ""))
+        parse-line (fn [line]
+                     (let [parts (str/split line #"=>")]
+                       (when (= 2 (count parts))
+                         [(str/trim (first parts))
+                          (str/trim (second parts))])))
+        lines (str/split-lines go-mod-content)]
+    (loop [in-block false, out [], xs lines]
+      (if (empty? xs)
+        out
+        (let [raw (first xs), line (strip-comment raw)]
+          (cond
+            (and in-block (re-find #"^\)" line))
+            (recur false out (rest xs))
+
+            (re-find #"^replace\s*\(" line)
+            (recur true out (rest xs))
+
+            (and in-block (seq line))
+            (recur true (if-let [p (parse-line line)] (conj out p) out)
+                   (rest xs))
+
+            (re-find #"^replace\s" line)
+            (let [body (str/replace line #"^replace\s+" "")]
+              (recur false (if-let [p (parse-line body)] (conj out p) out)
+                     (rest xs)))
+
+            :else
+            (recur in-block out (rest xs))))))))
+
 (defn has-main-fn? [clj-content]
   "Check if Clojure code contains a (defn main ...) definition."
   (boolean (re-find #"\(defn\s+main\b" clj-content)))
@@ -1317,7 +1351,21 @@ Less common:
                            ["GLOJURE-VERSION" glojure-version]
                            ["YS-PKG-VERSION" ys-pkg-version]
                            ["GLOAT-ROOT" GLOAT-ROOT]
-                           ["EXTRA-DEPS" (render-extra-deps extra-deps)]])]
+                           ["EXTRA-DEPS" (render-extra-deps extra-deps)]])
+                  ;; Mirror ys/pkg/go.mod replaces (e.g. local gojava clone)
+                  ;; because Go does not inherit replaces from required modules.
+                  ys-pkg-mod (str GLOAT-ROOT "/ys/pkg/go.mod")
+                  extra-replaces (when (fs/exists? ys-pkg-mod)
+                                   (extract-replaces (slurp ys-pkg-mod)))
+                  replace-block (when (seq extra-replaces)
+                                  (str "\n"
+                                       (str/join "\n"
+                                                 (map (fn [[old new]]
+                                                        (str "replace " old
+                                                             " => " new))
+                                                      extra-replaces))
+                                       "\n"))
+                  result (str result (or replace-block ""))]
               (spit (str output-dir "/go.mod") result)
               (msg "Generated:" (str output-dir "/go.mod"))
               (when (seq extra-deps)

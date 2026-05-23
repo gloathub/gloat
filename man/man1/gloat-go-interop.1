@@ -41,6 +41,9 @@ To experiment with interop interactively, start the REPL with
 third-party Go packages via \fBgljdeps.edn\fR\&.
 
 .SH Calling Go Package Functions
+Runnable: \fB01-hello-package-fn.glj\fR
+
+.PP
 A Go package function is called with the form \fB(pkg.Function args...)\fR\&.
 The compiler resolves the identifier directly to the package's exported
 function, so there is no \fBimport\fR form to write and no aliasing step.
@@ -74,6 +77,9 @@ Fully-qualified module paths use the same separator throughout.
 A Glojure function can be passed wherever Go expects a function value.
 The compiler generates a Go closure that calls back into the Glojure
 runtime, so higher-order Go APIs work the same as Clojure ones.
+
+.PP
+Runnable: \fB02-fn-into-go-hof.glj\fR
 
 .EX
 (ns main.core)
@@ -153,10 +159,12 @@ Generated UUID: 69e566b7-f49c-4302-a11f-808ebcd96112
 .EE
 
 .PP
-\fBgloat --run\fR auto-detects a sibling \fBgljdeps.edn\fR in the same
-directory; the \fB--deps=path\fR flag is available for the REPL (see
-gloat-repl).
-First launch fetches the module; subsequent launches reuse the cache.
+All compile modes (including \fBgloat --run\fR and binary builds) and the
+REPL look for \fBgljdeps.edn\fR the same way: an explicit \fB--deps=path\fR
+takes precedence, then \fBGLOAT_GLJDEPS\fR from the environment, then a
+\fBgljdeps.edn\fR in the current working directory.
+See gloat-repl for REPL specifics.
+First launch fetches each module; subsequent launches reuse the cache.
 
 .PP
 If a fully-qualified path is unwieldy at the call site, give it a
@@ -174,6 +182,9 @@ This is a plain Glojure binding, not a package alias; it lives in the
 current namespace and does not affect resolution anywhere else.
 
 .SH Methods on Values
+Runnable: \fB03-method-call.glj\fR
+
+.PP
 Method calls use the dot form, identical to Clojure's Java interop.
 Both shapes are supported and produce the same code:
 
@@ -206,6 +217,9 @@ pointer and value method sets, so calling either kind of method just
 works.
 
 .SH Reading and Writing Struct Fields
+Runnable: \fB04-fields-and-set.glj\fR
+
+.PP
 The same dot form reads exported struct fields.
 There is no separate \fB\&.-field\fR form; the compiler decides whether the
 member is a field or a method by looking at the type.
@@ -244,6 +258,9 @@ To inspect a function-typed field without calling it, drop to
 \fBreflect\fR (see \fBReflection Escape Hatch\fP).
 
 .SH Constructing Values with \fBnew\fR
+Runnable: \fB05-new-and-init.glj\fR
+
+.PP
 \fBnew\fR returns a fresh, zero-valued pointer to a Go type.
 
 .EX
@@ -267,7 +284,8 @@ Initialise the struct by writing its fields with \fBset!\fR:
 .PP
 Where a struct field expects a function-typed interface value (the
 canonical example is \fBnet/http.Handler\fR), wrap a Glojure fn in the
-package's \fB*Func\fR adapter:
+package's \fB*Func\fR adapter
+(see \fB06-handler-func-wrap.glj\fR):
 
 .EX
 (ns main.core)
@@ -293,6 +311,9 @@ typed slices and maps from Glojure values are limited; see
 \fBKnown Limits\fP\&.
 
 .SH Multiple Return Values
+Runnable: \fB07-multi-return.glj\fR
+
+.PP
 Go functions that return more than one value come back to Glojure as a
 vector.
 Destructure the vector at the binding site to name each return:
@@ -325,6 +346,9 @@ A common idiomatic shape is to throw on error and keep going:
 .EE
 
 .SH Collections: Slices, Arrays, Maps
+Runnable: \fB08-slice-of-byte.glj\fR
+
+.PP
 Go types do not exist as Glojure literals.
 To construct or cast to a Go collection type, use the type-builder
 functions in the \fBgo/\fR namespace.
@@ -373,6 +397,9 @@ literal is not yet supported through the type builders for every type.
 Build incrementally, or use a Go helper.
 
 .SH Reflection Escape Hatch
+Runnable: \fB09-reflect-escape.glj\fR
+
+.PP
 A handful of Go features (function-typed field reads, channel
 operations, dynamic field lookup, unexported behaviour, anything that
 needs a \fBreflect.Type\fR at runtime) are not yet reachable through the
@@ -455,5 +482,6 @@ decisions; expect them to shrink over time.
 
 .PP
 Runnable copies of each example on this page live under
-\fBdemo/interop/go-interop/\fR in the gloat repository.
+\fBdemo/interop/go-interop/\fR
+in the gloat repository.
 Try them with \fBgloat --run path/to/file.glj\fR\&.

@@ -1,3 +1,16 @@
+- version: 0.1.43
+  date:    Sat May 23 01:51:03 PM EDT 2026
+  changes:
+  - Support .mk file for starting 9 clojure dialect repls
+  - Document go-interop demo files
+  - Add index ReadMes for interop demos
+  - Restructure ulid demo as deps/gljdeps-edn
+  - Swap uuid demo to oklog/ulid
+  - Add uuid interop demo for gljdeps.edn
+  - Link interop doc to runnable demo files
+  - Add deftype/reify AOT implementation plan
+  - Support gljdeps.edn in AOT compilation
+
 - version: 0.1.42
   date:    Sat May 16 02:14:29 PM EDT 2026
   changes:

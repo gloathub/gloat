@@ -183,6 +183,47 @@ streams are here for code that asks for them by name.
 APIs. Open an issue if you have a Clojure codebase that needs any of
 these.
 
+## java.lang.Integer and java.lang.Long
+
+Runnable: [`07-integer-long.clj`](../demo/interop/java-interop/07-integer-long.clj)
+
+The boxed integer classes carry a fixed-width contract from the JVM:
+`Integer` is 32 bits, `Long` is 64 bits.
+That contract is preserved here, so `Integer/MAX_VALUE` is
+`2147483647` (not Go's `math.MaxInt`, which is 2^63-1 on 64-bit
+platforms) and `Integer/parseInt` will refuse values that overflow
+int32.
+
+```clojure
+(Integer/parseInt "42")               ; -> 42 (int32)
+(Integer/parseInt "1010" 2)           ; -> 10 (radix parsing)
+(Integer/parseInt "ff" 16)            ; -> 255
+(Long/parseLong "9999999999")         ; -> 9999999999 (int64)
+
+Integer/MAX_VALUE                     ; -> 2147483647
+Long/MAX_VALUE                        ; -> 9223372036854775807
+
+(Integer/toBinaryString 42)           ; -> "101010"
+(Integer/toHexString 255)             ; -> "ff"
+(Long/toHexString 4096)               ; -> "1000"
+
+(Integer/valueOf 7)                   ; -> 7
+(Integer/valueOf "7")                 ; -> 7 (parses)
+(Integer. 5)                          ; rewrites to (Integer/valueOf 5)
+(Long.    "9999999999")               ; rewrites to (Long/valueOf "...")
+
+(Integer/bitCount 0xFF)               ; -> 8
+(Integer/numberOfLeadingZeros 1)      ; -> 31
+(Integer/signum -5)                   ; -> -1
+(Integer/max 3 7)                     ; -> 7
+```
+
+Constructor forms `(Integer. x)` and `(Long. x)` are rewritten at
+compile time to the matching `valueOf`, which accepts either a number
+(coerced to int32 / int64) or a string (parsed as decimal). Parse
+failures raise a runtime error with `NumberFormatException` in the
+message, matching JVM behavior.
+
 ## Supported symbols
 
 ### java.lang.Math (complete)
@@ -216,11 +257,33 @@ these.
 - Streams: `System/out`, `System/err`, `System/in` (with `.println`,
   `.print`, `.printf`, `.flush`, `.write`, `.read`)
 
+### java.lang.Integer
+
+- Constants: `Integer/MIN_VALUE`, `Integer/MAX_VALUE`, `Integer/SIZE`,
+  `Integer/BYTES`
+- Parsing: `Integer/parseInt` (1+2 arg), `Integer/parseUnsignedInt`,
+  `Integer/valueOf` (int or string)
+- Constructor: `(Integer. x)` (rewrites to `valueOf`)
+- Formatting: `Integer/toString` (1+2 arg), `Integer/toBinaryString`,
+  `Integer/toOctalString`, `Integer/toHexString`
+- Bit operations: `Integer/bitCount`, `Integer/numberOfLeadingZeros`,
+  `Integer/numberOfTrailingZeros`, `Integer/highestOneBit`,
+  `Integer/lowestOneBit`, `Integer/reverse`, `Integer/reverseBytes`
+- Comparisons: `Integer/compare`, `Integer/max`, `Integer/min`,
+  `Integer/signum`, `Integer/sum`
+
+### java.lang.Long
+
+Same surface as `java.lang.Integer`, with `Long/` prefixes and int64
+return types. Includes `Long/MIN_VALUE`, `Long/MAX_VALUE`,
+`Long/parseLong`, `Long/valueOf`, `Long/toBinaryString`,
+`Long/toHexString`, `Long/bitCount`, etc.
+
 ## Status
 
-`java.lang.Math` and `java.lang.System` are usable.
-`java.lang.String`, `java.lang.Integer`, `java.lang.Long`,
-`java.lang.Double`, `java.lang.Boolean`, and related classes are on the
-roadmap and will follow the same three-layer pattern. Until then, use
-the dot-method forms (`(.toUpperCase s)`) on Go strings or Go-style
-package calls.
+`java.lang.Math`, `java.lang.System`, `java.lang.Integer`, and
+`java.lang.Long` are usable.
+`java.lang.String`, `java.lang.Double`, `java.lang.Boolean`,
+`java.lang.Character`, and related classes are on the roadmap and will
+follow the same three-layer pattern. Until then, use the dot-method
+forms (`(.toUpperCase s)`) on Go strings or Go-style package calls.

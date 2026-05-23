@@ -2,14 +2,16 @@ Java Interop Examples
 =====================
 
 Short, runnable Clojure programs that demonstrate calling `java.lang.*`
-from Glojure. Today the supported surface is `java.lang.Math` and
-`java.lang.System`; the pattern generalises to other classes as the
+from Glojure. Today the supported surface is `java.lang.Math`,
+`java.lang.System`, `java.lang.Integer`, and `java.lang.Long`; the
+pattern generalises to other classes as the
 [gojava](https://github.com/gloathub/gojava) port grows.
 
 Files are `.clj` (not `.glj`) so they go through the rewrite step that
-translates JVM-style `Math/*` and `System/*` symbols into calls on the
-glojure-internal javacompat bridge. The bridge then forwards to gojava's
-typed Go port of `java.lang.*`, returning JVM-faithful results.
+translates JVM-style `Math/*`, `System/*`, `Integer/*`, and `Long/*`
+symbols into calls on the glojure-internal javacompat bridge. The
+bridge then forwards to gojava's typed Go port of `java.lang.*`,
+returning JVM-faithful results.
 
 Run one with:
 
@@ -34,3 +36,4 @@ done
 | `04-jvm-semantics.clj`          | Where JVM behaviour diverges from Go's stdlib |
 | `05-dual-interop.clj`           | JVM-style `Math/sqrt` and Go-style `math.Sqrt` together |
 | `06-system.clj`                 | `java.lang.System`: time, env, properties, streams |
+| `07-integer-long.clj`           | `java.lang.Integer` and `java.lang.Long`: parsing, constants, bit ops |

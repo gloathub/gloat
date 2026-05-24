@@ -188,6 +188,16 @@ main() (
 
   setup "$@"
 
+  # Recursion guard: a runaway REPL tab-completion that shells back to
+  # 'gloat --repl=' can fork-bomb the machine.
+  if [[ $opt_repl || $opt_nrepl || $opt_srepl ]]; then
+    if [[ ${GLOAT_IN_REPL-} ]]; then
+      die "Error: refusing to start a gloat REPL recursively." \
+          "GLOAT_IN_REPL is set (pid $GLOAT_IN_REPL); unset to override."
+    fi
+    export GLOAT_IN_REPL=$$
+  fi
+
   [[ $opt_shell || $opt_shellall ]] && do-shell-all
   [[ $opt_repl  ]] && do-repl
   [[ $opt_nrepl ]] && do-nrepl
@@ -632,10 +642,12 @@ start-tool-nrepl() {
   fifo=$(mktemp -u)
   mkfifo "$fifo"
 
-  "${cmd[@]}" > "$fifo" 2>&1 &
+  # Run in its own process group so the EXIT trap can take down the whole
+  # subtree, not just the server PID we started.
+  setsid "${cmd[@]}" > "$fifo" 2>&1 &
   local server_pid=$!
   # shellcheck disable=SC2064
-  trap "kill $server_pid 2>/dev/null; rm -f '$fifo'" EXIT
+  trap "kill -- -$server_pid 2>/dev/null; rm -f '$fifo'" EXIT
 
   # Read lines until we find the port
   while IFS= read -r line; do

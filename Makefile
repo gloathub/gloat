@@ -86,6 +86,10 @@ MAKES-CLEAN := \
   Changes.tmp \
   $(TEST-CALL) \
 
+MAKES-DISTCLEAN += \
+  .clj-kondo \
+  .lsp \
+
 # Disable CGO to avoid Go linker issues
 export CGO_ENABLED := 0
 

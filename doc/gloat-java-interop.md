@@ -11,7 +11,8 @@ give a different answer.
 
 The supported surface today is `java.lang.Math`, `java.lang.System`,
 `java.lang.Integer`, `java.lang.Long`, `java.lang.String`,
-`java.lang.Double`, `java.lang.Boolean`, and `java.lang.Character`.
+`java.lang.Double`, `java.lang.Boolean`, `java.lang.Character`,
+`java.util.regex.Pattern` (with Matcher), and `java.util.UUID`.
 Other classes follow the same pattern as gojava grows.
 
 ```clojure
@@ -375,9 +376,88 @@ Character/MAX_RADIX                    ; 36
 Classification uses Go's `unicode` package, which tracks the same
 categories the JVM uses; predicates like `isLetter` and `isDigit`
 match the JVM result for the BMP code points typically encountered.
-`isWhitespace` follows the JVM's quirk of accepting `\t`/`\n`/`\f`/
-`\r`/`0x1c-1f` while explicitly *excluding* the no-break spaces
-(` `, ` `, ` `) that `isSpaceChar` accepts.
+`isWhitespace` follows the JVM's quirk of accepting tab/newline/
+form-feed/carriage-return/`0x1c-1f` while explicitly *excluding* the
+no-break spaces that `isSpaceChar` accepts.
+
+## java.util.regex.Pattern
+
+Runnable: [`12-regex.clj`](../demo/interop/java-interop/12-regex.clj)
+
+`Pattern/*` covers the static factories, the Matcher API, and the
+flag constants. The underlying engine is Go's `regexp` (RE2), so a
+few JVM features are unavailable: possessive quantifiers (`*+`,
+`++`, `?+`), backreferences (`\1`, `\k<name>`), and lookaround
+(`(?=...)`, `(?!...)`). Java-style named groups (`(?<name>...)`) are
+translated to RE2's `(?P<name>...)` form before compilation, so the
+Java syntax works.
+
+```clojure
+(Pattern/matches "\\d+" "12345")           ; true
+
+(let [p (Pattern/compile "(\\d+)-(\\w+)")
+      m (.matcher p "42-foo")]
+  (.find m)                                ; true
+  (.group m)                               ; "42-foo"
+  (.group m 1)                             ; "42"
+  (.group m 2))                            ; "foo"
+
+(let [p (Pattern/compile "HELLO" Pattern/CASE_INSENSITIVE)
+      m (.matcher p "hello world")]
+  (.find m))                               ; true
+
+(let [p (Pattern/compile "\\s+")]
+  (vec (.split p "foo  bar\tbaz")))        ; ["foo" "bar" "baz"]
+
+(Pattern/quote "a.b*c")                    ; "a\\.b\\*c"
+(.pattern (Pattern. "x+"))                 ; "x+"  (ctor sugar)
+```
+
+Matcher instance methods (`.find`, `.group`, `.start`, `.end`,
+`.matches`, `.lookingAt`, `.replaceAll`, `.replaceFirst`,
+`.groupCount`, `.reset`) reach through reflection on the Go `*Matcher`
+receiver. The matcher is stateful between `.find` calls, mirroring
+the JVM. Pattern flags (`CASE_INSENSITIVE`, `MULTILINE`, `DOTALL`,
+`LITERAL`, `UNICODE_CASE`) compile down to the corresponding RE2
+inline modifiers or to `regexp.QuoteMeta` for `LITERAL`.
+
+## java.util.UUID
+
+Runnable: [`13-uuid.clj`](../demo/interop/java-interop/13-uuid.clj)
+
+`UUID/*` covers the random and name-based factories, parsing,
+ordering, hashing, and the two-long constructor. Random UUIDs are
+RFC 4122 v4 (`crypto/rand`); name-based UUIDs are v3 (MD5 of the
+raw input bytes, matching `UUID.nameUUIDFromBytes` exactly).
+
+```clojure
+(let [u (UUID/randomUUID)]
+  (.version u)                             ; 4
+  (.variant u)                             ; 2
+  (.toString u))                           ; "<hex>-<hex>-4<hex>...-..."
+
+(let [u (UUID/fromString "01234567-89ab-cdef-0123-456789abcdef")]
+  (.getMostSignificantBits u)              ; 81985529216486895
+  (.getLeastSignificantBits u))            ; 81985529216486895
+
+(.toString (UUID/nameUUIDFromBytes (.getBytes "hello")))
+;; "5d41402a-bc4b-3a76-b971-9d911017c592"  (matches JVM)
+
+(let [u (UUID. 42 99)]                     ; ctor sugar to fromBits
+  (.toString u))                           ; "00000000-0000-002a-0000-000000000063"
+
+(.compareTo (UUID. 1 2) (UUID. 1 3))       ; -1
+(.hashCode (UUID/fromString "..."))        ; JVM XOR-and-fold algorithm
+```
+
+Instance methods reach through reflection on the Go `*UUID`
+receiver. The Go type implements `fmt.Stringer`, so `(str u)` and
+`println u` yield the canonical hex form. The fully qualified
+`java.util.UUID/...` form also resolves through the bridge for most
+calls; a few of clojure.core's internal `(java.util.UUID/fromString s)`
+and `(java.util.UUID/randomUUID)` call sites still resolve to
+glojure's existing `google/uuid` implementation for back-compat with
+the stdlib `uuid?` predicate.
 
 ## Supported symbols
 
@@ -490,12 +570,33 @@ return types. Includes `Long/MIN_VALUE`, `Long/MAX_VALUE`,
   `Character/forDigit`, `Character/getNumericValue`
 - Comparison: `Character/compare`
 
+### java.util.regex.Pattern
+
+- Statics: `Pattern/compile` (1+2 arg), `Pattern/matches`, `Pattern/quote`
+- Constructor: `(Pattern. regex)` (rewrites to `compile`)
+- Flag constants: `Pattern/CASE_INSENSITIVE`, `Pattern/MULTILINE`,
+  `Pattern/LITERAL`, `Pattern/DOTALL`, `Pattern/UNICODE_CASE`
+- Pattern instance: `.pattern`, `.flags`, `.toString`, `.matcher`,
+  `.split` (1+2 arg), `.asPredicate`
+- Matcher instance: `.matches`, `.lookingAt`, `.find` (0+1 arg),
+  `.group` (0+1 arg, by index or name), `.start` (0+1 arg),
+  `.end` (0+1 arg), `.groupCount`, `.replaceAll`, `.replaceFirst`,
+  `.reset` (0+1 arg), `.pattern`
+
+### java.util.UUID
+
+- Statics: `UUID/randomUUID`, `UUID/fromString`, `UUID/nameUUIDFromBytes`
+- Constructor: `(UUID. msb lsb)` (rewrites to `fromBits`)
+- Instance: `.toString`, `.getMostSignificantBits`,
+  `.getLeastSignificantBits`, `.version`, `.variant`, `.compareTo`,
+  `.equals`, `.hashCode`
+
 ## Status
 
 `java.lang.Math`, `java.lang.System`, `java.lang.Integer`,
 `java.lang.Long`, `java.lang.String`, `java.lang.Double`,
-`java.lang.Boolean`, and `java.lang.Character` are usable.
-`java.lang.Class`, `java.lang.Thread`, `java.util.regex.Pattern`,
-`java.util.UUID`, `java.time.Instant`, `java.io.File`, and other
+`java.lang.Boolean`, `java.lang.Character`, `java.util.regex.Pattern`
+(with Matcher), and `java.util.UUID` are usable. `java.lang.Class`,
+`java.lang.Thread`, `java.time.Instant`, `java.io.File`, and other
 commonly-used classes are on the roadmap and will follow the same
 three-layer pattern.

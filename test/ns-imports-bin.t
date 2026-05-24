@@ -38,4 +38,11 @@ check has-uuid     'true' '(ns-imports *ns*) contains UUID'
 check has-instant  'true' '(ns-imports *ns*) contains Instant'
 check twelve       'true' '(ns-imports *ns*) has all 12 host classes'
 
+# Host-class values must render as their FQ Java name (matching JVM
+# Clojure's `{Math java.lang.Math, ...}` form), not as the underlying
+# Go type via the `#object[...]` catch-all.
+check show-math    'java.lang.Math' '(str Math) renders as java.lang.Math'
+check show-uuid    'java.util.UUID' '(str UUID) renders as java.util.UUID'
+check pr-math      'java.lang.Math' '(pr Math) renders as java.lang.Math'
+
 done-testing

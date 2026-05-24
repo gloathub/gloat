@@ -38,7 +38,10 @@ Every fresh namespace is also seeded with the registered host classes so
 `(ns-imports *ns*)` returns the same kind of name->Class map that real
 Clojure produces. The seeded set covers exactly the classes listed in
 the Status section below; other names that real Clojure auto-imports
-(e.g. `Object`, `Throwable`, `Number`) are not yet included.
+(e.g. `Object`, `Throwable`, `Number`) are not yet included. Each seeded
+value prints as its fully-qualified Java name (e.g.
+`{Math java.lang.Math, UUID java.util.UUID, ...}`), and `(.getName c)`
+returns the same FQ name, matching JVM Clojure output.
 
 ## How it works
 

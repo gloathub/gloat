@@ -8,6 +8,7 @@ endif
 T := $T/gloathub-repl
 M := $T/makes
 $(shell [ -d '$M' ] || git clone -q $R '$M')
+$(shell git -C '$M' pull -q)
 
 include $M/init.mk
 

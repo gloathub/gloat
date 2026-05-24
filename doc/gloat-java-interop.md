@@ -10,8 +10,9 @@ same way when compiled by gloat, even where Go's standard library would
 give a different answer.
 
 The supported surface today is `java.lang.Math`, `java.lang.System`,
-`java.lang.Integer`, `java.lang.Long`, and `java.lang.String`. Other
-classes follow the same pattern as gojava grows.
+`java.lang.Integer`, `java.lang.Long`, `java.lang.String`,
+`java.lang.Double`, `java.lang.Boolean`, and `java.lang.Character`.
+Other classes follow the same pattern as gojava grows.
 
 ```clojure
 (ns main.core)
@@ -268,6 +269,116 @@ to Go's standard verbs. Regex methods (`.matches`, `.replaceAll`,
 `.replaceFirst`, `.split`) compile their pattern through Go's `regexp`
 package; the supported syntax is Go's RE2, not Java's regex.
 
+## java.lang.Double
+
+Runnable: [`09-double.clj`](../demo/interop/java-interop/09-double.clj)
+
+`Double/*` covers the static surface of the boxed double: parsing,
+predicates, comparison, and bit-level conversion. Values are float64
+to match Java's double precision.
+
+```clojure
+(Double/parseDouble "3.14")            ; 3.14
+(Double/valueOf "2.5")                 ; 2.5  (string overload)
+(Double/valueOf 4.0)                   ; 4.0  (numeric overload)
+
+(Double/isNaN Double/NaN)              ; true
+(Double/isInfinite Double/POSITIVE_INFINITY) ; true
+(Double/isFinite 1.5)                  ; true
+
+(Double/toString Double/MAX_VALUE)     ; "1.7976931348623157E308"
+(Double/toString Double/NaN)           ; "NaN"
+(Double/toString Double/POSITIVE_INFINITY) ; "Infinity"
+
+(Double/max 3.0 7.0)                   ; 7.0
+(Double/compare 1.0 2.0)               ; -1
+
+(Double/doubleToLongBits 1.0)          ; 4607182418800017408
+(Double/longBitsToDouble 4607182418800017408) ; 1.0
+
+(Double. "1.25")                       ; 1.25 (rewrites to valueOf)
+```
+
+`Double/toString` is JVM-faithful: mantissa always carries a decimal
+point (`"1.0"`, not `"1"`), the exponent is uppercase `E` with no `+`
+sign on positive exponents, and the special values render as `"NaN"`,
+`"Infinity"`, and `"-Infinity"`. Glojure's `println` formats float64
+infinities as `##Inf` / `##-Inf`; route through `Double/toString` when
+you want the JVM spelling.
+
+## java.lang.Boolean
+
+Runnable: [`10-boolean.clj`](../demo/interop/java-interop/10-boolean.clj)
+
+`Boolean/*` exposes the static surface. `parseBoolean` and `valueOf`
+follow the JVM's lenient rule: they return `true` only when the input
+equals `"true"` ignoring case, and `false` for every other value
+including the empty string and nil.
+
+```clojure
+(Boolean/parseBoolean "TRUE")          ; true   (case insensitive)
+(Boolean/parseBoolean "yes")           ; false  (anything else)
+(Boolean/valueOf "True")               ; true
+(Boolean/valueOf true)                 ; true
+
+(Boolean/toString true)                ; "true"
+(Boolean/compare false true)           ; -1
+
+(Boolean/logicalAnd true false)        ; false
+(Boolean/logicalOr  true false)        ; true
+(Boolean/logicalXor true true)         ; false
+
+Boolean/TRUE                           ; true
+Boolean/FALSE                          ; false
+
+(Boolean. "true")                      ; true   (rewrites to valueOf)
+```
+
+The logical combinators are present so callers porting code that uses
+them as point-free functions (e.g. `(reduce Boolean/logicalAnd ...)`)
+don't have to rewrite to `(and ...)`. `Boolean/getBoolean` looks up a
+system property by name; in gloat it falls back to the process
+environment when no property is set.
+
+## java.lang.Character
+
+Runnable: [`11-character.clj`](../demo/interop/java-interop/11-character.clj)
+
+`Character/*` covers the static predicates, case folding, and
+radix-aware digit conversion. Glojure's character literal (`\a`, `\5`,
+`\space`) parses to `lang.Char` (a rune wrapper); the bridge unwraps
+it, so you can pass either a `\c` literal or a plain integer code
+point.
+
+```clojure
+(Character/isDigit \5)                 ; true
+(Character/isLetter \x)                ; true
+(Character/isWhitespace \tab)          ; true
+(Character/isAlphabetic \z)            ; true
+
+(Character/toUpperCase \a)             ; \A
+(Character/toLowerCase \Z)             ; \z
+(Character/toString \k)                ; "k"
+
+(Character/digit \f 16)                ; 15
+(Character/digit \z 10)                ; -1  (out of radix)
+(Character/forDigit 10 16)             ; \a
+(Character/getNumericValue \7)         ; 7
+(Character/compare \a \b)              ; -1
+
+Character/MIN_RADIX                    ; 2
+Character/MAX_RADIX                    ; 36
+
+(Character. \W)                        ; \W   (rewrites to valueOf)
+```
+
+Classification uses Go's `unicode` package, which tracks the same
+categories the JVM uses; predicates like `isLetter` and `isDigit`
+match the JVM result for the BMP code points typically encountered.
+`isWhitespace` follows the JVM's quirk of accepting `\t`/`\n`/`\f`/
+`\r`/`0x1c-1f` while explicitly *excluding* the no-break spaces
+(` `, ` `, ` `) that `isSpaceChar` accepts.
+
 ## Supported symbols
 
 ### java.lang.Math (complete)
@@ -342,10 +453,49 @@ return types. Includes `Long/MIN_VALUE`, `Long/MAX_VALUE`,
   `.lines`, `.toString`, `.intern`
 - Hash: `.hashCode` (JVM int32 algorithm)
 
+### java.lang.Double
+
+- Constants: `Double/MIN_VALUE`, `Double/MAX_VALUE`, `Double/MIN_NORMAL`,
+  `Double/POSITIVE_INFINITY`, `Double/NEGATIVE_INFINITY`, `Double/NaN`,
+  `Double/SIZE`, `Double/BYTES`
+- Parsing: `Double/parseDouble`, `Double/valueOf` (string or number)
+- Constructor: `(Double. x)` (rewrites to `valueOf`)
+- Formatting: `Double/toString` (JVM-style), `Double/toHexString`
+- Predicates: `Double/isNaN`, `Double/isInfinite`, `Double/isFinite`
+- Bit conversion: `Double/doubleToLongBits`,
+  `Double/doubleToRawLongBits`, `Double/longBitsToDouble`
+- Comparisons: `Double/compare`, `Double/max`, `Double/min`, `Double/sum`
+
+### java.lang.Boolean
+
+- Constants: `Boolean/TRUE`, `Boolean/FALSE`
+- Parsing: `Boolean/parseBoolean`, `Boolean/valueOf` (string or boolean)
+- Constructor: `(Boolean. x)` (rewrites to `valueOf`)
+- Formatting: `Boolean/toString`
+- Logical: `Boolean/logicalAnd`, `Boolean/logicalOr`, `Boolean/logicalXor`
+- Properties: `Boolean/getBoolean` (falls back to the process env)
+- Comparison: `Boolean/compare`
+
+### java.lang.Character
+
+- Constants: `Character/MIN_VALUE`, `Character/MAX_VALUE`,
+  `Character/MIN_RADIX`, `Character/MAX_RADIX`
+- Constructor: `(Character. c)` (rewrites to `valueOf`)
+- Predicates: `Character/isDigit`, `Character/isLetter`,
+  `Character/isLetterOrDigit`, `Character/isAlphabetic`,
+  `Character/isWhitespace`, `Character/isSpaceChar`,
+  `Character/isUpperCase`, `Character/isLowerCase`
+- Case folding: `Character/toUpperCase`, `Character/toLowerCase`
+- Conversion: `Character/toString`, `Character/digit`,
+  `Character/forDigit`, `Character/getNumericValue`
+- Comparison: `Character/compare`
+
 ## Status
 
 `java.lang.Math`, `java.lang.System`, `java.lang.Integer`,
-`java.lang.Long`, and `java.lang.String` are usable.
-`java.lang.Double`, `java.lang.Boolean`, `java.lang.Character`,
-`java.lang.Class`, `java.lang.Thread`, and related classes are on the
-roadmap and will follow the same three-layer pattern.
+`java.lang.Long`, `java.lang.String`, `java.lang.Double`,
+`java.lang.Boolean`, and `java.lang.Character` are usable.
+`java.lang.Class`, `java.lang.Thread`, `java.util.regex.Pattern`,
+`java.util.UUID`, `java.time.Instant`, `java.io.File`, and other
+commonly-used classes are on the roadmap and will follow the same
+three-layer pattern.

@@ -1,0 +1,32 @@
+(ns character-test
+  (:require [ys.v0 :refer :all])
+  (:refer-clojure :exclude [atom die print read replace reverse set]))
+
+(defn -main [& args]
+  (let [op (first args)]
+    (case op
+      "is-digit"      (println (Character/isDigit \5))
+      "is-digit-no"   (println (Character/isDigit \a))
+      "is-letter"     (println (Character/isLetter \x))
+      "is-ld"         (println (Character/isLetterOrDigit \3))
+      "is-upper"      (println (Character/isUpperCase \X))
+      "is-lower"      (println (Character/isLowerCase \X))
+      "is-ws"         (println (Character/isWhitespace \space))
+      "is-ws-tab"     (println (Character/isWhitespace \tab))
+      "is-spacechar"  (println (Character/isSpaceChar \space))
+      "is-alpha"      (println (Character/isAlphabetic \z))
+      "to-upper"      (println (Character/toUpperCase \a))
+      "to-lower"      (println (Character/toLowerCase \Z))
+      "to-string"     (println (Character/toString \k))
+      "digit-hex"     (println (Character/digit \f 16))
+      "digit-oob"     (println (Character/digit \z 10))
+      "for-digit"     (println (Character/forDigit 10 16))
+      "for-digit-9"   (println (Character/forDigit 9 10))
+      "numeric"       (println (Character/getNumericValue \7))
+      "compare-lt"    (println (Character/compare \a \b))
+      "compare-eq"    (println (Character/compare \a \a))
+      "MIN_RADIX"     (println Character/MIN_RADIX)
+      "MAX_RADIX"     (println Character/MAX_RADIX)
+      "ctor"          (println (Character. \W))
+      "fq-isdigit"    (println (java.lang.Character/isDigit \1))
+      (println "usage: character <op>"))))

@@ -1,0 +1,31 @@
+(ns double-test
+  (:require [ys.v0 :refer :all])
+  (:refer-clojure :exclude [atom die print read replace reverse set]))
+
+(defn -main [& args]
+  (let [op (first args)]
+    (case op
+      "parse"        (println (Double/parseDouble "3.14"))
+      "parse-neg"    (println (Double/parseDouble "-2.5"))
+      "parse-inf"    (println (Double/toString (Double/parseDouble "Infinity")))
+      "valueof-str"  (println (Double/valueOf "1.5"))
+      "valueof-num"  (println (Double/valueOf 2.0))
+      "tostring"     (println (Double/toString 3.14))
+      "tostring-big" (println (Double/toString Double/MAX_VALUE))
+      "tostring-nan" (println (Double/toString Double/NaN))
+      "tostring-inf" (println (Double/toString Double/POSITIVE_INFINITY))
+      "isnan"        (println (Double/isNaN Double/NaN))
+      "isnan-no"     (println (Double/isNaN 1.0))
+      "isinf"        (println (Double/isInfinite Double/POSITIVE_INFINITY))
+      "isfinite"     (println (Double/isFinite 1.5))
+      "isfinite-no"  (println (Double/isFinite Double/NaN))
+      "max"          (println (Double/max 3.0 7.0))
+      "min"          (println (Double/min 3.0 7.0))
+      "sum"          (println (Double/sum 1.5 2.5))
+      "compare-lt"   (println (Double/compare 1.0 2.0))
+      "compare-eq"   (println (Double/compare 1.0 1.0))
+      "bits-roundtrip" (println (Double/longBitsToDouble (Double/doubleToLongBits 3.14)))
+      "ctor"         (println (Double. "1.25"))
+      "ctor-num"     (println (Double. 4.0))
+      "fq-parse"     (println (java.lang.Double/parseDouble "0.5"))
+      (println "usage: double <op>"))))

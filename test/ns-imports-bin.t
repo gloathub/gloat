@@ -45,4 +45,12 @@ check show-math    'java.lang.Math' '(str Math) renders as java.lang.Math'
 check show-uuid    'java.util.UUID' '(str UUID) renders as java.util.UUID'
 check pr-math      'java.lang.Math' '(pr Math) renders as java.lang.Math'
 
+# Bare and fully-qualified host-class symbols must resolve at AOT compile
+# time so user code can write either `Math` or `java.lang.Math` and have
+# both forms print as the JVM-canonical name (lein behavior).
+check sym-math       'java.lang.Math'    'bare Math symbol resolves'
+check sym-fq-math    'java.lang.Math'    'FQ java.lang.Math resolves'
+check sym-integer    'java.lang.Integer' 'bare Integer symbol resolves'
+check sym-fq-integer 'java.lang.Integer' 'FQ java.lang.Integer resolves'
+
 done-testing

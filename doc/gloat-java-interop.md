@@ -478,6 +478,42 @@ Negative millis or out-of-range nanoseconds panic, matching the JVM's
 `IllegalArgumentException`. There is no `InterruptedException`: gojava
 never interrupts a sleeping goroutine.
 
+## java.time.Instant
+
+Runnable: [`15-instant.clj`](../demo/interop/java-interop/15-instant.clj)
+
+`Instant/*` covers the wall-clock factory (`now`), the ISO-8601 parser
+(`parse`), the two epoch factories (`ofEpochSecond` 1+2-arg,
+`ofEpochMilli`), and the `EPOCH` constant. Instance methods cover the
+seconds/nanos accessors, the `toEpochMilli` reverse conversion,
+comparison (`compareTo`, `equals`, `isBefore`, `isAfter`), `hashCode`,
+and the six `plus`/`minus` arithmetic methods (`Seconds`, `Millis`,
+`Nanos`).
+
+```clojure
+(.toString Instant/EPOCH)                  ; "1970-01-01T00:00:00Z"
+(.toString (Instant/now))                  ; "2026-05-24T17:42:08.123Z"
+
+(let [i (Instant/parse "2007-12-03T10:15:30.500Z")]
+  (.getEpochSecond i)                      ; 1196676930
+  (.getNano i)                             ; 500000000
+  (.toEpochMilli i)                        ; 1196676930500
+  (.toString (.plusMillis i 1500)))        ; "2007-12-03T10:15:32Z"
+
+(.toString (Instant/ofEpochSecond 0 1500000000))
+;; "1970-01-01T00:00:01.500Z"  (nano-adjustment normalised)
+
+(.compareTo (Instant/parse "2007-12-03T10:15:30Z")
+            (Instant/parse "2007-12-03T10:15:31Z"))   ; -1
+```
+
+`toString` matches Java's grouped output: no fraction when nanos is 0,
+otherwise the shortest of 3 (millis), 6 (micros), or 9 (nanos) digits
+that exactly represents the value. The Go type implements `fmt.Stringer`,
+so `(str i)` and `println i` produce the same canonical form. Instant
+has no public constructor on the JVM, so there is no `(Instant. ...)`
+sugar.
+
 ## Supported symbols
 
 ### java.lang.Math (complete)
@@ -617,12 +653,22 @@ return types. Includes `Long/MIN_VALUE`, `Long/MAX_VALUE`,
 Instance methods (`start`, `join`, `interrupt`, `getName`,
 `currentThread`, ...) are not supported.
 
+### java.time.Instant
+
+- Statics: `Instant/now`, `Instant/parse`, `Instant/ofEpochSecond`
+  (1+2 arg), `Instant/ofEpochMilli`
+- Constant: `Instant/EPOCH`
+- Instance: `.toString`, `.getEpochSecond`, `.getNano`,
+  `.toEpochMilli`, `.compareTo`, `.equals`, `.isBefore`, `.isAfter`,
+  `.hashCode`, `.plusSeconds`, `.plusMillis`, `.plusNanos`,
+  `.minusSeconds`, `.minusMillis`, `.minusNanos`
+
 ## Status
 
 `java.lang.Math`, `java.lang.System`, `java.lang.Integer`,
 `java.lang.Long`, `java.lang.String`, `java.lang.Double`,
 `java.lang.Boolean`, `java.lang.Character`, `java.lang.Thread`
-(`sleep` only), `java.util.regex.Pattern` (with Matcher), and
-`java.util.UUID` are usable. `java.lang.Class`, `java.time.Instant`,
-`java.io.File`, and other commonly-used classes are on the roadmap
-and will follow the same three-layer pattern.
+(`sleep` only), `java.util.regex.Pattern` (with Matcher),
+`java.util.UUID`, and `java.time.Instant` are usable. `java.lang.Class`,
+`java.io.File`, `java.lang.Throwable`, and other commonly-used classes
+are on the roadmap and will follow the same three-layer pattern.

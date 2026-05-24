@@ -459,6 +459,25 @@ and `(java.util.UUID/randomUUID)` call sites still resolve to
 glojure's existing `google/uuid` implementation for back-compat with
 the stdlib `uuid?` predicate.
 
+## java.lang.Thread
+
+Runnable: [`14-thread.clj`](../demo/interop/java-interop/14-thread.clj)
+
+Only `Thread/sleep` is wired today. The full Java Thread API (`start`,
+`join`, `interrupt`, names, uncaught handlers) has no direct goroutine
+analogue and is intentionally out of scope. `Thread/sleep` itself is
+trivial: gojava forwards to `time.Sleep`.
+
+```clojure
+(Thread/sleep 50)                            ; sleep 50 ms
+(Thread/sleep 1 500000)                      ; millis + nanos overload
+(java.lang.Thread/sleep 1)                   ; fully qualified resolves
+```
+
+Negative millis or out-of-range nanoseconds panic, matching the JVM's
+`IllegalArgumentException`. There is no `InterruptedException`: gojava
+never interrupts a sleeping goroutine.
+
 ## Supported symbols
 
 ### java.lang.Math (complete)
@@ -591,12 +610,19 @@ return types. Includes `Long/MIN_VALUE`, `Long/MAX_VALUE`,
   `.getLeastSignificantBits`, `.version`, `.variant`, `.compareTo`,
   `.equals`, `.hashCode`
 
+### java.lang.Thread
+
+- Statics: `Thread/sleep` (1-arg millis, 2-arg millis+nanos)
+
+Instance methods (`start`, `join`, `interrupt`, `getName`,
+`currentThread`, ...) are not supported.
+
 ## Status
 
 `java.lang.Math`, `java.lang.System`, `java.lang.Integer`,
 `java.lang.Long`, `java.lang.String`, `java.lang.Double`,
-`java.lang.Boolean`, `java.lang.Character`, `java.util.regex.Pattern`
-(with Matcher), and `java.util.UUID` are usable. `java.lang.Class`,
-`java.lang.Thread`, `java.time.Instant`, `java.io.File`, and other
-commonly-used classes are on the roadmap and will follow the same
-three-layer pattern.
+`java.lang.Boolean`, `java.lang.Character`, `java.lang.Thread`
+(`sleep` only), `java.util.regex.Pattern` (with Matcher), and
+`java.util.UUID` are usable. `java.lang.Class`, `java.time.Instant`,
+`java.io.File`, and other commonly-used classes are on the roadmap
+and will follow the same three-layer pattern.

@@ -5,14 +5,16 @@ Short, runnable Clojure programs that demonstrate calling `java.lang.*`
 and `java.util.*` classes from Glojure. Today the supported surface is
 `java.lang.Math`, `java.lang.System`, `java.lang.Integer`,
 `java.lang.Long`, `java.lang.String`, `java.lang.Double`,
-`java.lang.Boolean`, `java.lang.Character`, `java.util.regex.Pattern`
-(with Matcher), and `java.util.UUID`; the pattern generalises to other
-classes as the [gojava](https://github.com/gloathub/gojava) port grows.
+`java.lang.Boolean`, `java.lang.Character`, `java.lang.Thread`
+(only `sleep` for now), `java.util.regex.Pattern` (with Matcher), and
+`java.util.UUID`; the pattern generalises to other classes as the
+[gojava](https://github.com/gloathub/gojava) port grows.
 
 Files are `.clj` (not `.glj`) so they go through the rewrite step that
 translates JVM-style `Math/*`, `System/*`, `Integer/*`, `Long/*`,
-`String/*`, `Double/*`, `Boolean/*`, `Character/*`, `Pattern/*`, and
-`UUID/*` symbols into calls on the glojure-internal javacompat bridge.
+`String/*`, `Double/*`, `Boolean/*`, `Character/*`, `Thread/*`,
+`Pattern/*`, and `UUID/*` symbols into calls on the glojure-internal
+javacompat bridge.
 String instance methods like `(.toUpperCase s)` dispatch through a
 string-method registry; UUID and Matcher instance methods reach through
 reflection on the Go receiver. The bridge then forwards to gojava's
@@ -48,3 +50,4 @@ done
 | `11-character.clj`              | `java.lang.Character`: predicates, case folding, radix digits |
 | `12-regex.clj`                  | `java.util.regex.Pattern` + Matcher: compile, find, group, split |
 | `13-uuid.clj`                   | `java.util.UUID`: random/parse/name-based, msb/lsb, compareTo |
+| `14-thread.clj`                 | `java.lang.Thread`: `sleep` (only static currently supported) |

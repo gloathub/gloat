@@ -1,3 +1,20 @@
+- version: 0.1.44
+  date:    Sun May 24 12:33:00 PM EDT 2026
+  changes:
+  - Test bare and FQ host-class symbols
+  - Test host class FQ-name printing
+  - Test ns-imports auto-population
+  - Test java.time.Instant interop
+  - Test Thread/sleep interop
+  - Guard REPL against recursion and leaks
+  - Test regex and UUID interop
+  - Test Double/Boolean/Character interop
+  - Add String interop test, demo, and docs
+  - Test fully-qualified java.lang forms
+  - Add Integer/Long interop test, demo, docs
+  - Add System interop test, demo, and docs
+  - Add Math interop test, demos, and docs
+
 - version: 0.1.43
   date:    Sat May 23 01:51:03 PM EDT 2026
   changes:

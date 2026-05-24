@@ -41,7 +41,7 @@ To experiment with interop interactively, start the REPL with
 third-party Go packages via \fBgljdeps.edn\fR\&.
 
 .SH Calling Go Package Functions
-Runnable: \fB01-hello-package-fn.glj\fR
+Runnable: \fB01-hello-package-fn.clj\fR
 
 .PP
 A Go package function is called with the form \fB(pkg.Function args...)\fR\&.
@@ -79,7 +79,7 @@ The compiler generates a Go closure that calls back into the Glojure
 runtime, so higher-order Go APIs work the same as Clojure ones.
 
 .PP
-Runnable: \fB02-fn-into-go-hof.glj\fR
+Runnable: \fB02-fn-into-go-hof.clj\fR
 
 .EX
 (ns main.core)
@@ -182,7 +182,7 @@ This is a plain Glojure binding, not a package alias; it lives in the
 current namespace and does not affect resolution anywhere else.
 
 .SH Methods on Values
-Runnable: \fB03-method-call.glj\fR
+Runnable: \fB03-method-call.clj\fR
 
 .PP
 Method calls use the dot form, identical to Clojure's Java interop.
@@ -217,7 +217,7 @@ pointer and value method sets, so calling either kind of method just
 works.
 
 .SH Reading and Writing Struct Fields
-Runnable: \fB04-fields-and-set.glj\fR
+Runnable: \fB04-fields-and-set.clj\fR
 
 .PP
 The same dot form reads exported struct fields.
@@ -258,7 +258,7 @@ To inspect a function-typed field without calling it, drop to
 \fBreflect\fR (see \fBReflection Escape Hatch\fP).
 
 .SH Constructing Values with \fBnew\fR
-Runnable: \fB05-new-and-init.glj\fR
+Runnable: \fB05-new-and-init.clj\fR
 
 .PP
 \fBnew\fR returns a fresh, zero-valued pointer to a Go type.
@@ -285,7 +285,7 @@ Initialise the struct by writing its fields with \fBset!\fR:
 Where a struct field expects a function-typed interface value (the
 canonical example is \fBnet/http.Handler\fR), wrap a Glojure fn in the
 package's \fB*Func\fR adapter
-(see \fB06-handler-func-wrap.glj\fR):
+(see \fB06-handler-func-wrap.clj\fR):
 
 .EX
 (ns main.core)
@@ -311,7 +311,7 @@ typed slices and maps from Glojure values are limited; see
 \fBKnown Limits\fP\&.
 
 .SH Multiple Return Values
-Runnable: \fB07-multi-return.glj\fR
+Runnable: \fB07-multi-return.clj\fR
 
 .PP
 Go functions that return more than one value come back to Glojure as a
@@ -346,7 +346,7 @@ A common idiomatic shape is to throw on error and keep going:
 .EE
 
 .SH Collections: Slices, Arrays, Maps
-Runnable: \fB08-slice-of-byte.glj\fR
+Runnable: \fB08-slice-of-byte.clj\fR
 
 .PP
 Go types do not exist as Glojure literals.
@@ -397,7 +397,7 @@ literal is not yet supported through the type builders for every type.
 Build incrementally, or use a Go helper.
 
 .SH Reflection Escape Hatch
-Runnable: \fB09-reflect-escape.glj\fR
+Runnable: \fB09-reflect-escape.clj\fR
 
 .PP
 A handful of Go features (function-typed field reads, channel
@@ -484,4 +484,4 @@ decisions; expect them to shrink over time.
 Runnable copies of each example on this page live under
 \fBdemo/interop/go-interop/\fR
 in the gloat repository.
-Try them with \fBgloat --run path/to/file.glj\fR\&.
+Try them with \fBgloat --run path/to/file.clj\fR\&.

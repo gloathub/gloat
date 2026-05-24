@@ -1,3 +1,751 @@
 .nh
 .TH gloat-java-interop -- Calling Java from Gloat
-Basic Java interop is coming soon.
+.SH Synopsis
+Gloat understands the standard Clojure JVM-interop idioms (\fBMath/sqrt\fR,
+\fBMath/PI\fR, and so on) and routes them to a Go-native port of the JVM
+runtime called gojava. The goal is
+that unmodified \fB\&.clj\fR source written for Clojure-on-the-JVM behaves the
+same way when compiled by gloat, even where Go's standard library would
+give a different answer.
+
+.PP
+The supported surface today is \fBjava.lang.Math\fR, \fBjava.lang.System\fR,
+\fBjava.lang.Integer\fR, \fBjava.lang.Long\fR, \fBjava.lang.String\fR,
+\fBjava.lang.Double\fR, \fBjava.lang.Boolean\fR, \fBjava.lang.Character\fR,
+\fBjava.util.regex.Pattern\fR (with Matcher), and \fBjava.util.UUID\fR\&.
+Other classes follow the same pattern as gojava grows.
+
+.EX
+(ns main.core)
+
+(defn -main []
+  (println (Math/sqrt 144))            ; 12.0
+  (println Math/PI)                    ; 3.141592653589793
+  (println (Math/floorDiv -7 2)))      ; -4 (JVM floor semantics)
+.EE
+
+.PP
+JVM-style and Go-style interop are additive: \fB(Math/sqrt x)\fR and
+\fB(math.Sqrt x)\fR both compile and can appear in the same file.
+
+.PP
+Fully-qualified \fBjava.lang.X/y\fR symbols are also accepted and resolve
+identically to the bare form, mirroring standard Clojure where
+\fBjava.lang.*\fR is auto-imported. So \fB(java.lang.Math/abs -1)\fR and
+\fB(Math/abs -1)\fR produce the same result. The same applies to
+constructors: \fB(java.lang.Integer. 100)\fR and \fB(Integer. 100)\fR are
+equivalent.
+
+.PP
+Every fresh namespace is also seeded with the registered host classes so
+\fB(ns-imports *ns*)\fR returns the same kind of name->Class map that real
+Clojure produces. The seeded set covers exactly the classes listed in
+the Status section below; other names that real Clojure auto-imports
+(e.g. \fBObject\fR, \fBThrowable\fR, \fBNumber\fR) are not yet included. Each seeded
+value prints as its fully-qualified Java name (e.g.
+\fB{Math java.lang.Math, UUID java.util.UUID, ...}\fR), and \fB(.getName c)\fR
+returns the same FQ name, matching JVM Clojure output.
+
+.SH How it works
+JVM symbols flow through three layers:
+.IP "  1." 5
+\fBRewrite\fP -- the \fB\&.clj\fR -> \fB\&.glj\fR transform translates each
+\fBMath/*\fR symbol to a fully-qualified Go reference into the bridge
+package.
+.IP "  2." 5
+\fBBridge\fP -- small Go packages inside glojure
+(\fBpkg/javacompat/math/\fR, \fBpkg/javacompat/system/\fR) that handle
+JVM-specific semantics: polymorphic dispatch on argument type,
+JVM-faithful rounding rules, exact-arithmetic overflow detection,
+nil-on-unset env/property lookups, conversion of Go return values
+into Clojure-friendly forms.
+.IP "  3." 5
+\fBgojava\fP -- the typed Go port of \fBjava.lang.*\fR, with one Go name
+per JVM overload (\fBAbsInt\fR, \fBAbsLong\fR, \fBFloorDivInt\fR, \fBFloorDivLong\fR,
+\&...).
+
+.PP
+At the REPL the rewrite step is skipped; each bridge registers its
+symbols under the JVM-style \fBMath.<name>\fR and \fBSystem.<name>\fR keys in
+glojure's pkgmap so \fB(Math/sqrt 144)\fR and \fB(System/getenv "PATH")\fR
+resolve the same way without translation.
+
+.SH Static method calls
+Runnable: \fB01-static-method.clj\fR
+
+.PP
+\fBMath.sqrt(144)\fR on the JVM is \fB(Math/sqrt 144)\fR in Glojure. No import
+is needed. Single-argument methods are the most common case; two-arg
+forms work the same way.
+
+.EX
+(Math/sqrt 144)            ; 12.0
+(Math/pow 2 10)            ; 1024.0
+(Math/floor 2.7)           ; 2.0
+(Math/ceil 2.3)            ; 3.0
+.EE
+
+.SH Static fields
+Runnable: \fB02-static-field.clj\fR
+
+.PP
+Static fields are referenced as \fBClass/NAME\fR in non-call position. The
+existing constants are \fBMath/PI\fR and \fBMath/E\fR\&.
+
+.EX
+Math/PI                    ; 3.141592653589793
+Math/E                     ; 2.718281828459045
+(Math/toRadians 180)       ; PI
+.EE
+
+.SH Polymorphic dispatch
+Runnable: \fB03-polymorphic-dispatch.clj\fR
+
+.PP
+The JVM overloads \fBMath.abs\fR (and \fBmin\fR, \fBmax\fR, \fBfloorDiv\fR, \fBfloorMod\fR,
+\fB*Exact\fR) on int, long, float, and double. Go has no overloading, so
+gojava exposes typed names (\fBAbsInt\fR, \fBAbsLong\fR, etc.) and the bridge
+picks the right one at runtime based on the actual value type. Integer
+inputs return integers; double inputs return doubles.
+
+.EX
+(Math/abs -42)             ; 42      (long stays long)
+(Math/abs -3.5)            ; 3.5     (double stays double)
+(Math/max 7 3)             ; 7
+(Math/max 7.0 3)           ; 7.0     (any double -> double)
+.EE
+
+.SH JVM-faithful semantics
+Runnable: \fB04-jvm-semantics.clj\fR
+
+.PP
+Several \fBjava.lang.Math\fR operations have specific rounding or overflow
+behaviour that is \fBnot\fP the same as what you would get from Go's
+\fBmath\fR package or its arithmetic operators. The bridge guarantees the
+JVM result.
+
+.EX
+(Math/round 2.5)           ; 3
+(Math/round -2.5)          ; -2  (half-values round toward +Inf, JVM-style)
+(Math/floorDiv -7 2)       ; -4  (floor semantics, vs Go's -7/2 = -3)
+(Math/floorMod -7 2)       ; 1   (floor mod, vs Go's -7%2 = -1)
+.EE
+
+.SH Mixing with Go-style interop
+Runnable: \fB05-dual-interop.clj\fR
+
+.PP
+JVM-style and Go-style forms coexist:
+
+.EX
+(Math/sqrt 144)            ; 12.0   (JVM-style; via the bridge)
+(math.Sqrt 144)            ; 12.0   (Go stdlib; direct call)
+(Math/abs -42)             ; 42     (polymorphic, returns long)
+(math.Abs -42.0)           ; 42.0   (Go's math.Abs takes float64 only)
+.EE
+
+.PP
+Use the JVM form when you want JVM-faithful semantics or when you are
+porting Clojure source. Use the Go form when you want to call the Go
+stdlib directly (or any third-party Go package).
+
+.SH java.lang.System
+Runnable: \fB06-system.clj\fR
+
+.PP
+The supported surface covers time, environment variables, system
+properties, process exit, the standard streams, and a couple of
+housekeeping helpers.
+
+.EX
+(System/currentTimeMillis)            ; ms since epoch (long)
+(System/nanoTime)                     ; high-resolution time source (long)
+
+(System/getenv "PATH")                ; value, or nil if unset
+(System/getenv)                       ; full env as a Clojure map
+
+(System/getProperty "user.home")      ; value, or nil
+(System/getProperty "x" "fallback")   ; value, or "fallback"
+(System/setProperty "k" "v")          ; returns previous value or nil
+(System/clearProperty "k")            ; returns previous value or nil
+
+(System/lineSeparator)                ; "\\n" on Unix, "\\r\\n" on Windows
+(System/gc)                           ; runs Go's runtime.GC()
+(System/exit 0)                       ; calls os.Exit
+.EE
+
+.PP
+\fBSystem/getenv\fR follows JVM semantics: a missing variable returns \fBnil\fR,
+not the empty string. \fBSystem/getProperty\fR works the same way, and the
+two-argument form returns its default.
+
+.PP
+The property table is seeded with the JVM-style keys most often read by
+Clojure code: \fBuser.home\fR, \fBuser.dir\fR, \fBos.name\fR, \fBfile.separator\fR,
+\fBline.separator\fR, \fBpath.separator\fR\&. Use \fBsetProperty\fR to extend it.
+
+.SS Standard streams
+\fBSystem/out\fR, \fBSystem/err\fR, and \fBSystem/in\fR are thin wrappers over
+\fBos.Stdout\fR, \fBos.Stderr\fR, and \fBos.Stdin\fR\&. They expose the most-reached-for
+methods of \fBjava.io.PrintStream\fR / \fBjava.io.InputStream\fR\&. Glojure's
+instance-method resolution capitalizes the first letter, so JVM-style
+calls land on the Go method:
+
+.EX
+(.println System/out "hello")         ; -> os.Stdout.Println
+(.print   System/err "oops")          ; -> os.Stderr.Print
+(.printf  System/out "%d\\n" 42)       ; -> os.Stdout.Printf
+(.flush   System/out)                 ; -> os.Stdout.Flush (best-effort)
+(.read    System/in  buf)             ; -> os.Stdin.Read
+.EE
+
+.PP
+Note that idiomatic Clojure code usually goes through \fB(println ...)\fR
+and friends (which route via \fB*out*\fR), not the streams directly. The
+streams are here for code that asks for them by name.
+
+.SS Not yet supported
+\fBarraycopy\fR, \fBidentityHashCode\fR, the security-manager / finalization
+APIs. Open an issue if you have a Clojure codebase that needs any of
+these.
+
+.SH java.lang.Integer and java.lang.Long
+Runnable: \fB07-integer-long.clj\fR
+
+.PP
+The boxed integer classes carry a fixed-width contract from the JVM:
+\fBInteger\fR is 32 bits, \fBLong\fR is 64 bits.
+That contract is preserved here, so \fBInteger/MAX_VALUE\fR is
+\fB2147483647\fR (not Go's \fBmath.MaxInt\fR, which is 2^63-1 on 64-bit
+platforms) and \fBInteger/parseInt\fR will refuse values that overflow
+int32.
+
+.EX
+(Integer/parseInt "42")               ; -> 42 (int32)
+(Integer/parseInt "1010" 2)           ; -> 10 (radix parsing)
+(Integer/parseInt "ff" 16)            ; -> 255
+(Long/parseLong "9999999999")         ; -> 9999999999 (int64)
+
+Integer/MAX_VALUE                     ; -> 2147483647
+Long/MAX_VALUE                        ; -> 9223372036854775807
+
+(Integer/toBinaryString 42)           ; -> "101010"
+(Integer/toHexString 255)             ; -> "ff"
+(Long/toHexString 4096)               ; -> "1000"
+
+(Integer/valueOf 7)                   ; -> 7
+(Integer/valueOf "7")                 ; -> 7 (parses)
+(Integer. 5)                          ; rewrites to (Integer/valueOf 5)
+(Long.    "9999999999")               ; rewrites to (Long/valueOf "...")
+
+(Integer/bitCount 0xFF)               ; -> 8
+(Integer/numberOfLeadingZeros 1)      ; -> 31
+(Integer/signum -5)                   ; -> -1
+(Integer/max 3 7)                     ; -> 7
+.EE
+
+.PP
+Constructor forms \fB(Integer. x)\fR and \fB(Long. x)\fR are rewritten at
+compile time to the matching \fBvalueOf\fR, which accepts either a number
+(coerced to int32 / int64) or a string (parsed as decimal). Parse
+failures raise a runtime error with \fBNumberFormatException\fR in the
+message, matching JVM behavior.
+
+.SH java.lang.String
+Runnable: \fB08-string.clj\fR
+
+.PP
+\fBString/*\fR statics rewrite to the javacompat bridge like \fBMath/*\fR does.
+Instance methods (\fB(.length s)\fR, \fB(.toUpperCase s)\fR, \fB(.substring s 1
+4)\fR, ...) take a different path: glojure has no Go-side methods on the
+primitive \fBstring\fR type, so the bridge registers each JVM method with
+the runtime, and \fBlang.FieldOrMethod\fR consults that registry when the
+receiver is a Go string. The dispatch is case-insensitive on the first
+letter so both the original (\fB\&.equals\fR) and the rewrite-renamed
+(\fB\&.Equals\fR) spellings reach the same handler.
+
+.EX
+(.length "naïve")              ; 5 (UTF-16 code units, JVM semantics)
+(.toUpperCase "hello")         ; "HELLO"
+(.substring "hello world" 6)   ; "world"
+(.indexOf "hello" "lo")        ; 3
+(.replace "foobar" "oo" "OO")  ; "fOObar"
+(.split "a,b,c" ",")           ; ["a" "b" "c"]
+(.hashCode "hello")            ; 99162322  (JVM int32 algorithm)
+(.trim "  hi  ")               ; "hi"      (ASCII whitespace only)
+(.strip "  hi  ")              ; "hi"      (Unicode whitespace)
+
+(String/format "%s=%d" "x" 42) ; "x=42"
+(String/join "-" ["a" "b"])    ; "a-b"
+(String/valueOf nil)           ; "null"
+(String. "hello")              ; "hello"   (rewrites to valueOf)
+.EE
+
+.PP
+The format string for \fBString/format\fR accepts \fB%n\fR (newline), \fB%b\fR
+(boolean as "true"/"false"), and positional \fB%N$x\fR indices in addition
+to Go's standard verbs. Regex methods (\fB\&.matches\fR, \fB\&.replaceAll\fR,
+\fB\&.replaceFirst\fR, \fB\&.split\fR) compile their pattern through Go's \fBregexp\fR
+package; the supported syntax is Go's RE2, not Java's regex.
+
+.SH java.lang.Double
+Runnable: \fB09-double.clj\fR
+
+.PP
+\fBDouble/*\fR covers the static surface of the boxed double: parsing,
+predicates, comparison, and bit-level conversion. Values are float64
+to match Java's double precision.
+
+.EX
+(Double/parseDouble "3.14")            ; 3.14
+(Double/valueOf "2.5")                 ; 2.5  (string overload)
+(Double/valueOf 4.0)                   ; 4.0  (numeric overload)
+
+(Double/isNaN Double/NaN)              ; true
+(Double/isInfinite Double/POSITIVE_INFINITY) ; true
+(Double/isFinite 1.5)                  ; true
+
+(Double/toString Double/MAX_VALUE)     ; "1.7976931348623157E308"
+(Double/toString Double/NaN)           ; "NaN"
+(Double/toString Double/POSITIVE_INFINITY) ; "Infinity"
+
+(Double/max 3.0 7.0)                   ; 7.0
+(Double/compare 1.0 2.0)               ; -1
+
+(Double/doubleToLongBits 1.0)          ; 4607182418800017408
+(Double/longBitsToDouble 4607182418800017408) ; 1.0
+
+(Double. "1.25")                       ; 1.25 (rewrites to valueOf)
+.EE
+
+.PP
+\fBDouble/toString\fR is JVM-faithful: mantissa always carries a decimal
+point (\fB"1.0"\fR, not \fB"1"\fR), the exponent is uppercase \fBE\fR with no \fB+\fR
+sign on positive exponents, and the special values render as \fB"NaN"\fR,
+\fB"Infinity"\fR, and \fB"-Infinity"\fR\&. Glojure's \fBprintln\fR formats float64
+infinities as \fB##Inf\fR / \fB##-Inf\fR; route through \fBDouble/toString\fR when
+you want the JVM spelling.
+
+.SH java.lang.Boolean
+Runnable: \fB10-boolean.clj\fR
+
+.PP
+\fBBoolean/*\fR exposes the static surface. \fBparseBoolean\fR and \fBvalueOf\fR
+follow the JVM's lenient rule: they return \fBtrue\fR only when the input
+equals \fB"true"\fR ignoring case, and \fBfalse\fR for every other value
+including the empty string and nil.
+
+.EX
+(Boolean/parseBoolean "TRUE")          ; true   (case insensitive)
+(Boolean/parseBoolean "yes")           ; false  (anything else)
+(Boolean/valueOf "True")               ; true
+(Boolean/valueOf true)                 ; true
+
+(Boolean/toString true)                ; "true"
+(Boolean/compare false true)           ; -1
+
+(Boolean/logicalAnd true false)        ; false
+(Boolean/logicalOr  true false)        ; true
+(Boolean/logicalXor true true)         ; false
+
+Boolean/TRUE                           ; true
+Boolean/FALSE                          ; false
+
+(Boolean. "true")                      ; true   (rewrites to valueOf)
+.EE
+
+.PP
+The logical combinators are present so callers porting code that uses
+them as point-free functions (e.g. \fB(reduce Boolean/logicalAnd ...)\fR)
+don't have to rewrite to \fB(and ...)\fR\&. \fBBoolean/getBoolean\fR looks up a
+system property by name; in gloat it falls back to the process
+environment when no property is set.
+
+.SH java.lang.Character
+Runnable: \fB11-character.clj\fR
+
+.PP
+\fBCharacter/*\fR covers the static predicates, case folding, and
+radix-aware digit conversion. Glojure's character literal (\fB\\a\fR, \fB\\5\fR,
+\fB\\space\fR) parses to \fBlang.Char\fR (a rune wrapper); the bridge unwraps
+it, so you can pass either a \fB\\c\fR literal or a plain integer code
+point.
+
+.EX
+(Character/isDigit \\5)                 ; true
+(Character/isLetter \\x)                ; true
+(Character/isWhitespace \\tab)          ; true
+(Character/isAlphabetic \\z)            ; true
+
+(Character/toUpperCase \\a)             ; \\A
+(Character/toLowerCase \\Z)             ; \\z
+(Character/toString \\k)                ; "k"
+
+(Character/digit \\f 16)                ; 15
+(Character/digit \\z 10)                ; -1  (out of radix)
+(Character/forDigit 10 16)             ; \\a
+(Character/getNumericValue \\7)         ; 7
+(Character/compare \\a \\b)              ; -1
+
+Character/MIN_RADIX                    ; 2
+Character/MAX_RADIX                    ; 36
+
+(Character. \\W)                        ; \\W   (rewrites to valueOf)
+.EE
+
+.PP
+Classification uses Go's \fBunicode\fR package, which tracks the same
+categories the JVM uses; predicates like \fBisLetter\fR and \fBisDigit\fR
+match the JVM result for the BMP code points typically encountered.
+\fBisWhitespace\fR follows the JVM's quirk of accepting tab/newline/
+form-feed/carriage-return/\fB0x1c-1f\fR while explicitly \fIexcluding\fP the
+no-break spaces that \fBisSpaceChar\fR accepts.
+
+.SH java.util.regex.Pattern
+Runnable: \fB12-regex.clj\fR
+
+.PP
+\fBPattern/*\fR covers the static factories, the Matcher API, and the
+flag constants. The underlying engine is Go's \fBregexp\fR (RE2), so a
+few JVM features are unavailable: possessive quantifiers (\fB*+\fR,
+\fB++\fR, \fB?+\fR), backreferences (\fB\\1\fR, \fB\\k<name>\fR), and lookaround
+(\fB(?=...)\fR, \fB(?!...)\fR). Java-style named groups (\fB(?<name>...)\fR) are
+translated to RE2's \fB(?P<name>...)\fR form before compilation, so the
+Java syntax works.
+
+.EX
+(Pattern/matches "\\\\d+" "12345")           ; true
+
+(let [p (Pattern/compile "(\\\\d+)-(\\\\w+)")
+      m (.matcher p "42-foo")]
+  (.find m)                                ; true
+  (.group m)                               ; "42-foo"
+  (.group m 1)                             ; "42"
+  (.group m 2))                            ; "foo"
+
+(let [p (Pattern/compile "HELLO" Pattern/CASE_INSENSITIVE)
+      m (.matcher p "hello world")]
+  (.find m))                               ; true
+
+(let [p (Pattern/compile "\\\\s+")]
+  (vec (.split p "foo  bar\\tbaz")))        ; ["foo" "bar" "baz"]
+
+(Pattern/quote "a.b*c")                    ; "a\\\\.b\\\\*c"
+(.pattern (Pattern. "x+"))                 ; "x+"  (ctor sugar)
+.EE
+
+.PP
+Matcher instance methods (\fB\&.find\fR, \fB\&.group\fR, \fB\&.start\fR, \fB\&.end\fR,
+\fB\&.matches\fR, \fB\&.lookingAt\fR, \fB\&.replaceAll\fR, \fB\&.replaceFirst\fR,
+\fB\&.groupCount\fR, \fB\&.reset\fR) reach through reflection on the Go \fB*Matcher\fR
+receiver. The matcher is stateful between \fB\&.find\fR calls, mirroring
+the JVM. Pattern flags (\fBCASE_INSENSITIVE\fR, \fBMULTILINE\fR, \fBDOTALL\fR,
+\fBLITERAL\fR, \fBUNICODE_CASE\fR) compile down to the corresponding RE2
+inline modifiers or to \fBregexp.QuoteMeta\fR for \fBLITERAL\fR\&.
+
+.SH java.util.UUID
+Runnable: \fB13-uuid.clj\fR
+
+.PP
+\fBUUID/*\fR covers the random and name-based factories, parsing,
+ordering, hashing, and the two-long constructor. Random UUIDs are
+RFC 4122 v4 (\fBcrypto/rand\fR); name-based UUIDs are v3 (MD5 of the
+raw input bytes, matching \fBUUID.nameUUIDFromBytes\fR exactly).
+
+.EX
+(let [u (UUID/randomUUID)]
+  (.version u)                             ; 4
+  (.variant u)                             ; 2
+  (.toString u))                           ; "<hex>-<hex>-4<hex>...-..."
+
+(let [u (UUID/fromString "01234567-89ab-cdef-0123-456789abcdef")]
+  (.getMostSignificantBits u)              ; 81985529216486895
+  (.getLeastSignificantBits u))            ; 81985529216486895
+
+(.toString (UUID/nameUUIDFromBytes (.getBytes "hello")))
+;; "5d41402a-bc4b-3a76-b971-9d911017c592"  (matches JVM)
+
+(let [u (UUID. 42 99)]                     ; ctor sugar to fromBits
+  (.toString u))                           ; "00000000-0000-002a-0000-000000000063"
+
+(.compareTo (UUID. 1 2) (UUID. 1 3))       ; -1
+(.hashCode (UUID/fromString "..."))        ; JVM XOR-and-fold algorithm
+.EE
+
+.PP
+Instance methods reach through reflection on the Go \fB*UUID\fR
+receiver. The Go type implements \fBfmt.Stringer\fR, so \fB(str u)\fR and
+\fBprintln u\fR yield the canonical hex form. The fully qualified
+\fBjava.util.UUID/...\fR form also resolves through the bridge for most
+calls; a few of clojure.core's internal \fB(java.util.UUID/fromString s)\fR
+and \fB(java.util.UUID/randomUUID)\fR call sites still resolve to
+glojure's existing \fBgoogle/uuid\fR implementation for back-compat with
+the stdlib \fBuuid?\fR predicate.
+
+.SH java.lang.Thread
+Runnable: \fB14-thread.clj\fR
+
+.PP
+Only \fBThread/sleep\fR is wired today. The full Java Thread API (\fBstart\fR,
+\fBjoin\fR, \fBinterrupt\fR, names, uncaught handlers) has no direct goroutine
+analogue and is intentionally out of scope. \fBThread/sleep\fR itself is
+trivial: gojava forwards to \fBtime.Sleep\fR\&.
+
+.EX
+(Thread/sleep 50)                            ; sleep 50 ms
+(Thread/sleep 1 500000)                      ; millis + nanos overload
+(java.lang.Thread/sleep 1)                   ; fully qualified resolves
+.EE
+
+.PP
+Negative millis or out-of-range nanoseconds panic, matching the JVM's
+\fBIllegalArgumentException\fR\&. There is no \fBInterruptedException\fR: gojava
+never interrupts a sleeping goroutine.
+
+.SH java.time.Instant
+Runnable: \fB15-instant.clj\fR
+
+.PP
+\fBInstant/*\fR covers the wall-clock factory (\fBnow\fR), the ISO-8601 parser
+(\fBparse\fR), the two epoch factories (\fBofEpochSecond\fR 1+2-arg,
+\fBofEpochMilli\fR), and the \fBEPOCH\fR constant. Instance methods cover the
+seconds/nanos accessors, the \fBtoEpochMilli\fR reverse conversion,
+comparison (\fBcompareTo\fR, \fBequals\fR, \fBisBefore\fR, \fBisAfter\fR), \fBhashCode\fR,
+and the six \fBplus\fR/\fBminus\fR arithmetic methods (\fBSeconds\fR, \fBMillis\fR,
+\fBNanos\fR).
+
+.EX
+(.toString Instant/EPOCH)                  ; "1970-01-01T00:00:00Z"
+(.toString (Instant/now))                  ; "2026-05-24T17:42:08.123Z"
+
+(let [i (Instant/parse "2007-12-03T10:15:30.500Z")]
+  (.getEpochSecond i)                      ; 1196676930
+  (.getNano i)                             ; 500000000
+  (.toEpochMilli i)                        ; 1196676930500
+  (.toString (.plusMillis i 1500)))        ; "2007-12-03T10:15:32Z"
+
+(.toString (Instant/ofEpochSecond 0 1500000000))
+;; "1970-01-01T00:00:01.500Z"  (nano-adjustment normalised)
+
+(.compareTo (Instant/parse "2007-12-03T10:15:30Z")
+            (Instant/parse "2007-12-03T10:15:31Z"))   ; -1
+.EE
+
+.PP
+\fBtoString\fR matches Java's grouped output: no fraction when nanos is 0,
+otherwise the shortest of 3 (millis), 6 (micros), or 9 (nanos) digits
+that exactly represents the value. The Go type implements \fBfmt.Stringer\fR,
+so \fB(str i)\fR and \fBprintln i\fR produce the same canonical form. Instant
+has no public constructor on the JVM, so there is no \fB(Instant. ...)\fR
+sugar.
+
+.SH Supported symbols
+.SS java.lang.Math (complete)
+.IP \(bu 2
+Constants: \fBMath/PI\fR, \fBMath/E\fR
+.IP \(bu 2
+Powers and roots: \fBMath/sqrt\fR, \fBMath/cbrt\fR, \fBMath/pow\fR, \fBMath/exp\fR,
+\fBMath/expm1\fR, \fBMath/log\fR, \fBMath/log10\fR, \fBMath/log1p\fR
+.IP \(bu 2
+Trigonometry: \fBMath/sin\fR, \fBMath/cos\fR, \fBMath/tan\fR, \fBMath/asin\fR,
+\fBMath/acos\fR, \fBMath/atan\fR, \fBMath/atan2\fR, \fBMath/sinh\fR, \fBMath/cosh\fR,
+\fBMath/tanh\fR
+.IP \(bu 2
+Conversion: \fBMath/toRadians\fR, \fBMath/toDegrees\fR
+.IP \(bu 2
+Rounding: \fBMath/floor\fR, \fBMath/ceil\fR, \fBMath/round\fR, \fBMath/rint\fR,
+\fBMath/signum\fR
+.IP \(bu 2
+Sign/magnitude: \fBMath/abs\fR, \fBMath/copySign\fR, \fBMath/hypot\fR,
+\fBMath/IEEEremainder\fR
+.IP \(bu 2
+Min/max: \fBMath/min\fR, \fBMath/max\fR
+.IP \(bu 2
+Floor div/mod: \fBMath/floorDiv\fR, \fBMath/floorMod\fR
+.IP \(bu 2
+Exact arithmetic: \fBMath/addExact\fR, \fBMath/subtractExact\fR,
+\fBMath/multiplyExact\fR, \fBMath/negateExact\fR, \fBMath/incrementExact\fR,
+\fBMath/decrementExact\fR, \fBMath/toIntExact\fR
+.IP \(bu 2
+Random: \fBMath/random\fR
+
+.SS java.lang.System
+.IP \(bu 2
+Time: \fBSystem/currentTimeMillis\fR, \fBSystem/nanoTime\fR
+.IP \(bu 2
+Environment: \fBSystem/getenv\fR (0-arg map, 1-arg lookup)
+.IP \(bu 2
+Properties: \fBSystem/getProperty\fR (1+2 arg), \fBSystem/setProperty\fR,
+\fBSystem/clearProperty\fR
+.IP \(bu 2
+Lifecycle: \fBSystem/exit\fR, \fBSystem/gc\fR
+.IP \(bu 2
+Misc: \fBSystem/lineSeparator\fR
+.IP \(bu 2
+Streams: \fBSystem/out\fR, \fBSystem/err\fR, \fBSystem/in\fR (with \fB\&.println\fR,
+\fB\&.print\fR, \fB\&.printf\fR, \fB\&.flush\fR, \fB\&.write\fR, \fB\&.read\fR)
+
+.SS java.lang.Integer
+.IP \(bu 2
+Constants: \fBInteger/MIN_VALUE\fR, \fBInteger/MAX_VALUE\fR, \fBInteger/SIZE\fR,
+\fBInteger/BYTES\fR
+.IP \(bu 2
+Parsing: \fBInteger/parseInt\fR (1+2 arg), \fBInteger/parseUnsignedInt\fR,
+\fBInteger/valueOf\fR (int or string)
+.IP \(bu 2
+Constructor: \fB(Integer. x)\fR (rewrites to \fBvalueOf\fR)
+.IP \(bu 2
+Formatting: \fBInteger/toString\fR (1+2 arg), \fBInteger/toBinaryString\fR,
+\fBInteger/toOctalString\fR, \fBInteger/toHexString\fR
+.IP \(bu 2
+Bit operations: \fBInteger/bitCount\fR, \fBInteger/numberOfLeadingZeros\fR,
+\fBInteger/numberOfTrailingZeros\fR, \fBInteger/highestOneBit\fR,
+\fBInteger/lowestOneBit\fR, \fBInteger/reverse\fR, \fBInteger/reverseBytes\fR
+.IP \(bu 2
+Comparisons: \fBInteger/compare\fR, \fBInteger/max\fR, \fBInteger/min\fR,
+\fBInteger/signum\fR, \fBInteger/sum\fR
+
+.SS java.lang.Long
+Same surface as \fBjava.lang.Integer\fR, with \fBLong/\fR prefixes and int64
+return types. Includes \fBLong/MIN_VALUE\fR, \fBLong/MAX_VALUE\fR,
+\fBLong/parseLong\fR, \fBLong/valueOf\fR, \fBLong/toBinaryString\fR,
+\fBLong/toHexString\fR, \fBLong/bitCount\fR, etc.
+
+.SS java.lang.String
+.IP \(bu 2
+Statics: \fBString/format\fR, \fBString/join\fR, \fBString/valueOf\fR,
+\fBString/copyValueOf\fR
+.IP \(bu 2
+Constructor: \fB(String. x)\fR (rewrites to \fBvalueOf\fR)
+.IP \(bu 2
+Length and predicates: \fB\&.length\fR, \fB\&.isEmpty\fR, \fB\&.isBlank\fR
+.IP \(bu 2
+Case: \fB\&.toUpperCase\fR, \fB\&.toLowerCase\fR
+.IP \(bu 2
+Trimming: \fB\&.trim\fR, \fB\&.strip\fR, \fB\&.stripLeading\fR, \fB\&.stripTrailing\fR
+.IP \(bu 2
+Substrings: \fB\&.substring\fR (1+2 arg), \fB\&.charAt\fR, \fB\&.codePointAt\fR
+.IP \(bu 2
+Search: \fB\&.indexOf\fR, \fB\&.lastIndexOf\fR (string or char, with optional
+from-index), \fB\&.startsWith\fR (1+2 arg), \fB\&.endsWith\fR, \fB\&.contains\fR
+.IP \(bu 2
+Compare: \fB\&.equals\fR, \fB\&.equalsIgnoreCase\fR, \fB\&.compareTo\fR,
+\fB\&.compareToIgnoreCase\fR
+.IP \(bu 2
+Build: \fB\&.concat\fR, \fB\&.repeat\fR, \fB\&.replace\fR (char or string),
+\fB\&.replaceAll\fR, \fB\&.replaceFirst\fR, \fB\&.matches\fR, \fB\&.split\fR (1+2 arg)
+.IP \(bu 2
+Convert: \fB\&.toCharArray\fR, \fB\&.getBytes\fR, \fB\&.chars\fR, \fB\&.codePoints\fR,
+\fB\&.lines\fR, \fB\&.toString\fR, \fB\&.intern\fR
+.IP \(bu 2
+Hash: \fB\&.hashCode\fR (JVM int32 algorithm)
+
+.SS java.lang.Double
+.IP \(bu 2
+Constants: \fBDouble/MIN_VALUE\fR, \fBDouble/MAX_VALUE\fR, \fBDouble/MIN_NORMAL\fR,
+\fBDouble/POSITIVE_INFINITY\fR, \fBDouble/NEGATIVE_INFINITY\fR, \fBDouble/NaN\fR,
+\fBDouble/SIZE\fR, \fBDouble/BYTES\fR
+.IP \(bu 2
+Parsing: \fBDouble/parseDouble\fR, \fBDouble/valueOf\fR (string or number)
+.IP \(bu 2
+Constructor: \fB(Double. x)\fR (rewrites to \fBvalueOf\fR)
+.IP \(bu 2
+Formatting: \fBDouble/toString\fR (JVM-style), \fBDouble/toHexString\fR
+.IP \(bu 2
+Predicates: \fBDouble/isNaN\fR, \fBDouble/isInfinite\fR, \fBDouble/isFinite\fR
+.IP \(bu 2
+Bit conversion: \fBDouble/doubleToLongBits\fR,
+\fBDouble/doubleToRawLongBits\fR, \fBDouble/longBitsToDouble\fR
+.IP \(bu 2
+Comparisons: \fBDouble/compare\fR, \fBDouble/max\fR, \fBDouble/min\fR, \fBDouble/sum\fR
+
+.SS java.lang.Boolean
+.IP \(bu 2
+Constants: \fBBoolean/TRUE\fR, \fBBoolean/FALSE\fR
+.IP \(bu 2
+Parsing: \fBBoolean/parseBoolean\fR, \fBBoolean/valueOf\fR (string or boolean)
+.IP \(bu 2
+Constructor: \fB(Boolean. x)\fR (rewrites to \fBvalueOf\fR)
+.IP \(bu 2
+Formatting: \fBBoolean/toString\fR
+.IP \(bu 2
+Logical: \fBBoolean/logicalAnd\fR, \fBBoolean/logicalOr\fR, \fBBoolean/logicalXor\fR
+.IP \(bu 2
+Properties: \fBBoolean/getBoolean\fR (falls back to the process env)
+.IP \(bu 2
+Comparison: \fBBoolean/compare\fR
+
+.SS java.lang.Character
+.IP \(bu 2
+Constants: \fBCharacter/MIN_VALUE\fR, \fBCharacter/MAX_VALUE\fR,
+\fBCharacter/MIN_RADIX\fR, \fBCharacter/MAX_RADIX\fR
+.IP \(bu 2
+Constructor: \fB(Character. c)\fR (rewrites to \fBvalueOf\fR)
+.IP \(bu 2
+Predicates: \fBCharacter/isDigit\fR, \fBCharacter/isLetter\fR,
+\fBCharacter/isLetterOrDigit\fR, \fBCharacter/isAlphabetic\fR,
+\fBCharacter/isWhitespace\fR, \fBCharacter/isSpaceChar\fR,
+\fBCharacter/isUpperCase\fR, \fBCharacter/isLowerCase\fR
+.IP \(bu 2
+Case folding: \fBCharacter/toUpperCase\fR, \fBCharacter/toLowerCase\fR
+.IP \(bu 2
+Conversion: \fBCharacter/toString\fR, \fBCharacter/digit\fR,
+\fBCharacter/forDigit\fR, \fBCharacter/getNumericValue\fR
+.IP \(bu 2
+Comparison: \fBCharacter/compare\fR
+
+.SS java.util.regex.Pattern
+.IP \(bu 2
+Statics: \fBPattern/compile\fR (1+2 arg), \fBPattern/matches\fR, \fBPattern/quote\fR
+.IP \(bu 2
+Constructor: \fB(Pattern. regex)\fR (rewrites to \fBcompile\fR)
+.IP \(bu 2
+Flag constants: \fBPattern/CASE_INSENSITIVE\fR, \fBPattern/MULTILINE\fR,
+\fBPattern/LITERAL\fR, \fBPattern/DOTALL\fR, \fBPattern/UNICODE_CASE\fR
+.IP \(bu 2
+Pattern instance: \fB\&.pattern\fR, \fB\&.flags\fR, \fB\&.toString\fR, \fB\&.matcher\fR,
+\fB\&.split\fR (1+2 arg), \fB\&.asPredicate\fR
+.IP \(bu 2
+Matcher instance: \fB\&.matches\fR, \fB\&.lookingAt\fR, \fB\&.find\fR (0+1 arg),
+\fB\&.group\fR (0+1 arg, by index or name), \fB\&.start\fR (0+1 arg),
+\fB\&.end\fR (0+1 arg), \fB\&.groupCount\fR, \fB\&.replaceAll\fR, \fB\&.replaceFirst\fR,
+\fB\&.reset\fR (0+1 arg), \fB\&.pattern\fR
+
+.SS java.util.UUID
+.IP \(bu 2
+Statics: \fBUUID/randomUUID\fR, \fBUUID/fromString\fR, \fBUUID/nameUUIDFromBytes\fR
+.IP \(bu 2
+Constructor: \fB(UUID. msb lsb)\fR (rewrites to \fBfromBits\fR)
+.IP \(bu 2
+Instance: \fB\&.toString\fR, \fB\&.getMostSignificantBits\fR,
+\fB\&.getLeastSignificantBits\fR, \fB\&.version\fR, \fB\&.variant\fR, \fB\&.compareTo\fR,
+\fB\&.equals\fR, \fB\&.hashCode\fR
+
+.SS java.lang.Thread
+.IP \(bu 2
+Statics: \fBThread/sleep\fR (1-arg millis, 2-arg millis+nanos)
+
+.PP
+Instance methods (\fBstart\fR, \fBjoin\fR, \fBinterrupt\fR, \fBgetName\fR,
+\fBcurrentThread\fR, ...) are not supported.
+
+.SS java.time.Instant
+.IP \(bu 2
+Statics: \fBInstant/now\fR, \fBInstant/parse\fR, \fBInstant/ofEpochSecond\fR
+(1+2 arg), \fBInstant/ofEpochMilli\fR
+.IP \(bu 2
+Constant: \fBInstant/EPOCH\fR
+.IP \(bu 2
+Instance: \fB\&.toString\fR, \fB\&.getEpochSecond\fR, \fB\&.getNano\fR,
+\fB\&.toEpochMilli\fR, \fB\&.compareTo\fR, \fB\&.equals\fR, \fB\&.isBefore\fR, \fB\&.isAfter\fR,
+\fB\&.hashCode\fR, \fB\&.plusSeconds\fR, \fB\&.plusMillis\fR, \fB\&.plusNanos\fR,
+\fB\&.minusSeconds\fR, \fB\&.minusMillis\fR, \fB\&.minusNanos\fR
+
+.SH Status
+\fBjava.lang.Math\fR, \fBjava.lang.System\fR, \fBjava.lang.Integer\fR,
+\fBjava.lang.Long\fR, \fBjava.lang.String\fR, \fBjava.lang.Double\fR,
+\fBjava.lang.Boolean\fR, \fBjava.lang.Character\fR, \fBjava.lang.Thread\fR
+(\fBsleep\fR only), \fBjava.util.regex.Pattern\fR (with Matcher),
+\fBjava.util.UUID\fR, and \fBjava.time.Instant\fR are usable. \fBjava.lang.Class\fR,
+\fBjava.io.File\fR, \fBjava.lang.Throwable\fR, and other commonly-used classes
+are on the roadmap and will follow the same three-layer pattern.

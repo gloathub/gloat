@@ -16,6 +16,7 @@ include $M/clojure.mk
 include $M/gloat.mk
 include $M/glojure.mk
 include $M/hy.mk
+include $M/janet.mk
 include $M/joker.mk
 include $M/lein.mk
 include $M/let-go.mk
@@ -51,6 +52,9 @@ gloat: $(GLOAT)
 hy: $(HY)
 	$@
 
+janet: $(JANET)
+	$@
+
 joker: $(JOKER)
 	$@
 
@@ -83,13 +87,15 @@ Names of repl targets and their VERSION variables:
 * glj   - GLOJURE-VERSION  - Glojure repl   - Go
 * gloat - GLOAT-VERSION    - Gloat repl     - Go
 * hy    - HY-VERSION       - Hy repl        - Python
+* janet - JANET-VERSION    - Janet repl     - C
 * joker - JOKER-VERSION    - Joker repl     - Go
 * lein  - LEIN-VERSION     - Leiningen repl
 * lg    - LET-GO-VERSION   - let-go repl    - Go
 * phel  - PHEL-VERSION     - let-go repl    - PHP
 
-* help - Print the help
+* shell - Start a shell with all above installed
 * reset - Delete the installation cache in $T
+* help  - Print the help
 
 For example:
 

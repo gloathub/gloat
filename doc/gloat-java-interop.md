@@ -34,6 +34,12 @@ identically to the bare form, mirroring standard Clojure where
 constructors: `(java.lang.Integer. 100)` and `(Integer. 100)` are
 equivalent.
 
+Every fresh namespace is also seeded with the registered host classes so
+`(ns-imports *ns*)` returns the same kind of name->Class map that real
+Clojure produces. The seeded set covers exactly the classes listed in
+the Status section below; other names that real Clojure auto-imports
+(e.g. `Object`, `Throwable`, `Number`) are not yet included.
+
 ## How it works
 
 JVM symbols flow through three layers:

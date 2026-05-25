@@ -28,6 +28,9 @@ include $M/shell.mk
 include common/path.mk
 include common/gloat-vars.mk
 
+GLOJURE-DIR ?= $(or $(GLOJURE_DIR),$(LOCAL-CACHE)/glojure-$(GLOJURE-VERSION))
+export GLOJURE_DIR := $(GLOJURE-DIR)
+
 # Auto-discover YS standard library source files
 YS-CLJ-FILES := $(wildcard ys/src/*/*.clj ys/src/*/*/*.clj)
 YS-NAMESPACES := $(patsubst ys/src/%.clj,%,$(YS-CLJ-FILES))
@@ -219,7 +222,7 @@ GLJ-WASM-EXEC := www/docs/repl/wasm_exec.js
 
 GLOJURE-BUILD-DIR := $(GLOJURE-DIR)
 
-$(GLJ-WASM): $(GLJ) $(GLOJURE-BUILD-DIR)
+$(GLJ-WASM): $(GLJ) $(GO) $(GLOJURE-BUILD-DIR)
 	@mkdir -p $(dir $@)
 	cd $(GLOJURE-BUILD-DIR)/cmd/glj && \
 	  GOOS=js GOARCH=wasm CGO_ENABLED=0 $(GO) build \

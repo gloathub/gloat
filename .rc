@@ -27,7 +27,6 @@ if [[ -d $GLOAT_GIT_DIR/../gojava ]]; then
 fi
 if [[ $(basename "$(dirname "$GLOAT_ROOT")") == worktree && \
       $(basename "$(dirname "$(dirname "$GLOAT_ROOT")")") == gloat ]]; then
-  make --quiet --no-print-directory -C "$GLOAT_ROOT" work-init
   [[ -d $GLOAT_ROOT/workspace/glojure ]] && \
     export GLOJURE_DIR=$GLOAT_ROOT/workspace/glojure
   [[ -d $GLOAT_ROOT/workspace/go-readline ]] && \
@@ -65,7 +64,6 @@ if test -d $GLOAT_GIT_DIR/../gojava
 end
 if test (basename (dirname $GLOAT_ROOT)) = worktree; \
    and test (basename (dirname (dirname $GLOAT_ROOT))) = gloat
-  make --quiet --no-print-directory -C $GLOAT_ROOT work-init
   if test -d $GLOAT_ROOT/workspace/glojure
     set -gx GLOJURE_DIR $GLOAT_ROOT/workspace/glojure
   end
@@ -106,7 +104,6 @@ if [[ -d $GLOAT_GIT_DIR/../gojava ]]; then
 fi
 if [[ $(basename "$(dirname "$GLOAT_ROOT")") == worktree && \
       $(basename "$(dirname "$(dirname "$GLOAT_ROOT")")") == gloat ]]; then
-  make --quiet --no-print-directory -C "$GLOAT_ROOT" work-init
   [[ -d $GLOAT_ROOT/workspace/glojure ]] && \
     export GLOJURE_DIR=$GLOAT_ROOT/workspace/glojure
   [[ -d $GLOAT_ROOT/workspace/go-readline ]] && \

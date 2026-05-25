@@ -322,6 +322,8 @@ work-init() (
     work-sibling-setup "$cur" "$sibling" "$base"
   done
 
+  work-write-go-work "$cur"
+
   # Build glj inside the glojure workspace if find-glj wouldn't already find one.
   workspace_glj=$cur/workspace/glojure
   if [[ -d $workspace_glj ]]; then
@@ -330,8 +332,6 @@ work-init() (
       GLOJURE_DIR=$workspace_glj "$cur/bin/gloat" --glj-build >&2 || true
     fi
   fi
-
-  work-write-go-work "$cur"
 )
 
 work-remove() (
@@ -368,7 +368,8 @@ work-remove() (
     fi
 
     # `branch -d` refuses to delete unmerged branches; leave them in that case.
-    if git -C "$canonical" branch -d "$name" >&2 2>/dev/null; then
+    if msg=$(git -C "$canonical" branch -d "$name" 2>&1); then
+      echo "$sibling: $msg" >&2
       removed+=("$sibling")
     else
       kept_branch+=("$sibling")

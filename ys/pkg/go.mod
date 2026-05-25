@@ -11,7 +11,3 @@ require (
 	go4.org/intern v0.0.0-20220617035311-6925f38cc365 // indirect
 	go4.org/unsafe/assume-no-moving-gc v0.0.0-20230525183740-e7c30c78aeb2 // indirect
 )
-
-replace github.com/gloathub/gojava => /home/ingy/src/gojava
-
-replace github.com/gloathub/glojure => /home/ingy/src/glojure/worktree/gojava

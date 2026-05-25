@@ -13,17 +13,27 @@ PATH=$GLOAT_ROOT/bin:$PATH
 MANPATH=$GLOAT_ROOT/man:$(manpath 2>/dev/null)
 GLOAT_SHELL=bash
 export GLOAT_ROOT GLOAT_VERSION GLOAT_GIT_DIR PATH MANPATH GLOAT_SHELL
-if [[ -d $GLOAT_GIT_DIR/../go-readline ]]; then
-  GO_READLINE_DIR=$(cd "$GLOAT_GIT_DIR/../go-readline" && pwd -P)
-  export GO_READLINE_DIR
-  source <(make --quiet --no-print-directory \
-    -C "$GLOAT_ROOT" go-readline-worktree)
-fi
 if [[ -d $GLOAT_GIT_DIR/../glojure ]]; then
   GLOJURE_DIR=$(cd "$GLOAT_GIT_DIR/../glojure" && pwd -P)
   export GLOJURE_DIR
-  source <(make --quiet --no-print-directory \
-    -C "$GLOAT_ROOT" glojure-worktree)
+fi
+if [[ -d $GLOAT_GIT_DIR/../go-readline ]]; then
+  GO_READLINE_DIR=$(cd "$GLOAT_GIT_DIR/../go-readline" && pwd -P)
+  export GO_READLINE_DIR
+fi
+if [[ -d $GLOAT_GIT_DIR/../gojava ]]; then
+  GOJAVA_DIR=$(cd "$GLOAT_GIT_DIR/../gojava" && pwd -P)
+  export GOJAVA_DIR
+fi
+if [[ $(basename "$(dirname "$GLOAT_ROOT")") == worktree && \
+      $(basename "$(dirname "$(dirname "$GLOAT_ROOT")")") == gloat ]]; then
+  make --quiet --no-print-directory -C "$GLOAT_ROOT" work-init
+  [[ -d $GLOAT_ROOT/workspace/glojure ]] && \
+    export GLOJURE_DIR=$GLOAT_ROOT/workspace/glojure
+  [[ -d $GLOAT_ROOT/workspace/go-readline ]] && \
+    export GO_READLINE_DIR=$GLOAT_ROOT/workspace/go-readline
+  [[ -d $GLOAT_ROOT/workspace/gojava ]] && \
+    export GOJAVA_DIR=$GLOAT_ROOT/workspace/gojava
 fi
 if [[ -d $GLOAT_ROOT/.cache/local ]]; then
   source <(gloat --complete bash)
@@ -44,15 +54,27 @@ set -gx GLOAT_ROOT $GLOAT_ROOT
 set -gx GLOAT_VERSION $GLOAT_VERSION
 set -gx GLOAT_GIT_DIR $GLOAT_GIT_DIR
 set -gx GLOAT_SHELL fish
-if test -d $GLOAT_GIT_DIR/../go-readline
-  set -gx GO_READLINE_DIR (cd $GLOAT_GIT_DIR/../go-readline; and pwd -P)
-  make --quiet --no-print-directory \
-    -C $GLOAT_ROOT go-readline-worktree | source
-end
 if test -d $GLOAT_GIT_DIR/../glojure
   set -gx GLOJURE_DIR (cd $GLOAT_GIT_DIR/../glojure; and pwd -P)
-  make --quiet --no-print-directory \
-    -C $GLOAT_ROOT glojure-worktree | source
+end
+if test -d $GLOAT_GIT_DIR/../go-readline
+  set -gx GO_READLINE_DIR (cd $GLOAT_GIT_DIR/../go-readline; and pwd -P)
+end
+if test -d $GLOAT_GIT_DIR/../gojava
+  set -gx GOJAVA_DIR (cd $GLOAT_GIT_DIR/../gojava; and pwd -P)
+end
+if test (basename (dirname $GLOAT_ROOT)) = worktree; \
+   and test (basename (dirname (dirname $GLOAT_ROOT))) = gloat
+  make --quiet --no-print-directory -C $GLOAT_ROOT work-init
+  if test -d $GLOAT_ROOT/workspace/glojure
+    set -gx GLOJURE_DIR $GLOAT_ROOT/workspace/glojure
+  end
+  if test -d $GLOAT_ROOT/workspace/go-readline
+    set -gx GO_READLINE_DIR $GLOAT_ROOT/workspace/go-readline
+  end
+  if test -d $GLOAT_ROOT/workspace/gojava
+    set -gx GOJAVA_DIR $GLOAT_ROOT/workspace/gojava
+  end
 end
 export PATH MANPATH
 gloat --complete fish | source
@@ -70,17 +92,27 @@ PATH=$GLOAT_ROOT/bin:$GLOAT_ROOT/local/bin:$PATH
 MANPATH=$GLOAT_ROOT/man:$GLOAT_ROOT/local/man:$(manpath 2>/dev/null)
 GLOAT_SHELL=zsh
 export GLOAT_ROOT GLOAT_VERSION GLOAT_GIT_DIR PATH MANPATH GLOAT_SHELL
-if [[ -d $GLOAT_GIT_DIR/../go-readline ]]; then
-  GO_READLINE_DIR=$(cd "$GLOAT_GIT_DIR/../go-readline" && pwd -P)
-  export GO_READLINE_DIR
-  source <(make --quiet --no-print-directory \
-    -C "$GLOAT_ROOT" go-readline-worktree)
-fi
 if [[ -d $GLOAT_GIT_DIR/../glojure ]]; then
   GLOJURE_DIR=$(cd "$GLOAT_GIT_DIR/../glojure" && pwd -P)
   export GLOJURE_DIR
-  source <(make --quiet --no-print-directory \
-    -C "$GLOAT_ROOT" glojure-worktree)
+fi
+if [[ -d $GLOAT_GIT_DIR/../go-readline ]]; then
+  GO_READLINE_DIR=$(cd "$GLOAT_GIT_DIR/../go-readline" && pwd -P)
+  export GO_READLINE_DIR
+fi
+if [[ -d $GLOAT_GIT_DIR/../gojava ]]; then
+  GOJAVA_DIR=$(cd "$GLOAT_GIT_DIR/../gojava" && pwd -P)
+  export GOJAVA_DIR
+fi
+if [[ $(basename "$(dirname "$GLOAT_ROOT")") == worktree && \
+      $(basename "$(dirname "$(dirname "$GLOAT_ROOT")")") == gloat ]]; then
+  make --quiet --no-print-directory -C "$GLOAT_ROOT" work-init
+  [[ -d $GLOAT_ROOT/workspace/glojure ]] && \
+    export GLOJURE_DIR=$GLOAT_ROOT/workspace/glojure
+  [[ -d $GLOAT_ROOT/workspace/go-readline ]] && \
+    export GO_READLINE_DIR=$GLOAT_ROOT/workspace/go-readline
+  [[ -d $GLOAT_ROOT/workspace/gojava ]] && \
+    export GOJAVA_DIR=$GLOAT_ROOT/workspace/gojava
 fi
 if [[ -d $GLOAT_ROOT/.cache/local ]]; then
   eval "$(gloat --complete zsh)"

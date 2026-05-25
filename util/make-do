@@ -236,69 +236,261 @@ release() (
   make publish-www
 )
 
-go-readline-worktree() (
-  cur=$1
-  go_readline_dir=${GO_READLINE_DIR:-}
-  if [[ -z $go_readline_dir ]] ||
-     ! git -C "$go_readline_dir" show-ref --verify --quiet \
-         refs/heads/main 2>/dev/null; then
-    exit 0
-  fi
-  git_common=$(git -C "$go_readline_dir" rev-parse --git-common-dir)
-  [[ $git_common != /* ]] && git_common=$go_readline_dir/$git_common
-  go_readline_root=$(cd "$git_common/.." && pwd -P)
-  parent=$(dirname "$cur")
-  grand=$(dirname "$parent")
-  if [[ $(basename "$parent") != worktree ||
-        $(basename "$grand") != gloat ]]; then
-    exit 0
-  fi
-  name=$(basename "$cur")
-  dest=$go_readline_root/worktree/$name
-  if ! git -C "$go_readline_root" show-ref --verify --quiet \
-       "refs/heads/$name"; then
-    git -C "$go_readline_root" branch "$name" main >&2 || true
-  fi
-  if [[ ! -d $dest ]]; then
-    git -C "$go_readline_root" worktree add "$dest" "$name" >&2 || exit 0
-  fi
-  echo "export GO_READLINE_DIR=$dest"
+# Siblings whose worktrees back a gloat feature. Format: "<name>:<base-branch>".
+# The base branch is the canonical main-tracking branch in each sibling's
+# upstream checkout (./../<name> from the gloat root).
+SIBLINGS=(
+  "glojure:gloat"
+  "go-readline:main"
+  "gojava:main"
 )
 
-glojure-worktree() (
-  cur=$1
-  glojure_dir=${GLOJURE_DIR:-}
-  if [[ -z $glojure_dir ]] ||
-     ! git -C "$glojure_dir" show-ref --verify --quiet \
-         refs/heads/gloat 2>/dev/null; then
-    exit 0
-  fi
-  # Resolve to the main glojure repo root so re-running from inside an
-  # already-set worktree doesn't try to nest worktrees within worktrees.
-  git_common=$(git -C "$glojure_dir" rev-parse --git-common-dir)
-  [[ $git_common != /* ]] && git_common=$glojure_dir/$git_common
-  glojure_root=$(cd "$git_common/.." && pwd -P)
+# Echo absolute path to ../<sibling> (the canonical, always-on-main checkout)
+# or return 1 if it doesn't exist.
+work-sibling-canonical() {
+  local cur=$1 sibling=$2
+  local canonical
+  canonical=$(cd "$cur/../../../$sibling" 2>/dev/null && pwd -P) || return 1
+  [[ -d $canonical/.git ]] || return 1
+  echo "$canonical"
+}
+
+# Return 0 if cur looks like <something>/gloat/worktree/<name>, else 1.
+work-in-worktree() {
+  local cur=$1 parent grand
   parent=$(dirname "$cur")
   grand=$(dirname "$parent")
-  if [[ $(basename "$parent") != worktree ||
-        $(basename "$grand") != gloat ]]; then
-    exit 0
-  fi
+  [[ $(basename "$parent") == worktree && $(basename "$grand") == gloat ]]
+}
+
+# Create branch <name> off <base> in canonical if missing, then add a worktree
+# at <cur>/workspace/<sibling> pointing at <name> if missing. Idempotent.
+work-sibling-setup() {
+  local cur=$1 sibling=$2 base=$3
+  local canonical workspace name
+  canonical=$(work-sibling-canonical "$cur" "$sibling") || return 0
   name=$(basename "$cur")
-  dest=$glojure_root/worktree/$name
-  if ! git -C "$glojure_root" show-ref --verify --quiet \
-       "refs/heads/$name"; then
-    git -C "$glojure_root" branch "$name" gloat >&2 || true
+  workspace=$cur/workspace/$sibling
+
+  if ! git -C "$canonical" show-ref --verify --quiet "refs/heads/$base"; then
+    echo "work: $sibling has no $base branch in $canonical; skipping" >&2
+    return 0
   fi
-  if [[ ! -d $dest ]]; then
-    git -C "$glojure_root" worktree add "$dest" "$name" >&2 || exit 0
+  if ! git -C "$canonical" show-ref --verify --quiet "refs/heads/$name"; then
+    git -C "$canonical" branch "$name" "$base" >&2 || true
   fi
-  # Build glj inside the worktree if find-glj wouldn't already find one.
-  glj_resolved=$(GLOJURE_DIR=$dest "$cur/bin/gloat" --glj 2>/dev/null || true)
-  if [[ $glj_resolved != "$dest"/bin/*/glj ]]; then
-    GLOJURE_DIR=$dest "$cur/bin/gloat" --glj-build >&2
+  if [[ ! -d $workspace ]]; then
+    mkdir -p "$cur/workspace"
+    git -C "$canonical" worktree add "$workspace" "$name" >&2 || return 0
   fi
-  echo "export GLOJURE_DIR=$dest"
+}
+
+# Write/refresh <cur>/go.work referencing whichever workspace/<sibling> dirs
+# currently exist.
+work-write-go-work() {
+  local cur=$1 sibling workspace
+  local uses=()
+  for entry in "${SIBLINGS[@]}"; do
+    sibling=${entry%%:*}
+    workspace=$cur/workspace/$sibling
+    [[ -d $workspace ]] && uses+=("./workspace/$sibling")
+  done
+  [[ ${#uses[@]} -eq 0 ]] && return 0
+
+  {
+    echo "go 1.24"
+    echo
+    echo "use ("
+    local u
+    for u in "${uses[@]}"; do
+      echo "    $u"
+    done
+    echo ")"
+  } > "$cur/go.work"
+}
+
+work-init() (
+  cur=$1
+  if ! work-in-worktree "$cur"; then
+    echo "work-init: not in a gloat worktree; nothing to do" >&2
+    return 0
+  fi
+
+  for entry in "${SIBLINGS[@]}"; do
+    sibling=${entry%%:*}
+    base=${entry##*:}
+    work-sibling-setup "$cur" "$sibling" "$base"
+  done
+
+  # Build glj inside the glojure workspace if find-glj wouldn't already find one.
+  workspace_glj=$cur/workspace/glojure
+  if [[ -d $workspace_glj ]]; then
+    glj_resolved=$(GLOJURE_DIR=$workspace_glj "$cur/bin/gloat" --glj 2>/dev/null || true)
+    if [[ $glj_resolved != "$workspace_glj"/bin/*/glj ]]; then
+      GLOJURE_DIR=$workspace_glj "$cur/bin/gloat" --glj-build >&2 || true
+    fi
+  fi
+
+  work-write-go-work "$cur"
+)
+
+work-remove() (
+  cur=$1
+  if ! work-in-worktree "$cur"; then
+    echo "work-remove: not in a gloat worktree ($cur)" >&2
+    exit 1
+  fi
+
+  name=$(basename "$cur")
+  removed=()
+  dirty=()
+  kept_branch=()
+  not_present=()
+
+  for entry in "${SIBLINGS[@]}"; do
+    sibling=${entry%%:*}
+    canonical=$(work-sibling-canonical "$cur" "$sibling") || continue
+    workspace=$cur/workspace/$sibling
+
+    if [[ ! -d $workspace ]]; then
+      not_present+=("$sibling")
+      continue
+    fi
+
+    if [[ -n $(git -C "$workspace" status --porcelain 2>/dev/null) ]]; then
+      dirty+=("$sibling")
+      continue
+    fi
+
+    if ! git -C "$canonical" worktree remove "$workspace" >&2; then
+      dirty+=("$sibling")
+      continue
+    fi
+
+    # `branch -d` refuses to delete unmerged branches; leave them in that case.
+    if git -C "$canonical" branch -d "$name" >&2 2>/dev/null; then
+      removed+=("$sibling")
+    else
+      kept_branch+=("$sibling")
+    fi
+  done
+
+  # Only drop go.work + empty workspace/ if every present sibling was cleanly removed.
+  if [[ ${#dirty[@]} -eq 0 ]]; then
+    rm -f "$cur/go.work" "$cur/go.work.sum"
+    rmdir "$cur/workspace" 2>/dev/null || true
+  fi
+
+  echo
+  echo "Removed:      ${removed[*]:-none}"
+  echo "Branch kept:  ${kept_branch[*]:-none}"
+  echo "Dirty:        ${dirty[*]:-none}"
+  echo "Not present:  ${not_present[*]:-none}"
+  [[ ${#dirty[@]} -eq 0 ]]
+)
+
+work-pull() (
+  cur=$1
+  if ! work-in-worktree "$cur"; then
+    echo "work-pull: not in a gloat worktree ($cur)" >&2
+    exit 1
+  fi
+
+  for entry in "${SIBLINGS[@]}"; do
+    sibling=${entry%%:*}
+    base=${entry##*:}
+    canonical=$(work-sibling-canonical "$cur" "$sibling") || continue
+    workspace=$cur/workspace/$sibling
+    [[ -d $workspace ]] || continue
+
+    echo "== $sibling =="
+    git -C "$canonical" fetch origin
+    git -C "$canonical" pull --ff-only origin "$base"
+    git -C "$workspace" rebase "$base"
+  done
+)
+
+work-save() (
+  cur=$1
+  if ! work-in-worktree "$cur"; then
+    echo "work-save: not in a gloat worktree ($cur)" >&2
+    exit 1
+  fi
+
+  name=$(basename "$cur")
+  succeeded=()
+  failed=()
+  skipped=()
+
+  for entry in "${SIBLINGS[@]}"; do
+    sibling=${entry%%:*}
+    base=${entry##*:}
+    canonical=$(work-sibling-canonical "$cur" "$sibling") || continue
+    workspace=$cur/workspace/$sibling
+    [[ -d $workspace ]] || continue
+
+    echo "== $sibling =="
+    if [[ -z $(git -C "$workspace" log --oneline "$base..HEAD" 2>/dev/null) ]]; then
+      echo "  no commits over $base; skipping"
+      skipped+=("$sibling")
+      continue
+    fi
+
+    if ! git -C "$workspace" rebase "$base"; then
+      git -C "$workspace" rebase --abort >/dev/null 2>&1 || true
+      echo "  rebase failed; resolve manually and re-run work-save"
+      failed+=("$sibling")
+      continue
+    fi
+
+    if ! git -C "$canonical" merge --ff-only "$name"; then
+      echo "  fast-forward of $base failed in $canonical"
+      failed+=("$sibling")
+      continue
+    fi
+    succeeded+=("$sibling")
+  done
+
+  echo
+  echo "Saved:   ${succeeded[*]:-none}"
+  echo "Skipped: ${skipped[*]:-none}"
+  echo "Failed:  ${failed[*]:-none}"
+  [[ ${#failed[@]} -eq 0 ]]
+)
+
+work-status() (
+  cur=$1
+  if ! work-in-worktree "$cur"; then
+    echo "work-status: not in a gloat worktree ($cur)" >&2
+    exit 1
+  fi
+
+  for entry in "${SIBLINGS[@]}"; do
+    sibling=${entry%%:*}
+    workspace=$cur/workspace/$sibling
+    [[ -d $workspace ]] || continue
+    echo "== $sibling =="
+    git -C "$workspace" status --short --branch
+    echo
+  done
+)
+
+work-log() (
+  cur=$1
+  if ! work-in-worktree "$cur"; then
+    echo "work-log: not in a gloat worktree ($cur)" >&2
+    exit 1
+  fi
+
+  for entry in "${SIBLINGS[@]}"; do
+    sibling=${entry%%:*}
+    base=${entry##*:}
+    workspace=$cur/workspace/$sibling
+    [[ -d $workspace ]] || continue
+    echo "== $sibling =="
+    git -C "$workspace" log --oneline "$base..HEAD" || true
+    echo
+  done
 )
 
 annoucement() (

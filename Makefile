@@ -144,10 +144,7 @@ gloat-version:
 gloat-git-dir:
 	@echo '$(GIT-REPO-DIR)'
 
-glojure-worktree:
-	@make-do $@ '$(CURDIR)'
-
-go-readline-worktree:
+work-init work-pull work-save work-status work-log work-remove:
 	@make-do $@ '$(CURDIR)'
 
 man: $(MAN-PAGES)
@@ -298,12 +295,8 @@ GLJ-PLATFORM-macos-int64 := darwin_amd64
 GLJ-PLATFORM-macos-arm64 := darwin_arm64
 GLJ-PLATFORM := $(GLJ-PLATFORM-$(OS-ARCH))
 
-GO-READLINE-DIR := $(if $(GO_READLINE_DIR),$(GO_READLINE_DIR),$(wildcard $(GLOJURE-DIR)/../go-readline))
-
 repl:
-	$(if $(GO-READLINE-DIR),\
-	  GO_REPLACE="github.com/reeflective/readline=$(GO-READLINE-DIR)") \
-	  GLJ_VERSION=$(GLOJURE-VERSION) $(MAKE) --no-print -C $(GLOJURE-DIR) build
+	GLJ_VERSION=$(GLOJURE-VERSION) $(MAKE) --no-print -C $(GLOJURE-DIR) build
 	PATH=$(GLOJURE-DIR)/bin/$(GLJ-PLATFORM):$(PATH) gloat --repl
 
 build-glj-from-source: $(GO) $(GLOJURE-DIR)

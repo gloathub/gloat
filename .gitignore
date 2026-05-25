@@ -17,3 +17,6 @@ gljrepl/
 /gloat*
 /test/call
 /test/call.clj
+worktree/*/workspace/
+worktree/*/go.work
+worktree/*/go.work.sum

@@ -203,6 +203,11 @@
                             (re-find #"^(\S.*?)\s*=>\s*(\S.*?)$" line)]
                    [(str/trim left) (str/trim right)]))))))
 
+(defn go-mod-version
+  "Ensure a module version string has the `v` prefix Go requires."
+  [v]
+  (if (and v (str/starts-with? v "v")) v (str "v" v)))
+
 (defn write-glj-workspace-mod
   "Write a go.mod into the glj compile workspace so `glj compile` can
   `go get` user-declared deps and build the generated wrapper code.
@@ -216,7 +221,7 @@
         extra-block (render-extra-deps extra-deps)
         body (str "module gloataot\n\n"
                   "go 1.24\n\n"
-                  "require github.com/gloathub/glojure " glojure-version
+                  "require github.com/gloathub/glojure " (go-mod-version glojure-version)
                   "\n\n"
                   "replace github.com/gloathub/glojure => " glojure-dir "\n"
                   (when (seq replaces) (str replace-lines "\n"))
@@ -1348,7 +1353,7 @@ Less common:
                   result (render-template
                           template-content
                           [["GO-MODULE" go-module]
-                           ["GLOJURE-VERSION" glojure-version]
+                           ["GLOJURE-VERSION" (go-mod-version glojure-version)]
                            ["YS-PKG-VERSION" ys-pkg-version]
                            ["GLOAT-ROOT" GLOAT-ROOT]
                            ["EXTRA-DEPS" (render-extra-deps extra-deps)]])

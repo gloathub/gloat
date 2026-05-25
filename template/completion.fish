@@ -22,6 +22,8 @@ complete -c gloat -l srepl -d 'Start socket REPL server (see man gloat-repl)' -x
 complete -c gloat -l deps -d 'Path to gljdeps.edn (for --repl/--nrepl/--srepl)' -r -F
 complete -c gloat -l reset -d 'Remove all cached dependencies'
 complete -c gloat -l upgrade -d 'Upgrade gloat (use --upgrade=v1.2.3 to pin a version)'
+complete -c gloat -l glj -d 'Print path to the associated glj binary'
+complete -c gloat -l glj-build -d 'Build the associated glj binary'
 
 complete -c gloat -s r -l run -d 'Compile and run'
 complete -c gloat -s f -l force -d 'Overwrite existing output'

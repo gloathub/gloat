@@ -172,9 +172,18 @@ main() (
       glj_version=$glj_describe${glj_ts:+-$glj_ts}
       [[ $glj_version == v* ]] || glj_version=v$glj_version
     fi
+    # If a parent go.work is in effect, let it provide local module
+    # versions and skip GO_REPLACE (build-glj.sh would otherwise try to
+    # `go work init` and fail because go.work already exists upstream).
+    active_gowork=$(cd "$GLOJURE_DIR" && go env GOWORK)
     go_replace=
-    if [[ -n ${GO_READLINE_DIR:-} && -d $GO_READLINE_DIR ]]; then
-      go_replace="github.com/reeflective/readline=$GO_READLINE_DIR"
+    if [[ -z $active_gowork || $active_gowork == off ]]; then
+      if [[ -n ${GO_READLINE_DIR:-} && -d $GO_READLINE_DIR ]]; then
+        go_replace="github.com/reeflective/readline=$GO_READLINE_DIR"
+      fi
+      if [[ -n ${GOJAVA_DIR:-} && -d $GOJAVA_DIR ]]; then
+        go_replace="${go_replace:+$go_replace }github.com/gloathub/gojava=$GOJAVA_DIR"
+      fi
     fi
     goflags=${GOFLAGS:-}
     if [[ -n ${FORCE:-} ]]; then

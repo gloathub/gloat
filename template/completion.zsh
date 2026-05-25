@@ -43,6 +43,8 @@ _gloat() {
         '--deps=[Path to gljdeps.edn (for --repl/--nrepl/--srepl)]:deps file:_files -g "*.edn"' \
         '(- *)--reset[Remove all cached dependencies]' \
         '(- *)--upgrade[Upgrade gloat (use --upgrade=v1.2.3 to pin a version)]' \
+        '(- *)--glj[Print path to the associated glj binary]' \
+        '(- *)--glj-build[Build the associated glj binary]' \
         '(-r --run)'{-r,--run}'[Compile and run]' \
         '(-f --force)'{-f,--force}'[Overwrite existing output]' \
         '(-v --verbose)'{-v,--verbose}'[Print timing information]' \

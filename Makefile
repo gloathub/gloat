@@ -31,6 +31,11 @@ include common/gloat-vars.mk
 GLOJURE-DIR ?= $(or $(GLOJURE_DIR),$(LOCAL-CACHE)/glojure-$(GLOJURE-VERSION))
 export GLOJURE_DIR := $(GLOJURE-DIR)
 
+$(GLOJURE-DIR):
+	@echo "* Cloning glojure v$(GLOJURE-VERSION) locally"
+	git clone -q -b v$(GLOJURE-VERSION) --config advice.detachedHead=false \
+	  $(GLOJURE-REPO) $@
+
 # Auto-discover YS standard library source files
 YS-CLJ-FILES := $(wildcard ys/src/*/*.clj ys/src/*/*/*.clj)
 YS-NAMESPACES := $(patsubst ys/src/%.clj,%,$(YS-CLJ-FILES))

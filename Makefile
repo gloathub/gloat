@@ -184,9 +184,9 @@ ys-pkg: $(YS-GO-FILES) $(GO)
 	@echo "Syncing ys/go/ to ys/pkg/"
 	@mkdir -p ys/pkg
 	rsync -a --delete --exclude='all/' --exclude='go.mod' --exclude='go.sum' ys/go/ ys/pkg/
-	@echo "Pinning glojure $(GLOJURE-VERSION) in ys/pkg/go.mod"
+	@echo "Pinning glojure v$(GLOJURE-VERSION) in ys/pkg/go.mod"
 	@perl -i -pe \
-	  's{^require github\.com/gloathub/glojure .*}{require github.com/gloathub/glojure $(GLOJURE-VERSION)}' \
+	  's{^require github\.com/gloathub/glojure .*}{require github.com/gloathub/glojure v$(GLOJURE-VERSION)}' \
 	  ys/pkg/go.mod
 	@echo "Running go mod tidy in ys/pkg/"
 	cd ys/pkg && go mod tidy

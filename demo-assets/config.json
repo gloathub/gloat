@@ -1,0 +1,66 @@
+{
+  "99-bottles-of-beer": [
+    [
+      [
+        "99 bottles",
+        99,
+        true
+      ],
+      [
+        "50 bottles",
+        50
+      ],
+      [
+        "25 bottles",
+        25
+      ],
+      [
+        "10 bottles",
+        10
+      ],
+      [
+        "5 bottles",
+        5
+      ],
+      [
+        "3 bottles",
+        3
+      ],
+      [
+        "1 bottle",
+        1
+      ]
+    ]
+  ],
+  "fizzbuzz": [
+    [
+      7,
+      [
+        16
+      ],
+      22,
+      100
+    ]
+  ],
+  "dragon-curve": [
+    [
+      63,
+      127,
+      [
+        255
+      ],
+      511
+    ]
+  ],
+  "floyds-triangle": [
+    [
+      5,
+      [
+        14
+      ],
+      20,
+      25,
+      30
+    ]
+  ]
+}

@@ -1,0 +1,15 @@
+# https://rosettacode.org/wiki/Floyd%27s_triangle#YAMLScript
+
+!ys-0
+
+defn main(n=14):
+  nums =: range().map(inc * str)
+  rows =:
+    loop row 1, nums nums, rows []:
+      if rows.# < n:
+        recur: row.++ nums.drop(row)
+               rows.conj(nums.take(row))
+        else: rows
+  fmt =: \((' ' * (rows.$.$.# - _.#)) + _)
+  each row rows:
+    say: row.map(fmt):joins

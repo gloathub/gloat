@@ -67,7 +67,7 @@ code: `net:http.Server`, `net:url.Parse`, `crypto:sha256.Sum256`.
 Fully-qualified module paths use the same separator throughout.
 
 ```clojure
-(throw (github.com:gloathub:glojure:pkg:lang.NewError "boom"))
+(throw (github.com:glojurelang:glojure:pkg:lang.NewError "boom"))
 ```
 
 A Glojure function can be passed wherever Go expects a function value.

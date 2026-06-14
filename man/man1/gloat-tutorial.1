@@ -20,7 +20,7 @@ Version Management
 .IP \(bu 2
 The YS Standard Library
 .IP \(bu 2
-The Glojure Fork
+Glojure Dependency
 .IP \(bu 2
 Development Workflow
 
@@ -38,7 +38,7 @@ Provides the YS standard library as a Go module (\fBys/pkg\fR)
 Generates buildable Go directories or compiled binaries
 .RE
 .IP "  2." 5
-\fBgloathub/glojure\fP — Forked Glojure compiler with gloat-specific patches
+\fBglojurelang/glojure\fP — Glojure compiler/runtime used by Gloat
 .RS
 .IP \(bu 2
 Based on the upstream glojurelang/glojure project
@@ -178,7 +178,7 @@ module GO-MODULE
 go 1.24
 
 require (
-	github.com/gloathub/glojure GLOJURE-VERSION
+	github.com/glojurelang/glojure GLOJURE-VERSION
 	github.com/gloathub/gloat/ys/pkg YS-PKG-VERSION
 )
 
@@ -237,7 +237,7 @@ All subsequent \fBinclude\fR directives load \fB\&.mk\fR modules from there.
 \fBKey \fB\&.mk\fR Modules\fP:
 - \fBinit.mk\fR — Initializes Makes variables and paths
 - \fBgo.mk\fR — Installs and manages Go toolchain
-- \fBglojure.mk\fR — Installs Glojure compiler (gloat fork with extended platform support)
+- \fBglojure.mk\fR — Installs the Glojure compiler
 - \fBbabashka.mk\fR — Installs Babashka (runs gloat.clj)
 - \fByamlscript.mk\fR — Installs YAMLScript compiler
 - \fBgloat.mk\fR — Provides \fBgloat-go\fR, \fBgloat-github-release\fR targets
@@ -299,7 +299,7 @@ Projects override these in their own Makefile or \fBcommon/common.mk\fR using \f
 # From gloat's common/common.mk
 GLOJURE-VERSION := 0.6.5-rc4
 GLOJURE-COMMIT := gloat
-GLOJURE-REPO := https://github.com/gloathub/glojure
+GLOJURE-REPO := https://github.com/glojurelang/glojure
 .EE
 
 .PP
@@ -533,11 +533,11 @@ export GLOAT_VERSION=0.1.0
 
 .RS
 .IP "  1." 5
-\fB\fBcommon/common.mk\fR\fP — Glojure fork version
+\fB\fBcommon/common.mk\fR\fP — Glojure version
 \fBmakefile
 GLOJURE-VERSION := 0.6.5-rc4
 GLOJURE-COMMIT := gloat
-GLOJURE-REPO := https://github.com/gloathub/glojure
+GLOJURE-REPO := https://github.com/glojurelang/glojure
 \fR
 .RE
 .IP "  2." 5
@@ -551,7 +551,7 @@ YS-PKG-VERSION ?= v0.1.0
 .IP "  1." 5
 \fB\fBys/pkg/go.mod\fR\fP — Hardcoded Glojure dependency
 \fBgo
-require github.com/gloathub/glojure v0.6.5-rc4
+require github.com/glojurelang/glojure v0.6.5-rc4
 \fR
 .RE
 .IP "  3." 5
@@ -711,9 +711,9 @@ Gloat-specific files (no upstream equivalents):
 - \fBys/src/ys/json.clj\fR — Pure Clojure JSON (not clojure.data.json)
 - \fBys/src/ys/http.clj\fR — Go net/http wrapper (not babashka.http-client)
 
-.SH The Glojure Fork
-.SS Why Fork?
-The gloat project maintains a fork of glojurelang/glojure for several reasons:
+.SH Glojure Dependency
+.SS Why Glojure?
+Gloat depends on glojurelang/glojure for several reasons:
 .IP "  1." 5
 \fBGo compilation improvements\fP — Patches to improve generated Go code
 .IP "  2." 5
@@ -723,26 +723,22 @@ The gloat project maintains a fork of glojurelang/glojure for several reasons:
 .IP "  4." 5
 \fBStability\fP — Pins a known-good version with gloat-specific features
 
-.SS Fork Details
-\fBRepository\fP: \fBgloathub/glojure\fR
-\fBBranch\fP: \fBgloat\fR
+.SS Glojure Details
+\fBRepository\fP: \fBglojurelang/glojure\fR
 \fBConfigured in\fP: \fBcommon/common.mk\fR
 
 .EX
 GLOJURE-VERSION := 0.6.5-rc4
 GLOJURE-COMMIT := gloat
-GLOJURE-REPO := https://github.com/gloathub/glojure
-GLOJURE-GET-URL := github.com/gloathub/glojure/cmd/glj
+GLOJURE-REPO := https://github.com/glojurelang/glojure
+GLOJURE-GET-URL := github.com/glojurelang/glojure/cmd/glj
 .EE
 
 .SS Upstream Sync Aspirations
 The long-term goal is to upstream all patches to glojurelang/glojure and
-eliminate the fork.
-This requires:
-1. Extracting patch set from \fBgloat\fR branch
-2. Submitting PRs to upstream
-3. Waiting for upstream releases
-4. Switching gloat to use upstream versions
+Gloat tracks tagged glojurelang/glojure releases and can use a local
+Glojure checkout during development via \fBGLOJURE_DIR\fR or the workspace
+helper targets.
 
 .SH Development Workflow
 .SS Initial Setup

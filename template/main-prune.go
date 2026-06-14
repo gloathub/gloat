@@ -3,14 +3,14 @@ package main
 import (
 	"os"
 	"strings"
-	"github.com/gloathub/glojure/pkg/glj"
-	"github.com/gloathub/glojure/pkg/lang"
+	"github.com/glojurelang/glojure/pkg/glj"
+	"github.com/glojurelang/glojure/pkg/lang"
 	_ "GO-MODULE/pkg/PACKAGE-PATH"
 	_ "GO-MODULE/internal/stdlib/clojure/core"
-	_ "github.com/gloathub/glojure/pkg/stdlib/clojure/core/async"
-	_ "github.com/gloathub/glojure/pkg/stdlib/clojure/core/protocols"
-	_ "github.com/gloathub/glojure/pkg/stdlib/clojure/string"
-	_ "github.com/gloathub/glojure/pkg/stdlib/glojure/go/io"
+	_ "github.com/glojurelang/glojure/pkg/stdlib/clojure/core/async"
+	_ "github.com/glojurelang/glojure/pkg/stdlib/clojure/core/protocols"
+	_ "github.com/glojurelang/glojure/pkg/stdlib/clojure/string"
+	_ "github.com/glojurelang/glojure/pkg/stdlib/glojure/go/io"
 YS-IMPORTS
 )
 

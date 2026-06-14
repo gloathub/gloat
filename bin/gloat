@@ -179,7 +179,7 @@ main() (
     go_replace=
     if [[ -z $active_gowork || $active_gowork == off ]]; then
       if [[ -n ${GO_READLINE_DIR:-} && -d $GO_READLINE_DIR ]]; then
-        go_replace="github.com/reeflective/readline=$GO_READLINE_DIR"
+        go_replace="github.com/gloathub/go-readline=$GO_READLINE_DIR"
       fi
       if [[ -n ${GOJAVA_DIR:-} && -d $GOJAVA_DIR ]]; then
         go_replace="${go_replace:+$go_replace }github.com/gloathub/gojava=$GOJAVA_DIR"
@@ -423,7 +423,19 @@ install-deps() {
   install-one bb       path-bb
   install-one go       path-go
   install-one glojure  path-glojure
-  install-one glj      path-glj
+  if [[ -n ${GLOJURE_DIR:-} ]]; then
+    local local_glj
+    local_glj=$(find "$GLOJURE_DIR/bin" -mindepth 2 -maxdepth 2 \
+      -type f -name glj -perm -u+x 2>/dev/null | head -1 || true)
+    if [[ -n $local_glj ]]; then
+      PATH=$(dirname "$local_glj"):$PATH
+      printf '==> Installing glj... done\n' >&2
+    else
+      install-one glj path-glj
+    fi
+  else
+    install-one glj path-glj
+  fi
   install-one ys       path-ys
   >&2 echo "All gloat dependencies installed."
 }
@@ -477,7 +489,7 @@ setup-go-module() {
   if [[ ! -f go.mod ]]; then
     go mod init gloatrepl
   fi
-  if ! grep -q "gloathub/glojure" go.mod 2>/dev/null; then
+  if ! grep -q "glojurelang/glojure" go.mod 2>/dev/null; then
     local glojure_dir=${GLOJURE_DIR-}
     if [[ -z $glojure_dir ]]; then
       glojure_dir=$(
@@ -487,7 +499,7 @@ setup-go-module() {
     fi
     if [[ -d $glojure_dir ]]; then
       go mod edit \
-        -replace "github.com/gloathub/glojure=$glojure_dir"
+        -replace "github.com/glojurelang/glojure=$glojure_dir"
       cp "$glojure_dir/go.sum" go.sum
       # Go does not inherit replace directives from required modules,
       # so mirror glojure's own replaces (e.g. its readline fork).
@@ -514,12 +526,12 @@ setup-go-module() {
           print "$o\t$n\n";
         ' "$glojure_dir/go.mod"
       )
-      go get github.com/gloathub/glojure
+      go get github.com/glojurelang/glojure
     else
       local glj_ver
       glj_ver=$(glj --version 2>/dev/null |
         grep -oP 'v\d+\.\d+\.\S+' | head -1 || true)
-      go get "github.com/gloathub/glojure@${glj_ver:-latest}"
+      go get "github.com/glojurelang/glojure@${glj_ver:-latest}"
     fi
   fi
 }

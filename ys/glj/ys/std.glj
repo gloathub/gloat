@@ -52,7 +52,7 @@
 ;; String functions
 ;;------------------------------------------------------------------------------
 #_(defn base64-decode [S]
-  (github.com:gloathub:glojure:pkg:javacompat:string.ValueOf (.decode (Base64/getDecoder) ^{:tag go/string} S)))
+  (github.com:glojurelang:glojure:pkg:javacompat:string.ValueOf (.decode (Base64/getDecoder) ^{:tag go/string} S)))
 #_(defn base64-encode [S]
   (.encodeToString (Base64/getEncoder) (.getBytes ^go/string S)))
 #_(defn base64-points [S]
@@ -337,7 +337,7 @@
   ([x y]
    (if (and (integer? x) (integer? y) (>= y 0))
      (let [a (math/pow x y)]
-       (if (<= a github.com:gloathub:glojure:pkg:javacompat:long.MAX_VALUE)
+       (if (<= a github.com:glojurelang:glojure:pkg:javacompat:long.MAX_VALUE)
          (long a)
          a))
      (math/pow x y)))
@@ -489,7 +489,7 @@
 #_(defn if [cond then else] (if cond then else))
 
 #_(defn sleep [I]
-  (github.com:gloathub:glojure:pkg:javacompat:thread.Sleep (int (* 1000 I))))
+  (github.com:glojurelang:glojure:pkg:javacompat:thread.Sleep (int (* 1000 I))))
 
 #_(defn throw [e] (throw e))
 
@@ -914,7 +914,7 @@
 ;;------------------------------------------------------------------------------
 #_(defn new [class & xs]
   (clojure.lang.Reflector/invokeConstructor
-    class (into-array github.com:gloathub:glojure:pkg:lang.Object xs)))
+    class (into-array github.com:glojurelang:glojure:pkg:lang.Object xs)))
 
 
 ;;------------------------------------------------------------------------------

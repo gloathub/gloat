@@ -14,7 +14,7 @@ glj
 
 The Gloat/Glojure REPL is a rich interactive environment for evaluating
 Clojure expressions with full access to Go packages.
-It is built on the `gloathub/readline` library (a fork of
+It is built on the `gloathub/go-readline` library (a fork of
 `reeflective/readline`) and supports vi and emacs editing modes,
 multiline editing with auto-indent, tab completion with namespace-aware
 descriptions, ghost text autosuggestions, persistent history, job

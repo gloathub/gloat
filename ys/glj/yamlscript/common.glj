@@ -67,7 +67,7 @@
 
 #_(defn get-yspath [base]
   (let [yspath (or
-                 (get (github.com:gloathub:glojure:pkg:javacompat:system.Getenv) "YSPATH")
+                 (get (github.com:glojurelang:glojure:pkg:javacompat:system.Getenv) "YSPATH")
                  (when (re-matches #"/NO-NAME$" base) (str (cwd)))
                  (->
                    base

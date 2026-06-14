@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 	"strings"
-	"github.com/gloathub/glojure/pkg/glj"
-	"github.com/gloathub/glojure/pkg/lang"
+	"github.com/glojurelang/glojure/pkg/glj"
+	"github.com/glojurelang/glojure/pkg/lang"
 	_ "GO-MODULE/pkg/PACKAGE-PATH"
 	_ "github.com/gloathub/gloat/ys/pkg/all"
 ALL-NS-IMPORTS

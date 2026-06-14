@@ -14,8 +14,8 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/gloathub/glojure/pkg/glj"
-	"github.com/gloathub/glojure/pkg/lang"
+	"github.com/glojurelang/glojure/pkg/glj"
+	"github.com/glojurelang/glojure/pkg/lang"
 	// Blank-import the gloat-compiled picker.core package so its init()
 	// runs and registers the namespace loader. The path matches gloat's
 	// --module value plus the namespace path under pkg/.

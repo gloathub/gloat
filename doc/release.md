@@ -3,7 +3,7 @@
 ## Dependency Flow
 
 ```
-gloathub/glojure   (fork of glojurelang/glojure)
+glojurelang/glojure
     ↓
 gloathub/gloat     (this repo, includes ys/pkg stdlib)
     ↓
@@ -44,25 +44,24 @@ authenticated.
 
 ## Releasing Glojure (when needed)
 
-Do this **before** a gloat release when the `gloathub/glojure` fork needs
+Do this **before** a gloat release when `glojurelang/glojure` needs
 changes.
-Work in the glojure repo on the `gloat` branch:
+Work in the glojure repo:
 
 ```bash
 cd /path/to/glojure
-git checkout gloat
 make clean && make all && make test
 make release VERSION=0.6.5-rc7
 ```
 
 `make release` builds binaries for `linux_amd64` and `darwin_arm64`,
-tags `v0.6.5-rc7`, pushes to the `gloathub` remote, and creates a GitHub
+tags `v0.6.5-rc7`, pushes to the configured remote, and creates a GitHub
 release.
 
 Verify on Go proxy before proceeding:
 
 ```bash
-GOPROXY=proxy.golang.org go list -m github.com/gloathub/glojure@v0.6.5-rc7
+GOPROXY=proxy.golang.org go list -m github.com/glojurelang/glojure@v0.6.5-rc7
 ```
 
 Then run the gloat release passing `GLJ-VERSION=0.6.5-rc7`.

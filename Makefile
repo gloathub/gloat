@@ -28,8 +28,15 @@ include $M/shell.mk
 include common/path.mk
 include common/gloat-vars.mk
 
+GLOJURE-DIR-EXPLICIT := $(GLOJURE_DIR)
 GLOJURE-DIR ?= $(or $(GLOJURE_DIR),$(LOCAL-CACHE)/glojure-$(GLOJURE-VERSION))
 export GLOJURE_DIR := $(GLOJURE-DIR)
+GLOJURE-DOWN := $(GLOJURE-REPO)/releases/download/v$(GLOJURE-VERSION)/$(GLOJURE-TAR)
+
+ifneq ($(GLOJURE-DIR-EXPLICIT),)
+GLJ := $(GLOJURE-DIR)/bin/$(shell $(GO) env GOOS)_$(shell $(GO) env GOARCH)/glj
+override PATH := $(dir $(GLJ)):$(PATH)
+endif
 
 $(GLOJURE-DIR):
 	@echo "* Cloning glojure v$(GLOJURE-VERSION) locally"
@@ -186,7 +193,7 @@ ys-pkg: $(YS-GO-FILES) $(GO)
 	rsync -a --delete --exclude='all/' --exclude='go.mod' --exclude='go.sum' ys/go/ ys/pkg/
 	@echo "Pinning glojure v$(GLOJURE-VERSION) in ys/pkg/go.mod"
 	@perl -i -pe \
-	  's{^require github\.com/gloathub/glojure .*}{require github.com/gloathub/glojure v$(GLOJURE-VERSION)}' \
+	  's{^require github\.com/(gloathub|glojurelang)/glojure .*}{require github.com/glojurelang/glojure v$(GLOJURE-VERSION)}' \
 	  ys/pkg/go.mod
 	@echo "Running go mod tidy in ys/pkg/"
 	cd ys/pkg && go mod tidy
@@ -228,7 +235,7 @@ $(GLJ-WASM): $(GLJ) $(GO) $(GLOJURE-BUILD-DIR)
 	@mkdir -p $(dir $@)
 	cd $(GLOJURE-BUILD-DIR)/cmd/glj && \
 	  GOOS=js GOARCH=wasm CGO_ENABLED=0 $(GO) build \
-	    -ldflags "-X github.com/gloathub/glojure/pkg/runtime.version=$(GLOJURE-VERSION)" \
+	    -ldflags "-X github.com/glojurelang/glojure/pkg/runtime.version=$(GLOJURE-VERSION)" \
 	    -o $(ROOT)/$@ .
 
 $(GLJ-WASM-EXEC): $(GO)

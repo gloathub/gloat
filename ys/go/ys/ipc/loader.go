@@ -4,8 +4,8 @@ package ipc
 
 import (
 	fmt "fmt"
-	lang "github.com/gloathub/glojure/pkg/lang"
-	runtime "github.com/gloathub/glojure/pkg/runtime"
+	lang "github.com/glojurelang/glojure/pkg/lang"
+	runtime "github.com/glojurelang/glojure/pkg/runtime"
 	io5 "io"
 	exec4 "os/exec"
 	reflect "reflect"

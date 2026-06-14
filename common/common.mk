@@ -1,7 +1,7 @@
 GLOAT-VERSION := 0.1.45
 
-GLOJURE-VERSION := 0.6.5-rc30
-GLOJURE-REPO := https://github.com/gloathub/glojure
+GLOJURE-VERSION := 0.6.5-rc31
+GLOJURE-REPO := https://github.com/glojurelang/glojure
 
 # GLJ currently requires Go 1.24.0
 GO-VERSION := 1.24.0

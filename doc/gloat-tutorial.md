@@ -13,7 +13,7 @@ that compile to native Go binaries.
 - [Downstream Project Setup](#downstream-project-setup)
 - [Version Management](#version-management)
 - [The YS Standard Library](#the-ys-standard-library)
-- [The Glojure Fork](#the-glojure-fork)
+- [Glojure Dependency](#glojure-dependency)
 - [Development Workflow](#development-workflow)
 
 ## Overview
@@ -27,10 +27,9 @@ The gloat ecosystem consists of four interconnected repositories:
    - Provides the YS standard library as a Go module (`ys/pkg`)
    - Generates buildable Go directories or compiled binaries
 
-2. **gloathub/glojure** — Forked Glojure compiler with gloat-specific patches
-   - Based on the upstream glojurelang/glojure project
-   - Includes patches for improved Go compilation
-   - Adds 15-20 additional cross-compilation targets beyond upstream
+2. **glojurelang/glojure** — Glojure compiler/runtime used by Gloat
+   - Provides the `glj` compiler and REPL
+   - Includes support for Go code generation and broad cross-compilation
    - Fixes for issues like `seqable?` handling
 
 3. **makeplus/makes** — Makefile-based dependency and build system
@@ -135,7 +134,7 @@ module GO-MODULE
 go 1.24
 
 require (
-	github.com/gloathub/glojure GLOJURE-VERSION
+	github.com/glojurelang/glojure GLOJURE-VERSION
 	github.com/gloathub/gloat/ys/pkg YS-PKG-VERSION
 )
 
@@ -187,7 +186,7 @@ All subsequent `include` directives load `.mk` modules from there.
 **Key `.mk` Modules**:
 - `init.mk` — Initializes Makes variables and paths
 - `go.mk` — Installs and manages Go toolchain
-- `glojure.mk` — Installs Glojure compiler (gloat fork with extended platform support)
+- `glojure.mk` — Installs the Glojure compiler
 - `babashka.mk` — Installs Babashka (runs gloat.clj)
 - `yamlscript.mk` — Installs YAMLScript compiler
 - `gloat.mk` — Provides `gloat-go`, `gloat-github-release` targets
@@ -243,7 +242,7 @@ Projects override these in their own Makefile or `common/common.mk` using `:=`:
 # From gloat's common/common.mk
 GLOJURE-VERSION := 0.6.5-rc4
 GLOJURE-COMMIT := gloat
-GLOJURE-REPO := https://github.com/gloathub/glojure
+GLOJURE-REPO := https://github.com/glojurelang/glojure
 ```
 
 The `:=` operator has higher precedence than `?=`, so project values win.
@@ -443,11 +442,10 @@ All versions must be kept in sync for releases.
    export GLOAT_VERSION=0.1.0
    ```
 
-2. **`common/common.mk`** — Glojure fork version
+2. **`common/common.mk`** — Glojure version
    ```makefile
    GLOJURE-VERSION := 0.6.5-rc4
-   GLOJURE-COMMIT := gloat
-   GLOJURE-REPO := https://github.com/gloathub/glojure
+   GLOJURE-REPO := https://github.com/glojurelang/glojure
    ```
 
 3. **`Makefile`** — YS pkg Go module version
@@ -457,7 +455,7 @@ All versions must be kept in sync for releases.
 
 4. **`ys/pkg/go.mod`** — Hardcoded Glojure dependency
    ```go
-   require github.com/gloathub/glojure v0.6.5-rc4
+   require github.com/glojurelang/glojure v0.6.5-rc4
    ```
 
 5. **`Changes`** — Release changelog
@@ -594,39 +592,33 @@ Gloat-specific files (no upstream equivalents):
 - `ys/src/ys/json.clj` — Pure Clojure JSON (not clojure.data.json)
 - `ys/src/ys/http.clj` — Go net/http wrapper (not babashka.http-client)
 
-## The Glojure Fork
+## Glojure Dependency
 
-### Why Fork?
+### Why Glojure?
 
-The gloat project maintains a fork of glojurelang/glojure for several reasons:
+Gloat depends on glojurelang/glojure for several reasons:
 
 1. **Go compilation improvements** — Patches to improve generated Go code
 2. **Extended platform support** — Adds 15-20 additional cross-compilation targets
 3. **Bug fixes** — Fixes for issues like `seqable?` handling in generated code
 4. **Stability** — Pins a known-good version with gloat-specific features
 
-### Fork Details
+### Glojure Details
 
-**Repository**: `gloathub/glojure`
-**Branch**: `gloat`
+**Repository**: `glojurelang/glojure`
 **Configured in**: `common/common.mk`
 
 ```makefile
 GLOJURE-VERSION := 0.6.5-rc4
-GLOJURE-COMMIT := gloat
-GLOJURE-REPO := https://github.com/gloathub/glojure
-GLOJURE-GET-URL := github.com/gloathub/glojure/cmd/glj
+GLOJURE-REPO := https://github.com/glojurelang/glojure
+GLOJURE-GET-URL := github.com/glojurelang/glojure/cmd/glj
 ```
 
-### Upstream Sync Aspirations
+### Upstream Sync
 
-The long-term goal is to upstream all patches to glojurelang/glojure and
-eliminate the fork.
-This requires:
-1. Extracting patch set from `gloat` branch
-2. Submitting PRs to upstream
-3. Waiting for upstream releases
-4. Switching gloat to use upstream versions
+Gloat tracks tagged glojurelang/glojure releases and can use a local
+Glojure checkout during development via `GLOJURE_DIR` or the workspace
+helper targets.
 
 ## Development Workflow
 

@@ -221,9 +221,9 @@
         extra-block (render-extra-deps extra-deps)
         body (str "module gloataot\n\n"
                   "go 1.24\n\n"
-                  "require github.com/gloathub/glojure " (go-mod-version glojure-version)
+                  "require github.com/glojurelang/glojure " (go-mod-version glojure-version)
                   "\n\n"
-                  "replace github.com/gloathub/glojure => " glojure-dir "\n"
+                  "replace github.com/glojurelang/glojure => " glojure-dir "\n"
                   (when (seq replaces) (str replace-lines "\n"))
                   (when (seq extra-block) (str "\n" extra-block)))]
     (spit (str tmpdir "/go.mod") body)
@@ -1348,6 +1348,7 @@ Less common:
 
             ;; Generate go.mod
             (let [glojure-version (:GLOJURE-VERSION make-vars)
+                  glojure-dir (:GLOJURE-DIR make-vars)
                   ys-pkg-version (:YS-PKG-VERSION make-vars)
                   template-content (slurp (str TEMPLATE "/go.mod"))
                   result (render-template
@@ -1362,13 +1363,17 @@ Less common:
                   ys-pkg-mod (str GLOAT-ROOT "/ys/pkg/go.mod")
                   extra-replaces (when (fs/exists? ys-pkg-mod)
                                    (extract-replaces (slurp ys-pkg-mod)))
-                  replace-block (when (seq extra-replaces)
+                  local-glojure-replace
+                  (when (and (seq glojure-dir) (fs/exists? glojure-dir))
+                    [["github.com/glojurelang/glojure" glojure-dir]])
+                  replaces (concat local-glojure-replace extra-replaces)
+                  replace-block (when (seq replaces)
                                   (str "\n"
                                        (str/join "\n"
                                                  (map (fn [[old new]]
                                                         (str "replace " old
                                                              " => " new))
-                                                      extra-replaces))
+                                                      replaces))
                                        "\n"))
                   result (str result (or replace-block ""))]
               (spit (str output-dir "/go.mod") result)

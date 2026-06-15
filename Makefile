@@ -34,7 +34,8 @@ export GLOJURE_DIR := $(GLOJURE-DIR)
 GLOJURE-DOWN := $(GLOJURE-REPO)/releases/download/v$(GLOJURE-VERSION)/$(GLOJURE-TAR)
 
 ifneq ($(GLOJURE-DIR-EXPLICIT),)
-GLJ := $(GLOJURE-DIR)/bin/$(shell $(GO) env GOOS)_$(shell $(GO) env GOARCH)/glj
+GLJ-HOST-PLATFORM := $(or $(and $(wildcard $(GO)),$(shell $(GO) env GOOS)_$(shell $(GO) env GOARCH)),linux_amd64)
+GLJ := $(GLOJURE-DIR)/bin/$(GLJ-HOST-PLATFORM)/glj
 override PATH := $(dir $(GLJ)):$(PATH)
 endif
 
@@ -299,7 +300,8 @@ release: $(GH)
 	  $(error GLJ-VERSION is required on the command line))
 	$(eval RELEASE_VER := $(patsubst v%,%,$(VERSION)))
 	$(eval GLJ_VER := $(patsubst v%,%,$(GLJ-VERSION)))
-	make-do $@ $(RELEASE_VER) "$(MESSAGE)" "$(GLJ_VER)"
+	$(eval RELEASE_BRANCH := $(or $(GLOAT_RELEASE_BRANCH),$(GLOAT-RELEASE-BRANCH)))
+	$(if $(RELEASE_BRANCH),GLOAT_RELEASE_BRANCH="$(RELEASE_BRANCH)" )make-do $@ $(RELEASE_VER) "$(MESSAGE)" "$(GLJ_VER)"
 
 GLJ-PLATFORM-linux-int64 := linux_amd64
 GLJ-PLATFORM-linux-arm64 := linux_arm64

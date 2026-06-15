@@ -109,11 +109,14 @@ release() (
     exit 1
   fi
 
-  # Releases must be cut from the main branch
+  # Releases must be cut from the configured release branch.
+  release_branch=${GLOAT_RELEASE_BRANCH:-$(printenv GLOAT-RELEASE-BRANCH || true)}
+  release_branch=${release_branch:-main}
   current_branch=$(git rev-parse --abbrev-ref HEAD)
-  if [[ $current_branch != main ]]; then
-    echo "Error: 'make release' must be run on the main branch" >&2
+  if [[ $current_branch != "$release_branch" ]]; then
+    echo "Error: 'make release' must be run on the '$release_branch' branch" >&2
     echo "  Current branch: $current_branch" >&2
+    echo "  Override with: GLOAT-RELEASE-BRANCH=$current_branch make release ..." >&2
     exit 1
   fi
 

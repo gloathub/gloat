@@ -1,3 +1,8 @@
+- version: 0.1.47
+  date:    Mon Jun 15 09:46:17 AM EDT 2026
+  changes:
+  - Use gh auth for Gloat releases
+
 - version: 0.1.46
   date:    Sun Jun 14 10:12:12 PM EDT 2026
   changes:

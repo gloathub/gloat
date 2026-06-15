@@ -190,8 +190,8 @@ release() (
     www/docs/doc/getting-started.md \
     doc/gloat-tutorial.md \
     ys/
-  git commit -m "Version $version"
-  git tag -a "ys/pkg/v$version" -m "Release ys/pkg v$version"
+  git diff --cached --quiet || git commit -m "Version $version"
+  git tag -f -a "ys/pkg/v$version" -m "Release ys/pkg v$version"
   git push origin main
   git push origin "ys/pkg/v$version"
 
@@ -209,7 +209,7 @@ release() (
   done
 
   # --- Tag and release gloat ---
-  git tag -a "v$version" -m "Release v$version"
+  git tag -f -a "v$version" -m "Release v$version"
   git push origin "v$version"
 
   # Extract changes for this version from Changes file
@@ -223,17 +223,9 @@ release() (
   )
   release_notes+=$'\n\n'"**Full Changelog**: https://github.com/gloathub/gloat/compare/${prev_tag}...v${version}"
 
-  local gh_token=~/.github-api-token
-  if [[ -f $gh_token ]]; then
-    GH_TOKEN=$(< "$gh_token") \
-    gh release create "v$version" \
-      --title "gloat v$version" \
-      --notes "$release_notes"
-  else
-    gh release create "v$version" \
-      --title "gloat v$version" \
-      --notes "$release_notes"
-  fi
+  gh release create "v$version" \
+    --title "gloat v$version" \
+    --notes "$release_notes"
 
   # --- Publish website ---
   make publish-www

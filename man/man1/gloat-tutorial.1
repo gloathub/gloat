@@ -41,11 +41,9 @@ Generates buildable Go directories or compiled binaries
 \fBglojurelang/glojure\fP — Glojure compiler/runtime used by Gloat
 .RS
 .IP \(bu 2
-Based on the upstream glojurelang/glojure project
+Provides the \fBglj\fR compiler and REPL
 .IP \(bu 2
-Includes patches for improved Go compilation
-.IP \(bu 2
-Adds 15-20 additional cross-compilation targets beyond upstream
+Includes support for Go code generation and broad cross-compilation
 .IP \(bu 2
 Fixes for issues like \fBseqable?\fR handling
 .RE
@@ -433,7 +431,7 @@ compiled binaries.
 M := .cache/makes
 $(shell [ -d $M ] || git clone -q https://github.com/makeplus/makes $M)
 
-VERSION := 0.1.45
+VERSION := 0.1.46
 FILE := gist
 GLOAT-RELEASE-WITH-GO-DIRECTORY := 1
 
@@ -536,7 +534,6 @@ export GLOAT_VERSION=0.1.0
 \fB\fBcommon/common.mk\fR\fP — Glojure version
 \fBmakefile
 GLOJURE-VERSION := 0.6.5-rc4
-GLOJURE-COMMIT := gloat
 GLOJURE-REPO := https://github.com/glojurelang/glojure
 \fR
 .RE
@@ -729,13 +726,11 @@ Gloat depends on glojurelang/glojure for several reasons:
 
 .EX
 GLOJURE-VERSION := 0.6.5-rc4
-GLOJURE-COMMIT := gloat
 GLOJURE-REPO := https://github.com/glojurelang/glojure
 GLOJURE-GET-URL := github.com/glojurelang/glojure/cmd/glj
 .EE
 
-.SS Upstream Sync Aspirations
-The long-term goal is to upstream all patches to glojurelang/glojure and
+.SS Upstream Sync
 Gloat tracks tagged glojurelang/glojure releases and can use a local
 Glojure checkout during development via \fBGLOJURE_DIR\fR or the workspace
 helper targets.

@@ -1,3 +1,10 @@
+- version: 0.1.46
+  date:    Sun Jun 14 10:12:12 PM EDT 2026
+  changes:
+  - Pass Gloat release branch override to release script
+  - Allow Gloat release branch override
+  - Switch Gloat to upstream Glojure
+
 - version: 0.1.45
   date:    Wed May 27 09:48:41 AM EDT 2026
   changes:

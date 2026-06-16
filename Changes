@@ -1,3 +1,9 @@
+- version: 0.1.48
+  date:    Tue Jun 16 09:59:24 AM EDT 2026
+  changes:
+  - Release v0.1.48
+  - First release to target official glojurelang/glojure
+
 - version: 0.1.47
   date:    Mon Jun 15 09:46:17 AM EDT 2026
   changes:

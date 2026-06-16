@@ -1,3 +1,9 @@
+- version: 0.1.50
+  date:    Tue Jun 16 10:48:31 AM EDT 2026
+  changes:
+  - Fix local dependency path detection
+  - Stop every gloat run from reporting dep installs
+
 - version: 0.1.48
   date:    Tue Jun 16 09:59:24 AM EDT 2026
   changes:

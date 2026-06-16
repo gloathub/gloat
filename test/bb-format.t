@@ -8,13 +8,13 @@ TEST_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 PROJECT_ROOT=$(cd "$TEST_DIR/.." && pwd)
 GLOAT_BIN=$PROJECT_ROOT/bin/gloat
 EXAMPLE_DIR=$PROJECT_ROOT/demo/yamlscript
-BB_BIN=$PROJECT_ROOT/.cache/local/bin/bb
+BB_BIN=$(command -v bb || true)
 
 cd "$PROJECT_ROOT" || bail-out "Cannot cd to project root"
 
 # Check if babashka is available
 if [[ ! -x $BB_BIN ]]; then
-  skip-all "Babashka not found at $BB_BIN (run 'make shell' first)"
+  skip-all "Babashka not found on PATH (run 'make path-deps' first)"
 fi
 
 # Test 1: bb format can be executed with babashka

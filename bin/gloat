@@ -414,8 +414,20 @@ setup() {
 }
 
 install-deps() {
-  # If deps are already installed locally, we're done
-  [[ $(command -v bb) == "$root/.cache/local/bin/bb" ]] && return
+  # If deps are already installed locally, make them visible and stay quiet.
+  local bb go glj ys
+  bb=$(find-local-exe "$root/.cache/local" '*/bin/bb')
+  go=$(find-local-exe "$root/.cache/local" '*/bin/go')
+  glj=$(find-local-glj)
+  ys=$(find-local-exe "$root/.cache/local/bin" 'ys')
+  [[ $ys ]] || ys=$(find-local-exe "$root/.cache/local/bin" 'ys-[0-9]*')
+  if [[ $bb && $go && $glj && $ys ]]; then
+    path-prepend "$(dirname "$bb")"
+    path-prepend "$(dirname "$go")"
+    path-prepend "$(dirname "$glj")"
+    path-prepend "$(dirname "$ys")"
+    return
+  fi
 
   check-on-path
 
@@ -438,6 +450,33 @@ install-deps() {
   fi
   install-one ys       path-ys
   >&2 echo "All gloat dependencies installed."
+}
+
+path-prepend() {
+  local dir=$1
+  [[ -d $dir ]] || return 0
+  case ":$PATH:" in
+    *":$dir:"*) ;;
+    *) PATH=$dir:$PATH ;;
+  esac
+}
+
+find-local-exe() {
+  local dir=$1 pattern=$2
+  [[ -d $dir ]] || return 0
+  find "$dir" -maxdepth 4 \( -type f -o -type l \) \
+    -path "$dir/$pattern" -perm -u+x -print -quit 2>/dev/null || true
+}
+
+find-local-glj() {
+  local local_glj
+  if [[ -n ${GLOJURE_DIR:-} && -d $GLOJURE_DIR/bin ]]; then
+    local_glj=$(find "$GLOJURE_DIR/bin" -mindepth 1 -maxdepth 2 \
+      \( -type f -o -type l \) -name glj -perm -u+x \
+      -print -quit 2>/dev/null || true)
+    [[ $local_glj ]] && printf '%s\n' "$local_glj" && return 0
+  fi
+  find-local-exe "$root/.cache/local" '*/bin/glj'
 }
 
 # Install one dependency via its existing make target. Capture output and
@@ -702,11 +741,10 @@ start-tool-nrepl() {
 
 # Find local glj binary and add to PATH
 find-glj() {
-  local glojure_dir local_glj
-  glojure_dir=${GLOJURE_DIR:-$root/../glojure}
-  local_glj=$glojure_dir/bin/$(go env GOOS)_$(go env GOARCH)/glj
-  if [[ -x $local_glj ]]; then
-    PATH=$(dirname "$local_glj"):$PATH
+  local local_glj
+  local_glj=$(find-local-glj)
+  if [[ -n $local_glj ]]; then
+    path-prepend "$(dirname "$local_glj")"
   fi
 }
 

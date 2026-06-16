@@ -35,8 +35,10 @@ GLOJURE-DOWN := $(GLOJURE-REPO)/releases/download/v$(GLOJURE-VERSION)/$(GLOJURE-
 
 ifneq ($(GLOJURE-DIR-EXPLICIT),)
 GLJ-HOST-PLATFORM := $(or $(and $(wildcard $(GO)),$(shell $(GO) env GOOS)_$(shell $(GO) env GOARCH)),linux_amd64)
+ifneq (,$(wildcard $(GLOJURE-DIR)/bin/$(GLJ-HOST-PLATFORM)/glj))
 GLJ := $(GLOJURE-DIR)/bin/$(GLJ-HOST-PLATFORM)/glj
 override PATH := $(dir $(GLJ)):$(PATH)
+endif
 endif
 
 $(GLOJURE-DIR):
@@ -221,7 +223,7 @@ test-so-bindings:
 	$(MAKE) --no-p -C demo/so-bindings test
 
 test-docker:
-ifneq (,$(wildcard .cache/local/bin/bb))
+ifneq (,$(wildcard .cache/local/babashka-*/bin/bb))
 	@echo 'Run first: make distclean'
 	@exit 1
 endif

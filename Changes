@@ -1,3 +1,8 @@
+- version: 0.1.53
+  date:    Wed Jun 17 10:49:54 AM EDT 2026
+  changes:
+  - Fix glojure source checkout install target
+
 - version: 0.1.52
   date:    Tue Jun 16 10:38:16 PM EDT 2026
   changes:

@@ -1,3 +1,9 @@
+- version: 0.1.52
+  date:    Tue Jun 16 10:38:16 PM EDT 2026
+  changes:
+  - Use upstream Glojure 0.6.5
+  - Blog post for Clojurists Together grant midpoint
+
 - version: 0.1.50
   date:    Tue Jun 16 10:48:31 AM EDT 2026
   changes:

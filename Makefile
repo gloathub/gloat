@@ -25,8 +25,6 @@ include $M/python.mk
 
 include $M/clean.mk
 include $M/shell.mk
-include common/path.mk
-include common/gloat-vars.mk
 
 GLOJURE-DIR-EXPLICIT := $(GLOJURE_DIR)
 GLOJURE-DIR ?= $(or $(GLOJURE_DIR),$(LOCAL-CACHE)/glojure-$(GLOJURE-VERSION))
@@ -45,6 +43,9 @@ $(GLOJURE-DIR):
 	@echo "* Cloning glojure v$(GLOJURE-VERSION) locally"
 	git clone -q -b v$(GLOJURE-VERSION) --config advice.detachedHead=false \
 	  $(GLOJURE-REPO) $@
+
+include common/path.mk
+include common/gloat-vars.mk
 
 # Auto-discover YS standard library source files
 YS-CLJ-FILES := $(wildcard ys/src/*/*.clj ys/src/*/*/*.clj)

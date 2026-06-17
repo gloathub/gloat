@@ -30,10 +30,10 @@ include common/gloat-vars.mk
 
 GLOJURE-DIR-EXPLICIT := $(GLOJURE_DIR)
 GLOJURE-DIR ?= $(or $(GLOJURE_DIR),$(LOCAL-CACHE)/glojure-$(GLOJURE-VERSION))
-export GLOJURE_DIR := $(GLOJURE-DIR)
 GLOJURE-DOWN := $(GLOJURE-REPO)/releases/download/v$(GLOJURE-VERSION)/$(GLOJURE-TAR)
 
 ifneq ($(GLOJURE-DIR-EXPLICIT),)
+export GLOJURE_DIR := $(GLOJURE-DIR)
 GLJ-HOST-PLATFORM := $(or $(and $(wildcard $(GO)),$(shell $(GO) env GOOS)_$(shell $(GO) env GOARCH)),linux_amd64)
 ifneq (,$(wildcard $(GLOJURE-DIR)/bin/$(GLJ-HOST-PLATFORM)/glj))
 GLJ := $(GLOJURE-DIR)/bin/$(GLJ-HOST-PLATFORM)/glj

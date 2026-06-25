@@ -153,6 +153,9 @@ T}
 \fBCtrl+P\fP	T{
 Format, print and copy current form to clipboard. In emacs mode use \fBCtrl+X Ctrl+P\fP\&.
 T}
+\fBCtrl+S\fP	T{
+Share by URL; also copy selected forms
+T}
 \fBCtrl+E\fP	T{
 Move cursor to end of line (vi-insert and emacs modes)
 T}
@@ -777,6 +780,14 @@ The command is run with \fBsh -c\fR, so arguments are supported (e.g.
 .PP
 Type \fB:repl/fmt\fR with no argument to show the current format command.
 
+.SH Share
+Press \fBCtrl+S\fP to print a browser REPL share URL and copy the
+shared forms to the system clipboard as plain text.
+When browsing history, the selected history form and every newer form
+are shared.
+At the end of history, the current input is shared if non-empty;
+otherwise the last history form is shared.
+
 .SH REPL Commands
 The following colon-commands can be typed at the prompt.
 They support tab completion -- type \fB:repl/\fR and press Tab to see all
@@ -838,6 +849,7 @@ l l l l l .
 Syntax highlighting	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
 Rainbow brackets	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
 Format and clipboard (Ctrl+P)	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
+Share URL (Ctrl+S)	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
 Multiline editing	\fB✓\fP	\fB✓\fP	\fB✗\fP	\fB✗\fP
 Tab completion (syms & keys)	\fB✓\fP	\fB✓\fP	\fB✓\fP	\fB✗\fP
 Smart up/down arrow navigation	\fB✓\fP	\fB✗\fP	\fB✗\fP	\fB✗\fP
@@ -946,6 +958,8 @@ a base64-encoded snapshot of your history.
 Sharing this URL loads the REPL with the same expressions
 pre-evaluated, and the last expression placed in the input field
 ready to run.
+If the history cursor is at the end and the input is empty, sharing
+uses the last history form.
 
 .SS Limitations
 The web REPL does not support:

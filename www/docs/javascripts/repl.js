@@ -117,6 +117,7 @@
         output.insertBefore(span, inputEl);
         history.push(expr);
         historyIndex = history.length;
+        updateShareUrl();
         if (expr.indexOf('\n') >= 0) suppressContinuation = true;
         var view = encoder.encode(expr + '\n');
         buffer.set(view, offset);
@@ -247,6 +248,7 @@
         }
         historyIndex = history.length;
         currentLine = '';
+        updateShareUrl();
         // Smart indent: if expression is incomplete, pre-fill with indentation
         exprBuf += input + '\n';
         var depth = nestingDepth(exprBuf);
@@ -272,6 +274,7 @@
           }
           historyIndex--;
           setInput(history[historyIndex]);
+          updateShareUrl();
         }
       } else if (event.key === 'ArrowDown' ||
                  (event.ctrlKey && event.key === 'n')) {
@@ -283,6 +286,7 @@
           } else {
             setInput(history[historyIndex]);
           }
+          updateShareUrl();
         }
       } else if (event.key === 'Tab') {
         // Tab: insert 2 spaces instead of leaving the input
@@ -599,6 +603,7 @@
         output.insertBefore(prompt, inputEl);
         historyIndex = history.length;
         currentLine = '';
+        updateShareUrl();
       } else if (action === 'history-prev') {
         if (historyIndex > 0) {
           if (historyIndex === history.length) {
@@ -606,6 +611,7 @@
           }
           historyIndex--;
           setInput(history[historyIndex]);
+          updateShareUrl();
         }
       } else if (action === 'history-next') {
         if (historyIndex < history.length) {
@@ -615,6 +621,7 @@
           } else {
             setInput(history[historyIndex]);
           }
+          updateShareUrl();
         }
       } else if (action === 'home') {
         var sel = window.getSelection();
@@ -675,12 +682,21 @@
     });
 
     // Keep URL hash in sync with share state
-    function updateShareUrl() {
+    function shareExpressions() {
       var exprs = history.slice(historyIndex);
       if (historyIndex === history.length) {
         var current = inputEl.innerText;
-        if (current.trim()) exprs.push(current);
+        if (current.trim()) {
+          exprs.push(current);
+        } else if (history.length > 0) {
+          exprs.push(history[history.length - 1]);
+        }
       }
+      return exprs;
+    }
+
+    function updateShareUrl() {
+      var exprs = shareExpressions();
       var base = window.location.href.replace(/#.*$/, '');
       if (exprs.length > 0) {
         var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(exprs))));

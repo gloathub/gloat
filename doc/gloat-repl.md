@@ -133,6 +133,7 @@ are not listed here.
 | **Ctrl+C** | Cancel current input; on empty prompt, shows exit hint; press twice to exit |
 | **Ctrl+D** | Show inline documentation for symbol under cursor; on empty prompt, exit the REPL. In emacs mode use **Ctrl+X Ctrl+D**. |
 | **Ctrl+P** | Format, print and copy current form to clipboard. In emacs mode use **Ctrl+X Ctrl+P**. |
+| **Ctrl+S** | Share by URL; also copy selected forms |
 | **Ctrl+E** | Move cursor to end of line (vi-insert and emacs modes) |
 | **Ctrl+R** | Reverse incremental history search |
 | **Ctrl+Z** | Suspend the REPL process; resume with `fg` |
@@ -677,6 +678,15 @@ The command is run with `sh -c`, so arguments are supported (e.g.
 
 Type `:repl/fmt` with no argument to show the current format command.
 
+## Share
+
+Press **Ctrl+S** to print a browser REPL share URL and copy the
+shared forms to the system clipboard as plain text.
+When browsing history, the selected history form and every newer form
+are shared.
+At the end of history, the current input is shared if non-empty;
+otherwise the last history form is shared.
+
 ## REPL Commands
 
 The following colon-commands can be typed at the prompt.
@@ -718,6 +728,7 @@ How the Gloat/Glojure REPL compares to other Clojure REPLs.
 | Syntax highlighting | **✓** | **✗** | **✗** | **✗** |
 | Rainbow brackets | **✓** | **✗** | **✗** | **✗** |
 | Format and clipboard (Ctrl+P) | **✓** | **✗** | **✗** | **✗** |
+| Share URL (Ctrl+S) | **✓** | **✗** | **✗** | **✗** |
 | Multiline editing | **✓** | **✓** | **✗** | **✗** |
 | Tab completion (syms & keys) | **✓** | **✓** | **✓** | **✗** |
 | Smart up/down arrow navigation | **✓** | **✗** | **✗** | **✗** |
@@ -808,6 +819,8 @@ a base64-encoded snapshot of your history.
 Sharing this URL loads the REPL with the same expressions
 pre-evaluated, and the last expression placed in the input field
 ready to run.
+If the history cursor is at the end and the input is empty, sharing
+uses the last history form.
 
 ### Limitations
 

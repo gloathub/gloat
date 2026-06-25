@@ -26,6 +26,8 @@ include $M/python.mk
 include $M/clean.mk
 include $M/shell.mk
 
+unexport PERL5OPT PERL5LIB
+
 GLOJURE-DIR-EXPLICIT := $(GLOJURE_DIR)
 GLOJURE-DIR ?= $(or $(GLOJURE_DIR),$(LOCAL-CACHE)/glojure-$(GLOJURE-VERSION))
 GLOJURE-DOWN := $(GLOJURE-REPO)/releases/download/v$(GLOJURE-VERSION)/$(GLOJURE-TAR)
@@ -116,7 +118,6 @@ override PATH := $(ROOT)/bin:$(ROOT)/util:$(PATH)
 export PATH
 
 export GOPRIVATE=github.com/gloathub/*
-unexport PERL5OPT
 
 test ?= test/*.t
 

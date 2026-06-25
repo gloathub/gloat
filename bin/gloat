@@ -10,7 +10,7 @@ GLOAT_VERSION=$(
     -C "$(dirname "$__src")/.." gloat-version
 )
 export GLOAT_VERSION
-unset __src
+unset __src PERL5OPT PERL5LIB
 
 # Go 1.26 has a linker bug on arm64 that crashes when building with CGO
 export CGO_ENABLED=0

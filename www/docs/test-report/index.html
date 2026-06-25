@@ -37,14 +37,14 @@
 <body>
     <div class='container'>
         <div class='summary'>
-            <h1>Gloat/Glojure Test Report</h1>
-            <div style='margin-bottom: 15px;'>The <a href='https://github.com/gloathub/clojure-test-suite' style='color: #1976d2; text-decoration: none;'>Clojure compatibility test suite</a> results for the <a href='https://gloathub.org' style='color: #1976d2; text-decoration: none;'>Gloat</a> project's <a href='https://github.com/glojurelang/glojure' style='color: #1976d2; text-decoration: none;'>fork</a> of <a href='https://github.com/glojurelang/glojure' style='color: #1976d2; text-decoration: none;'>Glojure</a></div>
+            <h1>Glojure Test Report</h1>
+            <div style='margin-bottom: 15px;'>The <a href='https://github.com/glojurelang/clojure-test-suite' style='color: #1976d2; text-decoration: none;'>Clojure compatibility test suite</a> results for <a href='https://github.com/glojurelang/glojure' style='color: #1976d2; text-decoration: none;'>Glojure</a></div>
             <div class='progress'>
                 <div class='progress-bar' style='width: 100.00%'>100.00%</div>
             </div>
             <div class='stats'>
                 <div class='stat pass'>
-                    <div class='number'>5057</div>
+                    <div class='number'>5050</div>
                     <div>Passed</div>
                 </div>
                 <div class='stat fail'>
@@ -56,15 +56,18 @@
                     <div>Errors</div>
                 </div>
                 <div class='stat skip'>
-                    <div class='number'>9</div>
+                    <div class='number'>12</div>
                     <div>Skipped</div>
                 </div></div>
-            <div class='timestamp'>Generated: 2026-05-06 19:16:51.872644792 -0400 EDT m=+49.433740650</div>
+            <div class='timestamp'>Generated: 2026-06-25 12:58:24.526433857 -0400 EDT m=+52.338906600</div>
         </div><div class='namespace'>
             <h2>Reader Conditional Skips (#?(:glj ...))</h2>
             <div class='skips'><div class='skip-item'>
                             <div class='skip-file'>aclone (1 skipped)</div><div class='skip-reason'>empty slices are identical in Go</div></div><div class='skip-item'>
                             <div class='skip-file'>add_watch (2 skipped)</div><div class='skip-reason'>no refs in glj yet</div><div class='skip-reason'>no agents in glj yet</div></div><div class='skip-item'>
+                            <div class='skip-file'>binding (1 skipped)</div></div><div class='skip-item'>
+                            <div class='skip-file'>bound_fn (1 skipped)</div></div><div class='skip-item'>
+                            <div class='skip-file'>bound_fn_star (1 skipped)</div></div><div class='skip-item'>
                             <div class='skip-file'>dec (1 skipped)</div><div class='skip-reason'>Go integers cannot underflow</div></div><div class='skip-item'>
                             <div class='skip-file'>inc (1 skipped)</div><div class='skip-reason'>Go integers cannot overflow</div></div><div class='skip-item'>
                             <div class='skip-file'>int (1 skipped)</div><div class='skip-reason'>int range checks not implemented</div></div><div class='skip-item'>
@@ -112,7 +115,7 @@
                 <span class='namespace-stat' style='background: #e8f5e9; color: #2e7d32;'>✓ 18 passed</span></div></div><div class='namespace'>
             <h2>clojure.core-test.binding</h2>
             <div class='namespace-stats'>
-                <span class='namespace-stat' style='background: #e8f5e9; color: #2e7d32;'>✓ 20 passed</span></div></div><div class='namespace'>
+                <span class='namespace-stat' style='background: #e8f5e9; color: #2e7d32;'>✓ 17 passed</span></div></div><div class='namespace'>
             <h2>clojure.core-test.bit-and</h2>
             <div class='namespace-stats'>
                 <span class='namespace-stat' style='background: #e8f5e9; color: #2e7d32;'>✓ 11 passed</span></div></div><div class='namespace'>
@@ -154,10 +157,10 @@
                 <span class='namespace-stat' style='background: #e8f5e9; color: #2e7d32;'>✓ 18 passed</span></div></div><div class='namespace'>
             <h2>clojure.core-test.bound-fn</h2>
             <div class='namespace-stats'>
-                <span class='namespace-stat' style='background: #e8f5e9; color: #2e7d32;'>✓ 8 passed</span></div></div><div class='namespace'>
+                <span class='namespace-stat' style='background: #e8f5e9; color: #2e7d32;'>✓ 6 passed</span></div></div><div class='namespace'>
             <h2>clojure.core-test.bound-fn-star</h2>
             <div class='namespace-stats'>
-                <span class='namespace-stat' style='background: #e8f5e9; color: #2e7d32;'>✓ 8 passed</span></div></div><div class='namespace'>
+                <span class='namespace-stat' style='background: #e8f5e9; color: #2e7d32;'>✓ 6 passed</span></div></div><div class='namespace'>
             <h2>clojure.core-test.butlast</h2>
             <div class='namespace-stats'>
                 <span class='namespace-stat' style='background: #e8f5e9; color: #2e7d32;'>✓ 7 passed</span></div></div><div class='namespace'>

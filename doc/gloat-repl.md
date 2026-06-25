@@ -687,6 +687,11 @@ are shared.
 At the end of history, the current input is shared if non-empty;
 otherwise the last history form is shared.
 
+Paste a browser REPL share URL into the CLI prompt and press Enter to
+load it.
+The CLI evaluates every shared form except the last, then places the
+last form at a fresh prompt ready to run.
+
 ## REPL Commands
 
 The following colon-commands can be typed at the prompt.

@@ -1,0 +1,24 @@
+# https://rosettacode.org/wiki/Next_highest_int_from_digits#YAMLScript
+
+!ys-0
+
+defn main(n=12453):
+  say: next-highest-int-from-digits(n)
+
+defn next-highest-int-from-digits(n):
+  ds =: n:digits
+  i =:
+    sub ds.#.--:
+      count:
+        ? for [i range(ds.#.-- 0 -1)
+              :while (ds.nth(i.--) >= ds.$i)]
+        : 1
+  if i > 0:
+    then:
+      a c =: ds.split-at(i)
+      a b =: a.split-at(a.#.--)
+      c d =: c:sort.split-with(\(b.0 >= _))
+      d e =: d.split-at(1)
+      e =: sort(b + c + e)
+      read-string: concat(a d e).map(str):join
+    else: 0

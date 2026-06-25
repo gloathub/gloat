@@ -1,0 +1,6 @@
+name: ffi_example
+publish_to: none
+environment:
+  sdk: ^3.0.0
+dependencies:
+  ffi: ^2.0.0

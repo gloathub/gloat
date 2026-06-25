@@ -1,0 +1,16 @@
+# https://rosettacode.org/wiki/Sparkline_in_unicode#YAMLScript
+
+!ys-0
+
+defn main(*input):
+  nums =: map(to-num input:V)
+  say: sparkline(nums)
+
+defn sparkline(nums):
+  sparks =: '▁▂▃▄▅▆▇█'
+  high =: max(nums*)
+  low =: min(nums*)
+  spread =: high - low
+  quantize =:
+    \(int(sparks.#.-- * ((_ - low) / spread)))
+  join: nums.map(\(nth sparks quantize(_)))

@@ -1,0 +1,1574 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Compile Clojure and YAMLScript to Go, native binaries, Wasm and more">
+      
+      
+        <meta name="author" content="Ingy dot Net">
+      
+      
+        <link rel="canonical" href="https://gloathub.org/blog/2026/06/16/gloat-q2-grant-halfway-report/">
+      
+      
+        <link rel="prev" href="../../../05/04/gloat-funded-for-q2-2026/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../../img/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Gloat Q2 Grant Halfway Report - GloatHub</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../css/extra.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+  
+  
+    
+  
+  
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Gloat Q2 Grant Halfway Report - GloatHub">
+  <meta property="og:description" content="Compile Clojure and YAMLScript to Go, native binaries, Wasm and more">
+  <meta property="og:image" content="https://gloathub.org/img/social-card.png">
+  
+  <meta property="og:url" content="https://gloathub.org/blog/2026/06/16/gloat-q2-grant-halfway-report/">
+  
+  <meta property="og:site_name" content="GloatHub">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Gloat Q2 Grant Halfway Report - GloatHub">
+  <meta name="twitter:description" content="Compile Clojure and YAMLScript to Go, native binaries, Wasm and more">
+  <meta name="twitter:image" content="https://gloathub.org/img/social-card.png">
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#the-goals" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../.." title="GloatHub" class="md-header__button md-logo" aria-label="GloatHub" data-md-component="logo">
+      <img src="../../../../../img/gloat.jpeg" alt="Gloat"
+     class="logo-mascot">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <a href="../../../../.." class="md-ellipsis" style="text-decoration: none; color: inherit;">
+            GloatHub
+          </a>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Gloat Q2 Grant Halfway Report
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="cyan"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="cyan"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/gloathub/gloat" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    gloathub/gloat
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  GloatHub
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../demo/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Demo
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../repl/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  REPL
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../doc/" class="md-tabs__link">
+          
+  
+  
+  Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="../../../../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Blog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../projects/" class="md-tabs__link">
+          
+  
+  
+  Projects
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="GloatHub" class="md-nav__button md-logo" aria-label="GloatHub" data-md-component="logo">
+      <img src="../../../../../img/gloat.jpeg" alt="Gloat"
+     class="logo-mascot">
+    </a>
+    GloatHub
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/gloathub/gloat" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    gloathub/gloat
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GloatHub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../demo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Demo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../repl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REPL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gloat Documentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../doc/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../doc/gloat-install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../doc/gloat-repl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REPL Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../doc/gloat-go-interop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Go Interop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../doc/gloat-java-interop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Java Interop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../doc/gloat-tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      <a href="../../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../projects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../projects/gist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Goals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glojure-passed-the-compatibility-test-suite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Glojure Passed the Compatibility Test Suite
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-repl-became-a-real-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The REPL Became a Real Tool
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#browser-repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Browser REPL
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jvm-interop-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JVM Interop Compatibility
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#go-interop-and-gljdepsedn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Go Interop and gljdeps.edn
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upstream-glojure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upstream Glojure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation-and-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation and Examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clojurecc-and-the-wider-dialect-story" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clojure.cc and the Wider Dialect Story
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#let-go-collaboration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        let-go Collaboration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-still-needs-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Still Needs Work
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#thanks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thanks
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../../" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+              <div class="md-post__authors md-typeset">
+                
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="https://github.com/ingydotnet.png" alt="Ingy döt Net">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          Ingy döt Net
+                        
+                      </strong>
+                      <br>
+                      Creator of Gloat, YAML, YAMLScript, and other stuff
+                    </span>
+                  </div>
+                
+              </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2026-06-16 00:00:00+00:00" class="md-ellipsis">June 16, 2026</time>
+                      </div>
+                    </li>
+                    
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              9 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+            
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+  
+
+
+
+
+  <h1>Gloat Q2 Grant Halfway Report</h1>
+
+<p>We are halfway through the Q2 2026 <a href="https://www.clojuriststogether.org">Clojurists Together</a> funding cycle, so this is a good time to
+report what has been done for <a href="https://gloathub.org">Gloat</a> and
+<a href="https://github.com/glojurelang/glojure">Glojure</a>.</p>
+<p>The grant officially started on May 1, but since I had learned that it was
+accepted a couple weeks earlier, I got too excited and decided to start working
+on it immediately.
+I was able to quickly get <a href="https://gloathub.org/test-report/">Glojure to pass</a>
+the entire <a href="https://github.com/jank-lang/clojure-test-suite">Clojure Compatibility Test Suite</a>;
+except for 9 tests that are skipped as being not feasible.
+That gave Gloat a much stronger base to build on.</p>
+<p>Since the start of the grant period, Gloat and Glojure have had over 20
+releases, with Gloat moving from <code>v0.1.26</code> to
+<a href="https://github.com/gloathub/gloat/releases/tag/v0.1.50"><code>v0.1.50</code></a>.
+The Glojure work was all being done on the long running fork
+<a href="https://github.com/gloathub/glojure"><code>gloathub/glojure</code></a>, but I'm thrilled to
+announce that as of today, the work has been fully moved back to the upstream
+<a href="https://github.com/glojurelang/glojure"><code>glojurelang/glojure</code></a> and will
+continue to be maintained and released from there.</p>
+<p>My overall ambition for Gloat is to have Clojure be as full featured and
+prominent to Go programming as it is to Java.
+The industry is crazy about Go.
+Let's get it crazy about Clojure.</p>
+<p>Furthermore, given that Go cross-compiles to almost everywhere, I am bullish on
+Gloat being a serious alternative to GraalVM's native-image compiler.
+An alternative with fast compilation, expansive compilation targets (including
+WebAssembly) and completely open source licensing.</p>
+<!-- more -->
+
+<h2 id="the-goals">The Goals<a class="headerlink" href="#the-goals" title="Permanent link">&para;</a></h2>
+<p>In the <a href="../../../05/04/gloat-funded-for-q2-2026/">funding announcement post</a> I listed three main goals:</p>
+<ul>
+<li><strong>Smaller, faster binaries.</strong></li>
+<li><strong>Pass the Clojure Compatibility Test Suite (CCTS).</strong></li>
+<li><strong>Tutorial docs.</strong></li>
+</ul>
+<p>The CCTS goal landed early, just before the official grant start.
+That did not mean compatibility was finished, but it meant the core language
+was good enough to shift attention toward real-world use: interop, REPLs,
+dependencies, docs, examples, and the missing pieces that appear when you stop
+testing toy programs and start trying to use the system.</p>
+<p>The short version: the first half of the grant has been mostly about making
+Gloat usable and explainable.</p>
+<h2 id="glojure-passed-the-compatibility-test-suite">Glojure Passed the Compatibility Test Suite<a class="headerlink" href="#glojure-passed-the-compatibility-test-suite" title="Permanent link">&para;</a></h2>
+<p>The most important foundation work happened in April: the Gloat/Glojure stack
+got to the point where Glojure passed Jank's Clojure compatibility test suite.</p>
+<p>For Gloat, that matters because Gloat is not trying to invent a new language.
+The point is to take normal Clojure source, route it through Glojure and Go,
+and end up with Go source, native binaries, Wasm modules, or shared libraries.
+Every compatibility test that passes is one less place where user code can
+surprise us later.</p>
+<p>After that milestone, I added a <a href="https://gloathub.org/test-report/">report page</a>
+to the Gloat site so the compatibility state is easier to see for yourself.</p>
+<h2 id="the-repl-became-a-real-tool">The REPL Became a Real Tool<a class="headerlink" href="#the-repl-became-a-real-tool" title="Permanent link">&para;</a></h2>
+<p>The most visible work this period was the REPL.</p>
+<p>At the beginning of the cycle, Gloat was mostly an ahead-of-time compiler.
+You pointed it at source code and got output.
+That is still the center of the project, but a serious language tool needs an
+interactive story too.</p>
+<p>The Glojure <code>glj</code> binary already had a working CLI REPL, but I really wanted
+to push Gloat's CLI REPL beyond anything I'd seen to date (in any language).</p>
+<p><a href="../../../../../doc/gloat-repl/"><code>gloat --repl</code></a> now starts a REPL CLI with:</p>
+<ul>
+<li>Syntax highlighting w/ rainbow parens</li>
+<li>Multiline editing and history</li>
+<li>Auto-indent</li>
+<li>Namespace-aware tab completion</li>
+<li>Toggle vi/emacs readline behavior</li>
+<li>Persistent history with multiline selection</li>
+<li>Inline help</li>
+<li>Better startup information</li>
+<li>nREPL support</li>
+<li>Socket REPL support</li>
+<li>Editor integration</li>
+</ul>
+<p>I also added client modes so Gloat can connect to other Clojure-family REPLs.
+For example, <code>gloat --repl=+bb</code>, <code>gloat --repl=+clj</code>, and
+<code>gloat --repl=+let-go</code> all use the same general idea: install the requested
+tool if needed, start it in repl server mode and connect with Gloat's fancy UX.</p>
+<p>You can also connect to any existing Clojure REPL with <code>gloat --repl=12345</code> or
+<code>gloat --repl=.port-file</code>.</p>
+<p>This work was partly for Gloat itself and partly for comparison.
+When you are building a Clojure implementation, it is extremely useful to be
+able to jump between <a href="https://clojure.org">Clojure</a>,
+<a href="https://babashka.org">Babashka</a>, Glojure,
+<a href="https://github.com/nooga/let-go">let-go</a>, and other dialects quickly.</p>
+<p>I'm super proud of how far this CLI REPL has come so far.
+I hope you take some time to kick the tires and take it for a test drive.
+Let me know what you think!</p>
+<h2 id="browser-repl">Browser REPL<a class="headerlink" href="#browser-repl" title="Permanent link">&para;</a></h2>
+<p>The REPL work also produced a browser REPL.</p>
+<p>The Gloat website now has a <a href="https://gloathub.org/repl/">Glojure REPL page</a>
+backed by a WebAssembly build of Glojure.
+It has syntax highlighting, multiline input handling, toolbar controls, rainbow
+brackets, and shareable sessions.</p>
+<p>That matters for two reasons.</p>
+<p>First, it makes the project easier to try.
+People can evaluate Glojure in the browser without installing Go, Glojure,
+Gloat, Java, or anything else.</p>
+<p>Second, it proves out one of the promises of the stack: Clojure code can travel
+through Glojure and Go into Wasm.
+The demo is not just a toy on the side; it exercises the same direction the
+compiler is trying to make practical.</p>
+<p>My favorite part is sharable stateful URLs.
+<a href="https://gloathub.org/repl/#s:WyIoZGVmbiBmaXp6YnV6eiBbc3RhcnQgZmluaXNoXSBcbiAgKG1hcCAoZm4gW25dXG5cdChjb25kXG5cdFx0KHplcm8/IChtb2QgbiAxNSkpIFwiRml6ekJ1enpcIlxuXHRcdCh6ZXJvPyAobW9kIG4gMykpIFwiRml6elwiXG5cdFx0KHplcm8/IChtb2QgbiA1KSkgXCJCdXp6XCJcblx0XHQ6ZWxzZSBuKSlcblx0KHJhbmdlIHN0YXJ0IGZpbmlzaCkpKVxuIiwiKGZpenpidXp6IDEgMTAwKSJd">Try this one</a>!</p>
+<h2 id="jvm-interop-compatibility">JVM Interop Compatibility<a class="headerlink" href="#jvm-interop-compatibility" title="Permanent link">&para;</a></h2>
+<p>The biggest compatibility expansion was JVM-style interop.</p>
+<p>Glojure is hosted on Go, not Java, but most real Clojure code assumes at least
+some <code>java.lang</code> behavior exists.
+Even simple programs use things like <code>Math/sqrt</code>, <code>System/getenv</code>, strings,
+regexes, UUIDs, numeric wrappers, and time classes.</p>
+<p>During this period I added docs, demos, and tests around a growing Go-native
+Java compatibility layer, <a href="https://github.com/gloathub/gojava">gojava</a>.
+The current Java class set is:</p>
+<ul>
+<li><code>java.lang.Math</code></li>
+<li><code>java.lang.System</code></li>
+<li><code>java.lang.Integer</code></li>
+<li><code>java.lang.Long</code></li>
+<li><code>java.lang.String</code></li>
+<li><code>java.lang.Double</code></li>
+<li><code>java.lang.Boolean</code></li>
+<li><code>java.lang.Character</code></li>
+<li><code>java.util.regex.Pattern</code></li>
+<li><code>java.util.UUID</code></li>
+<li><code>java.lang.Thread/sleep</code></li>
+<li><code>java.time.Instant</code></li>
+</ul>
+<p>The goal is not to make Glojure secretly become a JVM.
+The goal is to make normal Clojure source behave correctly when it uses common
+JVM interop forms.</p>
+<p>For example, <code>(Math/floorDiv -7 2)</code> should return the JVM result, not the Go
+integer-division result.
+<code>(System/getenv "PATH")</code> should feel like Clojure.
+Fully-qualified <code>java.lang.Math/abs</code> and bare <code>Math/abs</code> should both resolve in
+the expected way.
+Fresh namespaces should have host-class imports populated in a way that matches
+what Clojure programmers expect.</p>
+<p>This is the kind of work that makes unmodified Clojure code more likely to run.</p>
+<h2 id="go-interop-and-gljdepsedn">Go Interop and <code>gljdeps.edn</code><a class="headerlink" href="#go-interop-and-gljdepsedn" title="Permanent link">&para;</a></h2>
+<p>The other side of the interop story is Go.</p>
+<p>Glojure already has Go interop, but Gloat needed clearer
+<a href="../../../../../doc/gloat-go-interop/">Go interop docs</a>, runnable demos, and an
+explicit way for Gloat programs to declare third-party Go packages.</p>
+<p>I added a full Go interop guide covering:</p>
+<ul>
+<li>Calling Go package functions</li>
+<li>Calling methods</li>
+<li>Reading and setting struct fields</li>
+<li>Constructors</li>
+<li>Passing Glojure functions into Go higher-order functions</li>
+<li>Wrapping handlers</li>
+<li>Handling multiple return values</li>
+<li>Byte slices</li>
+<li>Reflection escape hatches</li>
+</ul>
+<p>I also added runnable demo files for each of those cases.</p>
+<p>The more important practical change is <a href="../../../../../doc/gloat-go-interop/#packages-are-linked-not-imported"><code>gljdeps.edn</code></a>
+support in AOT compilation.
+Gloat now resolves deps from <code>--deps=</code>, <code>GLOAT_GLJDEPS</code>, or a local
+<code>./gljdeps.edn</code>, passes that file through to the Glojure compile workspace, and
+injects the declared modules into the generated <code>go.mod</code>.</p>
+<p>For example, a Glojure program can declare a dependency on a Go module, compile
+through Gloat, and end up with a generated Go module or native binary linked
+against that Go package.
+That moves Gloat closer to the original promise: Clojure syntax and semantics,
+with access to the Go ecosystem and Go's build targets.</p>
+<p>There is still more work needed here.
+For public modules, AOT builds can sometimes succeed without <code>gljdeps.edn</code>
+because <code>go mod tidy</code> can discover missing imports through the Go module proxy.
+The deps file is still the reproducible path: it pins versions, supports
+private/offline builds, and is required for REPL use where there is no final
+<code>go build</code> discovery step.
+Some dependency declaration and interop edges are still rough.
+But the basic path exists now, and it has docs and demos behind it.</p>
+<h2 id="upstream-glojure">Upstream Glojure<a class="headerlink" href="#upstream-glojure" title="Permanent link">&para;</a></h2>
+<p>Another important milestone: Gloat has moved back to upstream Glojure.</p>
+<p>At the end of May I met with <a href="https://github.com/jfhamlin">James Hamlin</a>, the
+original author and owner of Glojure.
+He gave me full permission to maintain the project.</p>
+<p>That is a big deal for Gloat.
+Since the beginning of the Gloat project I had been working on a fork of
+Glojure, because I needed to make a lot of changes quickly: compiler changes,
+runtime changes, REPL work, Java compatibility, AOT support, packaging, and
+release mechanics.
+A fork was the practical way to move fast, but it was never the ideal long-term
+shape.</p>
+<p>As of today, Glojure is unforked.
+Gloat is using and releasing from the original
+<a href="https://github.com/glojurelang/glojure">upstream Glojure repository</a> again.</p>
+<p>One of the important things I had added on the fork was prebuilt binaries for
+Linux and macOS.
+That made Gloat and Glojure (<code>glj</code>) installs much faster, because users did not
+need to build the Glojure toolchain from source on first run.
+That prebuilt-binary release flow now works upstream too with the just released
+Glojure <a href="https://github.com/glojurelang/glojure/releases/tag/v0.6.5"><code>v0.6.5</code></a>
+version.</p>
+<p>That is the first upstream Glojure release since
+<a href="https://github.com/glojurelang/glojure/releases/tag/v0.6.4"><code>v0.6.4</code></a>, which
+came out last October.
+It means the work is no longer living off to the side in a Gloat-specific fork.
+It is going back into the main Glojure project where it belongs.</p>
+<p>The surrounding Gloat work also tightened release/development workflow around
+Glojure versions, local overrides, Go module replacement behavior, and local
+worktrees.
+Those details matter because Gloat, Glojure, gojava,
+<a href="https://github.com/gloathub/go-readline">go-readline</a>, and the
+<a href="https://yamlscript.org">YAMLScript</a> stdlib package all move together during
+development.</p>
+<h2 id="documentation-and-examples">Documentation and Examples<a class="headerlink" href="#documentation-and-examples" title="Permanent link">&para;</a></h2>
+<p>I added a lot of documentation this period.</p>
+<p>New or heavily expanded docs include:</p>
+<ul>
+<li><a href="../../../../../doc/gloat-repl/"><code>gloat-repl</code></a></li>
+<li><a href="../../../../../doc/gloat-go-interop/"><code>gloat-go-interop</code></a></li>
+<li><a href="../../../../../doc/gloat-java-interop/"><code>gloat-java-interop</code></a></li>
+<li><a href="../../../../../doc/gloat-install/"><code>gloat-install</code></a></li>
+<li><a href="../../../../../doc/gloat-tutorial/"><code>gloat-tutorial</code></a></li>
+</ul>
+<p>The generated man pages and website docs were refreshed too.</p>
+<p>The demos matter as much as the prose.
+There are now runnable examples for Go interop, Java interop, and third-party
+Go dependencies.
+Docs that only explain an idea are easy to get wrong.
+Docs that point to runnable files are much harder to fake.</p>
+<h2 id="clojurecc-and-the-wider-dialect-story">Clojure.cc and the Wider Dialect Story<a class="headerlink" href="#clojurecc-and-the-wider-dialect-story" title="Permanent link">&para;</a></h2>
+<p>One unexpected side project was <a href="https://clojure.cc">Clojure.cc</a>.</p>
+<p>I built it because Gloat and Glojure make more sense when people can see the
+larger Clojure dialect landscape.
+The site catalogs Clojure-family languages and lets people compare hosts,
+status, release activity, tags, and project links.</p>
+<p>It includes Gloat, Glojure, let-go, Babashka,
+<a href="https://clojurescript.org">ClojureScript</a>, <a href="https://jank-lang.org">Jank</a>,
+<a href="https://github.com/basilisp-lang/basilisp">Basilisp</a>,
+<a href="https://phel-lang.org">Phel</a>, <a href="https://fennel-lang.org">Fennel</a>,
+<a href="https://janet-lang.org">Janet</a>, and many others.
+It also has instant command launchers:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">$(</span>make<span class="w"> </span>-f<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>-sL<span class="w"> </span>clojure.cc/cmd.mk<span class="k">)</span><span class="w"> </span>glj<span class="o">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">$(</span>make<span class="w"> </span>-f<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>-sL<span class="w"> </span>clojure.cc/cmd.mk<span class="k">)</span><span class="w"> </span>gloat<span class="o">)</span><span class="w"> </span>--repl
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">$(</span>make<span class="w"> </span>-f<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>-sL<span class="w"> </span>clojure.cc/cmd.mk<span class="k">)</span><span class="w"> </span>lg<span class="o">)</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;(apply + (range 3 10))&#39;</span>
+</span></code></pre></div>
+<p>This is not the core Gloat compiler work, but it supports the same goal:
+make these dialects easier to discover, try, and compare.
+It also gave me another place to exercise the Glojure browser REPL and the
+multi-dialect REPL launcher work.</p>
+<h2 id="let-go-collaboration">let-go Collaboration<a class="headerlink" href="#let-go-collaboration" title="Permanent link">&para;</a></h2>
+<p>The REPL comparison work also pulled in <a href="https://github.com/nooga/let-go">let-go</a>,
+another Go-hosted Clojure-like language.</p>
+<p>Gloat can now launch/connect to let-go as one of the supported external REPL
+targets, and Clojure.cc includes it in both the dialect catalog and the instant
+launcher.</p>
+<p>The more interesting part is that the two projects are starting to challenge
+and inspire each other.
+Gloat/Glojure has been pushing hard on AOT compilation, Go interop, and
+Clojure compatibility.
+let-go, meanwhile, has a very promising performance story.
+It compiles to bytecode today, and the let-go team is now exploring AOT
+compilation by turning that bytecode into Go code.</p>
+<p>I have been talking with let-go's author, <a href="https://github.com/nooga">Marcin Gasperowicz (@nooga)</a>,
+and with <a href="https://github.com/nnunley">Norman Nunley</a>, one of the main
+contributors working on performance.
+Norman and I knew each other about twenty years ago in the Perl world, so this
+is also a fun reconnection across language communities.</p>
+<p>There is a real chance for collaboration here.
+One direction I have been thinking about is making Gloat an abstraction over
+both Glojure and let-go: same user-facing tool, potentially different Clojure-
+on-Go engines underneath.
+It is too early to promise that shape, but the overlap is obvious enough that
+it is worth exploring seriously.</p>
+<h2 id="what-still-needs-work">What Still Needs Work<a class="headerlink" href="#what-still-needs-work" title="Permanent link">&para;</a></h2>
+<p>The original grant goal of smaller and faster binaries still needs more direct
+attention over the final 6 weeks of this grant.</p>
+<p>Some groundwork is already there, especially the earlier <code>-Xprune</code> work for
+dropping unused <code>clojure.core</code> code, but I have not spent enough of this cycle
+yet on output size and runtime speed.
+The first half pulled me toward compatibility, REPLs, dependencies, and docs,
+because those were the things blocking real use and feedback.</p>
+<p>For the second half, the main areas are:</p>
+<ul>
+<li>Continue reducing binary size</li>
+<li>Improve runtime performance</li>
+<li>Run more real Clojure programs through Gloat</li>
+<li>Keep expanding JVM compatibility where real code needs it</li>
+<li>Smooth out <code>gljdeps.edn</code> and Go interop edges</li>
+<li>Keep the docs tied to runnable examples</li>
+</ul>
+<h2 id="thanks">Thanks<a class="headerlink" href="#thanks" title="Permanent link">&para;</a></h2>
+<p>Thanks to Clojurists Together and everyone who funds it.
+This kind of work needs long stretches of focused time, and the funding makes
+that possible.</p>
+<p>Thanks also to the people building and maintaining the surrounding Clojure
+dialect ecosystem.
+Gloat sits in that larger context, and the project is better when it can learn
+from Clojure, ClojureScript, Babashka, Glojure, let-go, Jank, Basilisp, and the
+rest of the family.</p>
+<p>Halfway through the grant, Gloat is much easier to try, much better documented,
+more compatible with ordinary Clojure code, and more connected to the Go
+ecosystem than it was on May 1.</p>
+<p>Now back to making the binaries smaller and faster.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+      
+    </article>
+  </div>
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/gloathub/gloat" target="_blank" rel="noopener" title="Gloat on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../../javascripts/external-links.js"></script>
+      
+        <script src="../../../../../javascripts/repl.js"></script>
+      
+    
+  </body>
+</html>

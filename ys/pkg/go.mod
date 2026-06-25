@@ -2,7 +2,7 @@ module github.com/gloathub/gloat/ys/pkg
 
 go 1.24
 
-require github.com/glojurelang/glojure v0.6.5
+require github.com/glojurelang/glojure v0.6.6
 
 require (
 	bitbucket.org/pcastools/hash v1.0.5 // indirect

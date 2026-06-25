@@ -73,10 +73,9 @@ user=> (defn greet [name]
 #'user/greet
 ```
 
-When the cursor is not at the end of the buffer, Enter inserts a
-newline regardless of whether the expression is complete.
-This lets you go back and add lines in the middle of a multiline form.
-In vi-command mode, Enter always submits the expression.
+Enter submits complete input from any cursor position.
+Press **Ctrl+J** to insert a newline explicitly, including when you
+want to split a line in the middle of a multiline form.
 
 New lines automatically inherit the leading whitespace of the current
 line, keeping your code aligned.
@@ -129,7 +128,8 @@ are not listed here.
 |-----|--------|
 | **Tab** | Insert 2-space indent (after whitespace) or open completion menu (after symbol chars) |
 | **Backspace** | Delete 2 spaces if both precede cursor, otherwise delete 1 character |
-| **Enter** | Submit expression (cursor at end and expression complete) or insert newline; in vi-command mode, always submits |
+| **Enter** | Submit complete expression |
+| **Ctrl+J** | Insert newline |
 | **Ctrl+C** | Cancel current input; on empty prompt, shows exit hint; press twice to exit |
 | **Ctrl+D** | Show inline documentation for symbol under cursor; on empty prompt, exit the REPL. In emacs mode use **Ctrl+X Ctrl+D**. |
 | **Ctrl+P** | Format, print and copy current form to clipboard. In emacs mode use **Ctrl+X Ctrl+P**. |

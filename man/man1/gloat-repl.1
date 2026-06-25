@@ -75,10 +75,9 @@ user=> (defn greet [name]
 .EE
 
 .PP
-When the cursor is not at the end of the buffer, Enter inserts a
-newline regardless of whether the expression is complete.
-This lets you go back and add lines in the middle of a multiline form.
-In vi-command mode, Enter always submits the expression.
+Enter submits complete input from any cursor position.
+Press \fBCtrl+J\fP to insert a newline explicitly, including when you
+want to split a line in the middle of a multiline form.
 
 .PP
 New lines automatically inherit the leading whitespace of the current
@@ -141,9 +140,8 @@ T}
 \fBBackspace\fP	T{
 Delete 2 spaces if both precede cursor, otherwise delete 1 character
 T}
-\fBEnter\fP	T{
-Submit expression (cursor at end and expression complete) or insert newline; in vi-command mode, always submits
-T}
+\fBEnter\fP	Submit complete expression
+\fBCtrl+J\fP	Insert newline
 \fBCtrl+C\fP	T{
 Cancel current input; on empty prompt, shows exit hint; press twice to exit
 T}

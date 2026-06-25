@@ -23,22 +23,22 @@ gloat [<options>] <file>...
 
 Glojure Automation Tool - version $GLOAT_VERSION
 
-Compiles Clojure or YAMLScript code to Go code, binaries or Wasm.
+Compiles Clojure (or YAMLScript) code to Go code, binaries or Wasm.
 Run 'man gloat' for full documentation.
 See https://gloathub.org
 
   FILE:
-    path      Source file (.ys, .clj, .glj) or directory
+    path      Source file (.clj or .ys) or directory
     -         Read from stdin
 
   Examples:
-    gloat foo.ys                        Compile to 'foo' binary
-    gloat foo.ys -t go                  Go code to stdout
-    gloat foo.ys -o foo/                Go build directory
-    gloat foo.ys -o foo.go              Go file
-    gloat foo.ys -o foo.so              Shared library + headers
-    gloat foo.ys -o foo --platform=freebsd/amd64  Cross-compile
-    gloat --run foo.ys -- arg1 arg2     Compile and run
+    gloat foo.clj                       Compile to 'foo' binary
+    gloat foo.clj -t go                 Go code to stdout
+    gloat foo.clj -o foo/               Go build directory
+    gloat foo.clj -o foo.go             Go file
+    gloat foo.clj -o foo.so             Shared library + headers
+    gloat foo.clj -o foo --platform=freebsd/amd64  Cross-compile
+    gloat --run foo.clj -- arg1 arg2    Compile and run
 
   REPL Usage:
     gloat --repl                        Start Glojure REPL
@@ -141,6 +141,10 @@ main() (
   if [[ $* == --root ]]; then
     echo "$root"
     exit
+  fi
+
+  if explicit-help "$@"; then
+    show-help
   fi
 
   PATH=$(make --quiet --no-print-directory -C "$root" path)
@@ -275,6 +279,34 @@ functions -q fish_prompt
       exec "$shell"
       ;;
   esac
+}
+
+explicit-help() {
+  [[ $# -eq 0 || ( $# -eq 1 && ( $1 == --help || $1 == -h ) ) ]]
+}
+
+show-help() {
+  local help rc=0
+  help=$(printf '%s\n' "$GETOPT_SPEC" | "$root/util/getopt" --help 2>&1 >/dev/null) ||
+    rc=$?
+  page-text "$help"
+  exit "$rc"
+}
+
+page-text() {
+  if [[ ${PAGER-} ]]; then
+    if [[ ${PAGER##*/} == less ]]; then
+      printf '%s\n' "$1" | less -FRX
+      return
+    fi
+    # Respect conventional PAGER values that include arguments.
+    # shellcheck disable=SC2086
+    printf '%s\n' "$1" | $PAGER
+  elif command -v less >/dev/null 2>&1; then
+    printf '%s\n' "$1" | less -FRX
+  else
+    printf '%s\n' "$1"
+  fi
 }
 
 # Handle --repl

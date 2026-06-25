@@ -109,19 +109,9 @@
       if (fd !== 0) {
         return originalRead(fd, buffer, offset, length, position, callback);
       }
-      // Replay queued expressions from shared URL
+      // Replay queued expressions from shared URL or multi-form paste
       if (replayQueue.length > 0) {
-        var expr = replayQueue.shift();
-        var span = document.createElement('span');
-        span.innerHTML = highlightSyntax(expr) + '\n';
-        output.insertBefore(span, inputEl);
-        history.push(expr);
-        historyIndex = history.length;
-        updateShareUrl();
-        if (expr.indexOf('\n') >= 0) suppressContinuation = true;
-        var view = encoder.encode(expr + '\n');
-        buffer.set(view, offset);
-        callback(null, view.length);
+        replayNextExpression(buffer, offset, callback);
         return;
       }
       // Place last shared expression in input for user to run
@@ -168,6 +158,112 @@
       range.collapse(false);
       sel.removeAllRanges();
       sel.addRange(range);
+    }
+
+    function replayForms(forms) {
+      replayQueue = replayQueue.concat(forms.slice(0, -1));
+      replayLast = forms[forms.length - 1];
+      if (pendingRead && replayQueue.length > 0) {
+        var pr = pendingRead;
+        pendingRead = null;
+        replayNextExpression(pr.buffer, pr.offset, pr.callback);
+      }
+      if (replayQueue.length === 0 && replayLast) {
+        setInput(replayLast);
+        replayLast = '';
+      }
+    }
+
+    function replayNextExpression(buffer, offset, callback) {
+      var expr = replayQueue.shift();
+      var span = document.createElement('span');
+      span.innerHTML = highlightSyntax(expr) + '\n';
+      output.insertBefore(span, inputEl);
+      history.push(expr);
+      historyIndex = history.length;
+      updateShareUrl();
+      if (expr.indexOf('\n') >= 0) suppressContinuation = true;
+      var view = encoder.encode(expr + '\n');
+      buffer.set(view, offset);
+      callback(null, view.length);
+    }
+
+    function splitTopLevelForms(input) {
+      input = input.replace(/^\s+|\s+$/g, '');
+      if (!input) return [];
+
+      var forms = [];
+      var start = -1;
+      var depth = 0;
+      var inString = false;
+      var escaped = false;
+      var inComment = false;
+      var inAtom = false;
+
+      function finish(end) {
+        if (start < 0) return;
+        var form = input.slice(start, end).replace(/^\s+|\s+$/g, '');
+        if (form) forms.push(form);
+        start = -1;
+        inAtom = false;
+      }
+
+      for (var i = 0; i < input.length; i++) {
+        var ch = input[i];
+        if (inComment) {
+          if (ch === '\n') inComment = false;
+          continue;
+        }
+        if (inString) {
+          if (escaped) {
+            escaped = false;
+            continue;
+          }
+          if (ch === '\\') {
+            escaped = true;
+            continue;
+          }
+          if (ch === '"') {
+            inString = false;
+            if (depth === 0) finish(i + 1);
+          }
+          continue;
+        }
+
+        if (start < 0) {
+          if (ch === ';') {
+            inComment = true;
+            continue;
+          }
+          if (/[\s,]/.test(ch)) continue;
+          start = i;
+        }
+
+        if (inAtom) {
+          if (ch === ';' || /[\s,]/.test(ch)) {
+            finish(i);
+            if (ch === ';') inComment = true;
+          }
+          continue;
+        }
+
+        if (ch === ';') {
+          if (depth === 0) finish(i);
+          inComment = true;
+        } else if (ch === '"') {
+          inString = true;
+        } else if (ch === '(' || ch === '[' || ch === '{') {
+          depth++;
+        } else if (ch === ')' || ch === ']' || ch === '}') {
+          if (depth > 0) depth--;
+          if (depth === 0) finish(i + 1);
+        } else if (depth === 0) {
+          inAtom = true;
+        }
+      }
+
+      if (start >= 0 && depth === 0 && !inString) finish(input.length);
+      return forms;
     }
 
     function nestingDepth(text) {
@@ -233,7 +329,12 @@
       var text = (event.clipboardData || window.clipboardData).getData('text/plain');
       // Strip trailing newlines and insert at cursor
       text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n+$/, '');
-      if (text) document.execCommand('insertText', false, text);
+      var forms = splitTopLevelForms(text);
+      if (forms.length > 1) {
+        replayForms(forms);
+      } else if (text) {
+        document.execCommand('insertText', false, text);
+      }
     });
 
     inputEl.addEventListener('keydown', function(event) {

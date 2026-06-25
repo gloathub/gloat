@@ -437,8 +437,7 @@ install-deps() {
   install-one glojure  path-glojure
   if [[ -n ${GLOJURE_DIR:-} ]]; then
     local local_glj
-    local_glj=$(find "$GLOJURE_DIR/bin" -mindepth 2 -maxdepth 2 \
-      -type f -name glj -perm -u+x 2>/dev/null | head -1 || true)
+    local_glj=$(find-local-glojure-glj)
     if [[ -n $local_glj ]]; then
       PATH=$(dirname "$local_glj"):$PATH
       printf '==> Installing glj... done\n' >&2
@@ -468,14 +467,49 @@ find-local-exe() {
     -path "$dir/$pattern" -perm -u+x -print -quit 2>/dev/null || true
 }
 
+glj-host-platform() {
+  local os arch
+  os=$(go env GOOS 2>/dev/null || true)
+  arch=$(go env GOARCH 2>/dev/null || true)
+  if [[ $os && $arch ]]; then
+    printf '%s_%s\n' "$os" "$arch"
+    return 0
+  fi
+
+  os=$(uname -s 2>/dev/null || true)
+  arch=$(uname -m 2>/dev/null || true)
+  case $os in
+    Linux)  os=linux ;;
+    Darwin) os=darwin ;;
+    *)      return 0 ;;
+  esac
+  case $arch in
+    x86_64|amd64) arch=amd64 ;;
+    aarch64|arm64) arch=arm64 ;;
+    *) return 0 ;;
+  esac
+  printf '%s_%s\n' "$os" "$arch"
+}
+
+find-local-glojure-glj() {
+  [[ -n ${GLOJURE_DIR:-} && -d $GLOJURE_DIR/bin ]] || return 0
+
+  local platform glj
+  platform=$(glj-host-platform)
+  if [[ $platform ]]; then
+    glj=$GLOJURE_DIR/bin/$platform/glj
+    [[ -x $glj ]] && printf '%s\n' "$glj" && return 0
+  fi
+
+  find "$GLOJURE_DIR/bin" -mindepth 2 -maxdepth 2 \
+    \( -type f -o -type l \) -name glj -perm -u+x \
+    -print -quit 2>/dev/null || true
+}
+
 find-local-glj() {
   local local_glj
-  if [[ -n ${GLOJURE_DIR:-} && -d $GLOJURE_DIR/bin ]]; then
-    local_glj=$(find "$GLOJURE_DIR/bin" -mindepth 1 -maxdepth 2 \
-      \( -type f -o -type l \) -name glj -perm -u+x \
-      -print -quit 2>/dev/null || true)
-    [[ $local_glj ]] && printf '%s\n' "$local_glj" && return 0
-  fi
+  local_glj=$(find-local-glojure-glj)
+  [[ $local_glj ]] && printf '%s\n' "$local_glj" && return 0
   find-local-exe "$root/.cache/local" '*/bin/glj'
 }
 

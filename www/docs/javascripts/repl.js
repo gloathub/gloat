@@ -340,7 +340,7 @@
     inputEl.addEventListener('keydown', function(event) {
       if (event.key === 'Enter') {
         event.preventDefault();
-        var input = this.innerText;
+        var input = this.innerText.replace(/[ \t\r\n]+$/g, '');
         this.innerText = '';
         this.style.display = 'inline-block';
         processInput(input);

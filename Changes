@@ -1,3 +1,9 @@
+- version: 0.1.55
+  date:    Mon Jun 29 08:23:13 AM EDT 2026
+  changes:
+  - Quiet REPL startup setup noise
+  - Update compatibility report
+
 - version: 0.1.54
   date:    Thu Jun 25 01:03:12 PM EDT 2026
   changes:

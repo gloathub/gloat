@@ -11,6 +11,7 @@ GLOAT_VERSION=$(
 )
 export GLOAT_VERSION
 unset __src PERL5OPT PERL5LIB
+export PERL_BADLANG=0
 
 # Go 1.26 has a linker bug on arm64 that crashes when building with CGO
 export CGO_ENABLED=0
@@ -590,9 +591,22 @@ EOF
 }
 
 # Set up go.mod in CWD to point at the right glojure source.
+quiet-go() {
+  local log rc
+  log=$(mktemp)
+  if go "$@" > "$log" 2>&1; then
+    rm -f "$log"
+    return 0
+  fi
+  rc=$?
+  cat "$log" >&2
+  rm -f "$log"
+  return "$rc"
+}
+
 setup-go-module() {
   if [[ ! -f go.mod ]]; then
-    go mod init gloatrepl
+    quiet-go mod init gloatrepl
   fi
   if ! grep -q "glojurelang/glojure" go.mod 2>/dev/null; then
     local glojure_dir=${GLOJURE_DIR-}
@@ -631,12 +645,12 @@ setup-go-module() {
           print "$o\t$n\n";
         ' "$glojure_dir/go.mod"
       )
-      go get github.com/glojurelang/glojure
+      quiet-go get github.com/glojurelang/glojure
     else
       local glj_ver
       glj_ver=$(glj --version 2>/dev/null |
         grep -oP 'v\d+\.\d+\.\S+' | head -1 || true)
-      go get "github.com/glojurelang/glojure@${glj_ver:-latest}"
+      quiet-go get "github.com/glojurelang/glojure@${glj_ver:-latest}"
     fi
   fi
 }

@@ -514,9 +514,12 @@ automatically.
 
 ## REPL Build Directory
 
-When launched via `gloat --repl`, the REPL needs a Go module directory
-to bootstrap dependencies and generate import glue code.
-The build directory is resolved in this priority order:
+When launched with Go dependencies, the REPL needs a Go module
+directory to bootstrap dependencies and generate import glue code.
+Without a deps file or explicit build directory, `gloat --repl` runs
+`glj` in the current directory and creates no build files.
+
+When a build directory is needed, it is resolved in this priority order:
 
 1. `gloat --repl=dir/` -- explicit directory (trailing slash creates it
    if missing; without the slash the directory must already exist)
@@ -525,12 +528,33 @@ The build directory is resolved in this priority order:
    current directory; the subdirectory keeps generated `go.mod`,
    `go.sum`, and Go glue out of your project root
 4. Shared cache (e.g. `~/.cache/gloat/.../repl-VERSION/`) -- fallback
-   when no deps file is in sight, so an ad-hoc REPL leaves no files
-   behind in the current directory
+   for explicit deps files that are not tied to the current directory
 
 The build directory is created automatically if it does not exist.
 If `./gljdeps.edn` exists, its contents are copied into the build
 directory as `gljdeps.edn`; an explicit `--deps=FILE` does the same.
+
+## Loading Files
+
+Use `load-file` for an exact source filename:
+
+```
+(load-file "hello.clj")
+```
+
+`load` resolves resources from Glojure's load path. The Glojure
+runtime used by Gloat accepts both resource base names and source
+filenames:
+
+```
+(load "hello")
+(load "hello.clj")
+(load "/hello")
+```
+
+A leading slash resolves from the load-path root. For piped
+`gloat --repl` input, Gloat starts evaluation in the `user` namespace
+so relative load paths match the interactive REPL.
 
 ## External Go Dependencies
 

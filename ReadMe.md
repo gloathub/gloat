@@ -612,22 +612,19 @@ gloat --repl=mydir      # Use mydir/ as the REPL build directory
 
 ### REPL Build Directory
 
-The REPL needs a Go module directory to bootstrap dependencies and generate
-import glue code.
-The build directory is resolved in this priority order:
+Without a deps file or explicit build directory, `gloat --repl` runs `glj`
+in the current directory and creates no build files.
+
+When Go dependencies are involved, the REPL needs a Go module directory to
+bootstrap dependencies and generate import glue code. The build directory is
+resolved in this priority order:
 
 1. `--repl=dir` — explicit directory
 2. `GLOAT_REPL=dir` — environment variable
-3. `.` (current directory) — when `./gljdeps.edn` is present and no explicit
-   `--deps` is given
-4. `./gljrepl/` — default fallback (created automatically)
-
-Using `.` keeps all generated files alongside your source, which is convenient
-when your project already has a `go.mod` and a `gljdeps.edn`.
-
-`./gljrepl/` must either not exist, or be a directory that was previously
-initialized (contains a `go.mod`).
-Use `--force` to proceed anyway if it exists without a `go.mod`.
+3. `./gljrepl/` — auto-selected when `./gljdeps.edn` is present in the
+   current directory
+4. Shared cache — fallback for explicit deps files that are not tied to the
+   current directory
 
 
 ### External Go Dependencies

@@ -646,27 +646,23 @@ gloat --repl=mydir      # Use mydir/ as the REPL build directory
 .EE
 
 .SS REPL Build Directory
-The REPL needs a Go module directory to bootstrap dependencies and generate
-import glue code.
-The build directory is resolved in this priority order:
+Without a deps file or explicit build directory, \fBgloat --repl\fR runs \fBglj\fR
+in the current directory and creates no build files.
+
+.PP
+When Go dependencies are involved, the REPL needs a Go module directory to
+bootstrap dependencies and generate import glue code. The build directory is
+resolved in this priority order:
 .IP "  1." 5
 \fB--repl=dir\fR — explicit directory
 .IP "  2." 5
 \fBGLOAT_REPL=dir\fR — environment variable
 .IP "  3." 5
-\fB\&.\fR (current directory) — when \fB\&./gljdeps.edn\fR is present and no explicit
-\fB--deps\fR is given
+\fB\&./gljrepl/\fR — auto-selected when \fB\&./gljdeps.edn\fR is present in the
+current directory
 .IP "  4." 5
-\fB\&./gljrepl/\fR — default fallback (created automatically)
-
-.PP
-Using \fB\&.\fR keeps all generated files alongside your source, which is convenient
-when your project already has a \fBgo.mod\fR and a \fBgljdeps.edn\fR\&.
-
-.PP
-\fB\&./gljrepl/\fR must either not exist, or be a directory that was previously
-initialized (contains a \fBgo.mod\fR).
-Use \fB--force\fR to proceed anyway if it exists without a \fBgo.mod\fR\&.
+Shared cache — fallback for explicit deps files that are not tied to the
+current directory
 
 .SS External Go Dependencies
 To make Go packages available in the REPL, declare them in a \fBgljdeps.edn\fR

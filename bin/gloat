@@ -345,8 +345,22 @@ do-repl() {
   fi
 
   prepare-repl-env "$repl_val"
-
   echo "🐐 Gloat: $GLOAT_VERSION 🐐" >&2
+
+  # Piped glj input is evaluated by gljmain's non-interactive path, which
+  # starts in clojure.core. Match the interactive REPL's user namespace.
+  if [[ ! -t 0 ]]; then
+    {
+      cat <<'EOF'
+(do
+  (clojure.core/in-ns 'user)
+  (clojure.core/refer 'clojure.core)
+  nil)
+EOF
+      cat
+    } | glj
+    exit $?
+  fi
 
   # Run glj in a restart loop so crashes (e.g. stack overflow) don't
   # lose the session. History is persisted to ~/.glj_history.
@@ -691,6 +705,17 @@ prepare-repl-env() {
           "" \
           "  {:deps {}}                  ; no extra deps" \
           '  {:deps {github.com:google:uuid {:mvn/version "v1.6.0"}}}'
+  fi
+
+  # If there are no explicit REPL deps or build-dir hints, run glj in the
+  # user's current directory. That keeps relative load-file paths intuitive
+  # without creating a throwaway Go module.
+  if [[ -z $deps_content && -z $build_hint && -z ${GLOAT_REPL-} ]]; then
+    export GOFLAGS=-mod=mod
+    : "${GOARCH:=$(go env GOARCH)}"
+    export GOARCH
+    find-glj
+    return
   fi
 
   # Determine build directory:

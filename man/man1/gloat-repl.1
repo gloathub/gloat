@@ -605,9 +605,13 @@ When you exit the REPL, both embedded servers shut down
 automatically.
 
 .SH REPL Build Directory
-When launched via \fBgloat --repl\fR, the REPL needs a Go module directory
-to bootstrap dependencies and generate import glue code.
-The build directory is resolved in this priority order:
+When launched with Go dependencies, the REPL needs a Go module
+directory to bootstrap dependencies and generate import glue code.
+Without a deps file or explicit build directory, \fBgloat --repl\fR runs
+\fBglj\fR in the current directory and creates no build files.
+
+.PP
+When a build directory is needed, it is resolved in this priority order:
 .IP "  1." 5
 \fBgloat --repl=dir/\fR -- explicit directory (trailing slash creates it
 if missing; without the slash the directory must already exist)
@@ -619,13 +623,35 @@ current directory; the subdirectory keeps generated \fBgo.mod\fR,
 \fBgo.sum\fR, and Go glue out of your project root
 .IP "  4." 5
 Shared cache (e.g. \fB~/.cache/gloat/.../repl-VERSION/\fR) -- fallback
-when no deps file is in sight, so an ad-hoc REPL leaves no files
-behind in the current directory
+for explicit deps files that are not tied to the current directory
 
 .PP
 The build directory is created automatically if it does not exist.
 If \fB\&./gljdeps.edn\fR exists, its contents are copied into the build
 directory as \fBgljdeps.edn\fR; an explicit \fB--deps=FILE\fR does the same.
+
+.SH Loading Files
+Use \fBload-file\fR for an exact source filename:
+
+.EX
+(load-file "hello.clj")
+.EE
+
+.PP
+\fBload\fR resolves resources from Glojure's load path. The Glojure
+runtime used by Gloat accepts both resource base names and source
+filenames:
+
+.EX
+(load "hello")
+(load "hello.clj")
+(load "/hello")
+.EE
+
+.PP
+A leading slash resolves from the load-path root. For piped
+\fBgloat --repl\fR input, Gloat starts evaluation in the \fBuser\fR namespace
+so relative load paths match the interactive REPL.
 
 .SH External Go Dependencies
 The Glojure standard library and the Go standard library are available

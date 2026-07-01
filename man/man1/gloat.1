@@ -273,10 +273,8 @@ To make \fBgloat\fR a permanent install, add this to your shell's rc file:
 .EX
 # For Bash: add to ~/.bashrc
 # For Zsh: add to ~/.zshrc
-source /absolute/path/to/gloat/.rc
-
 # For Fish: add to ~/.config/fish/config.fish
-source /absolute/path/to/gloat/.fishrc
+source /absolute/path/to/gloat/.rc
 .EE
 
 .SH Output Formats
@@ -553,8 +551,8 @@ With \fB-Xserve,html\fR, the HTML is generated alongside the output.
 
 .SH Shell Completion
 Gloat provides tab completion for all shells.
-Completions are automatically loaded when you source \fB\&.rc\fR (bash/zsh) or
-\fB\&.fishrc\fR (fish).
+Completions are automatically loaded when you source \fB\&.rc\fR from bash, zsh or
+fish.
 
 .PP
 To manually generate or reload completions:

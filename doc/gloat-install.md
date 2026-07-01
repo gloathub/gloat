@@ -18,7 +18,7 @@ gloat --help
 ```
 
 The `source gloat/.rc` command adds the `gloat` command to your PATH, enables
-the `man gloat` help and sets up `gloat` tab completion.
+the `gloat*` man pages and sets up `gloat` tab completion.
 
 On first run, Gloat will automatically install all required tools (Go, Glojure,
 YAMLScript, Babashka, etc) to `.cache/local/` within the project directory.
@@ -72,8 +72,8 @@ make -f <(curl -sL gloathub.org/make) help
 ```
 
 On success the installer prints the exact `source .../share/gloat/.rc`
-line to add to your shell rc — this gives the one-line install the same
-man-page support and shell completion as the clone method.
+command to enable tab completion and `gloat*` man pages, plus the shell rc
+file where you can add it permanently.
 
 Pass `VERSION=v1.2.3` to pin to a specific gloat release; the installer
 also picks up the GLJ version that pairs with that gloat tag.

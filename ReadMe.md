@@ -260,10 +260,8 @@ To make `gloat` a permanent install, add this to your shell's rc file:
 ```bash
 # For Bash: add to ~/.bashrc
 # For Zsh: add to ~/.zshrc
-source /absolute/path/to/gloat/.rc
-
 # For Fish: add to ~/.config/fish/config.fish
-source /absolute/path/to/gloat/.fishrc
+source /absolute/path/to/gloat/.rc
 ```
 
 
@@ -520,8 +518,8 @@ With `-Xserve,html`, the HTML is generated alongside the output.
 ## Shell Completion
 
 Gloat provides tab completion for all shells.
-Completions are automatically loaded when you source `.rc` (bash/zsh) or
-`.fishrc` (fish).
+Completions are automatically loaded when you source `.rc` from bash, zsh or
+fish.
 
 To manually generate or reload completions:
 

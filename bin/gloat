@@ -95,7 +95,12 @@ main() (
   if [[ $* == --reset ]]; then
     nuke-cache
     echo "Cache cleared. Next 'gloat' run will reinstall dependencies."
+    print-rc-admonition maybe
     exit
+  fi
+
+  if [[ $# -eq 1 && $1 == --version ]]; then
+    show-version
   fi
 
   if [[ $# -eq 1 && ( $1 == --upgrade || $1 == --upgrade=* ) ]]; then
@@ -120,6 +125,7 @@ main() (
     if [[ $target == "v$GLOAT_VERSION" ]]; then
       echo "Already at $target. Nothing to do."
       echo "(Use 'gloat --reset' to force a cache rebuild.)"
+      print-rc-admonition maybe
       exit
     fi
 
@@ -136,6 +142,7 @@ main() (
     nuke-cache
     echo "Now at $target. Next 'gloat' run will reinstall the matching"
     echo "dependencies (including the GLJ version paired with $target)."
+    print-rc-admonition maybe
     exit
   fi
 
@@ -290,8 +297,70 @@ show-help() {
   local help rc=0
   help=$(printf '%s\n' "$GETOPT_SPEC" | "$root/util/getopt" --help 2>&1 >/dev/null) ||
     rc=$?
+  local admonition
+  admonition=$(rc-admonition maybe)
+  if [[ $admonition ]]; then
+    help=$(printf '%s\n\n%s' "$admonition" "$help")
+  fi
   page-text "$help"
   exit "$rc"
+}
+
+show-version() {
+  local glojure_version
+  glojure_version=$(awk '$1 == "GLOJURE-VERSION" {print $3; exit}' \
+    "$root/common/common.mk")
+  echo "gloat version $GLOAT_VERSION"
+  [[ $glojure_version ]] && echo "glojure version $glojure_version"
+  print-rc-admonition maybe
+  exit
+}
+
+rc-shell() {
+  local shell_name=
+  if [[ ${GLOAT_SHELL-} ]]; then
+    shell_name=$GLOAT_SHELL
+  elif [[ ${SHELL-} ]]; then
+    shell_name=${SHELL##*/}
+  else
+    shell_name=$(ps -o comm= -p "$PPID" 2>/dev/null || true)
+    shell_name=${shell_name#-}
+  fi
+  case $shell_name in
+    bash|zsh|fish) printf '%s\n' "$shell_name" ;;
+  esac
+}
+
+rc-file-for-shell() {
+  case $1 in
+    bash) printf '%s%s\n' '~' '/.bashrc' ;;
+    zsh)  printf '%s%s\n' '~' '/.zshrc' ;;
+    fish) printf '%s%s\n' '~' '/.config/fish/config.fish' ;;
+  esac
+}
+
+rc-admonition() {
+  local mode=${1-}
+  local shell_name rc_file sourced_root=
+  shell_name=$(rc-shell)
+  [[ $shell_name ]] || return 0
+  sourced_root=${GLOAT_ROOT-}
+  [[ $sourced_root ]] &&
+    sourced_root=$(cd -P "$sourced_root" 2>/dev/null && pwd -P || true)
+  [[ $mode != maybe || $sourced_root != "$root" ]] || return 0
+  rc_file=$(rc-file-for-shell "$shell_name")
+  cat <<EOF
+To enable tab completion and gloat* man pages, run this command:
+  source $root/.rc
+(or add it to your $rc_file file to make it permanent)
+EOF
+}
+
+print-rc-admonition() {
+  local admonition
+  admonition=$(rc-admonition "${1-}")
+  [[ $admonition ]] || return 0
+  printf '\n%s\n' "$admonition"
 }
 
 page-text() {
@@ -593,10 +662,7 @@ check-on-path() {
 
 Warning: 'gloat' is not on your PATH yet.
 
-To make it permanent, add this line to your shell rc
-(~/.bashrc, ~/.zshrc, or ~/.config/fish/config.fish):
-
-    source $root/.rc
+$(rc-admonition)
 
 Press Enter to continue with first-run deps install,
 or Ctrl-C to set up PATH first.

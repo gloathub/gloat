@@ -134,14 +134,17 @@ install:
 	@echo '  Symlink at:   $(GLOAT-BIN)'
 	@echo ''
 	@# Shell-specific rc hint for man pages and completion
-	@echo 'To enable man pages and shell completion, add this to your shell rc:'
-	@echo ''
-	@case $$(basename "$${SHELL:-/bin/bash}") in \
-	  fish) echo '  # ~/.config/fish/config.fish' ;; \
-	  zsh)  echo '  # ~/.zshrc' ;; \
-	  *)    echo '  # ~/.bashrc' ;; \
+	@case $$(basename "$${SHELL:-}") in \
+	  bash) echo 'To enable tab completion and gloat* man pages, run this command:'; \
+	        echo '  source $(INSTALL-DIR)/.rc'; \
+	        echo '(or add it to your ~/.bashrc file to make it permanent)' ;; \
+	  fish) echo 'To enable tab completion and gloat* man pages, run this command:'; \
+	        echo '  source $(INSTALL-DIR)/.rc'; \
+	        echo '(or add it to your ~/.config/fish/config.fish file to make it permanent)' ;; \
+	  zsh)  echo 'To enable tab completion and gloat* man pages, run this command:'; \
+	        echo '  source $(INSTALL-DIR)/.rc'; \
+	        echo '(or add it to your ~/.zshrc file to make it permanent)' ;; \
 	esac
-	@echo '  source $(INSTALL-DIR)/.rc'
 	@echo ''
 	@echo "Run 'gloat --help' to get started."
 

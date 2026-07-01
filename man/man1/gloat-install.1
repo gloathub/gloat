@@ -18,7 +18,7 @@ gloat --help
 
 .PP
 The \fBsource gloat/.rc\fR command adds the \fBgloat\fR command to your PATH, enables
-the \fBman gloat\fR help and sets up \fBgloat\fR tab completion.
+the \fBgloat*\fR man pages and sets up \fBgloat\fR tab completion.
 
 .PP
 On first run, Gloat will automatically install all required tools (Go, Glojure,
@@ -77,8 +77,8 @@ make -f <(curl -sL gloathub.org/make) help
 
 .PP
 On success the installer prints the exact \fBsource .../share/gloat/.rc\fR
-line to add to your shell rc — this gives the one-line install the same
-man-page support and shell completion as the clone method.
+command to enable tab completion and \fBgloat*\fR man pages, plus the shell rc
+file where you can add it permanently.
 
 .PP
 Pass \fBVERSION=v1.2.3\fR to pin to a specific gloat release; the installer

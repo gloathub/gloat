@@ -1,0 +1,3633 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Compile Clojure and YAMLScript to Go, native binaries, Wasm and more">
+      
+      
+        <meta name="author" content="Ingy dot Net">
+      
+      
+        <link rel="canonical" href="https://gloathub.org/doc/gloat-repl/">
+      
+      
+        <link rel="prev" href="../gloat-install/">
+      
+      
+        <link rel="next" href="../gloat-go-interop/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>REPL Reference - GloatHub</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+  
+  
+    
+  
+  
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="REPL Reference - GloatHub">
+  <meta property="og:description" content="Compile Clojure and YAMLScript to Go, native binaries, Wasm and more">
+  <meta property="og:image" content="https://gloathub.org/img/social-card.png">
+  
+  <meta property="og:url" content="https://gloathub.org/doc/gloat-repl/">
+  
+  <meta property="og:site_name" content="GloatHub">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="REPL Reference - GloatHub">
+  <meta name="twitter:description" content="Compile Clojure and YAMLScript to Go, native binaries, Wasm and more">
+  <meta name="twitter:image" content="https://gloathub.org/img/social-card.png">
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#gloat-repl-gloatglojure-repl-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="GloatHub" class="md-header__button md-logo" aria-label="GloatHub" data-md-component="logo">
+      <img src="../../img/gloat.jpeg" alt="Gloat"
+     class="logo-mascot">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <a href="../.." class="md-ellipsis" style="text-decoration: none; color: inherit;">
+            GloatHub
+          </a>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              REPL Reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="cyan"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="cyan"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/gloathub/gloat" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    gloathub/gloat
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  GloatHub
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../demo/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Demo
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../repl/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  REPL
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../blog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Blog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../projects/" class="md-tabs__link">
+          
+  
+  
+  Projects
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="GloatHub" class="md-nav__button md-logo" aria-label="GloatHub" data-md-component="logo">
+      <img src="../../img/gloat.jpeg" alt="Gloat"
+     class="logo-mascot">
+    </a>
+    GloatHub
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/gloathub/gloat" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    gloathub/gloat
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GloatHub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../demo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Demo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../repl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REPL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gloat Documentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gloat-install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REPL Reference
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    REPL Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#synopsis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synopsis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#description" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Description
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#startup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Startup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#editing-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Editing Modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiline-editing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multiline Editing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#indentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Indentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tab-completion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tab Completion
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tab Completion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-bindings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Bindings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        History
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="History">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#smart-arrow-navigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Smart Arrow Navigation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ghost-text-autosuggestions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ghost Text (Autosuggestions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#suspend-and-resume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suspend and Resume
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bracketed-paste" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bracketed Paste
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exiting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interrupting-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interrupting Evaluation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#syntax-highlighting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Syntax Highlighting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Syntax Highlighting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rainbow-brackets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rainbow Brackets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nrepl-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        nREPL Server
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="nREPL Server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-nrepl-forms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --nrepl Forms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#editor-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Editor Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-nrepl-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported nREPL Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#socket-repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Socket REPL
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Socket REPL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-srepl-forms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --srepl Forms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connecting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connecting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiline-input" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multiline Input
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#namespace-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Namespace Tracking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#editor-integration_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Editor Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nrepl-vs-socket-repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        nREPL vs Socket REPL
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repl-client-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REPL Client Mode
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="REPL Client Mode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-repl-forms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --repl Forms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#external-tool-repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        External Tool REPL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#piped-input" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Piped Input
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#embedded-servers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedded Servers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repl-build-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REPL Build Directory
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loading-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loading Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#external-go-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        External Go Dependencies
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="External Go Dependencies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#loading-deps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loading deps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worked-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cross-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inline-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inline Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inline-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inline Help
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#format-and-print" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Format and Print
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#share" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Share
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repl-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REPL Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment Variables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Feature Comparison
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#web-repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Web REPL
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Web REPL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It Works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toolbar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Toolbar
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sharing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sharing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli-vs-web-repl-feature-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI vs Web REPL Feature Matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gloat-go-interop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Go Interop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gloat-java-interop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Java Interop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gloat-tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../projects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../projects/gist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#synopsis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synopsis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#description" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Description
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#startup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Startup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#editing-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Editing Modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiline-editing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multiline Editing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#indentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Indentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tab-completion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tab Completion
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tab Completion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-bindings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Bindings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        History
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="History">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#smart-arrow-navigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Smart Arrow Navigation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ghost-text-autosuggestions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ghost Text (Autosuggestions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#suspend-and-resume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suspend and Resume
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bracketed-paste" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bracketed Paste
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exiting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interrupting-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interrupting Evaluation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#syntax-highlighting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Syntax Highlighting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Syntax Highlighting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rainbow-brackets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rainbow Brackets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nrepl-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        nREPL Server
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="nREPL Server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-nrepl-forms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --nrepl Forms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#editor-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Editor Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-nrepl-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported nREPL Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#socket-repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Socket REPL
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Socket REPL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-srepl-forms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --srepl Forms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connecting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connecting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiline-input" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multiline Input
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#namespace-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Namespace Tracking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#editor-integration_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Editor Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nrepl-vs-socket-repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        nREPL vs Socket REPL
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repl-client-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REPL Client Mode
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="REPL Client Mode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-repl-forms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --repl Forms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#external-tool-repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        External Tool REPL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#piped-input" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Piped Input
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#embedded-servers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedded Servers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repl-build-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REPL Build Directory
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loading-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loading Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#external-go-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        External Go Dependencies
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="External Go Dependencies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#loading-deps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loading deps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worked-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cross-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inline-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inline Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inline-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inline Help
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#format-and-print" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Format and Print
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#share" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Share
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repl-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REPL Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment Variables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Feature Comparison
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#web-repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Web REPL
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Web REPL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It Works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toolbar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Toolbar
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sharing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sharing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli-vs-web-repl-feature-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI vs Web REPL Feature Matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="gloat-repl-gloatglojure-repl-reference">gloat-repl -- Gloat/Glojure REPL Reference<a class="headerlink" href="#gloat-repl-gloatglojure-repl-reference" title="Permanent link">&para;</a></h1>
+<h2 id="synopsis">Synopsis<a class="headerlink" href="#synopsis" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>gloat --repl[=VALUE]
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>gloat --nrepl[=VALUE]
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>gloat --srepl[=VALUE]
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>gloat (--repl|--nrepl|--srepl) --deps=gljdeps.edn
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>glj
+</span></code></pre></div>
+<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
+<p>The Gloat/Glojure REPL is a rich interactive environment for evaluating
+Clojure expressions with full access to Go packages.
+It is built on the <code>gloathub/go-readline</code> library (a fork of
+<code>reeflective/readline</code>) and supports vi and emacs editing modes,
+multiline editing with auto-indent, tab completion with namespace-aware
+descriptions, ghost text autosuggestions, persistent history, job
+control, and bracketed paste.</p>
+<h2 id="startup">Startup<a class="headerlink" href="#startup" title="Permanent link">&para;</a></h2>
+<p>On launch the REPL prints a banner with version and platform
+information and quick-reference hints:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>🐐 Gloat: 0.1.40 🐐
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a> Glojure: v0.6.4
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>      Go: 1.24.0 linux/amd64
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>   nREPL: nrepl://localhost:38291
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>   sREPL: localhost:35149
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    Help: C-h or :repl/help
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    Exit: C-d or :repl/exit
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>user=&gt;
+</span></code></pre></div>
+<p>The <code>nREPL</code> and <code>sREPL</code> URLs are for the embedded servers automatically
+started for every <code>gloat --repl</code> session (see <strong>Embedded Servers</strong>).</p>
+<p>The prompt shows the current namespace (<code>user</code> by default).
+Switch namespaces with <code>(ns my-ns)</code> and the prompt updates
+accordingly.</p>
+<h2 id="editing-modes">Editing Modes<a class="headerlink" href="#editing-modes" title="Permanent link">&para;</a></h2>
+<p>The REPL defaults to <strong>vi</strong> editing mode.
+All standard vi-insert and vi-command keybindings are available (h/j/k/l
+navigation, word motions, text objects, visual mode, yank/put, etc.).</p>
+<p>To switch to <strong>emacs</strong> mode, add the following to your <code>~/.inputrc</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>set editing-mode emacs
+</span></code></pre></div>
+<p>The REPL respects all standard inputrc settings.</p>
+<p>You can also switch modes at runtime with <code>:repl/vi</code> and
+<code>:repl/emacs</code> (see <strong>REPL Commands</strong> below).</p>
+<h2 id="multiline-editing">Multiline Editing<a class="headerlink" href="#multiline-editing" title="Permanent link">&para;</a></h2>
+<p>The REPL automatically detects incomplete expressions.
+If you press Enter on an unfinished form (unclosed parentheses, missing
+string delimiter, etc.), a continuation prompt appears:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>user=&gt; (defn greet [name]
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>...   (str &quot;Hello, &quot; name &quot;!&quot;))
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>#&#39;user/greet
+</span></code></pre></div>
+<p>Enter submits complete input from any cursor position.
+Press <strong>Ctrl+J</strong> to insert a newline explicitly, including when you
+want to split a line in the middle of a multiline form.</p>
+<p>New lines automatically inherit the leading whitespace of the current
+line, keeping your code aligned.</p>
+<h2 id="indentation">Indentation<a class="headerlink" href="#indentation" title="Permanent link">&para;</a></h2>
+<p><strong>Tab</strong> inserts two spaces when the cursor is at the beginning of a
+line or follows whitespace.
+This makes it easy to indent code inside multiline forms.</p>
+<p><strong>Backspace</strong> is indent-aware: when two consecutive spaces precede the
+cursor, both are deleted at once to undo a single indent level.</p>
+<p>When the cursor follows a symbol character, Tab triggers completion
+instead (see below).</p>
+<h2 id="tab-completion">Tab Completion<a class="headerlink" href="#tab-completion" title="Permanent link">&para;</a></h2>
+<p>Pressing Tab after one or more symbol characters opens a completion
+menu.
+The common prefix of all matches is inserted first, then subsequent Tab
+presses cycle through the remaining candidates.</p>
+<p>Completions include:</p>
+<ul>
+<li><strong>Symbols</strong> from the current namespace (includes referred vars).
+  Each candidate shows the namespace it was defined in.</li>
+<li><strong>Namespace aliases</strong> (e.g. <code>str/</code>) with an "alias" label.</li>
+<li><strong>Full namespace names</strong> (e.g. <code>clojure.string/</code>) with a "namespace"
+  label.</li>
+<li><strong>Qualified symbols</strong> -- typing <code>str/</code> then Tab completes symbols
+  within that namespace or alias.</li>
+</ul>
+<h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>user=&gt; doc&lt;TAB&gt;          ; completes to (doc ...) candidates
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>user=&gt; ns-&lt;TAB&gt;          ; shows ns-name, ns-aliases, ns-map, ...
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>user=&gt; str/&lt;TAB&gt;         ; shows clojure.string functions
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>user=&gt; clojure.set/&lt;TAB&gt; ; shows clojure.set functions
+</span></code></pre></div>
+<h2 id="key-bindings">Key Bindings<a class="headerlink" href="#key-bindings" title="Permanent link">&para;</a></h2>
+<p>The following keys have special behavior in the REPL.
+Vi-command-mode bindings (h/j/k/l, w/b/e, etc.) work as expected and
+are not listed here.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tab</strong></td>
+<td>Insert 2-space indent (after whitespace) or open completion menu (after symbol chars)</td>
+</tr>
+<tr>
+<td><strong>Backspace</strong></td>
+<td>Delete 2 spaces if both precede cursor, otherwise delete 1 character</td>
+</tr>
+<tr>
+<td><strong>Enter</strong></td>
+<td>Submit complete expression</td>
+</tr>
+<tr>
+<td><strong>Ctrl+J</strong></td>
+<td>Insert newline</td>
+</tr>
+<tr>
+<td><strong>Ctrl+C</strong></td>
+<td>Cancel current input; on empty prompt, shows exit hint; press twice to exit</td>
+</tr>
+<tr>
+<td><strong>Ctrl+D</strong></td>
+<td>Show inline documentation for symbol under cursor; on empty prompt, exit the REPL. In emacs mode use <strong>Ctrl+X Ctrl+D</strong>.</td>
+</tr>
+<tr>
+<td><strong>Ctrl+P</strong></td>
+<td>Format, print and copy current form to clipboard. In emacs mode use <strong>Ctrl+X Ctrl+P</strong>.</td>
+</tr>
+<tr>
+<td><strong>Ctrl+S</strong></td>
+<td>Share by URL; also copy selected forms</td>
+</tr>
+<tr>
+<td><strong>Ctrl+E</strong></td>
+<td>Move cursor to end of line (vi-insert and emacs modes)</td>
+</tr>
+<tr>
+<td><strong>Ctrl+R</strong></td>
+<td>Reverse incremental history search</td>
+</tr>
+<tr>
+<td><strong>Ctrl+Z</strong></td>
+<td>Suspend the REPL process; resume with <code>fg</code></td>
+</tr>
+<tr>
+<td><strong>Ctrl+H</strong></td>
+<td>Show inline help with key bindings and commands. In emacs mode use <strong>Ctrl+X Ctrl+H</strong>.</td>
+</tr>
+<tr>
+<td><strong>Up</strong></td>
+<td>Move up a line in multiline input; on first line, move to beginning of line; at beginning or end of buffer, navigate history</td>
+</tr>
+<tr>
+<td><strong>Down</strong></td>
+<td>Move down a line in multiline input; on last line, move to end of line; at end of buffer, navigate history</td>
+</tr>
+<tr>
+<td><strong>Escape</strong></td>
+<td>Switch to vi-command mode; if inline doc is showing, dismiss it instead</td>
+</tr>
+</tbody>
+</table>
+<h2 id="history">History<a class="headerlink" href="#history" title="Permanent link">&para;</a></h2>
+<p>Command history is saved to <code>~/.glj_history</code> and persists across
+sessions.
+Use the Up and Down arrow keys (or <code>k</code> and <code>j</code> in vi-command mode) to
+navigate previous entries.
+Press <strong>Ctrl+R</strong> to start a reverse incremental search -- type a
+substring and the most recent matching entry is recalled.</p>
+<p>History entries can span multiple lines.</p>
+<h3 id="smart-arrow-navigation">Smart Arrow Navigation<a class="headerlink" href="#smart-arrow-navigation" title="Permanent link">&para;</a></h3>
+<p>The Up and Down arrows have context-sensitive behavior in multiline
+forms:</p>
+<ul>
+<li><strong>Down</strong> on the last line moves to end-of-line first, then to
+  history on the next press.</li>
+<li><strong>Up</strong> on the first line moves to beginning-of-line first, then to
+  history on the next press.</li>
+<li><strong>Up</strong> at the end of the buffer jumps straight to history, letting
+  you scan through previous forms (including multiline ones) without
+  scrolling line by line.</li>
+</ul>
+<h3 id="ghost-text-autosuggestions">Ghost Text (Autosuggestions)<a class="headerlink" href="#ghost-text-autosuggestions" title="Permanent link">&para;</a></h3>
+<p>As you type, the REPL shows faded "ghost text" after the cursor when
+there is exactly one matching completion.
+For example, typing <code>(ze</code> shows <code>ro?</code> ghosted, completing <code>zero?</code>.
+Press <strong>Right arrow</strong> to accept the full suggestion, or <strong>Ctrl+Right</strong>
+to accept just the next word.</p>
+<p>This feature can be toggled off by adding <code>set history-autosuggest off</code>
+to your <code>~/.inputrc</code>.</p>
+<h2 id="suspend-and-resume">Suspend and Resume<a class="headerlink" href="#suspend-and-resume" title="Permanent link">&para;</a></h2>
+<p>Press <strong>Ctrl+Z</strong> to suspend the REPL and return to your shell.
+The REPL saves and restores terminal state automatically, so resuming
+with <code>fg</code> returns you to a working prompt with no garbled output.</p>
+<h2 id="bracketed-paste">Bracketed Paste<a class="headerlink" href="#bracketed-paste" title="Permanent link">&para;</a></h2>
+<p>Bracketed paste is enabled by default.
+When you paste a block of code from your clipboard, it is inserted
+instantly as a single unit rather than being interpreted character by
+character.
+Carriage returns in pasted text are normalized to newlines.</p>
+<h2 id="exiting">Exiting<a class="headerlink" href="#exiting" title="Permanent link">&para;</a></h2>
+<p>There are three ways to exit the REPL:</p>
+<ul>
+<li><strong>Ctrl+D</strong> -- on an empty prompt, sends EOF and exits immediately.
+  On a non-empty prompt, shows inline documentation (see below).</li>
+<li><strong>:repl/exit</strong> -- type this command and press Enter.</li>
+<li><strong>Ctrl+C twice</strong> -- press Ctrl+C on an empty prompt to see a hint,
+  then press it again to exit.</li>
+</ul>
+<p>If you press Ctrl+C while editing an expression, it cancels the current
+input and returns to a fresh prompt.</p>
+<h2 id="interrupting-evaluation">Interrupting Evaluation<a class="headerlink" href="#interrupting-evaluation" title="Permanent link">&para;</a></h2>
+<p>Press <strong>Ctrl+C</strong> during evaluation to interrupt a long-running
+expression.
+The REPL prints "Interrupted" and returns to the prompt.</p>
+<h2 id="syntax-highlighting">Syntax Highlighting<a class="headerlink" href="#syntax-highlighting" title="Permanent link">&para;</a></h2>
+<p>The REPL highlights Clojure syntax as you type.
+Token types and their colors:</p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Examples</th>
+<th>Color</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Strings</td>
+<td><code>"hello"</code></td>
+<td>Green</td>
+</tr>
+<tr>
+<td>Keywords</td>
+<td><code>:foo</code>, <code>::bar</code>, <code>:ns/key</code></td>
+<td>Cyan</td>
+</tr>
+<tr>
+<td>Comments</td>
+<td><code>; note</code></td>
+<td>Gray</td>
+</tr>
+<tr>
+<td>Numbers</td>
+<td><code>42</code>, <code>3.14</code>, <code>1/3</code>, <code>0xFF</code></td>
+<td>Magenta</td>
+</tr>
+<tr>
+<td>Booleans/nil</td>
+<td><code>true</code>, <code>false</code>, <code>nil</code></td>
+<td>Magenta</td>
+</tr>
+<tr>
+<td>Special forms</td>
+<td><code>def</code>, <code>fn</code>, <code>let</code>, <code>if</code>, <code>when</code>, <code>cond</code></td>
+<td>Bold yellow</td>
+</tr>
+<tr>
+<td>Core functions</td>
+<td><code>map</code>, <code>filter</code>, <code>reduce</code>, <code>str</code></td>
+<td>Blue</td>
+</tr>
+<tr>
+<td>Symbols</td>
+<td>everything else</td>
+<td>Default</td>
+</tr>
+</tbody>
+</table>
+<p>Special forms include <code>def</code>, <code>defn</code>, <code>defmacro</code>, <code>fn</code>, <code>let</code>, <code>loop</code>,
+<code>recur</code>, <code>if</code>, <code>when</code>, <code>cond</code>, <code>do</code>, <code>ns</code>, <code>require</code>, <code>import</code>,
+<code>try</code>, <code>catch</code>, <code>throw</code>, and others.</p>
+<p>Highlighting works correctly with multiline editing, ghost text, and
+tab completion.</p>
+<h3 id="rainbow-brackets">Rainbow Brackets<a class="headerlink" href="#rainbow-brackets" title="Permanent link">&para;</a></h3>
+<p>Brackets (<code>()</code>, <code>[]</code>, <code>{}</code>) are colored based on nesting depth using
+the same color scheme as Calva's rainbow brackets.
+The colors cycle through seven levels:</p>
+<table>
+<thead>
+<tr>
+<th>Depth</th>
+<th>Color</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Light gray</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Blue</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Salmon</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Green</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Purple</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Gray</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Orange</td>
+</tr>
+</tbody>
+</table>
+<p>At depth 7 the cycle repeats from light gray.
+Matching open and close brackets always share the same color.</p>
+<p>Mismatched brackets (e.g. <code>(</code> closed by <code>]</code>) and unmatched closing
+brackets are shown with white text on a red background, making
+errors easy to spot as you type.</p>
+<h2 id="nrepl-server">nREPL Server<a class="headerlink" href="#nrepl-server" title="Permanent link">&para;</a></h2>
+<p>Start an nREPL server with <code>gloat --nrepl</code>.
+Editors like Calva and CIDER connect to the server for interactive
+development.</p>
+<h3 id="-nrepl-forms"><code>--nrepl</code> Forms<a class="headerlink" href="#-nrepl-forms" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--nrepl</code></td>
+<td>Start server on localhost, random port</td>
+</tr>
+<tr>
+<td><code>--nrepl=7888</code></td>
+<td>Start server on localhost:7888</td>
+</tr>
+<tr>
+<td><code>--nrepl=0.0.0.0:7888</code></td>
+<td>Bind to all network interfaces, port 7888</td>
+</tr>
+<tr>
+<td><code>--nrepl=0.0.0.0</code></td>
+<td>Bind to all interfaces, random port</td>
+</tr>
+<tr>
+<td><code>--nrepl=.nrepl-port</code></td>
+<td>Random port, write port number to file</td>
+</tr>
+</tbody>
+</table>
+<p>The value heuristic:
+all digits = port number,
+contains <code>:</code> with trailing digits = host:port,
+valid IP address = host with random port,
+anything else = port file path.</p>
+<p>The server prints its address on startup in the format that Calva
+expects for jack-in:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>nREPL server started on port 7888 on host localhost - nrepl://localhost:7888
+</span></code></pre></div>
+<p>Press Ctrl+C to shut down the server.
+If a port file was specified, it is removed on shutdown.</p>
+<h3 id="editor-integration">Editor Integration<a class="headerlink" href="#editor-integration" title="Permanent link">&para;</a></h3>
+<p><strong>Calva (VS Code):</strong>
+Run <code>gloat --nrepl</code> in a terminal.
+Use "Calva: Connect to a Running REPL Server" and enter the port.
+Alternatively, configure Calva's jack-in to run <code>gloat --nrepl</code>.</p>
+<p><strong>CIDER (Emacs):</strong>
+Run <code>gloat --nrepl</code> in a terminal, then <code>M-x cider-connect</code> and
+enter the host and port.</p>
+<h3 id="supported-nrepl-operations">Supported nREPL Operations<a class="headerlink" href="#supported-nrepl-operations" title="Permanent link">&para;</a></h3>
+<p>The server implements the following nREPL ops:
+clone, close, describe, eval, completions, interrupt, load-file,
+ls-sessions.</p>
+<h2 id="socket-repl">Socket REPL<a class="headerlink" href="#socket-repl" title="Permanent link">&para;</a></h2>
+<p>Start a plain-text socket REPL with <code>gloat --srepl</code>.
+Clients connect with <code>nc</code>, <code>socat</code>, <code>telnet</code>, or editor plugins like
+Conjure and inf-clojure.
+Each connection gets an independent read-eval-print loop.</p>
+<p>Unlike nREPL (which uses a structured bencode protocol), the socket
+REPL is a raw text protocol: send Clojure code, receive printed
+results.
+No special client library is required.</p>
+<h3 id="-srepl-forms"><code>--srepl</code> Forms<a class="headerlink" href="#-srepl-forms" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--srepl</code></td>
+<td>Start server on localhost, random port</td>
+</tr>
+<tr>
+<td><code>--srepl=7777</code></td>
+<td>Start server on localhost:7777</td>
+</tr>
+<tr>
+<td><code>--srepl=0.0.0.0:7777</code></td>
+<td>Bind to all network interfaces, port 7777</td>
+</tr>
+<tr>
+<td><code>--srepl=0.0.0.0</code></td>
+<td>Bind to all interfaces, random port</td>
+</tr>
+<tr>
+<td><code>--srepl=.srepl-port</code></td>
+<td>Random port, write port number to file</td>
+</tr>
+</tbody>
+</table>
+<p>The value heuristic is the same as <code>--nrepl</code>:
+all digits = port number,
+contains <code>:</code> with trailing digits = host:port,
+valid IP address = host with random port,
+anything else = port file path.</p>
+<p>The server prints its address on startup:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Socket REPL started on port 7777 on host localhost - localhost:7777
+</span></code></pre></div>
+<p>Press Ctrl+C to shut down the server.
+If a port file was specified, it is removed on shutdown.</p>
+<h3 id="connecting">Connecting<a class="headerlink" href="#connecting" title="Permanent link">&para;</a></h3>
+<p>Interactive session with readline (via <code>rlwrap</code>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>rlwrap nc localhost 7777
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>user=&gt; (+ 1 2)
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>3
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>user=&gt; (defn greet [name]
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>  ..    (str &quot;Hello, &quot; name &quot;!&quot;))
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>#&#39;user/greet
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>user=&gt; (greet &quot;world&quot;)
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>&quot;Hello, world!&quot;
+</span></code></pre></div>
+<p>Piped input:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>echo &#39;(+ 1 2)&#39; | nc -q 1 localhost 7777
+</span></code></pre></div>
+<h3 id="multiline-input">Multiline Input<a class="headerlink" href="#multiline-input" title="Permanent link">&para;</a></h3>
+<p>The socket REPL detects incomplete expressions (unclosed brackets
+or strings) and shows a continuation prompt:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>user=&gt; (defn f [x]
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>  ..    (+ x 1))
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>#&#39;user/f
+</span></code></pre></div>
+<h3 id="namespace-tracking">Namespace Tracking<a class="headerlink" href="#namespace-tracking" title="Permanent link">&para;</a></h3>
+<p>Each connection starts in the <code>user</code> namespace.
+Switching namespaces updates the prompt:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>user=&gt; (ns my-app)
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>nil
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>my-app=&gt;
+</span></code></pre></div>
+<p>Each connection has its own namespace state.</p>
+<h3 id="editor-integration_1">Editor Integration<a class="headerlink" href="#editor-integration_1" title="Permanent link">&para;</a></h3>
+<p><strong>Conjure (Neovim):</strong>
+Run <code>gloat --srepl=7777</code> in a terminal.
+Configure Conjure to connect to the socket REPL.</p>
+<p><strong>inf-clojure (Emacs):</strong>
+Run <code>gloat --srepl=7777</code> in a terminal, then connect with
+<code>M-x inf-clojure-connect</code>.</p>
+<h3 id="nrepl-vs-socket-repl">nREPL vs Socket REPL<a class="headerlink" href="#nrepl-vs-socket-repl" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>nREPL</th>
+<th>Socket REPL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Protocol</td>
+<td>Bencode (structured)</td>
+<td>Plain text</td>
+</tr>
+<tr>
+<td>Clients</td>
+<td>Calva, CIDER</td>
+<td>nc, Conjure, inf-clojure</td>
+</tr>
+<tr>
+<td>Features</td>
+<td>Eval, completions, docs, interrupt</td>
+<td>Eval only</td>
+</tr>
+<tr>
+<td>Use case</td>
+<td>IDE integration</td>
+<td>Lightweight debugging, scripting</td>
+</tr>
+</tbody>
+</table>
+<h2 id="repl-client-mode">REPL Client Mode<a class="headerlink" href="#repl-client-mode" title="Permanent link">&para;</a></h2>
+<p>Connect a readline-enabled REPL to a running nREPL server with
+<code>gloat --repl=PORT</code>.
+This gives you the full interactive REPL experience (multiline editing,
+tab completion, history) while evaluating code on the remote server.</p>
+<h3 id="-repl-forms"><code>--repl</code> Forms<a class="headerlink" href="#-repl-forms" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--repl</code></td>
+<td>Start local interactive REPL</td>
+</tr>
+<tr>
+<td><code>--repl=7888</code></td>
+<td>Connect to nREPL at localhost:7888</td>
+</tr>
+<tr>
+<td><code>--repl=host:7888</code></td>
+<td>Connect to nREPL at host:7888</td>
+</tr>
+<tr>
+<td><code>--repl=.nrepl-port</code></td>
+<td>Read port from file, connect</td>
+</tr>
+<tr>
+<td><code>--repl=+bb</code></td>
+<td>Start Babashka nREPL, connect</td>
+</tr>
+<tr>
+<td><code>--repl=+lein</code></td>
+<td>Start Leiningen nREPL, connect</td>
+</tr>
+<tr>
+<td><code>--repl=+clj</code></td>
+<td>Start Clojure CLI nREPL, connect</td>
+</tr>
+<tr>
+<td><code>--repl=+let-go</code></td>
+<td>Start let-go nREPL, connect</td>
+</tr>
+<tr>
+<td><code>--repl=dir/</code></td>
+<td>Use <code>dir</code> as build directory (trailing slash)</td>
+</tr>
+<tr>
+<td><code>--repl=dir</code></td>
+<td>Existing directory = build dir; existing file = port file</td>
+</tr>
+</tbody>
+</table>
+<p>The value heuristic:
+1. All digits = port number (connect to nREPL)
+2. Contains <code>:</code> with trailing digits = host:port (connect to nREPL)
+3. Starts with <code>+</code> = tool name (start tool's nREPL, connect)
+4. Existing file = port file (read port, connect)
+5. Ends with <code>/</code> = build directory (create if needed)
+6. Existing directory = build directory
+7. Does not exist = error</p>
+<h3 id="external-tool-repl">External Tool REPL<a class="headerlink" href="#external-tool-repl" title="Permanent link">&para;</a></h3>
+<p>The <code>+tool</code> forms start an external Clojure tool's nREPL server and
+connect Gloat's readline REPL to it.
+This gives you Gloat's REPL features (syntax highlighting, rainbow
+brackets, ghost text, tab completion, vi/emacs modes) while evaluating
+code in the external tool's runtime.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>gloat --repl=+bb      # Babashka
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>gloat --repl=+lein    # Leiningen (Clojure + project deps)
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>gloat --repl=+clj     # Clojure CLI
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>gloat --repl=+let-go  # let-go (Go-based Clojure)
+</span></code></pre></div>
+<p>Tools are auto-installed if not already present.
+The external server is stopped automatically when the REPL exits.</p>
+<h3 id="piped-input">Piped Input<a class="headerlink" href="#piped-input" title="Permanent link">&para;</a></h3>
+<p>When stdin is not a terminal, the client evaluates the input and exits
+without starting an interactive REPL:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>gloat --repl=7888 &lt;&lt;&lt;&#39;(+ 1 2)&#39;
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a># prints: 3
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>gloat --repl=7888 &lt; script.clj
+</span></code></pre></div>
+<p>This is useful for scripting against a running server.</p>
+<h3 id="workflow-example">Workflow Example<a class="headerlink" href="#workflow-example" title="Permanent link">&para;</a></h3>
+<p>Terminal 1 -- start the server:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>gloat --nrepl=7888
+</span></code></pre></div></p>
+<p>Terminal 2 -- connect the CLI REPL:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>gloat --repl=7888
+</span></code></pre></div></p>
+<p>Both terminals share the same evaluation state.
+An editor (Calva, CIDER) can connect to the same server simultaneously.</p>
+<h2 id="embedded-servers">Embedded Servers<a class="headerlink" href="#embedded-servers" title="Permanent link">&para;</a></h2>
+<p>Every <code>gloat --repl</code> session automatically starts an embedded nREPL
+server and an embedded socket REPL server, both on random ports.
+This means editors can connect to your REPL session without any
+extra setup.</p>
+<p>The server URLs are shown in the startup banner:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a> Glojure: v0.6.4
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>      Go: 1.24.0 linux/amd64
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>   nREPL: nrepl://localhost:38291
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>   sREPL: localhost:35149
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    Help: C-h or :repl/help
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>    Exit: C-d or :repl/exit
+</span></code></pre></div>
+<p>Use <code>:repl/server</code> to display the server URLs at any time.
+The URLs also appear in <code>C-h</code> help under Current Settings.</p>
+<p>The embedded servers do not write port files.
+If you need a port file, use <code>gloat --nrepl=.nrepl-port</code> or
+<code>gloat --srepl=.srepl-port</code> instead.</p>
+<p>When you exit the REPL, both embedded servers shut down
+automatically.</p>
+<h2 id="repl-build-directory">REPL Build Directory<a class="headerlink" href="#repl-build-directory" title="Permanent link">&para;</a></h2>
+<p>When launched with Go dependencies, the REPL needs a Go module
+directory to bootstrap dependencies and generate import glue code.
+Without a deps file or explicit build directory, <code>gloat --repl</code> runs
+<code>glj</code> in the current directory and creates no build files.</p>
+<p>When a build directory is needed, it is resolved in this priority order:</p>
+<ol>
+<li><code>gloat --repl=dir/</code> -- explicit directory (trailing slash creates it
+   if missing; without the slash the directory must already exist)</li>
+<li><code>GLOAT_REPL=dir</code> -- environment variable</li>
+<li><code>./gljrepl/</code> -- auto-selected when <code>./gljdeps.edn</code> is present in the
+   current directory; the subdirectory keeps generated <code>go.mod</code>,
+   <code>go.sum</code>, and Go glue out of your project root</li>
+<li>Shared cache (e.g. <code>~/.cache/gloat/.../repl-VERSION/</code>) -- fallback
+   for explicit deps files that are not tied to the current directory</li>
+</ol>
+<p>The build directory is created automatically if it does not exist.
+If <code>./gljdeps.edn</code> exists, its contents are copied into the build
+directory as <code>gljdeps.edn</code>; an explicit <code>--deps=FILE</code> does the same.</p>
+<h2 id="loading-files">Loading Files<a class="headerlink" href="#loading-files" title="Permanent link">&para;</a></h2>
+<p>Use <code>load-file</code> for an exact source filename:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>(load-file &quot;hello.clj&quot;)
+</span></code></pre></div>
+<p><code>load</code> resolves resources from Glojure's load path. The Glojure
+runtime used by Gloat accepts both resource base names and source
+filenames:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>(load &quot;hello&quot;)
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>(load &quot;hello.clj&quot;)
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>(load &quot;/hello&quot;)
+</span></code></pre></div>
+<p>A leading slash resolves from the load-path root. For piped
+<code>gloat --repl</code> input, Gloat starts evaluation in the <code>user</code> namespace
+so relative load paths match the interactive REPL.</p>
+<h2 id="external-go-dependencies">External Go Dependencies<a class="headerlink" href="#external-go-dependencies" title="Permanent link">&para;</a></h2>
+<p>The Glojure standard library and the Go standard library are available
+to every REPL session out of the box.
+Third-party Go packages -- anything you would normally <code>go get</code> --
+become available through a <code>gljdeps.edn</code> file.</p>
+<p>A minimal <code>gljdeps.edn</code> declares the packages you want and the versions
+to pin:</p>
+<div class="language-clojure highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="p">{</span><span class="ss">:deps</span><span class="w"> </span><span class="p">{</span><span class="nv">github.com</span><span class="ss">:yaml:go-yaml</span><span class="w"> </span><span class="p">{</span><span class="ss">:mvn/version</span><span class="w"> </span><span class="s">&quot;v3.0.1&quot;</span><span class="p">}}}</span>
+</span></code></pre></div>
+<p>Each key is the Go import path written as a Glojure symbol, with <code>/</code>
+rewritten as <code>:</code>.
+The deps loader rewrites <code>:</code> back to <code>/</code> before handing the path to
+<code>go get</code>, so the example above resolves to the module
+<code>github.com/yaml/go-yaml</code>.
+Using the colon form keeps the deps key consistent with how the
+package is named at call sites (see <a href="../gloat-go-interop/">gloat-go-interop</a>).</p>
+<p>Multiple packages and pinned versions go in the same map:</p>
+<div class="language-clojure highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="p">{</span><span class="ss">:deps</span><span class="w"> </span><span class="p">{</span><span class="nv">github.com</span><span class="ss">:yaml:go-yaml</span><span class="w">  </span><span class="p">{</span><span class="ss">:mvn/version</span><span class="w"> </span><span class="s">&quot;v3.0.1&quot;</span><span class="p">}</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">        </span><span class="nv">github.com</span><span class="ss">:google:uuid</span><span class="w">   </span><span class="p">{</span><span class="ss">:mvn/version</span><span class="w"> </span><span class="s">&quot;v1.6.0&quot;</span><span class="p">}}}</span>
+</span></code></pre></div>
+<h3 id="loading-deps">Loading deps<a class="headerlink" href="#loading-deps" title="Permanent link">&para;</a></h3>
+<p>There are two ways to point the REPL at a deps file.</p>
+<p><strong>File on disk.</strong>
+If <code>./gljdeps.edn</code> exists, <code>gloat --repl</code> picks it up automatically.
+Pass <code>--deps=path/to/file.edn</code> to use a different name or location.</p>
+<p><strong>Process substitution (one-shot).</strong>
+For ad-hoc experiments, feed the deps inline with shell process
+substitution:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>gloat<span class="w"> </span>--repl<span class="w"> </span>--deps<span class="o">=</span>&lt;<span class="o">(</span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;{:deps {github.com:yaml:go-yaml {:mvn/version &quot;v3.0.1&quot;}}}&#39;</span><span class="o">)</span>
+</span></code></pre></div>
+<p>On first launch, gloat fetches the declared packages with <code>go get</code>,
+generates the Go import glue, and re-execs the REPL with the new
+packages linked in.
+Subsequent launches with the same deps skip the fetch.
+First-run latency is a few seconds; reopens are instantaneous.</p>
+<h3 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">&para;</a></h3>
+<p>Launch a REPL with <code>github.com/yaml/go-yaml</code> available:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>$ gloat --repl --deps=&lt;(echo &#39;{:deps {github.com:yaml:go-yaml {:mvn/version &quot;v3.0.1&quot;}}}&#39;)
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>🐐 Gloat: 0.1.40 🐐
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a> Glojure: v0.6.4
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>      Go: 1.24.0 linux/amd64
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>   nREPL: nrepl://localhost:38291
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>   sREPL: localhost:35149
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>    Help: C-h or :repl/help
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>    Exit: C-d or :repl/exit
+</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a>
+</span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a>user=&gt; (def m (go/make (go/map-of go/string go/string)))
+</span><span id="__span-21-11"><a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>#&#39;user/m
+</span><span id="__span-21-12"><a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a>user=&gt; (.SetMapIndex (reflect.ValueOf m)
+</span><span id="__span-21-13"><a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a>                     (reflect.ValueOf &quot;greeting&quot;) (reflect.ValueOf &quot;hello&quot;))
+</span><span id="__span-21-14"><a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a>nil
+</span><span id="__span-21-15"><a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a>user=&gt; (let [[bs err] (github.com:yaml:go-yaml.Marshal m)]
+</span><span id="__span-21-16"><a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a>         (when err (throw err))
+</span><span id="__span-21-17"><a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a>         (print (go/string bs)))
+</span><span id="__span-21-18"><a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a>greeting: hello
+</span><span id="__span-21-19"><a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a>nil
+</span></code></pre></div>
+<p>A Glojure map literal does not yet auto-convert to a Go <code>map[K]V</code>, so
+the example builds the map with <code>go/make</code> and writes entries through
+<code>reflect.ValueOf</code> before passing it to <code>Marshal</code>.
+<code>Marshal</code> returns <code>([]byte, error)</code>, which destructures as a vector;
+<code>(go/string bs)</code> casts the bytes back to a Glojure string for display.</p>
+<h3 id="cross-reference">Cross-reference<a class="headerlink" href="#cross-reference" title="Permanent link">&para;</a></h3>
+<p>For the interop forms used above (<code>pkg.Func</code>, <code>.Method</code>, <code>(new ...)</code>,
+destructuring multi-return), see
+<a href="../gloat-go-interop/">gloat-go-interop</a>.</p>
+<h2 id="inline-documentation">Inline Documentation<a class="headerlink" href="#inline-documentation" title="Permanent link">&para;</a></h2>
+<p>Press <strong>Ctrl+D</strong> (vi mode) or <strong>Ctrl+X Ctrl+D</strong> (emacs mode) with the
+cursor on or inside a symbol to display its documentation below the
+input line.
+The hint shows the ClojureDocs URL (for <code>clojure.*</code> symbols), the
+fully qualified name, arglists, and docstring.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>user=&gt; (zero? 42)
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>https://clojuredocs.org/clojure.core/zero_q
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>clojure.core/zero?
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>([num])
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>  Returns true if num is zero, else false
+</span></code></pre></div>
+<p>The documentation appears as a transient hint that disappears on the
+next keypress.
+Press <strong>Escape</strong> to dismiss the hint without leaving insert mode.
+The cursor can be anywhere on the symbol (not just at the end).</p>
+<p>If the cursor is on a number, bracket, or whitespace, nothing is shown.
+On an empty prompt, Ctrl+D exits the REPL as usual.</p>
+<h2 id="inline-help">Inline Help<a class="headerlink" href="#inline-help" title="Permanent link">&para;</a></h2>
+<p>Press <strong>Ctrl+H</strong> (vi mode) or <strong>Ctrl+X Ctrl+H</strong> (emacs mode) to
+display a quick-reference card showing key bindings and REPL commands
+below the input line.
+The help content adapts to the current editing mode, showing the
+appropriate key bindings.
+Like inline documentation, the help hint is transient and disappears
+on the next keypress.
+Press <strong>Escape</strong> to dismiss it without leaving insert mode.</p>
+<h2 id="format-and-print">Format and Print<a class="headerlink" href="#format-and-print" title="Permanent link">&para;</a></h2>
+<p>Press <strong>Ctrl+P</strong> (vi mode) or <strong>Ctrl+X Ctrl+P</strong> (emacs mode) to
+format the current form, print it as plain text, copy it to the
+system clipboard, save it to history, and start a fresh prompt.</p>
+<p>The form is piped through an external format command before printing
+and copying.
+The default format command is <code>cat</code> (no formatting).
+To use a Clojure formatter like <code>zprint</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>:repl/fmt zprint
+</span></code></pre></div>
+<p>The format command can also be set via the <code>GLJ_REPL_FORMATTER</code>
+environment variable.
+The command is run with <code>sh -c</code>, so arguments are supported (e.g.
+<code>:repl/fmt zprint '{:width 40}'</code>).</p>
+<p>Type <code>:repl/fmt</code> with no argument to show the current format command.</p>
+<h2 id="share">Share<a class="headerlink" href="#share" title="Permanent link">&para;</a></h2>
+<p>Press <strong>Ctrl+S</strong> to print a browser REPL share URL and copy the
+shared forms to the system clipboard as plain text.
+When browsing history, the selected history form and every newer form
+are shared.
+At the end of history, the current input is shared if non-empty;
+otherwise the last history form is shared.</p>
+<p>Paste a browser REPL share URL into the CLI prompt and press Enter to
+load it.
+The CLI evaluates every shared form except the last, then places the
+last form at a fresh prompt ready to run.</p>
+<h2 id="repl-commands">REPL Commands<a class="headerlink" href="#repl-commands" title="Permanent link">&para;</a></h2>
+<p>The following colon-commands can be typed at the prompt.
+They support tab completion -- type <code>:repl/</code> and press Tab to see all
+available commands.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>:repl/help</code></td>
+<td>Print key bindings and commands (mode-aware)</td>
+</tr>
+<tr>
+<td><code>:repl/vi</code></td>
+<td>Switch to vi editing mode</td>
+</tr>
+<tr>
+<td><code>:repl/emacs</code></td>
+<td>Switch to emacs editing mode</td>
+</tr>
+<tr>
+<td><code>:repl/fmt cmd</code></td>
+<td>Set the format command (used by Ctrl+P)</td>
+</tr>
+<tr>
+<td><code>:repl/fmt</code></td>
+<td>Show the current format command</td>
+</tr>
+<tr>
+<td><code>:repl/server</code></td>
+<td>Show the nREPL server URL</td>
+</tr>
+<tr>
+<td><code>:repl/exit</code></td>
+<td>Exit the REPL</td>
+</tr>
+</tbody>
+</table>
+<h2 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GLJ_REPL_EDITOR</code></td>
+<td>Set editing mode (<code>vi</code> or <code>emacs</code>). Overrides <code>~/.inputrc</code>.</td>
+</tr>
+<tr>
+<td><code>GLJ_REPL_FORMATTER</code></td>
+<td>Format command for Ctrl+P (default: <code>cat</code>).</td>
+</tr>
+<tr>
+<td><code>GLJ_REPL_NO_BANNER</code></td>
+<td>Suppress the startup banner when set.</td>
+</tr>
+<tr>
+<td><code>GLOAT_GLJDEPS</code></td>
+<td>Path to a <code>gljdeps.edn</code> file (alternative to <code>--deps=FILE</code>).</td>
+</tr>
+<tr>
+<td><code>GLOAT_REPL</code></td>
+<td>Set the REPL build directory.</td>
+</tr>
+<tr>
+<td><code>GLOAT_REPL_HISTORY_BB</code></td>
+<td>Babashka history file for <code>--repl=+bb</code> (JLine format).</td>
+</tr>
+<tr>
+<td><code>GLOAT_REPL_HISTORY_LEIN</code></td>
+<td>Leiningen history file for <code>--repl=+lein</code> (JLine format).</td>
+</tr>
+<tr>
+<td><code>GLOAT_REPL_HISTORY_CLJ</code></td>
+<td>Clojure CLI history file for <code>--repl=+clj</code> (JLine format).</td>
+</tr>
+<tr>
+<td><code>GLOAT_REPL_HISTORY_LET_GO</code></td>
+<td>let-go history file for <code>--repl=+let-go</code> (JLine format).</td>
+</tr>
+<tr>
+<td><code>GLOAT_REPL_HISTORY_LG</code></td>
+<td>let-go history file for <code>--repl=+lg</code> (JLine format).</td>
+</tr>
+<tr>
+<td><code>INPUTRC</code></td>
+<td>Path to inputrc config file (default: <code>~/.inputrc</code>).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="feature-comparison">Feature Comparison<a class="headerlink" href="#feature-comparison" title="Permanent link">&para;</a></h2>
+<p>How the Gloat/Glojure REPL compares to other Clojure REPLs.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>gloat --repl</th>
+<th>bb (1.12+)</th>
+<th>lein repl</th>
+<th>clj</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Syntax highlighting</td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+<tr>
+<td>Rainbow brackets</td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+<tr>
+<td>Format and clipboard (Ctrl+P)</td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+<tr>
+<td>Share URL (Ctrl+S)</td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+<tr>
+<td>Multiline editing</td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+<tr>
+<td>Tab completion (syms &amp; keys)</td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+<tr>
+<td>Smart up/down arrow navigation</td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+<tr>
+<td>Smart indent/dedent (Tab/Backspace)</td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+<tr>
+<td>Auto-indent</td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+<tr>
+<td>Auto-suggest (ghost text)</td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+<tr>
+<td>Instant docs at cursor (Ctrl+D)</td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+<tr>
+<td>Completion descriptions</td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+<tr>
+<td>Persistent history</td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+<tr>
+<td>Reverse search (Ctrl+R)</td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+</tr>
+<tr>
+<td>Suspend/resume (Ctrl+Z)</td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+</tr>
+<tr>
+<td>Interrupt evaluation (Ctrl+C)</td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+</tr>
+<tr>
+<td>Vi editing mode</td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+<tr>
+<td>Emacs editing mode</td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+<tr>
+<td>Runtime mode switching</td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong></p>
+<ul>
+<li><strong>clj</strong> refers to the bare <code>clojure</code> CLI REPL without third-party
+  tools.
+  With rebel-readline, clj gains completion, multiline editing, and
+  syntax highlighting.</li>
+<li><strong>bb</strong> refers to Babashka v1.12+ which uses JLine3 for its console
+  REPL.</li>
+<li><strong>lein repl</strong> uses REPL-y (JLine-based) for its console interface.</li>
+</ul>
+<h2 id="web-repl">Web REPL<a class="headerlink" href="#web-repl" title="Permanent link">&para;</a></h2>
+<p>The Gloat website includes a browser-based REPL powered by Glojure
+compiled to WebAssembly.
+It provides a subset of the CLI REPL's features and requires no
+installation.</p>
+<h3 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h3>
+<p>The web REPL loads a Glojure Wasm binary (<code>glj.wasm</code>) and runs it
+inside the browser.
+User input is fed to the Wasm runtime through a hooked <code>stdin</code>, and
+evaluation output is captured from <code>stdout</code>/<code>stderr</code> and displayed
+in the terminal pane.</p>
+<p>The REPL initializes automatically when the page loads.
+A loading spinner is shown while the Wasm binary downloads and
+initializes.</p>
+<h3 id="supported-features">Supported Features<a class="headerlink" href="#supported-features" title="Permanent link">&para;</a></h3>
+<p>The web REPL supports the following features:</p>
+<ul>
+<li><strong>Syntax highlighting</strong> -- the same token types as the CLI REPL
+  (strings, keywords, comments, numbers, booleans, special forms,
+  core functions) are highlighted as you type.</li>
+<li><strong>Rainbow brackets</strong> -- brackets are colored by nesting depth
+  using the same Calva-style color scheme as the CLI REPL.
+  Mismatched and unmatched brackets are shown with white text on a
+  red background.</li>
+<li><strong>Multiline input</strong> -- incomplete expressions (unclosed brackets
+  or strings) automatically continue on the next line with
+  indentation matching the nesting depth.</li>
+<li><strong>History</strong> -- Up/Down arrows (or Ctrl+P/Ctrl+N) navigate through
+  previous inputs within the session.</li>
+<li><strong>Smart indentation</strong> -- Tab inserts two spaces.
+  Backspace deletes two spaces at once when preceded by two spaces,
+  matching the CLI's indent-aware behavior.</li>
+<li><strong>Editing shortcuts</strong> -- Ctrl+A (beginning of line), Ctrl+E (end
+  of line), Ctrl+U (kill before cursor), Ctrl+K (kill after cursor),
+  Ctrl+L (clear screen).</li>
+<li><strong>Paste support</strong> -- pasted text is inserted as plain text with
+  carriage returns normalized and trailing newlines stripped.</li>
+</ul>
+<h3 id="toolbar">Toolbar<a class="headerlink" href="#toolbar" title="Permanent link">&para;</a></h3>
+<p>The toolbar above the terminal provides quick-access buttons:</p>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Share</td>
+<td>Copy a shareable URL (with input state) to clipboard</td>
+</tr>
+<tr>
+<td>Copy</td>
+<td>Copy the current form (or last history entry) to clipboard</td>
+</tr>
+<tr>
+<td>Up/Down</td>
+<td>Navigate history</td>
+</tr>
+<tr>
+<td>Kill left/right</td>
+<td>Delete before/after cursor</td>
+</tr>
+<tr>
+<td>Clear</td>
+<td>Clear the terminal output</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sharing">Sharing<a class="headerlink" href="#sharing" title="Permanent link">&para;</a></h3>
+<p>The web REPL supports sharing expressions via URL fragments.
+When you type or evaluate expressions, the URL hash is updated with
+a base64-encoded snapshot of your history.
+Sharing this URL loads the REPL with the same expressions
+pre-evaluated, and the last expression placed in the input field
+ready to run.
+If the history cursor is at the end and the input is empty, sharing
+uses the last history form.</p>
+<h3 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">&para;</a></h3>
+<p>The web REPL does not support:</p>
+<ul>
+<li><strong>Tab completion</strong> -- there is no completion menu; Tab inserts
+  spaces.</li>
+<li><strong>Ghost text</strong> (autosuggestions).</li>
+<li><strong>Vi/Emacs editing modes</strong> -- only basic editing is available.</li>
+<li><strong>Persistent history</strong> -- history is lost when the page is
+  reloaded.</li>
+<li><strong>Ctrl+D documentation lookup</strong>.</li>
+<li><strong>nREPL server</strong> -- the Wasm runtime runs entirely in the browser.</li>
+<li><strong>External Go dependencies</strong> -- only the built-in standard library
+  and clojure.core are available.</li>
+<li><strong>Suspend/resume</strong> (Ctrl+Z).</li>
+</ul>
+<h3 id="cli-vs-web-repl-feature-matrix">CLI vs Web REPL Feature Matrix<a class="headerlink" href="#cli-vs-web-repl-feature-matrix" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>CLI</th>
+<th>Web</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Syntax highlighting</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Rainbow brackets</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Multiline editing</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Smart indent/dedent</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>History navigation</td>
+<td>Yes</td>
+<td>Yes (session only)</td>
+</tr>
+<tr>
+<td>Paste support</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Shareable URLs</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Tab completion</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Ghost text</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Vi/Emacs modes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Persistent history</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Inline docs (Ctrl+D)</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>nREPL server</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>External Go deps</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
+<p><strong>gloat</strong>(1)</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/gloathub/gloat" target="_blank" rel="noopener" title="Gloat on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/external-links.js"></script>
+      
+        <script src="../../javascripts/repl.js"></script>
+      
+    
+  </body>
+</html>

@@ -19,7 +19,8 @@ has "$got" "usage:" "'gloat -h' shows usage"
 
 try "$GLOAT_BIN --version"
 is "$rc" 0 "'gloat --version' exits 0"
-has "$got" "version" "'gloat --version' shows version"
+has "$got" "gloat v" "'gloat --version' shows gloat version"
+has "$got" "glj   v" "'gloat --version' shows glj version"
 
 # Test stdout modes
 cd "$FIXTURES_DIR" || bail-out "Cannot cd to fixtures"

@@ -319,8 +319,8 @@ show-version() {
   local glojure_version
   glojure_version=$(awk '$1 == "GLOJURE-VERSION" {print $3; exit}' \
     "$root/common/common.mk")
-  echo "gloat version $GLOAT_VERSION"
-  [[ $glojure_version ]] && echo "glojure version $glojure_version"
+  echo "gloat v$GLOAT_VERSION"
+  [[ $glojure_version ]] && echo "glj   v$glojure_version"
   print-rc-admonition maybe
   exit
 }
@@ -428,7 +428,7 @@ do-repl() {
   fi
 
   prepare-repl-env "$repl_val"
-  echo "🐐 Gloat: $GLOAT_VERSION 🐐" >&2
+  echo "🐐 Gloat: v$GLOAT_VERSION 🐐" >&2
 
   # Piped glj input is evaluated by gljmain's non-interactive path, which
   # starts in clojure.core. Match the interactive REPL's user namespace.

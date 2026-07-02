@@ -557,10 +557,31 @@ do-which() {
     if [[ $path ]]; then
       echo "$path"
     else
-      rc=1
+      path=$(install-managed-command "$cmd")
+      if [[ $path ]]; then
+        echo "$path"
+      else
+        rc=1
+      fi
     fi
   done
   exit "$rc"
+}
+
+install-managed-command() {
+  local cmd=$1 target=path-$1 out path
+  make --quiet --no-print-directory -C "$root" -n "$target" \
+    >/dev/null 2>&1 || return 0
+
+  printf "> Installing '%s'\n" "$cmd" >&2
+  if out=$(make --quiet --no-print-directory -C "$root" "$target" 2>&1); then
+    path=$(printf '%s\n' "$out" | sed '/^$/d' | tail -1)
+    [[ -x $path ]] || return 0
+    path-prepend "$(dirname "$path")"
+    echo "$path"
+    return 0
+  fi
+  return 0
 }
 
 install-deps() {

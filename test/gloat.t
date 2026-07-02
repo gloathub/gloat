@@ -31,13 +31,18 @@ is "$rc" 0 "'gloat --which=glj,go' exits 0"
 has "$got" "/glj" "'gloat --which=glj,go' prints glj path"
 has "$got" "/go" "'gloat --which=glj,go' prints go path"
 
+try "$GLOAT_BIN --which=wasmtime"
+is "$rc" 0 "'gloat --which=wasmtime' exits 0"
+has "$got" "/wasmtime" "'gloat --which=wasmtime' prints managed wasmtime path"
+
 try "$GLOAT_BIN --which=definitely-not-a-gloat-command"
 is "$rc" 1 "'gloat --which=missing' exits 1"
 is "$got" "" "'gloat --which=missing' is quiet"
 
-try "$GLOAT_BIN --which=ls,definitely-not-a-gloat-command,bash"
+try "$GLOAT_BIN --which=ls,wasmtime,definitely-not-a-gloat-command,bash"
 is "$rc" 1 "'gloat --which' exits 1 if any command is missing"
 has "$got" "/ls" "'gloat --which' prints paths before missing command"
+has "$got" "/wasmtime" "'gloat --which' prints managed paths"
 has "$got" "/bash" "'gloat --which' continues after missing command"
 
 try "$GLOAT_BIN --which="

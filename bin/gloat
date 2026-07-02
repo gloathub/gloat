@@ -432,7 +432,6 @@ do-repl() {
   fi
 
   prepare-repl-env "$repl_val"
-  echo "🐐 Gloat: v$GLOAT_VERSION 🐐" >&2
 
   # Piped glj input is evaluated by gljmain's non-interactive path, which
   # starts in clojure.core. Match the interactive REPL's user namespace.
@@ -447,6 +446,12 @@ EOF
       cat
     } | glj
     exit $?
+  fi
+
+  if [[ $opt_quiet ]]; then
+    export GLJ_REPL_NO_BANNER=all
+  else
+    echo "🐐 Gloat: v$GLOAT_VERSION 🐐" >&2
   fi
 
   # Run glj in a restart loop so crashes (e.g. stack overflow) don't
@@ -510,6 +515,7 @@ setup() {
   opt_shellall=
   opt_which=
   opt_which_set=
+  opt_quiet=
   run_args=()
   proc_args=()
   past_dashdash=
@@ -540,6 +546,7 @@ setup() {
         --which=*)   opt_which_set=true
                      opt_which=${arg#--which=}
                      proc_args+=("$arg")       ;;
+        -q|--quiet)  opt_quiet=true;           proc_args+=("$arg") ;;
         *)           proc_args+=("$arg")       ;;
       esac
     fi

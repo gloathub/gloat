@@ -61,6 +61,14 @@ is "$rc" 0 "'gloat --shell' exits 0"
 ok "$([[ $got == "$PROJECT_ROOT/.cache/"* ]])" \
   "'gloat --shell' promotes gloat cache paths"
 
+try "$GLOAT_BIN --repl <<<'(println \"hello\")'"
+is "$rc" 0 "'gloat --repl' exits 0 with piped input"
+is "$got" "hello" "'gloat --repl' suppresses banner with piped input"
+
+try "$GLOAT_BIN --repl --quiet <<<'(println \"hello\")'"
+is "$rc" 0 "'gloat --repl --quiet' exits 0 with piped input"
+is "$got" "hello" "'gloat --repl --quiet' suppresses banner with piped input"
+
 # Test stdout modes
 cd "$FIXTURES_DIR" || bail-out "Cannot cd to fixtures"
 

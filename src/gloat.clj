@@ -40,6 +40,15 @@
    "GOMODCACHE" (str GLOAT-ROOT "/.cache/local/go/pkg/mod")
    "GOCACHE"    (str GLOAT-ROOT "/.cache/local/cache/go-build")})
 
+(defn prepend-glj-classpath [env path]
+  (let [existing (or (get env "GLJ_CLASSPATH")
+                     (System/getenv "GLJ_CLASSPATH"))
+        sep (System/getProperty "path.separator")]
+    (assoc env "GLJ_CLASSPATH"
+           (if (str/blank? existing)
+             path
+             (str path sep existing)))))
+
 ;;------------------------------------------------------------------------------
 ;; Shell Completion Scripts
 ;;------------------------------------------------------------------------------
@@ -768,7 +777,7 @@ Less common:
     (let [compile-cmd (str "(compile (quote " namespace "))")
           opts {:in compile-cmd
                 :dir output-dir
-                :extra-env go-env}
+                :extra-env (prepend-glj-classpath go-env output-dir)}
           opts (if (:quiet *opts*)
                  (assoc opts :out :string :err :string)
                  opts)]
@@ -1286,7 +1295,8 @@ Less common:
                 compile-env (cond-> go-env
                               (seq extra-deps)
                               (assoc "GOARCH" host-goarch
-                                     "GOFLAGS" "-mod=mod"))]
+                                     "GOFLAGS" "-mod=mod"))
+                compile-env (prepend-glj-classpath compile-env shared-tmpdir)]
             ;; When deps are present the workspace go.mod we wrote needs
             ;; a tidy pass so the user's deps appear before glj compiles.
             (when (seq extra-deps)

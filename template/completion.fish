@@ -13,6 +13,7 @@ complete -c gloat -s X -l ext -d 'Enable processing extension' -x -a 'brotli dep
 complete -c gloat -l ns -d 'Override namespace' -x
 complete -c gloat -l module -d 'Go module name' -x
 complete -c gloat -l complete -d 'Generate shell completion' -x -a 'bash zsh fish'
+complete -c gloat -l which -d 'Print path to command that gloat uses: go, glj, etc' -x
 
 complete -c gloat -l shell -d 'Start a sub-shell with gloat tools on PATH'
 complete -c gloat -l shell-all -d 'Like --shell but install all dev tools'
@@ -22,7 +23,6 @@ complete -c gloat -l srepl -d 'Start socket REPL server (see man gloat-repl)' -x
 complete -c gloat -l deps -d 'Path to gljdeps.edn (for --repl/--nrepl/--srepl)' -r -F
 complete -c gloat -l reset -d 'Remove all cached dependencies'
 complete -c gloat -l upgrade -d 'Upgrade gloat (use --upgrade=v1.2.3 to pin a version)'
-complete -c gloat -l glj -d 'Print path to the associated glj binary'
 complete -c gloat -l glj-build -d 'Build the associated glj binary'
 
 complete -c gloat -s r -l run -d 'Compile and run'

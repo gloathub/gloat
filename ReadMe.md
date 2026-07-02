@@ -501,6 +501,7 @@ With `-Xserve,html`, the HTML is generated alongside the output.
 --shell          Start a sub-shell or run a command (-- cmd...)
 --shell-all      Like --shell but install all dev tools
 --complete ...   Generate shell completion script (bash, fish, zsh)
+--which ...      Print path to command that gloat uses: go, glj, etc
 
 -r, --run        Compile and run (pass program args after --)
 -f, --force      Overwrite existing output files
@@ -651,19 +652,21 @@ Subsequent runs in the same build directory skip the fetch if versions match.
 
 ## Advanced Configuration
 
-### Locating the glj Binary
+### Locating Commands
 
-`gloat --glj` prints the absolute path of the `glj` binary that gloat would
-use, and nothing else.
-It is intended for scripting:
+`gloat --which=CMD` prints the absolute path of a command after setting up
+Gloat's tool PATH. Use commas to resolve more than one command. It is intended
+for scripting:
 
 ```bash
-glj=$(gloat --glj)
+glj=$(gloat --which=glj)
 "$glj" --nrepl=.nrepl-port
+
+gloat --which=glj,go,ys
 ```
 
-If `glj` has not yet been installed, gloat will install it first; any install
-output is suppressed so the captured value is just the path.
+If Gloat-managed tools have not yet been installed, gloat will install them
+first; any install output is suppressed so the captured value is just the path.
 
 ### Resetting Dependencies
 

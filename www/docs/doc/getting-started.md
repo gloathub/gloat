@@ -249,6 +249,7 @@ Press Ctrl-D or type `exit` to return to your normal shell.
 --extensions     List available processing extensions
 --platforms      List available cross-compilation platforms
 --complete ...   Generate shell completion script (bash, zsh, fish)
+--which ...      Print path to command that gloat uses: go, glj, etc
 --shell          Start a sub-shell with gloat tools on PATH
 
 -r, --run        Compile and run (pass program args after --)

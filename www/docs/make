@@ -196,7 +196,7 @@ install-gloat: install
 # (i.e., the GLOJURE-VERSION pinned in that tag's common/common.mk).
 install-glj: install
 	@echo 'Locating paired glj for gloat $(VERSION)...'
-	@glj_path=$$('$(GLOAT-BIN)' --glj) && \
+	@glj_path=$$('$(GLOAT-BIN)' --which=glj) && \
 	  cp "$$glj_path" '$(BIN-DIR)/glj'
 	@echo ''
 	@echo '✓ glj (paired with $(VERSION)) installed to $(BIN-DIR)/glj'

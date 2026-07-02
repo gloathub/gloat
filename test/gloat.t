@@ -22,6 +22,35 @@ is "$rc" 0 "'gloat --version' exits 0"
 has "$got" "gloat v" "'gloat --version' shows gloat version"
 has "$got" "glj   v" "'gloat --version' shows glj version"
 
+try "$GLOAT_BIN --which=glj"
+is "$rc" 0 "'gloat --which=glj' exits 0"
+has "$got" "/glj" "'gloat --which=glj' prints glj path"
+
+try "$GLOAT_BIN --which=glj,go"
+is "$rc" 0 "'gloat --which=glj,go' exits 0"
+has "$got" "/glj" "'gloat --which=glj,go' prints glj path"
+has "$got" "/go" "'gloat --which=glj,go' prints go path"
+
+try "$GLOAT_BIN --which=definitely-not-a-gloat-command"
+is "$rc" 1 "'gloat --which=missing' exits 1"
+is "$got" "" "'gloat --which=missing' is quiet"
+
+try "$GLOAT_BIN --which=ls,definitely-not-a-gloat-command,bash"
+is "$rc" 1 "'gloat --which' exits 1 if any command is missing"
+has "$got" "/ls" "'gloat --which' prints paths before missing command"
+has "$got" "/bash" "'gloat --which' continues after missing command"
+
+try "$GLOAT_BIN --which="
+is "$rc" 1 "'gloat --which=' exits 1"
+has "$got" "requires a command name" "'gloat --which=' reports empty command"
+
+try "$GLOAT_BIN --which=glj,"
+is "$rc" 1 "'gloat --which=glj,' exits 1"
+has "$got" "empty command name" "'gloat --which=glj,' reports empty command"
+
+try "$GLOAT_BIN --glj"
+is "$rc" 129 "'gloat --glj' is no longer accepted"
+
 # Test stdout modes
 cd "$FIXTURES_DIR" || bail-out "Cannot cd to fixtures"
 

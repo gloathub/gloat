@@ -35,6 +35,7 @@ _gloat() {
         '--ns[Override namespace]:namespace:' \
         '--module[Go module name]:module:' \
         '--complete[Generate shell completion]:shell:->shells' \
+        '--which[Print path to command that gloat uses: go, glj, etc]:command:' \
         '(- *)--shell[Start a sub-shell with gloat tools on PATH]' \
         '(- *)--shell-all[Like --shell but install all dev tools]' \
         '--repl=[Start REPL client (see man gloat-repl)]::value:' \
@@ -43,7 +44,6 @@ _gloat() {
         '--deps=[Path to gljdeps.edn (for --repl/--nrepl/--srepl)]:deps file:_files -g "*.edn"' \
         '(- *)--reset[Remove all cached dependencies]' \
         '(- *)--upgrade[Upgrade gloat (use --upgrade=v1.2.3 to pin a version)]' \
-        '(- *)--glj[Print path to the associated glj binary]' \
         '(- *)--glj-build[Build the associated glj binary]' \
         '(-r --run)'{-r,--run}'[Compile and run]' \
         '(-f --force)'{-f,--force}'[Overwrite existing output]' \

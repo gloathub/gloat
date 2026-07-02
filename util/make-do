@@ -76,7 +76,8 @@ compile-glj() (
   cp -r ys/glj/* "$tmpdir/"
   cd "$tmpdir"
   ns=$(echo "$stem" | tr '/' '.')
-  echo "(compile (quote $ns))" | glj >/dev/null 2>&1 || true
+  echo "(compile (quote $ns))" |
+    GLJ_CLASSPATH="$tmpdir${GLJ_CLASSPATH:+:$GLJ_CLASSPATH}" glj >/dev/null
   cd - >/dev/null
   cp "$tmpdir/$stem/loader.go" "$target"
   rm -rf "$tmpdir"
@@ -90,7 +91,8 @@ compile-glj-patched() (
   cp -r ys/glj/* "$tmpdir/"
   cd "$tmpdir"
   ns=$(echo "yamlscript/util" | tr '/' '.')
-  echo "(compile (quote $ns))" | glj >/dev/null 2>&1 || true
+  echo "(compile (quote $ns))" |
+    GLJ_CLASSPATH="$tmpdir${GLJ_CLASSPATH:+:$GLJ_CLASSPATH}" glj >/dev/null
   cd - >/dev/null
   cp "$tmpdir/yamlscript/util/loader.go" "$target"
   rm -rf "$tmpdir"

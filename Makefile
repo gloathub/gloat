@@ -195,12 +195,12 @@ which-clj: $(CLOJURE)
 which-lg: $(LG)
 	@echo $<
 
-ys-pkg: $(YS-GO-FILES) $(GO)
+ys-pkg: $(YS-GO-FILES) $(GO) $(PERL)
 	@echo "Syncing ys/go/ to ys/pkg/"
 	@mkdir -p ys/pkg
 	rsync -a --delete --exclude='all/' --exclude='go.mod' --exclude='go.sum' ys/go/ ys/pkg/
 	@echo "Pinning glojure v$(GLOJURE-VERSION) in ys/pkg/go.mod"
-	@perl -i -pe \
+	@$(PERL) -i -pe \
 	  's{^require github\.com/(gloathub|glojurelang)/glojure .*}{require github.com/glojurelang/glojure v$(GLOJURE-VERSION)}' \
 	  ys/pkg/go.mod
 	@echo "Running go mod tidy in ys/pkg/"
@@ -211,7 +211,7 @@ tag-ys-pkg:
 	@echo "Tagging ys/pkg/v$(YS-PKG-VER)"
 	git tag -a ys/pkg/v$(YS-PKG-VER) -m "Release ys/pkg v$(YS-PKG-VER)"
 
-save-patch:
+save-patch: $(PERL)
 	make-do $@ $(YS-REPO-URL) "$(YS-GLOAT-ONLY)" $(YS-CLJ-FILES)
 
 diff:
@@ -300,7 +300,7 @@ python-local-server: $(PYTHON)
 annoucement:
 	@make-do $@ $(GLOJURE-VERSION)
 
-release: $(GH)
+release: $(GH) $(PERL)
 	@$(if $(filter command line,$(origin VERSION)),,\
 	  $(error VERSION is required on the command line))
 	@$(if $(filter command line,$(origin GLJ-VERSION)),,\
@@ -351,17 +351,17 @@ ys/go/%/loader.go: ys/glj/%.glj $(GLJ)
 	@echo "Compiling $< to $@"
 	make-do compile-glj $* $@
 
-man/man1/gloat.1: ReadMe.md $(MD2MAN)
+man/man1/gloat.1: ReadMe.md $(MD2MAN) $(PERL)
 	@mkdir -p man/man1
-	perl -0777 -pe \
+	$(PERL) -0777 -pe \
 	    's/^\[!\[.*?\)\n\n//msg; s/\[([^\]]+)\]\([^)]+\)/$$1/g' \
 	    ReadMe.md | \
 	  grep -v '^<img ' | \
 	  $(MD2MAN) > $@
 
-man/man1/%.1: doc/%.md $(MD2MAN)
+man/man1/%.1: doc/%.md $(MD2MAN) $(PERL)
 	@mkdir -p man/man1
-	perl -0777 -pe \
+	$(PERL) -0777 -pe \
 	    's/\[([^\]]+)\]\([^)]+\)/$$1/g' \
 	    $< | \
 	  $(MD2MAN) > $@

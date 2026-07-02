@@ -98,12 +98,33 @@ jobs:
     - name: Cache Makes dependencies
       uses: actions/cache@v4
       with:
-        path: .cache/makes/
-        key: makes-src-so-Linux-${{ hashFiles('Makefile', 'common/common.mk') }}
-        restore-keys: makes-src-so-Linux-
+        path: .cache/
+        key: makes-pruned-so-Linux-${{ hashFiles('Makefile', 'common/common.mk') }}
+        restore-keys: makes-pruned-so-Linux-
 
     - name: Test so-bindings
       run: make -C demo/so-bindings/ test
+
+    - name: Prune Linux so-bindings cache
+      if: always()
+      run: |
+        if [ -d .cache/local ]; then
+          rm -rf .cache/local/cache/*
+          find .cache/local -mindepth 1 -maxdepth 1 -type d \
+            ! -name 'babashka-*' \
+            ! -name 'bin' \
+            ! -name 'glojure-*' \
+            ! -name 'go-*' \
+            ! -name 'home' \
+            ! -name 'include' \
+            ! -name 'lib' \
+            ! -name 'man' \
+            ! -name 'perl-*' \
+            ! -name 'share' \
+            ! -name 'tmp' \
+            -exec rm -rf {} +
+        fi
+        du -sh .cache || true
 
   test-so-bindings-macos:
     name: Test so-bindings (macOS)

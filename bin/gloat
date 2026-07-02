@@ -658,9 +658,8 @@ path-prepend() {
 }
 
 promote-cache-paths() {
-  local part first=true
+  local part seen first=true duplicate
   local new_path=
-  local -A seen_cache=()
   local -a path_parts=() override_parts=() cache_parts=() other_parts=()
   IFS=: read -r -a path_parts <<< "$PATH"
   for part in "${path_parts[@]}"; do
@@ -670,14 +669,24 @@ promote-cache-paths() {
     fi
     case $part in
       "$root"/.cache/*)
-        [[ ${seen_cache[$part]+x} ]] && continue
-        seen_cache[$part]=1
+        duplicate=
+        for seen in "${cache_parts[@]+"${cache_parts[@]}"}"; do
+          if [[ $seen == "$part" ]]; then
+            duplicate=true
+            break
+          fi
+        done
+        [[ $duplicate ]] && continue
         cache_parts+=("$part")
         ;;
       *) other_parts+=("$part") ;;
     esac
   done
-  for part in "${override_parts[@]}" "${cache_parts[@]}" "${other_parts[@]}"; do
+  for part in \
+    "${override_parts[@]+"${override_parts[@]}"}" \
+    "${cache_parts[@]+"${cache_parts[@]}"}" \
+    "${other_parts[@]+"${other_parts[@]}"}"
+  do
     if [[ $first ]]; then
       new_path=$part
       first=

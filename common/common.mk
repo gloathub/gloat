@@ -3,6 +3,10 @@ GLOAT-VERSION := 0.1.56
 GLOJURE-VERSION := 0.6.7
 GLOJURE-REPO := https://github.com/glojurelang/glojure
 
+YAMLSCRIPT-VERSION := 0.2.8
+YS-VERSION := $(YAMLSCRIPT-VERSION)
+LIBYS-VERSION := $(YAMLSCRIPT-VERSION)
+
 # GLJ currently requires Go 1.24.0
 GO-VERSION := 1.24.0
 

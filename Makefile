@@ -42,12 +42,11 @@ endif
 endif
 
 $(GLOJURE-DIR):
-	@echo "* Cloning glojure v$(GLOJURE-VERSION) locally"
+	@echo "* Cloning glojure v$(GLOJURE-VERSION) locally" >&2
 	git clone -q -b v$(GLOJURE-VERSION) --config advice.detachedHead=false \
 	  $(GLOJURE-REPO) $@
 
 include common/path.mk
-include common/gloat-vars.mk
 
 # Auto-discover YS standard library source files
 YS-CLJ-FILES := $(wildcard ys/src/*/*.clj ys/src/*/*/*.clj)
@@ -85,6 +84,10 @@ PATH-DEPS := \
   $(GLOJURE-DIR) \
   $(GO) \
   $(YS) \
+
+# Must be included after PATH-DEPS is defined; make expands the
+# 'gloat-vars: $(PATH-DEPS)' prerequisites at parse time.
+include common/gloat-vars.mk
 
 TEST-CALL := \
   test/call \

@@ -98,9 +98,15 @@
                   :dir GLOAT-ROOT
                   :extra-env go-env}
                  "make" "--quiet" "--no-print-directory"
-                 "gloat-vars")]
+                 "gloat-vars")
+        out (str/trim (:out result))
+        ;; Dependency install recipes may print progress lines before
+        ;; the vars; keep only the trailing EDN map.
+        vars-edn (re-find #"(?s)\{[^{}]*\}\z" out)]
+    (when-not vars-edn
+      (die (str "'make gloat-vars' did not produce an EDN map:\n" out)))
     (alter-var-root #'make-vars
-      (constantly (edn/read-string (str/trim (:out result)))))))
+      (constantly (edn/read-string vars-edn)))))
 
 ;;------------------------------------------------------------------------------
 ;; gljdeps.edn Resolution

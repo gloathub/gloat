@@ -42,6 +42,7 @@ _gloat() {
         '--nrepl=[Start nREPL server (see man gloat-repl)]::value:' \
         '--srepl=[Start socket REPL server (see man gloat-repl)]::value:' \
         '--deps=[Path to gljdeps.edn (for --repl/--nrepl/--srepl)]:deps file:_files -g "*.edn"' \
+        '--classpath=[Classpath for REPL load paths]:classpath:_files -/' \
         '(- *)--reset[Remove all cached dependencies]' \
         '(- *)--upgrade[Upgrade gloat (use --upgrade=v1.2.3 to pin a version)]' \
         '(- *)--glj-build[Build the associated glj binary]' \

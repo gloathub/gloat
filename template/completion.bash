@@ -7,7 +7,7 @@ _gloat() {
     opts="-h --help --version -t --to -o --out -r --run -f --force
           -v --verbose -q --quiet --platform -X --ext --ns --module
           --formats --extensions --platforms --complete --shell --shell-all
-          --which --repl --nrepl --srepl --deps --reset --upgrade
+          --which --repl --nrepl --srepl --deps --classpath --reset --upgrade
           --glj-build"
 
     formats="clj bb glj go dir bin lib wasm js"
@@ -42,6 +42,10 @@ _gloat() {
             ;;
         --deps)
             COMPREPLY=( $(compgen -f -X '!*.edn' -- "${cur}") )
+            return 0
+            ;;
+        --classpath)
+            COMPREPLY=( $(compgen -d -- "${cur}") )
             return 0
             ;;
         --ns|--module|--which)

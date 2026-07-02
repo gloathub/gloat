@@ -58,7 +58,8 @@ is "$rc" 129 "'gloat --glj' is no longer accepted"
 
 try "$GLOAT_BIN --shell -- 'printf \"%s\\n\" \"\${PATH%%:*}\"' 2>/dev/null"
 is "$rc" 0 "'gloat --shell' exits 0"
-ok "$([[ $got == "$PROJECT_ROOT/.cache/"* ]])" \
+ok "$([[ $got == "$PROJECT_ROOT/.cache/"* ||
+        ( ${GLOJURE_DIR:-} && $got == "$GLOJURE_DIR"/bin/* ) ]])" \
   "'gloat --shell' promotes gloat cache paths"
 
 try "$GLOAT_BIN --repl <<<'(println \"hello\")'"
@@ -68,6 +69,30 @@ is "$got" "hello" "'gloat --repl' suppresses banner with piped input"
 try "$GLOAT_BIN --repl --quiet <<<'(println \"hello\")'"
 is "$rc" 0 "'gloat --repl --quiet' exits 0 with piped input"
 is "$got" "hello" "'gloat --repl --quiet' suppresses banner with piped input"
+
+if cd "$TMP" &&
+   "$GLOAT_BIN" --classpath=. <<<'(load "__missing__")' 2>&1 |
+     grep -q 'failed to load __missing__:'
+then
+  printf '%s\n' '(println "hello")' > "$TMP/hello.clj"
+  try "cd '$TMP' && '$GLOAT_BIN' --classpath=. <<<'(load \"hello\")'"
+  is "$rc" 0 "'gloat --classpath=.' exits 0 with bare load"
+  is "$got" "hello" "'gloat --classpath=.' loads resource from classpath"
+
+  try "cd '$TMP' && '$GLOAT_BIN' --classpath=. <<<'(load \"/hello\")'"
+  is "$rc" 0 "'gloat --classpath=.' exits 0 with absolute resource load"
+  is "$got" "hello" "'gloat --classpath=.' loads absolute resource from classpath"
+
+  try "cd '$TMP' && '$GLOAT_BIN' --classpath=. <<<'(load \"hello.clj\")'"
+  is "$rc" 1 "'gloat --classpath=.' rejects filename-style load"
+  has "$got" "failed to load hello.clj" \
+    "'gloat --classpath=.' treats dots as resource separators"
+
+  try "cd '$TMP' && '$GLOAT_BIN' --classpath=. <<<'(load \"/hello.clj\")'"
+  is "$rc" 1 "'gloat --classpath=.' rejects absolute filename-style load"
+  has "$got" "failed to load /hello.clj" \
+    "'gloat --classpath=.' treats absolute dots as resource separators"
+fi
 
 # Test stdout modes
 cd "$FIXTURES_DIR" || bail-out "Cannot cd to fixtures"

@@ -497,6 +497,7 @@ With `-Xserve,html`, the HTML is generated alongside the output.
 --nrepl[=value]  Start nREPL server (see man gloat-repl)
 --srepl[=value]  Start socket REPL server (see man gloat-repl)
 --deps=file      Path to gljdeps.edn for --repl/--nrepl/--srepl
+--classpath=path Classpath for REPL load paths
 
 --shell          Start a sub-shell or run a command (-- cmd...)
 --shell-all      Like --shell but install all dev tools

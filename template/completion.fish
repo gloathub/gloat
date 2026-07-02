@@ -21,6 +21,7 @@ complete -c gloat -l repl -d 'Start REPL client (see man gloat-repl)' -x
 complete -c gloat -l nrepl -d 'Start nREPL server (see man gloat-repl)' -x
 complete -c gloat -l srepl -d 'Start socket REPL server (see man gloat-repl)' -x
 complete -c gloat -l deps -d 'Path to gljdeps.edn (for --repl/--nrepl/--srepl)' -r -F
+complete -c gloat -l classpath -d 'Classpath for REPL load paths' -x
 complete -c gloat -l reset -d 'Remove all cached dependencies'
 complete -c gloat -l upgrade -d 'Upgrade gloat (use --upgrade=v1.2.3 to pin a version)'
 complete -c gloat -l glj-build -d 'Build the associated glj binary'

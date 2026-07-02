@@ -248,6 +248,7 @@ Press Ctrl-D or type `exit` to return to your normal shell.
 --formats        List available output formats
 --extensions     List available processing extensions
 --platforms      List available cross-compilation platforms
+--classpath=path Classpath for REPL load paths
 --complete ...   Generate shell completion script (bash, zsh, fish)
 --which ...      Print path to command that gloat uses: go, glj, etc
 --shell          Start a sub-shell with gloat tools on PATH

@@ -74,6 +74,7 @@ repl          Start REPL client; see 'man gloat-repl'
 nrepl         Start nREPL server; see 'man gloat-repl'
 srepl         Start socket REPL server; see 'man gloat-repl'
 deps=         Path to gljdeps.edn (Go module deps; AOT or REPL)
+classpath=    Classpath for REPL load paths (e.g. . or src:test)
 shell         Start a sub-shell or run a command (-- cmd...)
 shell-all     Like --shell but install all dev tools
 complete=     Generate shell completion script (bash, fish, zsh)
@@ -211,6 +212,7 @@ main() (
   setup "$@"
 
   [[ $opt_which_set ]] && do-which "$opt_which"
+  [[ $opt_classpath && ! $opt_repl && ! -t 0 ]] && opt_repl=true
 
   # Recursion guard: a runaway REPL tab-completion that shells back to
   # 'gloat --repl=' can fork-bomb the machine.
@@ -511,6 +513,7 @@ setup() {
   opt_srepl=
   srepl_val=
   opt_deps=
+  opt_classpath=
   opt_shell=
   opt_shellall=
   opt_which=
@@ -540,6 +543,10 @@ setup() {
                      srepl_val=${arg#--srepl=}
                      proc_args+=(--srepl)      ;;
         --deps=*)    opt_deps=${arg#--deps=}
+                     proc_args+=("$arg")       ;;
+        --classpath=*) opt_classpath=${arg#--classpath=}
+                     [[ $opt_classpath ]] ||
+                       die "Error: --classpath requires a path"
                      proc_args+=("$arg")       ;;
         --shell)     opt_shell=true;           proc_args+=("$arg") ;;
         --shell-all) opt_shellall=true;        proc_args+=("$arg") ;;
@@ -654,9 +661,13 @@ promote-cache-paths() {
   local part first=true
   local new_path=
   local -A seen_cache=()
-  local -a path_parts=() cache_parts=() other_parts=()
+  local -a path_parts=() override_parts=() cache_parts=() other_parts=()
   IFS=: read -r -a path_parts <<< "$PATH"
   for part in "${path_parts[@]}"; do
+    if [[ ${GLOJURE_DIR-} && $part == "$GLOJURE_DIR"/bin/* ]]; then
+      override_parts+=("$part")
+      continue
+    fi
     case $part in
       "$root"/.cache/*)
         [[ ${seen_cache[$part]+x} ]] && continue
@@ -666,7 +677,7 @@ promote-cache-paths() {
       *) other_parts+=("$part") ;;
     esac
   done
-  for part in "${cache_parts[@]}" "${other_parts[@]}"; do
+  for part in "${override_parts[@]}" "${cache_parts[@]}" "${other_parts[@]}"; do
     if [[ $first ]]; then
       new_path=$part
       first=
@@ -841,6 +852,11 @@ setup-go-module() {
 prepare-repl-env() {
   local build_hint=${1-}
 
+  if [[ $opt_classpath ]]; then
+    export GLJ_CLASSPATH
+    GLJ_CLASSPATH=$(resolve-classpath "$opt_classpath")
+  fi
+
   # Resolve deps file: --deps= flag, GLOAT_GLJDEPS env var, or CWD auto-detect
   local deps_file=$opt_deps
   local explicit_deps=
@@ -922,6 +938,24 @@ prepare-repl-env() {
   export GOARCH
 
   find-glj
+}
+
+resolve-classpath() {
+  local classpath=$1 entry first=true
+  local resolved=
+  local -a entries=()
+  IFS=: read -r -a entries <<< "$classpath"
+  for entry in "${entries[@]}"; do
+    [[ $entry ]] || continue
+    [[ $entry == /* ]] || entry=$(pwd)/$entry
+    if [[ $first ]]; then
+      resolved=$entry
+      first=
+    else
+      resolved=$resolved:$entry
+    fi
+  done
+  printf '%s\n' "$resolved"
 }
 
 # Start an external tool's nREPL server and connect to it

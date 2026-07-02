@@ -670,7 +670,7 @@ promote-cache-paths() {
     case $part in
       "$root"/.cache/*)
         duplicate=
-        for seen in "${cache_parts[@]}"; do
+        for seen in "${cache_parts[@]+"${cache_parts[@]}"}"; do
           if [[ $seen == "$part" ]]; then
             duplicate=true
             break
@@ -682,7 +682,11 @@ promote-cache-paths() {
       *) other_parts+=("$part") ;;
     esac
   done
-  for part in "${override_parts[@]}" "${cache_parts[@]}" "${other_parts[@]}"; do
+  for part in \
+    "${override_parts[@]+"${override_parts[@]}"}" \
+    "${cache_parts[@]+"${cache_parts[@]}"}" \
+    "${other_parts[@]+"${other_parts[@]}"}"
+  do
     if [[ $first ]]; then
       new_path=$part
       first=

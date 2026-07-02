@@ -1,3 +1,17 @@
+- version: 0.1.56
+  date:    Thu Jul  2 02:43:21 PM EDT 2026
+  changes:
+  - Add classpath support for REPL loads
+  - Suppress REPL banner for stdin and quiet
+  - Put gloat cache paths first in shell
+  - Install managed tools for which
+  - Replace glj lookup flag with which
+  - Tighten version output labels
+  - Reformat shell setup hints
+  - Install deps during upgrade
+  - Add shell setup admonition
+  - Polish REPL cwd and piped input handling
+
 - version: 0.1.55
   date:    Mon Jun 29 08:23:13 AM EDT 2026
   changes:

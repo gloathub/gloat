@@ -688,7 +688,7 @@ gloat --upgrade
 
 Pin (or roll back) to a specific version. Gloat will switch the checkout,
 clear `.cache/`, and reinstall the dependencies that pair with that release
-(including the matching GLJ version) on the next run:
+(including the matching GLJ version) before the upgrade command exits:
 
 ```bash
 gloat --upgrade=v1.2.3

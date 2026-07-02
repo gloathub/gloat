@@ -96,10 +96,9 @@ gloat --upgrade=v1.2.3
 In both cases, gloat will:
 
 1. Switch the local checkout to the target tag.
-2. Remove `.cache/` so all dependencies (including the GLJ version paired
-   with that gloat release) reinstall fresh on the next run.
-3. Print what to expect — the next `gloat` invocation kicks off a quiet
-   per-tool install.
+2. Remove `.cache/`.
+3. Install all dependencies that pair with that gloat release, including
+   the matching GLJ version.
 
 If your clone has uncommitted changes, `--upgrade` will refuse and ask you
 to stash or commit them first.

@@ -103,11 +103,10 @@ In both cases, gloat will:
 .IP "  1." 5
 Switch the local checkout to the target tag.
 .IP "  2." 5
-Remove \fB\&.cache/\fR so all dependencies (including the GLJ version paired
-with that gloat release) reinstall fresh on the next run.
+Remove \fB\&.cache/\fR\&.
 .IP "  3." 5
-Print what to expect — the next \fBgloat\fR invocation kicks off a quiet
-per-tool install.
+Install all dependencies that pair with that gloat release, including
+the matching GLJ version.
 
 .PP
 If your clone has uncommitted changes, \fB--upgrade\fR will refuse and ask you

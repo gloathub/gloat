@@ -139,9 +139,13 @@ main() (
 
     echo "Switching gloat checkout to $target..."
     git -c advice.detachedHead=false checkout "$target"
+    GLOAT_VERSION=$(make --quiet --no-print-directory -C "$root" gloat-version)
+    export GLOAT_VERSION
     nuke-cache
-    echo "Now at $target. Next 'gloat' run will reinstall the matching"
-    echo "dependencies (including the GLJ version paired with $target)."
+    echo "Now at $target."
+    echo "Installing matching dependencies..."
+    install-deps
+    echo "Gloat $target is ready."
     print-rc-admonition maybe
     exit
   fi

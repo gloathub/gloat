@@ -166,6 +166,7 @@ main() (
   fi
 
   PATH=$(make --quiet --no-print-directory -C "$root" path)
+  promote-cache-paths
   export PATH
 
   if [[ $* == --glj-build ]]; then
@@ -258,10 +259,14 @@ do-shell() {
   shell=${shell#-}
   shell=${shell:-${GLOAT_SHELL:-bash}}
   echo "Starting gloat $shell shell (type 'exit' to leave)" >&2
+  export GLOAT_PATH=$PATH
   case $shell in
     bash)
       exec bash --rcfile <(cat <<'BASH'
 [[ -f ~/.bashrc ]] && source ~/.bashrc
+PATH="$GLOAT_PATH"
+export PATH
+unset GLOAT_PATH
 PS1="(gloat) $PS1"
 BASH
 )
@@ -271,12 +276,18 @@ BASH
       zdot=$(mktemp -d)
       cat > "$zdot/.zshrc" <<'ZSH'
 [[ -f "$HOME/.zshrc" ]] && ZDOTDIR=$HOME source "$HOME/.zshrc"
+PATH="$GLOAT_PATH"
+export PATH
+unset GLOAT_PATH
 PS1="(gloat) $PS1"
 ZSH
       exec env ZDOTDIR="$zdot" zsh
       ;;
     fish)
+      # shellcheck disable=SC2016
       exec fish --init-command '
+set -gx PATH (string split : -- $GLOAT_PATH)
+set -e GLOAT_PATH
 functions -q fish_prompt
   and functions -c fish_prompt _gloat_orig_prompt
   and function fish_prompt
@@ -539,6 +550,7 @@ setup() {
     "$root/util/getopt" ${proc_args[@]+"${proc_args[@]}"}) || exit $?
 
   install-deps
+  promote-cache-paths
 }
 
 do-which() {
@@ -629,6 +641,33 @@ path-prepend() {
     *":$dir:"*) ;;
     *) PATH=$dir:$PATH ;;
   esac
+}
+
+promote-cache-paths() {
+  local part first=true
+  local new_path=
+  local -A seen_cache=()
+  local -a path_parts=() cache_parts=() other_parts=()
+  IFS=: read -r -a path_parts <<< "$PATH"
+  for part in "${path_parts[@]}"; do
+    case $part in
+      "$root"/.cache/*)
+        [[ ${seen_cache[$part]+x} ]] && continue
+        seen_cache[$part]=1
+        cache_parts+=("$part")
+        ;;
+      *) other_parts+=("$part") ;;
+    esac
+  done
+  for part in "${cache_parts[@]}" "${other_parts[@]}"; do
+    if [[ $first ]]; then
+      new_path=$part
+      first=
+    else
+      new_path=$new_path:$part
+    fi
+  done
+  PATH=$new_path
 }
 
 find-local-exe() {

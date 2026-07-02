@@ -56,6 +56,11 @@ has "$got" "empty command name" "'gloat --which=glj,' reports empty command"
 try "$GLOAT_BIN --glj"
 is "$rc" 129 "'gloat --glj' is no longer accepted"
 
+try "$GLOAT_BIN --shell -- 'printf \"%s\\n\" \"\${PATH%%:*}\"' 2>/dev/null"
+is "$rc" 0 "'gloat --shell' exits 0"
+ok "$([[ $got == "$PROJECT_ROOT/.cache/"* ]])" \
+  "'gloat --shell' promotes gloat cache paths"
+
 # Test stdout modes
 cd "$FIXTURES_DIR" || bail-out "Cannot cd to fixtures"
 

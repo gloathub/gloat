@@ -57,11 +57,17 @@ SKIP-MACOS := \
   lua \
   nim \
   perl \
-  v \
+  v
 
-# Langs with known issues on Linux CI
+# Langs with known issues on Linux
 SKIP-LINUX := \
-  delphi \
+  delphi
+
+ifdef CI
+# rakudo.org tarball downloads intermittently fail in GitHub Actions.
+SKIP-LINUX += \
+  raku
+endif
 
 ifdef IS-MACOS
 LANGS ?= $(filter-out $(SKIP-MACOS),$(ALL-LANGS))

@@ -2,6 +2,11 @@
 
 set -euo pipefail
 
+GLOAT_ENV_ROOT=${GLOAT_ROOT-}
+GLOAT_ENV_VERSION=${GLOAT_VERSION-}
+RC_ADMONITION_TITLE='To enable tab completion and the gloat* man pages, run this command:'
+RC_ADMONITION_URL='https://gloathub.org/doc/gloat-install/'
+
 # Single source of truth: GLOAT-VERSION lives in common/common.mk.
 __src=${BASH_SOURCE[0]}
 [[ -L $__src ]] && __src=$(readlink -f "$__src")
@@ -348,15 +353,20 @@ rc-admonition() {
   local shell_name rc_file sourced_root=
   shell_name=$(rc-shell)
   [[ $shell_name ]] || return 0
-  sourced_root=${GLOAT_ROOT-}
+  sourced_root=$GLOAT_ENV_ROOT
   [[ $sourced_root ]] &&
     sourced_root=$(cd -P "$sourced_root" 2>/dev/null && pwd -P || true)
-  [[ $mode != maybe || $sourced_root != "$root" ]] || return 0
+  if [[ $mode == maybe &&
+        $sourced_root == "$root" &&
+        ( -z $GLOAT_ENV_VERSION || $GLOAT_ENV_VERSION == "$GLOAT_VERSION" ) ]]; then
+    return 0
+  fi
   rc_file=$(rc-file-for-shell "$shell_name")
   cat <<EOF
-To enable tab completion and gloat* man pages, run this command:
-  source $root/.rc
-(or add it to your $rc_file file to make it permanent)
+> $RC_ADMONITION_TITLE
+>   source $root/.rc
+> (or add it to your $rc_file file to make it permanent)
+> See: $RC_ADMONITION_URL
 EOF
 }
 

@@ -34,6 +34,8 @@ override VERSION := $(if $(filter v%,$(VERSION)),$(VERSION),v$(VERSION))
 INSTALL-DIR := $(PREFIX)/share/gloat
 BIN-DIR := $(PREFIX)/bin
 GLOAT-BIN := $(BIN-DIR)/gloat
+RC-HINT-TITLE := To enable tab completion and the gloat* man pages, run this command:
+RC-HINT-URL := https://gloathub.org/doc/gloat-install/
 
 define PATH_ERROR
 
@@ -135,15 +137,18 @@ install:
 	@echo ''
 	@# Shell-specific rc hint for man pages and completion
 	@case $$(basename "$${SHELL:-}") in \
-	  bash) echo 'To enable tab completion and gloat* man pages, run this command:'; \
-	        echo '  source $(INSTALL-DIR)/.rc'; \
-	        echo '(or add it to your ~/.bashrc file to make it permanent)' ;; \
-	  fish) echo 'To enable tab completion and gloat* man pages, run this command:'; \
-	        echo '  source $(INSTALL-DIR)/.rc'; \
-	        echo '(or add it to your ~/.config/fish/config.fish file to make it permanent)' ;; \
-	  zsh)  echo 'To enable tab completion and gloat* man pages, run this command:'; \
-	        echo '  source $(INSTALL-DIR)/.rc'; \
-	        echo '(or add it to your ~/.zshrc file to make it permanent)' ;; \
+	  bash) echo '> $(RC-HINT-TITLE)'; \
+	        echo '>   source $(INSTALL-DIR)/.rc'; \
+	        echo '> (or add it to your ~/.bashrc file to make it permanent)'; \
+	        echo '> See: $(RC-HINT-URL)' ;; \
+	  fish) echo '> $(RC-HINT-TITLE)'; \
+	        echo '>   source $(INSTALL-DIR)/.rc'; \
+	        echo '> (or add it to your ~/.config/fish/config.fish file to make it permanent)'; \
+	        echo '> See: $(RC-HINT-URL)' ;; \
+	  zsh)  echo '> $(RC-HINT-TITLE)'; \
+	        echo '>   source $(INSTALL-DIR)/.rc'; \
+	        echo '> (or add it to your ~/.zshrc file to make it permanent)'; \
+	        echo '> See: $(RC-HINT-URL)' ;; \
 	esac
 	@echo ''
 	@echo "Run 'gloat --help' to get started."

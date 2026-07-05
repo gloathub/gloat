@@ -56,6 +56,31 @@ has "$got" "empty command name" "'gloat --which=glj,' reports empty command"
 try "$GLOAT_BIN --glj"
 is "$rc" 129 "'gloat --glj' is no longer accepted"
 
+# Engine selection (-E/--engine/GLOAT_ENGINE)
+try "$GLOAT_BIN -Efoo x.clj"
+is "$rc" 1 "'gloat -Efoo' exits 1"
+has "$got" "Unknown engine 'foo'" "'gloat -Efoo' reports unknown engine"
+has "$got" "glj, lg" "'gloat -Efoo' lists known engines"
+
+try "GLOAT_ENGINE=foo $GLOAT_BIN -t clj x.clj"
+is "$rc" 1 "'GLOAT_ENGINE=foo gloat' exits 1"
+has "$got" "Unknown engine 'foo'" "'GLOAT_ENGINE=foo' reports unknown engine"
+
+try "$GLOAT_BIN -Elg x.clj"
+is "$rc" 1 "'gloat -Elg' exits 1"
+has "$got" "Engine 'lg' does not yet support format 'bin'" \
+  "'gloat -Elg' reports lg engine not yet supported"
+
+try "$GLOAT_BIN --engine=lg -t go x.clj"
+is "$rc" 1 "'gloat --engine=lg -t go' exits 1"
+has "$got" "Engine 'lg' does not yet support format 'go'" \
+  "'gloat --engine=lg' reports format in error"
+
+try "GLOAT_ENGINE=lg $GLOAT_BIN -o x.so x.clj"
+is "$rc" 1 "'GLOAT_ENGINE=lg gloat -o x.so' exits 1"
+has "$got" "Engine 'lg' does not yet support format 'lib'" \
+  "'GLOAT_ENGINE=lg' infers format from -o"
+
 try "$GLOAT_BIN --shell -- 'printf \"%s\\n\" \"\${PATH%%:*}\"' 2>/dev/null"
 is "$rc" 0 "'gloat --shell' exits 0"
 ok "$([[ $got == "$PROJECT_ROOT/.cache/"* ||

@@ -265,6 +265,17 @@
         (System/exit (:exit result)))
       (edn/read-string (:out result)))))
 
+(def known-engines #{"glj" "lg"})
+
+(defn resolve-engine [opts]
+  (let [engine (or (:engine opts)
+                   (not-empty (System/getenv "GLOAT_ENGINE"))
+                   "glj")]
+    (when-not (contains? known-engines engine)
+      (die "Unknown engine '" engine "'. Known engines: "
+           (str/join ", " (sort known-engines))))
+    engine))
+
 ;;------------------------------------------------------------------------------
 ;; File Type and Format Detection
 ;;------------------------------------------------------------------------------
@@ -1696,9 +1707,17 @@ Less common:
         output (:out opts)
         namespace (:ns opts)
         module (or (:module opts) (System/getenv "GLOAT_MODULE"))
+        engine (resolve-engine opts)
         platform (:platform opts)
         to (:to opts)
         run (:run opts)]
+
+    (when (= "lg" engine)
+      (let [format (if (and (nil? output) (nil? to))
+                     "bin"
+                     (infer-format output
+                                   (when to (str/replace to #"^\." ""))))]
+        (die "Engine 'lg' does not yet support format '" format "'")))
 
     ;; --run implies quiet
     (let [opts (if run
@@ -1797,6 +1816,7 @@ Less common:
                        :output output
                        :namespace namespace
                        :module module
+                       :engine engine
                        :platform platform
                        :to to)))))))))
 

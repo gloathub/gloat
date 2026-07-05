@@ -1018,12 +1018,28 @@ start-tool-nrepl() {
   fifo=$(mktemp -u)
   mkfifo "$fifo"
 
+  # lg -n runs an interactive REPL alongside the nREPL server and exits
+  # when its stdin is unusable, taking the server down with it. Hold its
+  # stdin open with a fifo opened read-write (never EOFs) so it keeps
+  # serving after setsid detaches the terminal.
+  local stdin_fifo=
+  case $tool in
+    let-go|lg)
+      stdin_fifo=$(mktemp -u)
+      mkfifo "$stdin_fifo"
+      ;;
+  esac
+
   # Run in its own process group so the EXIT trap can take down the whole
   # subtree, not just the server PID we started.
-  setsid "${cmd[@]}" > "$fifo" 2>&1 &
+  if [[ $stdin_fifo ]]; then
+    setsid "${cmd[@]}" <> "$stdin_fifo" > "$fifo" 2>&1 &
+  else
+    setsid "${cmd[@]}" > "$fifo" 2>&1 &
+  fi
   local server_pid=$!
   # shellcheck disable=SC2064
-  trap "kill -- -$server_pid 2>/dev/null; rm -f '$fifo'" EXIT
+  trap "kill -- -$server_pid 2>/dev/null; rm -f '$fifo'${stdin_fifo:+ '$stdin_fifo'}" EXIT
 
   # Read lines until we find the port
   while IFS= read -r line; do

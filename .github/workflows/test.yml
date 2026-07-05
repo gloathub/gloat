@@ -109,7 +109,8 @@ jobs:
       if: always()
       run: |
         if [ -d .cache/local ]; then
-          rm -rf .cache/local/cache/*
+          chmod -R u+w .cache/local 2>/dev/null || true
+          rm -rf .cache/local/cache/* || true
           find .cache/local -mindepth 1 -maxdepth 1 -type d \
             ! -name 'babashka-*' \
             ! -name 'bin' \
@@ -122,7 +123,7 @@ jobs:
             ! -name 'perl-*' \
             ! -name 'share' \
             ! -name 'tmp' \
-            -exec rm -rf {} +
+            -exec rm -rf {} + || true
         fi
         du -sh .cache || true
 

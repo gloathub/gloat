@@ -35,6 +35,10 @@ try "$GLOAT_BIN --which=wasmtime"
 is "$rc" 0 "'gloat --which=wasmtime' exits 0"
 has "$got" "/wasmtime" "'gloat --which=wasmtime' prints managed wasmtime path"
 
+try "$GLOAT_BIN --which=lg"
+is "$rc" 0 "'gloat --which=lg' exits 0"
+has "$got" "/lg" "'gloat --which=lg' prints managed lg path"
+
 try "$GLOAT_BIN --which=definitely-not-a-gloat-command"
 is "$rc" 1 "'gloat --which=missing' exits 1"
 is "$got" "" "'gloat --which=missing' is quiet"

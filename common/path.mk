@@ -16,6 +16,9 @@ path-glojure: $(GLOJURE-DIR)
 path-go: $(GO)
 	@echo "$(abspath $<)"
 
+path-lg: $(LG)
+	@echo "$(abspath $<)"
+
 path-shellcheck: $(SHELLCHECK)
 	@echo "$(abspath $<)"
 

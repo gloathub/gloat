@@ -1,0 +1,64 @@
+;; Copyright 2023-2026 Ingy dot Net
+;; This code is licensed under MIT license (See License for details)
+
+;; java.lang.Long and java.lang.Integer compatibility for the lg
+;; engine. Unlike Math/Character/Byte (plain namespace files), lg
+;; pre-registers bare Long and Integer namespaces (MAX_VALUE, TYPE),
+;; so requiring a Long.lg from source paths is a no-op; augment the
+;; existing namespaces with intern instead.
+
+(ns javacompat)
+
+(defn- to-radix [n radix]
+  (let [chars "0123456789abcdefghijklmnopqrstuvwxyz"
+        neg (neg? n)]
+    (loop [n (if neg (- n) n) acc ()]
+      (let [acc (cons (nth chars (rem n radix)) acc)
+            n (quot n radix)]
+        (if (zero? n)
+          (apply str (if neg (cons \- acc) acc))
+          (recur n acc))))))
+
+(defn- parse-long+ [s radix]
+  (let [n (read-string (str (if (= radix 10) "" (str radix "r")) s))]
+    (when-not (integer? n)
+      (throw (ex-info (str "For input string: \"" s "\"") {})))
+    n))
+
+(defn- bit-count [x]
+  (loop [n x c 0]
+    (if (zero? n)
+      c
+      (recur (bit-shift-right n 1) (+ c (bit-and n 1))))))
+
+(def ^:private to-string
+  (fn
+    ([x] (str x))
+    ([x radix] (to-radix x radix))))
+
+(intern 'Long 'SIZE 64)
+(intern 'Long 'parseLong (fn ([s] (parse-long+ s 10))
+                           ([s radix] (parse-long+ s radix))))
+(intern 'Long 'toString to-string)
+(intern 'Long 'toBinaryString (fn [x] (to-radix x 2)))
+(intern 'Long 'toOctalString (fn [x] (to-radix x 8)))
+(intern 'Long 'toHexString (fn [x] (to-radix x 16)))
+(intern 'Long 'bitCount bit-count)
+
+(create-ns 'Float)
+(intern 'Float 'MAX_VALUE 3.4028234663852886e38)
+(intern 'Float 'MIN_VALUE 1.4e-45)
+(intern 'Float 'SIZE 32)
+
+(intern 'Double 'SIZE 64)
+
+(intern 'Integer 'MAX_VALUE 2147483647)
+(intern 'Integer 'MIN_VALUE -2147483648)
+(intern 'Integer 'SIZE 32)
+(intern 'Integer 'parseInt (fn ([s] (parse-long+ s 10))
+                             ([s radix] (parse-long+ s radix))))
+(intern 'Integer 'toString to-string)
+(intern 'Integer 'toBinaryString (fn [x] (to-radix x 2)))
+(intern 'Integer 'toOctalString (fn [x] (to-radix x 8)))
+(intern 'Integer 'toHexString (fn [x] (to-radix x 16)))
+(intern 'Integer 'bitCount bit-count)

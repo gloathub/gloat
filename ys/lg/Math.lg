@@ -1,0 +1,36 @@
+;; Copyright 2023-2026 Ingy dot Net
+;; This code is licensed under MIT license (See License for details)
+
+;; java.lang.Math compatibility for the lg engine. YS code written
+;; against the JVM (or the glj engine's javacompat/gojava wiring)
+;; references Math/PI, Math/sin etc; lg resolves those as vars in a
+;; namespace named Math, backed here by clojure.math.
+
+(ns Math
+  (:require [clojure.math :as math]))
+
+(def PI math/PI)
+(def E math/E)
+
+(defn abs [x] (if (neg? x) (- x) x))
+(defn acos [x] (math/acos x))
+(defn asin [x] (math/asin x))
+(defn atan [x] (math/atan x))
+(defn atan2 [y x] (math/atan2 y x))
+(defn cbrt [x] (math/cbrt x))
+(defn ceil [x] (math/ceil x))
+(defn cos [x] (math/cos x))
+(defn exp [x] (math/exp x))
+(defn floor [x] (math/floor x))
+(defn log [x] (math/log x))
+(defn log10 [x] (math/log10 x))
+(defn max [x y] (clojure.core/max x y))
+(defn min [x y] (clojure.core/min x y))
+(defn pow [x y] (math/pow x y))
+(defn random [] (rand))
+(defn round [x] (math/round x))
+(defn sin [x] (math/sin x))
+(defn sqrt [x] (math/sqrt x))
+(defn tan [x] (math/tan x))
+(defn toDegrees [x] (math/to-degrees x))
+(defn toRadians [x] (math/to-radians x))

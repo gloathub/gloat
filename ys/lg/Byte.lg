@@ -1,0 +1,10 @@
+;; Copyright 2023-2026 Ingy dot Net
+;; This code is licensed under MIT license (See License for details)
+
+;; java.lang.Byte compatibility for the lg engine (see Math.lg).
+
+(ns Byte)
+
+(def MAX_VALUE 127)
+(def MIN_VALUE -128)
+(def SIZE 8)

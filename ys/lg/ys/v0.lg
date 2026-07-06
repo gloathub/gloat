@@ -1,0 +1,283 @@
+;; Copyright 2023-2026 Ingy dot Net
+;; This code is licensed under MIT license (See License for details)
+
+;; Minimal YAMLScript v0 runtime for the lg (let-go) engine.
+;; Provides enough of the ys.v0 surface to run small YS programs.
+;; Derived from let-go's examples/aot/ys-on-let-go/ys-runtime.lg shim
+;; (Copyright (c) 2026 Marcin Gasperowicz, MIT).
+;; The full stdlib port happens in later stages of the lg engine plan.
+
+(ns ys.v0
+  (:require
+   [clojure.string :as str]))
+
+(def ^:dynamic ARGV [])
+(def ^:dynamic ARGS [])
+(def ^:dynamic ENV {})
+(def ^:dynamic NS nil)
+(def ^:dynamic RUN {})
+(def ^:dynamic FILE "")
+(def ^:dynamic DIR "")
+(def ^:dynamic CWD "")
+
+(defn map-parse [args]
+  (mapv
+    (fn [s]
+      (if (re-matches #"^[+-]?[0-9]+\.?[0-9]*([eE][+-]?[0-9]+)?$" s)
+        (read-string s)
+        s))
+    args))
+
+;; IO (definitions match the bb patches of ys.std)
+(defn say [x] (println x))
+(defn warn [x]
+  (binding [*out* *err*]
+    (println x)))
+(defn out [x]
+  (clojure.core/print x))
+(defn print [x]
+  (clojure.core/print x))
+
+;; Math
+(defn add
+  ([] 0)
+  ([x] #(+ %1 x))
+  ([x y] (+ x y))
+  ([x y & xs] (apply + x y xs)))
+(defn sub [x & xs] (apply - x xs))
+(defn mul [x & xs] (apply * x xs))
+(defn div [x & xs] (apply / x xs))
+(defn sum [xs] (reduce + 0 (filter identity xs)))
+
+;; Strings
+(defn join
+  ([Ss] (join "" Ss))
+  ([S Ss] (str/join S Ss)))
+(defn joins [Ss] (join " " Ss))
+(defn text [Ss]
+  (if (empty? Ss)
+    ""
+    (str (str/join "\n" Ss) "\n")))
+
+;; YAML data-mode constructor; real YS uses an ordered map
+(defn % [& kvs] (apply hash-map kvs))
+
+(defn die
+  ([x] (throw (ex-info (str x) {})))
+  ([x & xs] (die (apply str x xs))))
+
+;; condf works on lg >= 1.11.2-gloat.1 (condp pred arg order fix)
+(defmacro condf [x & clauses]
+  `(condp (fn [f# x#] (f# x#)) ~x ~@clauses))
+
+(defn- op-error
+  ([op x]
+   (die "Can't " op "(" (pr-str x) ")"))
+  ([op x y]
+   (die "Can't " op "(" (pr-str x) " " (pr-str y) ")")))
+
+(defn regex? [x] (instance? java.util.regex.Pattern x))
+
+;; Type coercion (subset of ys.std; no atom?/class? in lg)
+(defn to-type [x]
+  (condf x
+    boolean? "bool"
+    char? "char"
+    float? "float"
+    fn? "fun"
+    int? "int"
+    keyword? "keyw"
+    list? "list"
+    map? "map"
+    nil? "nil"
+    number? "num"
+    regex? "rgx"
+    seq? "seq"
+    set? "set"
+    string? "str"
+    symbol? "sym"
+    var? "var"
+    vector? "vec"
+    (die "Can't determine type of '" (type x) "' value")))
+
+(defn to-num
+  ([x] (to-num x nil))
+  ([x default]
+   (condf x
+     number? x
+     string? (when (re-matches #"^[+-]?[0-9]+\.?[0-9]*([eE][+-]?[0-9]+)?$" x)
+               (read-string x))
+     nil? (die "Can't convert a nil value to a number")
+     seqable? (count x)
+     char? (int x)
+     boolean? (if x 1 0)
+     (die (str "Can't convert a value of type '"
+            (to-type x) "' to a number")))))
+
+(defn to-list [x]
+  (condf x
+    map? (reduce-kv (fn [acc k v] (conj acc v k)) '() x)
+    sequential? (if (empty? x) '() (seq x))
+    string? (if (empty? x) '() (seq x))
+    nil? '()
+    (die "Can't convert " (to-type x) " to list")))
+
+(defn to-map [x]
+  (condf x
+    map? x
+    set? (zipmap (seq x) (repeat nil))
+    sequential? (apply hash-map (seq x))
+    string? (apply hash-map (seq x))
+    nil? {}
+    (die "Can't convert " (to-type x) " to map")))
+
+(defn to-set [x]
+  (condf x
+    map? (clojure.core/set (keys x))
+    seqable? (clojure.core/set (seq x))
+    nil? #{}
+    (die "Can't convert " (to-type x) " to set")))
+
+(defn to-vec [x]
+  (condf x
+    map? (reduce-kv (fn [acc k v] (conj acc k v)) [] x)
+    sequential? (vec x)
+    string? (vec x)
+    nil? []
+    (die "Can't convert " (or (type x) "nil") " to vector")))
+
+;; Polymorphic (dwim) operators: what YS + - * / compile to
+(defn inc+ [x]
+  (condf x
+    number? (inc x)
+    char? (char (inc (long x)))
+    (let [n (to-num x 0)]
+      (condf n
+        number? (inc n)
+        (op-error "inc+" x)))))
+
+(defn dec+ [x]
+  (condf x
+    number? (dec x)
+    char? (char (dec (long x)))
+    (let [n (to-num x 0)]
+      (condf n
+        number? (dec n)
+        (op-error "dec+" x)))))
+
+(defn add+
+  ([x y]
+   (condf x
+     number? (+ (to-num x 0) (to-num y 0))
+     string? (str x y)
+     map? (merge (to-map x) (to-map y))
+     set? (into (to-set x) (to-set y))
+     vector? (vec (concat (to-vec x)
+                    (if (sequential? y)
+                      (to-list y)
+                      (list y))))
+     char? (if (number? y)
+             (char (+ (int x) y))
+             (str x y))
+     fn? (partial x y)
+     nil? (die "Can't add+ to a nil value")
+     seqable? (concat (to-list x)
+                (if (sequential? y)
+                  (to-list y)
+                  (list y)))
+     (+ (to-num x 0) (to-num y 0))))
+  ([x y & xs]
+   (reduce add+ (add+ x y) xs)))
+
+(defn sub+
+  ([x y]
+   (condf x
+     string? (str/replace x (str y) "")
+     map? (dissoc x y)
+     set? (disj x y)
+     vector? (vec (remove #(= y %1) x))
+     number? (- x (to-num y 0))
+     char? (condf y
+             number? (char (- (long x) y))
+             char? (- (long x) (long y))
+             (op-error "sub" x y))
+     nil? (die "Can't sub+ to a nil value")
+     seqable? (remove #(= y %1) x)
+     (+ (to-num x 0) (to-num y 0))))
+  ([x y & xs]
+   (reduce sub+ (sub+ x y) xs)))
+
+(defn mul+
+  ([x y]
+   (cond
+     (and (string? x) (number? y)) (apply str (repeat y x))
+     (and (number? x) (string? y)) (apply str (repeat x y))
+     (and (vector? x) (number? y)) (vec (apply concat (repeat y x)))
+     (and (number? x) (vector? y)) (vec (apply concat (repeat x y)))
+     (and (sequential? x) (number? y)) (apply concat (repeat y x))
+     (and (number? x) (sequential? y)) (apply concat (repeat x y))
+     (fn? x) (comp y x)
+     (nil? x) (die "Can't mul+ to a nil value")
+     :else (* (to-num x 1) (to-num y 1))))
+  ([x y & xs]
+   (reduce mul+ (mul+ x y) xs)))
+
+(defn div+ [& xs] (apply div (map #(to-num %1) xs)))
+
+;; Alternate truth functions
+(defn falsey? [x]
+  (condf x
+    number? (zero? x)
+    seqable? (empty? x)
+    identity false
+    true))
+
+(defmacro F? [x] `(falsey? ~x))
+
+(defn truey? [x]
+  (if (falsey? x) nil x))
+
+(defmacro T? [x] `(truey? ~x))
+
+(defmacro or?
+  ([] nil)
+  ([x] `(truey? ~x))
+  ([x & xs] `(or (truey? ~x) (or? ~@xs))))
+
+(defmacro ||| [x & xs] `(or? ~x ~@xs))
+
+(defmacro and?
+  ([] true)
+  ([x] `(truey? ~x))
+  ([x & xs] `(and (truey? ~x) (and? ~@xs))))
+
+(defmacro &&& [x & xs] `(and? ~x ~@xs))
+
+;; Comparison
+(defn eq
+  ([x] #(= %1 x))
+  ([x y] (= x y))
+  ([x y & xs] (apply = x y xs)))
+
+(defn ne
+  ([x] #(not= %1 x))
+  ([x y] (not= x y))
+  ([x y & xs] (apply not= x y xs)))
+
+;; Sequences
+(defn rng [x y]
+  (let [[a b] (for [n [x y]] (if (char? n) (long n) n))]
+    (cond
+      (and (number? x) (number? y))
+      (if (> b a)
+        (range a (inc b))
+        (range a (dec b) -1))
+      (and (char? x) (char? y))
+      (if (> b a)
+        (map char (range a (inc b)))
+        (map char (range a (dec b) -1)))
+      :else
+      (die "Can't rng(" (pr-str x) ", " (pr-str y) ")"))))
+
+(defmacro each [bindings & body]
+  `(doall (for ~bindings (do ~@body))))

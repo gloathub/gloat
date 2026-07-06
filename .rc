@@ -12,7 +12,9 @@ GLOAT_GIT_DIR=$(make --quiet --no-print-directory \
 PATH=$GLOAT_ROOT/bin:$PATH
 MANPATH=$GLOAT_ROOT/man:$(manpath 2>/dev/null)
 GLOAT_SHELL=bash
+LG_SOURCE_PATHS=$GLOAT_ROOT/ys/lg:.
 export GLOAT_ROOT GLOAT_VERSION GLOAT_GIT_DIR PATH MANPATH GLOAT_SHELL
+export LG_SOURCE_PATHS
 if [[ -d $GLOAT_GIT_DIR/../glojure ]]; then
   GLOJURE_DIR=$(cd "$GLOAT_GIT_DIR/../glojure" && pwd -P)
   export GLOJURE_DIR
@@ -53,6 +55,7 @@ set -gx GLOAT_ROOT $GLOAT_ROOT
 set -gx GLOAT_VERSION $GLOAT_VERSION
 set -gx GLOAT_GIT_DIR $GLOAT_GIT_DIR
 set -gx GLOAT_SHELL fish
+set -gx LG_SOURCE_PATHS $GLOAT_ROOT/ys/lg:.
 if test -d $GLOAT_GIT_DIR/../glojure
   set -gx GLOJURE_DIR (cd $GLOAT_GIT_DIR/../glojure; and pwd -P)
 end
@@ -89,7 +92,9 @@ GLOAT_GIT_DIR=$(make --quiet --no-print-directory \
 PATH=$GLOAT_ROOT/bin:$GLOAT_ROOT/local/bin:$PATH
 MANPATH=$GLOAT_ROOT/man:$GLOAT_ROOT/local/man:$(manpath 2>/dev/null)
 GLOAT_SHELL=zsh
+LG_SOURCE_PATHS=$GLOAT_ROOT/ys/lg:.
 export GLOAT_ROOT GLOAT_VERSION GLOAT_GIT_DIR PATH MANPATH GLOAT_SHELL
+export LG_SOURCE_PATHS
 if [[ -d $GLOAT_GIT_DIR/../glojure ]]; then
   GLOJURE_DIR=$(cd "$GLOAT_GIT_DIR/../glojure" && pwd -P)
   export GLOJURE_DIR

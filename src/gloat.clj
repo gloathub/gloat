@@ -267,6 +267,8 @@
 
 (def known-engines #{"glj" "lg"})
 
+(def lg-engine-formats #{"lg"})
+
 (defn resolve-engine [opts]
   (let [engine (or (:engine opts)
                    (not-empty (System/getenv "GLOAT_ENGINE"))
@@ -324,6 +326,7 @@
 
     ;; Infer from extension
     (str/ends-with? output ".bb") "bb"
+    (str/ends-with? output ".lg") "lg"
     (str/ends-with? output ".clj") "clj"
     (str/ends-with? output ".glj") "glj"
     (str/ends-with? output ".go") "go"
@@ -560,6 +563,7 @@
 Source formats:
   clj       Clojure source file
   bb        Babashka-ready source file (self-contained)
+  lg        let-go source file (self-contained; lg engine)
   glj       Glojure source file
   go        Go source (default for stdout)
   dir       Go project directory
@@ -573,7 +577,7 @@ Binary formats:
 Format can usually be inferred from -o extension:
   .clj → clj      .glj → glj    .go → go
    .so → lib    .dylib → lib   .dll → lib
-   .js → js     .wasm → wasm
+   .js → js     .wasm → wasm    .lg → lg
      / → dir    <none> → bin   .exe → bin")
     (System/exit 0)))
 
@@ -984,6 +988,16 @@ Less common:
                "\n(apply -main *command-line-args*)\n"]]
     (apply str parts)))
 
+(defn generate-lg [clj-file]
+  ;; The ys stdlib is NOT inlined: lg resolves (:require [ys.v0 ...])
+  ;; from source paths, so run output with ys/lg/ on LG_SOURCE_PATHS
+  ;; (lg -b embeds the resolved namespaces in the bundle).
+  ;; The *compiling-aot* guard keeps `lg -c/-b/-w` from running the
+  ;; program while compiling it (compiling executes top-level forms).
+  (str (slurp clj-file)
+       "\n(when-not *compiling-aot*
+  (apply -main *command-line-args*))\n"))
+
 ;;------------------------------------------------------------------------------
 ;; High-Level Orchestrators
 ;;------------------------------------------------------------------------------
@@ -1020,6 +1034,7 @@ Less common:
       (case format
         "clj" (print (slurp clj-file))
         "bb" (print (generate-bb clj-file))
+        "lg" (print (generate-lg clj-file))
         "glj" (do
                 (when (fs/exists? clj-file)
                   (clj-to-glj clj-file glj-file))
@@ -1093,6 +1108,9 @@ Less common:
                     (msg "Generated:" output))
             "bb" (do
                    (spit output (generate-bb clj-file))
+                   (msg "Generated:" output))
+            "lg" (do
+                   (spit output (generate-lg clj-file))
                    (msg "Generated:" output))
             "glj" (do
                     (when (fs/exists? clj-file)
@@ -1706,17 +1724,21 @@ Less common:
         output (:out opts)
         namespace (:ns opts)
         module (or (:module opts) (System/getenv "GLOAT_MODULE"))
-        engine (resolve-engine opts)
         platform (:platform opts)
         to (:to opts)
-        run (:run opts)]
+        run (:run opts)
+        format-guess (if (and (nil? output) (nil? to))
+                       "bin"
+                       (infer-format output
+                                     (when to (str/replace to #"^\." ""))))
+        ;; -t lg / -o foo.lg implies the lg engine
+        engine (let [engine (resolve-engine opts)]
+                 (if (= "lg" format-guess) "lg" engine))]
 
-    (when (= "lg" engine)
-      (let [format (if (and (nil? output) (nil? to))
-                     "bin"
-                     (infer-format output
-                                   (when to (str/replace to #"^\." ""))))]
-        (die "Engine 'lg' does not yet support format '" format "'")))
+    (when (and (= "lg" engine)
+               (not (contains? lg-engine-formats format-guess)))
+      (die "Engine 'lg' does not yet support format '" format-guess "'"
+           " (supported: " (str/join ", " (sort lg-engine-formats)) ")"))
 
     ;; --run implies quiet
     (let [opts (if run
@@ -1892,7 +1914,7 @@ Less common:
           ;; Dispatch based on input/output
           (cond
             (nil? (:output opts))
-            (if (contains? #{"clj" "bb" "glj" "go"} format)
+            (if (contains? #{"clj" "bb" "lg" "glj" "go"} format)
               (convert-to-stdout
                (:input opts) format (or (:namespace opts) "main.core"))
               (die "Format '" format "' requires -o output"))

@@ -14,7 +14,7 @@ LET-GO-REPO := gloathub/let-go
 override LET-GO-DOWN = \
   https://github.com/$(LET-GO-REPO)/releases/download/v$(LET-GO-VERSION)/$(LET-GO-TAR)
 
-YAMLSCRIPT-VERSION := 0.2.8
+YAMLSCRIPT-VERSION := 0.2.26
 YS-VERSION := $(YAMLSCRIPT-VERSION)
 LIBYS-VERSION := $(YAMLSCRIPT-VERSION)
 

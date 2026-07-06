@@ -3,6 +3,11 @@ GLOAT-VERSION := 0.1.56
 GLOJURE-VERSION := 0.6.7
 GLOJURE-REPO := https://github.com/glojurelang/glojure
 
+# Gloat fork of let-go, carrying fixes not yet in a nooga/let-go
+# release. Switch back to LET-GO-REPO := nooga/let-go when they land.
+LET-GO-VERSION := 1.11.2-gloat.1
+LET-GO-REPO := gloathub/let-go
+
 YAMLSCRIPT-VERSION := 0.2.8
 YS-VERSION := $(YAMLSCRIPT-VERSION)
 LIBYS-VERSION := $(YAMLSCRIPT-VERSION)

@@ -608,6 +608,9 @@ install-managed-command() {
     echo "$path"
     return 0
   fi
+  # Surface the failure (e.g. a download 404) instead of silently
+  # printing no path
+  printf '%s\n' "Error: installing '$cmd' failed:" "$out" >&2
   return 0
 }
 
@@ -1005,7 +1008,8 @@ start-tool-nrepl() {
         -M -m nrepl.cmdline)
       ;;
     let-go|lg)
-      cmd=("$bin" -n)
+      # Let the REPL resolve the ys stdlib for the lg engine
+      cmd=(env "LG_SOURCE_PATHS=${LG_SOURCE_PATHS:-$root/ys/lg:.}" "$bin" -n)
       ;;
     *)
       die "Error: unknown tool '+$tool'" \

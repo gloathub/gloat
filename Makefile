@@ -21,7 +21,6 @@ include $M/md2man.mk
 include $M/perl.mk
 include $M/phel.mk
 include $M/shellcheck.mk
-include $M/let-go.mk
 include $M/wasmtime.mk
 include $M/yamlscript.mk
 

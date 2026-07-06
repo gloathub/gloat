@@ -70,10 +70,10 @@ try "GLOAT_ENGINE=foo $GLOAT_BIN -t clj x.clj"
 is "$rc" 1 "'GLOAT_ENGINE=foo gloat' exits 1"
 has "$got" "Unknown engine 'foo'" "'GLOAT_ENGINE=foo' reports unknown engine"
 
-try "$GLOAT_BIN -Elg x.clj"
-is "$rc" 1 "'gloat -Elg' exits 1"
-has "$got" "Engine 'lg' does not yet support format 'bin'" \
-  "'gloat -Elg' reports lg engine not yet supported"
+try "$GLOAT_BIN -Elg -t wasm x.clj"
+is "$rc" 1 "'gloat -Elg -t wasm' exits 1"
+has "$got" "Engine 'lg' does not yet support format 'wasm'" \
+  "'gloat -Elg' reports lg engine unsupported formats"
 
 try "$GLOAT_BIN --engine=lg -t go x.clj"
 is "$rc" 1 "'gloat --engine=lg -t go' exits 1"
@@ -116,6 +116,16 @@ is "$got" "Hello, Gloat!" "'gloat -Elg --run' passes program args"
 printf '(defn -main [] (throw (ex-info "boom" {})))' > "$TMP/boom.clj"
 try "$GLOAT_BIN -Elg --run $TMP/boom.clj"
 is "$rc" 1 "'gloat -Elg --run' propagates failure exit code"
+
+# bin format under the lg engine (bundled binary via lg -b)
+try "$GLOAT_BIN -Elg -o $TMP/hello-lg $FIXTURES_DIR/hello.ys"
+is "$rc" 0 "'gloat -Elg -o bin' exits 0"
+
+try "$TMP/hello-lg"
+is "$got" "Hello, World!" "lg-bundled binary runs standalone"
+
+try "$TMP/hello-lg Gloat"
+is "$got" "Hello, Gloat!" "lg-bundled binary takes args"
 
 try "$GLOAT_BIN --shell -- 'printf \"%s\\n\" \"\${PATH%%:*}\"' 2>/dev/null"
 is "$rc" 0 "'gloat --shell' exits 0"

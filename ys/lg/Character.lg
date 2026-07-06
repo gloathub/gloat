@@ -1,0 +1,25 @@
+;; Copyright 2023-2026 Ingy dot Net
+;; This code is licensed under MIT license (See License for details)
+
+;; java.lang.Character compatibility for the lg engine (see Math.lg).
+;; ASCII-oriented, like the glj engine's gojava port.
+
+(ns Character
+  (:require [clojure.string :as str]))
+
+(def SIZE 16)
+
+(defn isDigit [c] (<= 48 (int c) 57))
+(defn isLowerCase [c] (<= 97 (int c) 122))
+(defn isUpperCase [c] (<= 65 (int c) 90))
+(defn isLetter [c] (or (isLowerCase c) (isUpperCase c)))
+(defn isLetterOrDigit [c] (or (isLetter c) (isDigit c)))
+(defn isWhitespace [c] (boolean (re-matches #"\s" (str c))))
+(defn toLowerCase [c] (first (str/lower-case (str c))))
+(defn toUpperCase [c] (first (str/upper-case (str c))))
+(defn getNumericValue [c]
+  (cond
+    (isDigit c) (- (int c) 48)
+    (isLowerCase c) (+ 10 (- (int c) 97))
+    (isUpperCase c) (+ 10 (- (int c) 65))
+    :else -1))

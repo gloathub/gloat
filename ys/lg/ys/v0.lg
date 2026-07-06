@@ -1,15 +1,26 @@
 ;; Copyright 2023-2026 Ingy dot Net
 ;; This code is licensed under MIT license (See License for details)
 
-;; Minimal YAMLScript v0 runtime for the lg (let-go) engine.
-;; Provides enough of the ys.v0 surface to run small YS programs.
-;; Derived from let-go's examples/aot/ys-on-let-go/ys-runtime.lg shim
+;; YAMLScript v0 runtime for the lg (let-go) engine.
+;; A flattened port of the pure-Clojure surface of ys.std and ys.dwim
+;; (see ys/src/ys/), originally seeded from let-go's
+;; examples/aot/ys-on-let-go/ys-runtime.lg shim
 ;; (Copyright (c) 2026 Marcin Gasperowicz, MIT).
-;; The full stdlib port happens in later stages of the lg engine plan.
+;; Not yet ported: ys.fs, ys.ipc, ys.http, ys.json (Go-interop
+;; modules), ordered maps (omap falls back to hash-map).
 
 (ns ys.v0
   (:require
-   [clojure.string :as str]))
+   [clojure.math :as math]
+   [clojure.string :as str]
+   [Math]
+   [Character]
+   [Byte]
+   [javacompat]))
+
+;;------------------------------------------------------------------------------
+;; Runtime vars and helpers
+;;------------------------------------------------------------------------------
 
 (def ^:dynamic ARGV [])
 (def ^:dynamic ARGS [])
@@ -28,45 +39,6 @@
         s))
     args))
 
-;; IO (definitions match the bb patches of ys.std)
-(defn say [x] (println x))
-(defn warn [x]
-  (binding [*out* *err*]
-    (println x)))
-(defn out [x]
-  (clojure.core/print x))
-(defn print [x]
-  (clojure.core/print x))
-
-;; Math
-(defn add
-  ([] 0)
-  ([x] #(+ %1 x))
-  ([x y] (+ x y))
-  ([x y & xs] (apply + x y xs)))
-(defn sub [x & xs] (apply - x xs))
-(defn mul [x & xs] (apply * x xs))
-(defn div [x & xs] (apply / x xs))
-(defn sum [xs] (reduce + 0 (filter identity xs)))
-
-;; Strings
-(defn join
-  ([Ss] (join "" Ss))
-  ([S Ss]
-   (if (string? S)
-     (str/join S Ss)
-     (str/join Ss S)))
-  ([S x & xs]
-   (str/join S (cons x xs))))
-(defn joins [Ss] (join " " Ss))
-(defn text [Ss]
-  (if (empty? Ss)
-    ""
-    (str (str/join "\n" Ss) "\n")))
-
-;; YAML data-mode constructor; real YS uses an ordered map
-(defn % [& kvs] (apply hash-map kvs))
-
 (defn die
   ([x] (throw (ex-info (str x) {})))
   ([x & xs] (die (apply str x xs))))
@@ -75,15 +47,185 @@
 (defmacro condf [x & clauses]
   `(condp (fn [f# x#] (f# x#)) ~x ~@clauses))
 
+(defn regex? [x] (instance? java.util.regex.Pattern x))
+
+(defn re-find+ [R S]
+  (re-find R (str S)))
+
 (defn- op-error
   ([op x]
    (die "Can't " op "(" (pr-str x) ")"))
   ([op x y]
    (die "Can't " op "(" (pr-str x) " " (pr-str y) ")")))
 
-(defn regex? [x] (instance? java.util.regex.Pattern x))
+;;------------------------------------------------------------------------------
+;; String functions
+;;------------------------------------------------------------------------------
 
-;; Type coercion (subset of ys.std; no atom?/class? in lg)
+(defn blank? [s] (str/blank? s))
+;; lg has no str/trim-newline
+(defn chomp [s] (str/replace s #"[\n\r]+$" ""))
+(defn ends? [s e] (str/ends-with? s e))
+(def escape str/escape)
+(defn index [& args] (apply str/index-of args))
+
+(defn join
+  ([Ss] (join "" Ss))
+  ([S Ss]
+   (if (string? S)
+     (str/join S Ss)
+     (str/join Ss S)))
+  ([S x & xs]
+   (str/join S (cons x xs))))
+
+(defn joins [Ss] (join " " Ss))
+
+(defn lc [s] (str/lower-case s))
+
+(defn lines [S]
+  (if (empty? S)
+    []
+    (let [S (if (= (last S) \newline)
+              (subs S 0 (dec (count S)))
+              S)]
+      (str/split S #"\n" -1))))
+
+(defn replace
+  ([x] (clojure.core/replace x))
+  ([x y] (if (or (regex? y) (string? y))
+           (str/replace x y "")
+           (clojure.core/replace x y)))
+  ([x y z] (str/replace x y z)))
+
+(defn replace1 [& args] (apply str/replace-first args))
+(defn rindex [& args] (apply str/last-index-of args))
+
+(defn split
+  ([S]
+   (let [S (str S)]
+     (if (empty? S)
+       []
+       (str/split S #""))))
+  ([S R]
+   (let [[S R] (if (regex? S) [R S] [S R])
+         S (str S)
+         R (if (string? R) (re-pattern R) R)]
+     (str/split S R))))
+
+(defn starts? [s p] (str/starts-with? s p))
+
+(defn substr
+  ([str off] (substr str off (- (count str) off)))
+  ([str off len]
+   (let [slen (count str)
+         off (if (neg? off) (+ slen off) off)
+         [len slen] (if (neg? len)
+                      (let [len (max 0 (+ slen len))]
+                        [len len])
+                      [len slen])]
+     (condp apply [off slen]
+       < (when (>= (+ off len) 0)
+           (let [[off len] (if (neg? off)
+                             [0 (+ off len)]
+                             [off len])
+                 len (if (> (+ off len) slen) (- slen off) len)]
+             (subs str off (+ off len))))
+       = ""
+       > nil))))
+
+(defn text [Ss]
+  (if (empty? Ss)
+    ""
+    (str/join "\n"
+      (concat Ss (list "")))))
+
+(defn trim [s] (str/trim s))
+(defn triml [s] (str/triml s))
+(defn trimr [s] (str/trimr s))
+(defn uc [s] (str/upper-case s))
+(defn uc1 [s] (str/capitalize s))
+
+(defn words [S]
+  (str/split S #"\s+"))
+
+;;------------------------------------------------------------------------------
+;; Type casting functions
+;;------------------------------------------------------------------------------
+(declare to-num to-type omap)
+
+(defn to-bool [x] (boolean x))
+
+(defn to-char [x]
+  (condf x
+    char? x
+    string? (if (= 1 (count x))
+              (first x)
+              (die "Can't convert multi-char string to char"))
+    number? (char x)
+    (die "Can't convert " (to-type x) " to char")))
+
+(defn to-float [x] (double (to-num x)))
+
+(defn to-int [x] (long (to-num x)))
+
+(defn to-keyw [x] (keyword x))
+
+(defn to-list [x]
+  (condf x
+    map? (reduce-kv (fn [acc k v] (conj acc v k)) '() x)
+    sequential? (if (empty? x) '() (seq x))
+    string? (if (empty? x) '() (seq x))
+    nil? '()
+    (die "Can't convert " (to-type x) " to list")))
+
+(defn to-map [x]
+  (condf x
+    map? x
+    set? (zipmap (seq x) (repeat nil))
+    sequential? (apply hash-map (seq x))
+    string? (apply hash-map (seq x))
+    nil? {}
+    (die "Can't convert " (to-type x) " to map")))
+
+(defn to-num
+  ([x] (to-num x nil))
+  ([x default]
+   (condf x
+     number? x
+     string? (when (re-matches #"^[+-]?[0-9]+\.?[0-9]*([eE][+-]?[0-9]+)?$" x)
+               (read-string x))
+     nil? (die "Can't convert a nil value to a number")
+     seqable? (count x)
+     char? (int x)
+     boolean? (if x 1 0)
+     (die (str "Can't convert a value of type '"
+            (to-type x) "' to a number")))))
+
+(defn to-omap [x]
+  (condf x
+    sequential? (apply omap x)
+    map? (apply omap (into [] cat x))
+    nil? (omap)
+    (die "Can't convert " (to-type x) " to omap")))
+
+(defn to-set [x]
+  (condf x
+    map? (clojure.core/set (keys x))
+    seqable? (clojure.core/set (seq x))
+    nil? #{}
+    (die "Can't convert " (to-type x) " to set")))
+
+(defn set
+  ([] #{})
+  ([x] (to-set x)))
+
+(defn to-str [x]
+  (condf x
+    string? x
+    nil? "nil"
+    (str x)))
+
+;; Subset of ys.std to-type; no atom?/class? predicates in lg
 (defn to-type [x]
   (condf x
     boolean? "bool"
@@ -105,44 +247,6 @@
     vector? "vec"
     (die "Can't determine type of '" (type x) "' value")))
 
-(defn to-num
-  ([x] (to-num x nil))
-  ([x default]
-   (condf x
-     number? x
-     string? (when (re-matches #"^[+-]?[0-9]+\.?[0-9]*([eE][+-]?[0-9]+)?$" x)
-               (read-string x))
-     nil? (die "Can't convert a nil value to a number")
-     seqable? (count x)
-     char? (int x)
-     boolean? (if x 1 0)
-     (die (str "Can't convert a value of type '"
-            (to-type x) "' to a number")))))
-
-(defn to-list [x]
-  (condf x
-    map? (reduce-kv (fn [acc k v] (conj acc v k)) '() x)
-    sequential? (if (empty? x) '() (seq x))
-    string? (if (empty? x) '() (seq x))
-    nil? '()
-    (die "Can't convert " (to-type x) " to list")))
-
-(defn to-map [x]
-  (condf x
-    map? x
-    set? (zipmap (seq x) (repeat nil))
-    sequential? (apply hash-map (seq x))
-    string? (apply hash-map (seq x))
-    nil? {}
-    (die "Can't convert " (to-type x) " to map")))
-
-(defn to-set [x]
-  (condf x
-    map? (clojure.core/set (keys x))
-    seqable? (clojure.core/set (seq x))
-    nil? #{}
-    (die "Can't convert " (to-type x) " to set")))
-
 (defn to-vec [x]
   (condf x
     map? (reduce-kv (fn [acc k v] (conj acc k v)) [] x)
@@ -150,6 +254,28 @@
     string? (vec x)
     nil? []
     (die "Can't convert " (or (type x) "nil") " to vector")))
+
+(defn B [x] (to-bool x))
+(defn C [x] (to-char x))
+(defn F [x] (to-float x))
+(defn I [x] (to-int x))
+(defn K [x] (to-keyw x))
+(defn L [x] (to-list x))
+(defn M [x] (to-map x))
+(defn N [& args] (apply to-num args))
+(defn O [x] (to-omap x))
+(defn S [x] (to-str x))
+(defn T [x] (to-type x))
+(defn V [x] (to-vec x))
+
+(defn L+ [& args] (apply list args))
+(defn M+ [& args] (apply hash-map args))
+(defn O+ [& args] (apply omap args))
+(defn V+ [& args] (apply vector args))
+
+;;------------------------------------------------------------------------------
+;; Collection functions
+;;------------------------------------------------------------------------------
 
 (defn get+ [C K]
   (condf C
@@ -174,10 +300,164 @@
                nil)
     nil))
 
-(defn a [x] (identity x))
-(defn len [x] (count x))
+(defn flat [C]
+  (mapcat
+    (fn [x] (if (seqable? x) x [x]))
+    C))
 
+(defn grep [P C]
+  (let [[P C] (if (seqable? C) [P C] [C P])
+        _ (when-not (seqable? C)
+            (die "No seqable arg passed to grep"))]
+    (condf P
+      regex? (filter #(re-find P %1) C)
+      fn? (filter P C)
+      (filter #(= P %1) C))))
+
+(defn has?
+  ([C] #(has? C %1))
+  ([C x]
+   (boolean
+     (cond
+       (and (string? C) (string? x)) (str/includes? C x)
+       (map? C) (get+ C (symbol x))
+       :else (some #(= %1 x) C)))))
+
+(defn in?
+  ([C] #(in? C %1))
+  ([x C] (has? C x)))
+
+(defn +concat [& C]
+  (apply concat (map #(cond
+                        (sequential? %1) %1
+                        (or
+                          (string? %1)
+                          (number? %1)
+                          (boolean? %1)
+                          (map? %1)
+                          (set? %1)) [%1]
+                        :else nil) C)))
+
+(defn +merge [M]
+  (if (:-<< M)
+    (let [m (dissoc M :-<<)
+          q (get M :-<<)
+          v (if (map? q)
+              (vector q)
+              (if (seqable? q)
+                (vec q)
+                (die "Can't merge " q)))
+          M (apply merge-with (fn [x _] x) m v)]
+      (+merge M))
+    M))
+
+;; Ordered map workaround: lg has no ordered map (matches the glj
+;; engine's ys.std XXX workaround)
+(defn omap [& xs]
+  (apply hash-map xs))
+
+(defn % [& xs]
+  (apply omap xs))
+
+(defn reverse [x]
+  (condf x
+    ;; lg's str/reverse returns a seq, not a string
+    string? (apply str (clojure.core/reverse x))
+    vector? (vec (clojure.core/reverse x))
+    seqable? (clojure.core/reverse x)
+    (die "Can't reverse " x)))
+
+(defn rng [x y]
+  (let [[a b] (for [n [x y]] (if (char? n) (long n) n))]
+    (cond
+      (and (number? x) (number? y))
+      (if (> b a)
+        (range a (inc b))
+        (range a (dec b) -1))
+      (and (char? x) (char? y))
+      (if (> b a)
+        (map char (range a (inc b)))
+        (map char (range a (dec b) -1)))
+      :else
+      (die "Can't rng(" (pr-str x) ", " (pr-str y) ")"))))
+
+(defn slice [C & ks]
+  (let [ks (flatten ks)]
+    (vec (map (fn [k] (get+ C k)) ks))))
+
+;; lg core doesn't have partition-all yet
+(defn partition-all
+  ([n coll] (partition-all n n coll))
+  ([n step coll]
+   (lazy-seq
+     (when-let [s (seq coll)]
+       (cons (take n s) (partition-all n step (drop step s)))))))
+
+;;------------------------------------------------------------------------------
+;; Math functions
+;;------------------------------------------------------------------------------
+
+(defn add
+  ([] 0)
+  ([x] #(+ %1 x))
+  ([x y] (+ x y))
+  ([x y & xs] (apply + x y xs)))
+
+(defn sub
+  ([x] #(- %1 x))
+  ([x y] (- x y))
+  ([x y & xs] (apply - x y xs)))
+
+(defn mul
+  ([] 1)
+  ([x] #(* %1 x))
+  ([x y] (* x y))
+  ([x y & xs] (apply * x y xs)))
+
+(defn div
+  ([x] #(div %1 x))
+  ([x y]
+   (let [a (/ x y)]
+     (if (ratio? a)
+       (double a)
+       a)))
+  ([x y & xs]
+   (reduce div (div x y) xs)))
+
+(defn digits [n]
+  (let [n (str n)]
+    (when (re-matches #"[0-9]+" n)
+      (for [d n]
+        (- (int d) 48)))))
+
+(defn floor [x] (math/floor x))
+
+(defn pow
+  ([x] #(pow %1 x))
+  ([x y]
+   (if (and (integer? x) (integer? y) (>= y 0))
+     (let [a (math/pow x y)]
+       (if (<= a 9223372036854775807)
+         (long a)
+         a))
+     (math/pow x y)))
+  ([x y & xs]
+   (let [xs (clojure.core/reverse (conj xs y x))]
+     (reduce #(pow %2 %1) 1 xs))))
+
+(defn round [x] (math/round x))
+
+(defn sum [xs]
+  (reduce + 0 (filter identity xs)))
+
+(defn sqr [N] (pow N 2))
+(defn cube [N] (pow N 3))
+(defn sqrt [x] (math/sqrt x))
+
+;;------------------------------------------------------------------------------
 ;; Polymorphic (dwim) operators: what YS + - * / compile to
+;;------------------------------------------------------------------------------
+
 (defn inc+ [x]
   (condf x
     number? (inc x)
@@ -255,7 +535,153 @@
 
 (defn div+ [& xs] (apply div (map #(to-num %1) xs)))
 
+;;------------------------------------------------------------------------------
+;; Control functions
+;;------------------------------------------------------------------------------
+
+;; ys.std uses (ns-resolve *ns* ...), but lg's ns-resolve doesn't see
+;; core-referred vars; resolve does. Also #(%1 %2) inside the syntax
+;; quote misreads under lg (captures the % fn), hence the explicit fn.
+(defmacro value [x]
+  `(let [var# (condp (fn [f# v#] (f# v#)) ~x
+                string? (resolve (symbol ~x))
+                symbol? (resolve ~x)
+                var? ~x
+                nil)]
+     (when var# (var-get var#))))
+
+(defmacro call [x & xs]
+  `(let [f# (or (value ~x) ~x)]
+     (when-not (ifn? f#) (die "Can't call(" (pr-str f#) ")"))
+     (f# ~@xs)))
+
+(defmacro each [bindings & body]
+  `(doall (for ~bindings (do ~@body))))
+
+(defn err [x]
+  (binding [*out* *err*]
+    (clojure.core/print x)))
+
+(defn exit
+  ([] (exit 0))
+  ([I] (System/exit I)))
+
+(defmacro when+ [test & body]
+  (list 'when-let ['_ test] (cons 'do body)))
+
+;;------------------------------------------------------------------------------
+;; Function functions
+;;------------------------------------------------------------------------------
+
+(defn flip [f]
+  (fn
+    ([] (f))
+    ([a] (f a))
+    ([a b] (f b a))
+    ([a b c] (f c b a))
+    ([a b c d] (f d c b a))
+    ([a b c d & rest]
+     (->> (concat [a b c d] rest)
+       (reduce conj ())
+       (apply f)))))
+
+;;------------------------------------------------------------------------------
+;; Regex functions
+;;------------------------------------------------------------------------------
+
+(defn =-- [S R]
+  (re-find+ R S))
+
+(defn !-- [S R]
+  (not (=-- S R)))
+
+(defn =--- [S R]
+  (re-matches R (str S)))
+
+(defn !--- [S R]
+  (not (=--- S R)))
+
+;;------------------------------------------------------------------------------
+;; I/O functions
+;;------------------------------------------------------------------------------
+
+(defn read [& args] (apply slurp args))
+(defn write [& args] (apply spit args))
+
+;; IO fn definitions match the bb patches of ys.std
+(defn out [x] (clojure.core/print x))
+(defn print [x] (clojure.core/print x))
+(defn say [x] (println x))
+(defn warn [x]
+  (binding [*out* *err*]
+    (println x)))
+
+;;------------------------------------------------------------------------------
+;; Shorter named alias functions
+;;------------------------------------------------------------------------------
+
+(defn a [x] (identity x))
+(defn len [x] (count x))
+
+;;------------------------------------------------------------------------------
+;; Quoting functions
+;;------------------------------------------------------------------------------
+
+(defmacro q
+  ([x] `(quote ~x))
+  ([x & xs] `(quote (~x ~@xs))))
+
+(defmacro ql [& xs] `(list ~@xs))
+(defmacro qm [& xs] `(hash-map ~@xs))
+(defmacro qo [& xs] `(omap ~@xs))
+(defmacro qs [& xs]
+  `(str/join " " '(~@xs)))
+(defmacro qv [& xs] `(vector ~@xs))
+
+(defn qr [S] (re-pattern S))
+
+(defmacro qw [& xs]
+  (let [xs# (map #(if (nil? %1) "nil" (str %1)) xs)]
+    `[~@xs#]))
+
+;;------------------------------------------------------------------------------
+;; Named function aliases for infix operators
+;;------------------------------------------------------------------------------
+
+(defn eq
+  ([x] #(= %1 x))
+  ([x y] (= x y))
+  ([x y & xs] (apply = x y xs)))
+
+(defn ne
+  ([x] #(not= %1 x))
+  ([x y] (not= x y))
+  ([x y & xs] (apply not= x y xs)))
+
+(defn gt
+  ([x] #(> %1 x))
+  ([x y] (> x y))
+  ([x y & xs] (apply > x y xs)))
+
+(defn ge
+  ([x] #(>= %1 x))
+  ([x y] (>= x y))
+  ([x y & xs] (apply >= x y xs)))
+
+(defn lt
+  ([x] #(< %1 x))
+  ([x y] (< x y))
+  ([x y & xs] (apply < x y xs)))
+
+(defn le
+  ([x] #(<= %1 x))
+  ([x y] (<= x y))
+  ([x y & xs] (apply <= x y xs)))
+
+;;------------------------------------------------------------------------------
 ;; Alternate truth functions
+;;------------------------------------------------------------------------------
+
 (defn falsey? [x]
   (condf x
     number? (zero? x)
@@ -284,19 +710,32 @@
 
 (defmacro &&& [x & xs] `(and? ~x ~@xs))
 
-;; Comparison
-(defn eq
-  ([x] #(= %1 x))
-  ([x y] (= x y))
-  ([x y & xs] (apply = x y xs)))
+;;------------------------------------------------------------------------------
+;; Atom functions
+;;------------------------------------------------------------------------------
 
-(defn ne
-  ([x] #(not= %1 x))
-  ([x y] (not= x y))
-  ([x y & xs] (apply not= x y xs)))
+(defn atom
+  ([] (clojure.core/atom nil))
+  ([x] (clojure.core/atom x)))
 
+(defn reset
+  ([x y] (reset! x y)))
+
+(defn swap
+  ([f & xs] (apply swap! f xs)))
+
+;;------------------------------------------------------------------------------
+;; Special functions
+;;------------------------------------------------------------------------------
+
+;; Used to run a YS file as a Bash script:
+(defmacro source [& xs])
+
+;;------------------------------------------------------------------------------
 ;; Dwim wrappers (from ys.dwim): +name fns accept args in either
 ;; order; ++name variants also accept a regex as the fn/pred.
+;;------------------------------------------------------------------------------
+
 (defn- regex-to-fn [a b f]
   (let [a (if (regex? a) #(re-find a %1) a)]
     (f a b)))
@@ -317,9 +756,6 @@
   ([a b] (str/replace a b ""))
   ([a b c] (str/replace a b c)))
 (defn ++take-while [a b] (regex-to-fn a b take-while))
-
-;; ys.dwim refers this from clojure.string
-(def escape str/escape)
 
 (defmacro ^:private dwim [type idfn name]
   (let [dname (symbol (str "+" name))
@@ -388,21 +824,3 @@
 (dwim 2.2 seqable? take)
 (dwim 2.2 seqable? take-last)
 (dwim 2.2 seqable? take-while)
-
-;; Sequences
-(defn rng [x y]
-  (let [[a b] (for [n [x y]] (if (char? n) (long n) n))]
-    (cond
-      (and (number? x) (number? y))
-      (if (> b a)
-        (range a (inc b))
-        (range a (dec b) -1))
-      (and (char? x) (char? y))
-      (if (> b a)
-        (map char (range a (inc b)))
-        (map char (range a (dec b) -1)))
-      :else
-      (die "Can't rng(" (pr-str x) ", " (pr-str y) ")"))))
-
-(defmacro each [bindings & body]
-  `(doall (for ~bindings (do ~@body))))

@@ -267,7 +267,7 @@
 
 (def known-engines #{"glj" "lg"})
 
-(def lg-engine-formats #{"lg"})
+(def lg-engine-formats #{"lg" "bin"})
 
 (defn resolve-engine [opts]
   (let [engine (or (:engine opts)
@@ -1094,8 +1094,46 @@ Less common:
         (fs/delete-tree tmpdir)
         (when stdin? (fs/delete input))))))
 
+(defn convert-file-lg-bin
+  "Compile input to a standalone binary by bundling its bytecode with
+  the lg runtime (lg -b). No Go toolchain involved."
+  [input output namespace]
+  (let [input-type (get-file-type input)
+        tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))
+        clj-file (str tmpdir "/temp.clj")
+        lg-file (str tmpdir "/temp.lg")
+        ns (when (= input-type "ys")
+             (or namespace (derive-namespace input)))]
+    (try
+      (case input-type
+        "ys" (do
+               (msg "Converting" input "(.ys) to Clojure...")
+               (ys-to-clj input clj-file ns))
+        "clj" (fs/copy input clj-file {:replace-existing true})
+        (die "Engine 'lg' can't compile input type: " input-type))
+      (spit lg-file (generate-lg clj-file))
+      (msg "Bundling binary with lg...")
+      (let [lg (find-lg)
+            out (str (fs/absolutize output))
+            result (process/shell {:continue true
+                                   :out :string :err :string}
+                                  lg "-source-paths" lg-source-paths
+                                  "-b" out lg-file)]
+        (when-not (zero? (:exit result))
+          (die (str "lg -b failed:\n" (:out result) (:err result))))
+        (msg "Generated:" output))
+      (finally
+        (fs/delete-tree tmpdir)))))
+
 (defn convert-file [input output format namespace module platform]
   (let [input-type (get-file-type input)]
+
+    ;; lg engine binaries bundle bytecode; no Go build directory
+    (if (and (= "lg" (:engine *opts*)) (= format "bin"))
+      (do
+        (when platform
+          (die "Engine 'lg' does not support --platform yet"))
+        (convert-file-lg-bin input output namespace))
 
     ;; For formats that need directory build, delegate
     (if (contains? #{"dir" "bin" "lib" "wasm" "js"} format)
@@ -1172,7 +1210,7 @@ Less common:
                             loader-file)))))
 
           (finally
-            (fs/delete-tree tmpdir)))))))
+            (fs/delete-tree tmpdir))))))))
 
 (defn convert-files [input-files output format namespace module platform]
   "Compile multiple explicit input files to a binary/lib/dir output.

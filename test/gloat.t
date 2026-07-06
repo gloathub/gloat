@@ -85,6 +85,26 @@ is "$rc" 1 "'GLOAT_ENGINE=lg gloat -o x.so' exits 1"
 has "$got" "Engine 'lg' does not yet support format 'lib'" \
   "'GLOAT_ENGINE=lg' infers format from -o"
 
+# lg output format (-t lg implies the lg engine)
+lg_bin=$("$GLOAT_BIN" --which=lg | tail -1)
+lg_paths=$SCRIPT_DIR/../ys/lg:.
+
+try "$GLOAT_BIN -q -t lg $FIXTURES_DIR/hello.ys"
+is "$rc" 0 "'gloat -t lg' exits 0"
+has "$got" "[ys.v0 :refer :all]" "'gloat -t lg' output requires ys.v0"
+has "$got" "(ns main.core" "'gloat -t lg' output contains main namespace"
+hasnt "$got" "(ns ys.v0" "'gloat -t lg' does not inline the ys runtime"
+
+try "$GLOAT_BIN -q -t lg -o $TMP/hello.lg $FIXTURES_DIR/hello.ys"
+is "$rc" 0 "'gloat -t lg -o hello.lg' exits 0"
+
+try "$lg_bin -source-paths $lg_paths $TMP/hello.lg"
+is "$rc" 0 "lg runs the generated hello.lg"
+is "$got" "Hello, World!" "hello.lg prints default greeting"
+
+try "$lg_bin -source-paths $lg_paths $TMP/hello.lg Gloat"
+is "$got" "Hello, Gloat!" "hello.lg greets command-line argument"
+
 try "$GLOAT_BIN --shell -- 'printf \"%s\\n\" \"\${PATH%%:*}\"' 2>/dev/null"
 is "$rc" 0 "'gloat --shell' exits 0"
 ok "$([[ $got == "$PROJECT_ROOT/.cache/"* ||

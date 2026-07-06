@@ -179,8 +179,44 @@ clj: $(CLJ)
 lein: $(LEIN)
 	$@ repl
 
-lg: $(LG)
-	$@
+lg: lg-ensure
+	$(LG)
+
+# Build lg from a local let-go checkout into the versioned install
+# slot. Dev bridge while the pinned LET-GO-VERSION has no published
+# release on LET-GO-REPO (rerun after 'gloat --reset'). The touched
+# tarball satisfies the module's download prerequisite.
+LET-GO-SRC ?= $(GIT-REPO-DIR)/../let-go
+
+lg-dev: $(GO)
+	$Q [[ -d '$(LET-GO-SRC)' ]] || { \
+	  echo "Error: no let-go checkout at '$(LET-GO-SRC)' (set LET-GO-SRC)"; \
+	  exit 1; }
+	@echo "Building lg from $(LET-GO-SRC)"
+	$Q cd '$(LET-GO-SRC)' && \
+	  GOPATH=$(abspath $(LOCAL-PREFIX)/go) \
+	  GOMODCACHE=$(abspath $(LOCAL-PREFIX)/go-mod) \
+	  '$(abspath $(GO))' build -ldflags \
+	    '-s -w -X main.version=$(LET-GO-VERSION) -X main.commit=dev' \
+	    -o lg .
+	$Q mkdir -p $(LET-GO-LOCAL)/bin $(LOCAL-CACHE)
+	$Q cp '$(LET-GO-SRC)/lg' $(LET-GO-LOCAL)/bin/lg
+	$Q touch $(LOCAL-CACHE)/$(LET-GO-TAR) $(LET-GO-LOCAL)/bin/lg
+	@echo $(LG)
+
+# Make sure lg is installed: an existing binary wins, then a local
+# let-go checkout (built via lg-dev; the checkout wins over download,
+# like GLOJURE_DIR), then the release download. Explicit sequencing
+# instead of rule prereqs so a failed download can't undo a build.
+lg-ensure:
+	$Q if [[ -x '$(LG)' ]]; then :; \
+	elif [[ -n '$(LET-GO-SRC)' && -d '$(LET-GO-SRC)' ]]; then \
+	  $(MAKE) --no-print-directory lg-dev > /dev/null; \
+	else \
+	  $(MAKE) --no-print-directory '$(LG)'; \
+	fi
+
+.PHONY: lg-ensure
 
 which-bb: $(BB)
 	@echo $<
@@ -191,8 +227,8 @@ which-lein: $(LEIN)
 which-clj: $(CLOJURE)
 	@echo $<
 
-which-lg: $(LG)
-	@echo $<
+which-lg: lg-ensure
+	@echo '$(abspath $(LG))'
 
 ys-pkg: $(YS-GO-FILES) $(GO) $(PERL)
 	@echo "Syncing ys/go/ to ys/pkg/"

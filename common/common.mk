@@ -8,6 +8,12 @@ GLOJURE-REPO := https://github.com/glojurelang/glojure
 LET-GO-VERSION := 1.11.2-gloat.1
 LET-GO-REPO := gloathub/let-go
 
+# The published let-go.mk module hardcodes the nooga repo in its
+# download URL; force ours until its LET-GO-REPO support propagates.
+# (override + deferred = beats the module's later := assignment.)
+override LET-GO-DOWN = \
+  https://github.com/$(LET-GO-REPO)/releases/download/v$(LET-GO-VERSION)/$(LET-GO-TAR)
+
 YAMLSCRIPT-VERSION := 0.2.8
 YS-VERSION := $(YAMLSCRIPT-VERSION)
 LIBYS-VERSION := $(YAMLSCRIPT-VERSION)

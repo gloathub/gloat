@@ -6,6 +6,7 @@ gloat-vars: $(PATH-DEPS)
 	@echo '  :GLOJURE-DIR "$(abspath $(GLOJURE-DIR))"'
 	@echo '  :GLOJURE-VERSION "$(GLOJURE-VERSION)"'
 	@echo '  :GO "$(abspath $(GO))"'
+	@echo '  :LG "$(abspath $(LG))"'
 	@echo '  :YS "$(abspath $(YS))"'
 	@echo '  :YS-PKG-VERSION "$(YS-PKG-VERSION)"'
 	@echo '}'

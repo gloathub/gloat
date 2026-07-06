@@ -988,6 +988,30 @@ Less common:
                "\n(apply -main *command-line-args*)\n"]]
     (apply str parts)))
 
+(defn find-lg
+  "Path to the lg binary, installing it on demand (lg is a managed
+  command like wasmtime, not a core dependency)."
+  []
+  (let [lg (:LG make-vars)]
+    (if (and lg (fs/executable? lg))
+      lg
+      (let [result (process/shell {:out :string :err :string
+                                   :continue true
+                                   :dir GLOAT-ROOT
+                                   :extra-env go-env}
+                                  "make" "--quiet" "--no-print-directory"
+                                  "path-lg")
+            path (->> (str/split-lines (str (:out result)))
+                      (remove str/blank?)
+                      last)]
+        (when-not (and (zero? (:exit result))
+                       path (fs/executable? path))
+          (die (str "Failed to install lg:\n"
+                    (:out result) (:err result))))
+        path))))
+
+(def lg-source-paths (str GLOAT-ROOT "/ys/lg:."))
+
 (defn generate-lg [clj-file]
   ;; The ys stdlib is NOT inlined: lg resolves (:require [ys.v0 ...])
   ;; from source paths, so run output with ys/lg/ on LG_SOURCE_PATHS
@@ -1727,13 +1751,14 @@ Less common:
         platform (:platform opts)
         to (:to opts)
         run (:run opts)
+        engine (resolve-engine opts)
         format-guess (if (and (nil? output) (nil? to))
-                       "bin"
+                       ;; --run under the lg engine defaults to lg format
+                       (if (and run (= "lg" engine)) "lg" "bin")
                        (infer-format output
                                      (when to (str/replace to #"^\." ""))))
         ;; -t lg / -o foo.lg implies the lg engine
-        engine (let [engine (resolve-engine opts)]
-                 (if (= "lg" format-guess) "lg" engine))]
+        engine (if (= "lg" format-guess) "lg" engine)]
 
     (when (and (= "lg" engine)
                (not (contains? lg-engine-formats format-guess)))
@@ -1818,6 +1843,8 @@ Less common:
                       (alter-var-root #'*opts* assoc :run-tmpdir run-tmpdir)
                       (cond
                         (= to "bb") [(str run-tmpdir "/gloat-run.bb") to]
+                        (and (nil? to) (= "lg" engine))
+                        [(str run-tmpdir "/gloat-run.lg") "lg"]
                         (nil? to) [(str run-tmpdir "/gloat-run") "bin"]
                         :else [(str run-tmpdir "/gloat-run." to) to]))
                     [output to])]
@@ -1975,6 +2002,13 @@ Less common:
                             (apply process/shell {:continue true}
                                    bb (:output opts) (:run-args opts))]
                         (:exit result)))
+
+                    "lg"
+                    (let [lg (find-lg)
+                          result (apply process/shell {:continue true}
+                                        lg "-source-paths" lg-source-paths
+                                        (:output opts) (:run-args opts))]
+                      (:exit result))
 
                     ("bin" "lib" "wasm" "js")
                     (let [result (apply process/shell {:continue true}

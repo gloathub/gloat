@@ -105,6 +105,18 @@ is "$got" "Hello, World!" "hello.lg prints default greeting"
 try "$lg_bin -source-paths $lg_paths $TMP/hello.lg Gloat"
 is "$got" "Hello, Gloat!" "hello.lg greets command-line argument"
 
+# --run under the lg engine
+try "$GLOAT_BIN -Elg --run $FIXTURES_DIR/hello.ys"
+is "$rc" 0 "'gloat -Elg --run' exits 0"
+is "$got" "Hello, World!" "'gloat -Elg --run' runs the program"
+
+try "$GLOAT_BIN -Elg --run $FIXTURES_DIR/hello.ys -- Gloat"
+is "$got" "Hello, Gloat!" "'gloat -Elg --run' passes program args"
+
+printf '(defn -main [] (throw (ex-info "boom" {})))' > "$TMP/boom.clj"
+try "$GLOAT_BIN -Elg --run $TMP/boom.clj"
+is "$rc" 1 "'gloat -Elg --run' propagates failure exit code"
+
 try "$GLOAT_BIN --shell -- 'printf \"%s\\n\" \"\${PATH%%:*}\"' 2>/dev/null"
 is "$rc" 0 "'gloat --shell' exits 0"
 ok "$([[ $got == "$PROJECT_ROOT/.cache/"* ||

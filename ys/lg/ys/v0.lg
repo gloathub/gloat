@@ -20,6 +20,7 @@
    [jsoncompat]
    [set]
    [std]
+   [java-time]
    [fs]))
 
 ;;------------------------------------------------------------------------------
@@ -685,6 +686,19 @@
 (defn sha1 [s] (digest-cmd "sha1sum" s))
 (defn sha256 [s] (digest-cmd "sha256sum" s))
 
+;; Render epoch milliseconds like java.time.Instant.toString
+(defn instant [ms]
+  (let [sec (quot ms 1000)
+        frac (mod ms 1000)
+        r (os/sh "date" "-u" "-d" (str "@" sec)
+                 "+%Y-%m-%dT%H:%M:%S")
+        base (str/replace (:out r) #"\n$" "")]
+    (str base
+         (if (zero? frac)
+           ""
+           (format ".%03d" frac))
+         "Z")))
+
 ;; HTTP get (ys.std curl)
 (defn curl [url]
   (let [resp (http/get url)]
@@ -839,11 +853,33 @@
 (defmacro &&& [x & xs] `(and? ~x ~@xs))
 
 ;;------------------------------------------------------------------------------
+;; Tokenize a command string like babashka.process/tokenize: split
+;; on whitespace, honoring single and double quotes.
+(defn- tokenize [s]
+  (loop [cs (seq s) cur nil q nil args []]
+    (if-let [c (first cs)]
+      (cond
+        (= c q)
+        (recur (next cs) (or cur "") nil args)
+
+        q
+        (recur (next cs) (str cur c) q args)
+
+        (or (= c \') (= c \"))
+        (recur (next cs) cur c args)
+
+        (or (= c \space) (= c \tab) (= c \newline))
+        (recur (next cs) nil nil (if cur (conj args cur) args))
+
+        :else
+        (recur (next cs) (str cur c) nil args))
+      (if cur (conj args cur) args))))
+
 ;; IPC functions (ys.ipc surface via lg's os/sh). A single command
-;; string tokenizes on whitespace, like babashka.process.
+;; string tokenizes like babashka.process.
 (defn sh [& xs]
   (let [xs (if (and (= 1 (count xs)) (string? (first xs)))
-             (str/split (first xs) #"\s+")
+             (tokenize (first xs))
              xs)]
     (apply os/sh xs)))
 

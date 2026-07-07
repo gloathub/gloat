@@ -16,7 +16,8 @@
    [Math]
    [Character]
    [Byte]
-   [javacompat]))
+   [javacompat]
+   [fs]))
 
 ;;------------------------------------------------------------------------------
 ;; Runtime vars and helpers
@@ -605,8 +606,32 @@
 ;; I/O functions
 ;;------------------------------------------------------------------------------
 
-(defn read [& args] (apply slurp args))
-(defn write [& args] (apply spit args))
+;; read/write accept a path or an IO handle (e.g. IN:read)
+(defn- read-handle [h]
+  (loop [acc nil]
+    (if-let [line (read-line h)]
+      (recur (if acc (str acc "\n" line) line))
+      (str acc))))
+
+(defn read [x & args]
+  (if (string? x)
+    (apply slurp x args)
+    (read-handle x)))
+
+(defn write [x content & args]
+  (if (string? x)
+    (apply spit x content args)
+    (write! x (str content))))
+
+;; Base64 via lg's io/encode and io/decode
+(defn base64-encode [S] (io/encode :base64 S))
+(defn base64-decode [S] (io/decode :base64 S))
+(defn base64 [S] (base64-encode S))
+
+;; stdin/stdout/stderr handles (lg core *in*/*out*/*err* IO handles)
+(def IN *in*)
+(def OUT *out*)
+(def ERR *err*)
 
 ;; IO fn definitions match the bb patches of ys.std, except say and
 ;; warn are variadic like real ys (bare `say:` prints a blank line)
@@ -717,6 +742,44 @@
 (defmacro &&& [x & xs] `(and? ~x ~@xs))
 
 ;;------------------------------------------------------------------------------
+;; IPC functions (ys.ipc surface via lg's os/sh)
+(defn sh [& xs] (apply os/sh xs))
+
+(defn sh-out [& xs]
+  (let [ret (apply sh xs)]
+    (when (not= 0 (:exit ret))
+      (die (:err ret)))
+    (str/replace (:out ret) #"[\n\r]+$" "")))
+
+(defn shell [& xs]
+  (let [ret (apply sh xs)]
+    (clojure.core/print (:out ret))
+    (binding [*out* *err*] (clojure.core/print (:err ret)))
+    (when (not= 0 (:exit ret))
+      (die "shell command failed: " (str/join " " xs)))
+    ret))
+
+(defn bash [& xs]
+  (sh "bash" "-c" (str/join " " xs)))
+
+(defn bash-out [& xs]
+  (sh-out "bash" "-c" (str/join " " xs)))
+
+;; fs- aliases for the fs namespace (ys.std interns these)
+(def fs-e fs/e)
+(def fs-d fs/d)
+(def fs-f fs/f)
+(def fs-s fs/s)
+(def fs-z fs/z)
+(def fs-abs fs/abs)
+(def fs-abs? fs/abs?)
+(def fs-dirname fs/dirname)
+(def fs-filename fs/filename)
+(def fs-basename fs/basename)
+(def fs-ls fs/ls)
+(def fs-which fs/which)
+(def fs-cwd fs/cwd)
+
 ;; Atom functions
 ;;------------------------------------------------------------------------------
 

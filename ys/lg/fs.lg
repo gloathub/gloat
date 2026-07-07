@@ -1,0 +1,79 @@
+;; Copyright 2023-2026 Ingy dot Net
+;; This code is licensed under MIT license (See License for details)
+
+;; Filesystem namespace for the lg engine: the ys fs/ surface (see
+;; ys/src/ys/fs.clj) backed by lg's core io fns and os namespace.
+
+(ns fs
+  (:require [clojure.string :as str]))
+
+(defn exists? [path] (file-exists? path))
+(defn e [path] (exists? path))
+
+(defn dir? [path]
+  (and (exists? path) (boolean (:dir? (os/stat path)))))
+(defn d [path] (dir? path))
+
+(defn file? [path]
+  (and (exists? path) (not (:dir? (os/stat path)))))
+(defn f [path] (file? path))
+
+(defn empty-file? [path]
+  (and (exists? path) (zero? (:size (os/stat path)))))
+(defn z [path] (empty-file? path))
+
+(defn size? [path]
+  (when (exists? path)
+    (let [n (:size (os/stat path))]
+      (when (pos? n) n))))
+(defn s [path] (size? path))
+
+(defn abs? [path] (str/starts-with? path "/"))
+
+(defn cwd [] (os/cwd))
+
+(defn abs [path]
+  (if (abs? path) path (str (cwd) "/" path)))
+
+(defn dirname [path]
+  (let [i (str/last-index-of path "/")]
+    (cond
+      (nil? i) "."
+      (zero? i) "/"
+      :else (subs path 0 i))))
+
+(defn basename [path]
+  (let [i (str/last-index-of path "/")]
+    (if i (subs path (inc i)) path)))
+
+(defn filename [path] (basename path))
+
+(defn ls [path] (os/ls path))
+
+(defn read [path] (slurp path))
+(defn write [path content] (spit path content))
+
+(defn touch [path]
+  (when-not (exists? path)
+    (spit path ""))
+  path)
+
+(defn mkdir [path] (clojure.core/mkdir path))
+(defn mkdir-p [path] (clojure.core/mkdir path))
+
+(defn rm [path] (delete-file path))
+(defn rm-f [path]
+  (try (delete-file path) (catch e nil)))
+
+(defn rm-r [path]
+  (when (exists? path)
+    (when (dir? path)
+      (doseq [name (os/ls path)]
+        (rm-r (str path "/" name))))
+    (delete-file path))
+  nil)
+
+(defn which [name]
+  (let [r (os/sh "which" name)]
+    (when (zero? (:exit r))
+      (str/replace (:out r) #"\n$" ""))))

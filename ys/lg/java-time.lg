@@ -1,0 +1,120 @@
+;; Copyright 2023-2026 Ingy dot Net
+;; This code is licensed under MIT license (See License for details)
+
+;; java-time compatibility for the lg engine: the subset of the ys
+;; java-time surface the corpus uses, in pure date arithmetic.
+;; A local date is its ISO string ("2012-01-27"), so :S/str render
+;; like LocalDate.toString. Periods are {:y :m :d} maps.
+
+(ns java-time
+  (:require [clojure.string :as str]))
+
+(def ^:private weekday-names
+  ["Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" "Friday"
+   "Saturday"])
+
+(def ^:private month-names
+  ["January" "February" "March" "April" "May" "June" "July" "August"
+   "September" "October" "November" "December"])
+
+(defn- fdiv [a b]
+  (let [q (quot a b)]
+    (if (and (not= 0 (rem a b)) (neg? (* a b))) (dec q) q)))
+
+(defn- leap? [y]
+  (and (zero? (rem y 4))
+       (or (pos? (rem y 100)) (zero? (rem y 400)))))
+
+(defn- dim [y m]
+  (nth [31 (if (leap? y) 29 28) 31 30 31 30 31 31 30 31 30 31]
+       (dec m)))
+
+;; Days since 1970-01-01 (Howard Hinnant's civil algorithms)
+(defn- days-from-civil [y m d]
+  (let [y (if (<= m 2) (dec y) y)
+        era (fdiv y 400)
+        yoe (- y (* era 400))
+        doy (+ (quot (+ (* 153 (+ m (if (> m 2) -3 9))) 2) 5) (dec d))
+        doe (+ (* yoe 365) (quot yoe 4) (- (quot yoe 100)) doy)]
+    (+ (* era 146097) doe -719468)))
+
+(defn- civil-from-days [z]
+  (let [z (+ z 719468)
+        era (fdiv z 146097)
+        doe (- z (* era 146097))
+        yoe (quot (+ doe (- (quot doe 1460)) (quot doe 36524)
+                     (- (quot doe 146096)))
+                  365)
+        y (+ yoe (* era 400))
+        doy (- doe (+ (* 365 yoe) (quot yoe 4) (- (quot yoe 100))))
+        mp (quot (+ (* 5 doy) 2) 153)
+        d (inc (- doy (quot (+ (* 153 mp) 2) 5)))
+        m (+ mp (if (< mp 10) 3 -9))]
+    [(if (<= m 2) (inc y) y) m d]))
+
+(defn- parse-date [s]
+  (mapv parse-long (str/split s #"-")))
+
+(defn- unparse [[y m d]]
+  (let [pad (fn [n] (if (< n 10) (str "0" n) (str n)))]
+    (str y "-" (pad m) "-" (pad d))))
+
+(defn local-date
+  ([]
+   (let [r (os/sh "date" "+%F")]
+     (str/replace (:out r) #"\n$" "")))
+  ([y m d] (unparse [y m d])))
+
+(defn day-of-week [date]
+  (let [[y m d] (parse-date date)]
+    (nth weekday-names (mod (+ (days-from-civil y m d) 4) 7))))
+
+(defn sunday? [dow] (= dow "Sunday"))
+(defn monday? [dow] (= dow "Monday"))
+(defn tuesday? [dow] (= dow "Tuesday"))
+(defn wednesday? [dow] (= dow "Wednesday"))
+(defn thursday? [dow] (= dow "Thursday"))
+(defn friday? [dow] (= dow "Friday"))
+(defn saturday? [dow] (= dow "Saturday"))
+
+(defn days [n] {:y 0 :m 0 :d n})
+(defn months [n] {:y 0 :m n :d 0})
+(defn years [n] {:y n :m 0 :d 0})
+(defn period [y m d] {:y y :m m :d d})
+
+(defn plus [date p]
+  (let [[y m d] (parse-date date)
+        ;; months first (day clamped to the target month), then days
+        m0 (+ (dec m) (:m p) (* 12 (:y p)))
+        y (+ y (fdiv m0 12))
+        m (inc (mod m0 12))
+        d (min d (dim y m))
+        z (+ (days-from-civil y m d) (:d p))]
+    (unparse (civil-from-days z))))
+
+(defn minus [date p]
+  (plus date {:y (- (:y p)) :m (- (:m p)) :d (- (:d p))}))
+
+;; Format: letter runs are tokens, everything else literal.
+;; Supported: yyyy MM dd MMMM EEEE M d
+(defn format [pattern date]
+  (let [[y m d] (parse-date date)
+        pad (fn [n] (if (< n 10) (str "0" n) (str n)))
+        token (fn [t]
+                (condp = t
+                  "yyyy" (str y)
+                  "MMMM" (nth month-names (dec m))
+                  "MM" (pad m)
+                  "M" (str m)
+                  "EEEE" (day-of-week date)
+                  "dd" (pad d)
+                  "d" (str d)
+                  (throw (ex-info (str "Unsupported pattern: " t) {}))))]
+    (loop [cs (seq pattern) out ""]
+      (if-let [c (first cs)]
+        (if (re-matches #"[A-Za-z]" (str c))
+          (let [run (take-while #(= c %) cs)]
+            (recur (drop (count run) cs)
+                   (str out (token (apply str run)))))
+          (recur (next cs) (str out c)))
+        out))))

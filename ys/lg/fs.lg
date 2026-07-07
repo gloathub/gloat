@@ -54,8 +54,7 @@
 (defn write [path content] (spit path content))
 
 (defn touch [path]
-  (when-not (exists? path)
-    (spit path ""))
+  (os/sh "touch" path)
   path)
 
 (defn mkdir [path] (clojure.core/mkdir path))
@@ -73,9 +72,14 @@
     (delete-file path))
   nil)
 
-;; Modification time as lg's os/stat reports it (a time string)
+;; Modification time as epoch milliseconds (like ys fs/mtime).
+;; lg's os/stat reports a time string; date(1) parses it after the
+;; zone-name suffix is dropped.
 (defn mtime [path]
-  (:mod-time (os/stat path)))
+  (let [t (:mod-time (os/stat path))
+        t (str/replace t #"\s+[A-Z]+$" "")
+        r (os/sh "date" "-d" t "+%s%3N")]
+    (parse-long (str/replace (:out r) #"\n$" ""))))
 
 (defn mv [src dst]
   (let [r (os/sh "mv" src dst)]

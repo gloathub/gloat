@@ -101,12 +101,17 @@
 ;; it internally)
 (intern 'core 'lines lines)
 
+(def ^:private core-smap-replace clojure.core/replace)
+
 (defn replace
-  ([x] (clojure.core/replace x))
+  ([x] (core-smap-replace x))
   ([x y] (if (or (regex? y) (string? y))
            (str/replace x y "")
-           (clojure.core/replace x y)))
+           (core-smap-replace x y)))
   ([x y z] (str/replace x y z)))
+
+;; core also defines replace (smap version), which shadows the refer
+(intern 'core 'replace replace)
 
 (defn replace1 [& args] (apply str/replace-first args))
 (defn rindex [& args] (apply str/last-index-of args))
@@ -834,8 +839,13 @@
 (defmacro &&& [x & xs] `(and? ~x ~@xs))
 
 ;;------------------------------------------------------------------------------
-;; IPC functions (ys.ipc surface via lg's os/sh)
-(defn sh [& xs] (apply os/sh xs))
+;; IPC functions (ys.ipc surface via lg's os/sh). A single command
+;; string tokenizes on whitespace, like babashka.process.
+(defn sh [& xs]
+  (let [xs (if (and (= 1 (count xs)) (string? (first xs)))
+             (str/split (first xs) #"\s+")
+             xs)]
+    (apply os/sh xs)))
 
 (defn sh-out [& xs]
   (let [ret (apply sh xs)]

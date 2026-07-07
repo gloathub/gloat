@@ -608,13 +608,19 @@
 (defn read [& args] (apply slurp args))
 (defn write [& args] (apply spit args))
 
-;; IO fn definitions match the bb patches of ys.std
+;; IO fn definitions match the bb patches of ys.std, except say and
+;; warn are variadic like real ys (bare `say:` prints a blank line)
 (defn out [x] (clojure.core/print x))
 (defn print [x] (clojure.core/print x))
-(defn say [x] (println x))
-(defn warn [x]
-  (binding [*out* *err*]
-    (println x)))
+(defn say
+  ([] (println))
+  ([x] (println x))
+  ([x & xs] (apply println x xs)))
+(defn warn
+  ([] (binding [*out* *err*] (println)))
+  ([& xs]
+   (binding [*out* *err*]
+     (apply println xs))))
 
 ;;------------------------------------------------------------------------------
 ;; Shorter named alias functions

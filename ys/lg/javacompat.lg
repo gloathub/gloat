@@ -44,6 +44,21 @@
 (intern 'Long 'toOctalString (fn [x] (to-radix x 8)))
 (intern 'Long 'toHexString (fn [x] (to-radix x 16)))
 (intern 'Long 'bitCount bit-count)
+(intern 'Long 'decode
+  (fn [s]
+    (let [neg (clojure.string/starts-with? s "-")
+          s (if neg (subs s 1) s)
+          n (cond
+              (or (clojure.string/starts-with? s "0x")
+                  (clojure.string/starts-with? s "0X"))
+              (parse-long+ (subs s 2) 16)
+              (clojure.string/starts-with? s "#")
+              (parse-long+ (subs s 1) 16)
+              (and (clojure.string/starts-with? s "0")
+                   (> (count s) 1))
+              (parse-long+ (subs s 1) 8)
+              :else (parse-long+ s 10))]
+      (if neg (- n) n))))
 
 (create-ns 'Float)
 (intern 'Float 'MAX_VALUE 3.4028234663852886e38)

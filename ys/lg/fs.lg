@@ -73,6 +73,16 @@
     (delete-file path))
   nil)
 
+;; Modification time as lg's os/stat reports it (a time string)
+(defn mtime [path]
+  (:mod-time (os/stat path)))
+
+(defn mv [src dst]
+  (let [r (os/sh "mv" src dst)]
+    (when (not= 0 (:exit r))
+      (throw (ex-info (str "fs/mv failed: " (:err r)) {})))
+    nil))
+
 (defn which [name]
   (let [r (os/sh "which" name)]
     (when (zero? (:exit r))

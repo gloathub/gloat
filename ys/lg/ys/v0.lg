@@ -17,6 +17,9 @@
    [Character]
    [Byte]
    [javacompat]
+   [jsoncompat]
+   [set]
+   [std]
    [fs]))
 
 ;;------------------------------------------------------------------------------
@@ -83,13 +86,20 @@
 
 (defn lc [s] (str/lower-case s))
 
+;; lg's str/split has no limit arg, so unlike ys this drops empty
+;; strings after the last non-empty line
 (defn lines [S]
   (if (empty? S)
     []
     (let [S (if (= (last S) \newline)
               (subs S 0 (dec (count S)))
               S)]
-      (str/split S #"\n" -1))))
+      (str/split S #"\n"))))
+
+;; lg's core also defines lines (which :refer :all can't shadow)
+;; with Go semantics; stomp it with the ys version (core doesn't use
+;; it internally)
+(intern 'core 'lines lines)
 
 (defn replace
   ([x] (clojure.core/replace x))
@@ -620,13 +630,62 @@
 
 (defn write [x content & args]
   (if (string? x)
-    (apply spit x content args)
+    ;; lg's spit has no :append option
+    (let [opts (apply hash-map args)]
+      (if (and (:append opts) (file-exists? x))
+        (spit x (str (slurp x) content))
+        (spit x content)))
     (write! x (str content))))
+
+;; Byte-oriented file IO (lg/Go strings are byte-safe). lg's core
+;; read-bytes is (read-bytes handle n); stomp a superset that also
+;; takes a path.
+(def ^:private core-read-bytes read-bytes)
+
+(defn read-bytes+
+  ([x] (slurp x))
+  ([h n] (core-read-bytes h n)))
+
+(intern 'core 'read-bytes read-bytes+)
+
+(defn write-bytes [path s] (spit path s))
+
+(defn truncate [path n]
+  (spit path (subs (slurp path) 0 n))
+  nil)
 
 ;; Base64 via lg's io/encode and io/decode
 (defn base64-encode [S] (io/encode :base64 S))
 (defn base64-decode [S] (io/decode :base64 S))
 (defn base64 [S] (base64-encode S))
+
+;; lg autoflushes; provided for JVM-compat
+(defn flush
+  ([] nil)
+  ([h] nil))
+
+(defn line-seq [r] (io/line-seq r))
+
+;; Digests via coreutils (lg has no md5/sha; needs md5sum etc on PATH)
+(defn- digest-cmd [tool s]
+  (let [tmp (str (os/temp-dir) "/ys-digest-" (rand-int 999999999))]
+    (spit tmp s)
+    (let [ret (os/sh tool tmp)]
+      (delete-file tmp)
+      (when (not= 0 (:exit ret))
+        (die (:err ret)))
+      (first (str/split (:out ret) #"\s+")))))
+
+(defn md5 [s] (digest-cmd "md5sum" s))
+(defn sha1 [s] (digest-cmd "sha1sum" s))
+(defn sha256 [s] (digest-cmd "sha256sum" s))
+
+;; HTTP get (ys.std curl)
+(defn curl [url]
+  (let [resp (http/get url)]
+    (if-let [body (:body resp)]
+      (str body)
+      (die (str resp)))))
 
 ;; stdin/stdout/stderr handles (lg core *in*/*out*/*err* IO handles)
 (def IN *in*)
@@ -676,6 +735,8 @@
     `[~@xs#]))
 
 ;;------------------------------------------------------------------------------
+(defn biginteger [x] (bigint x))
+
 ;; Named function aliases for infix operators
 ;;------------------------------------------------------------------------------
 
@@ -708,6 +769,37 @@
   ([x] #(<= %1 x))
   ([x y] (<= x y))
   ([x y & xs] (apply <= x y xs)))
+
+;; lg's core defines lt/le/gt/ge (which :refer :all can't shadow)
+;; with Clojure variadic-comparison semantics, so the 1-arity returns
+;; true instead of a predicate. The 2+arity semantics are identical,
+;; so stomping the core vars with the ys versions is safe (core's own
+;; pos?/neg? only use the 2-arity).
+(intern 'core 'lt lt)
+(intern 'core 'le le)
+(intern 'core 'gt gt)
+(intern 'core 'ge ge)
+
+;; lg's core partition lacks the 4-arity pad variant; this is a
+;; superset (2/3-arity behavior unchanged), stomped into core since
+;; :refer :all can't shadow it either.
+(defn- partition+
+  ([n coll] (partition+ n n coll))
+  ([n step coll]
+   (lazy-seq
+     (when-let [s (seq coll)]
+       (let [p (take n s)]
+         (when (= n (count p))
+           (cons p (partition+ n step (drop step s))))))))
+  ([n step pad coll]
+   (lazy-seq
+     (when-let [s (seq coll)]
+       (let [p (take n s)]
+         (if (= n (count p))
+           (cons p (partition+ n step pad (drop step s)))
+           (list (take n (concat p pad)))))))))
+
+(intern 'core 'partition partition+)
 
 ;;------------------------------------------------------------------------------
 ;; Alternate truth functions

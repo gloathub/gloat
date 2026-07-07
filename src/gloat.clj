@@ -1803,6 +1803,9 @@ Less common:
       (die "Engine 'lg' does not yet support format '" format-guess "'"
            " (supported: " (str/join ", " (sort lg-engine-formats)) ")"))
 
+    (when (and (:time opts) (not run))
+      (die "--time requires --run"))
+
     ;; --run implies quiet
     (let [opts (if run
                  (assoc opts :quiet true)
@@ -2028,7 +2031,8 @@ Less common:
             (when-not (fs/exists? (:output opts))
               (die "Compilation failed - no output to run"))
 
-            (let [rc
+            ;; --time excludes tool lookup from the timed region
+            (let [runner
                   (case format
                     "bb"
                     (let [bb (:BB make-vars)]
@@ -2036,26 +2040,30 @@ Less common:
                         (die (str
                               "Babashka not found"
                               "(run 'make shell' to install)")))
-                      (let [result
-                            (apply process/shell {:continue true}
-                                   bb (:output opts) (:run-args opts))]
-                        (:exit result)))
+                      #(apply process/shell {:continue true}
+                              bb (:output opts) (:run-args opts)))
 
                     "lg"
-                    (let [lg (find-lg)
-                          result (apply process/shell {:continue true}
-                                        lg "-source-paths" lg-source-paths
-                                        (:output opts) (:run-args opts))]
-                      (:exit result))
+                    (let [lg (find-lg)]
+                      #(apply process/shell {:continue true}
+                              lg "-source-paths" lg-source-paths
+                              (:output opts) (:run-args opts)))
 
                     ("bin" "lib" "wasm" "js")
-                    (let [result (apply process/shell {:continue true}
-                                        (:output opts) (:run-args opts))]
-                      (:exit result))
+                    #(apply process/shell {:continue true}
+                            (:output opts) (:run-args opts))
 
                     (die "Format '" format
-                         "' cannot be executed with --run"))]
+                         "' cannot be executed with --run"))
+                  t0 (System/nanoTime)
+                  rc (:exit (runner))
+                  elapsed (- (System/nanoTime) t0)]
 
+              (when (:time opts)
+                (binding [*out* *err*]
+                  (println (clojure.core/format
+                            "> gloat run time: %.3fs"
+                            (/ elapsed 1.0e9)))))
               (when (:run-tmpdir opts)
                 (fs/delete-tree (:run-tmpdir opts)))
               (System/exit rc)))

@@ -82,7 +82,9 @@ complete=     Generate shell completion script (bash, fish, zsh)
 which=        Print path to command that gloat uses: go, glj, etc
 
 r,run         Compile and run (pass program args after --)
+T,time        With --run: print the run time (not compile) to stderr
 f,force       Overwrite existing output files
+
 v,verbose     Print timing for each compilation step
 q,quiet       Suppress progress messages
 

@@ -41,6 +41,7 @@ main() (
  :extensions $(bool-to-edn "${option_extensions:-false}")
  :platforms  $(bool-to-edn "${option_platforms:-false}")
  :run      $(bool-to-edn "${option_run:-false}")
+ :time     $(bool-to-edn "${option_time:-false}")
  :force    $(bool-to-edn "${option_force:-false}")
  :verbose  $(bool-to-edn "${option_verbose:-false}")
  :quiet    $(bool-to-edn "${option_quiet:-false}")

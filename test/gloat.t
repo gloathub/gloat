@@ -117,6 +117,17 @@ printf '(defn -main [] (throw (ex-info "boom" {})))' > "$TMP/boom.clj"
 try "$GLOAT_BIN -Elg --run $TMP/boom.clj"
 is "$rc" 1 "'gloat -Elg --run' propagates failure exit code"
 
+# --time prints the run time (not compile) to stderr
+try "$GLOAT_BIN -Elg --run --time $FIXTURES_DIR/hello.ys"
+is "$rc" 0 "'gloat -Elg --run --time' exits 0"
+has "$got" "Hello, World!" "'--time' run still prints program output"
+like "$got" "> gloat run time: [0-9]\.[0-9][0-9][0-9]s" \
+  "'--time' prints labeled run time"
+
+try "$GLOAT_BIN --time -o x.lg $FIXTURES_DIR/hello.ys"
+is "$rc" 1 "'gloat --time' without --run exits 1"
+has "$got" "requires --run" "'--time' requires --run"
+
 # bin format under the lg engine (bundled binary via lg -b)
 try "$GLOAT_BIN -Elg -o $TMP/hello-lg $FIXTURES_DIR/hello.ys"
 is "$rc" 0 "'gloat -Elg -o bin' exits 0"

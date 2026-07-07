@@ -1,0 +1,49 @@
+;; Copyright 2023-2026 Ingy dot Net
+;; This code is licensed under MIT license (See License for details)
+
+;; ys json compatibility for the lg engine. lg pre-registers a json
+;; namespace (read-json/write-json), so intern the ys names into it:
+;; json/load uses lg's reader (string keys, matching ys.json), and
+;; json/dump is the pure-Clojure encoder from ys/src/ys/json.clj
+;; (lg's write-json double-quotes string keys).
+
+(ns jsoncompat
+  (:require
+   [clojure.string :as str]
+   [json]))
+
+(defn- escape-string [s]
+  (-> s
+      (str/replace "\\" "\\\\")
+      (str/replace "\"" "\\\"")
+      (str/replace "\n" "\\n")
+      (str/replace "\r" "\\r")
+      (str/replace "\t" "\\t")))
+
+(defn- dump [x]
+  (cond
+    (nil? x) "null"
+    (true? x) "true"
+    (false? x) "false"
+    (keyword? x) (let [s (str x)]
+                   (str "\"" (if (= (first s) \:)
+                               (subs s 1)
+                               s) "\""))
+    (string? x) (str "\"" (escape-string x) "\"")
+    (number? x) (str x)
+    (map? x) (let [pairs (map (fn [[k v]]
+                                (let [ks (str k)
+                                      key-str (if (= (first ks) \:)
+                                                (subs ks 1)
+                                                ks)]
+                                  (str "\"" (escape-string key-str) "\":"
+                                       (dump v))))
+                              x)]
+               (str "{" (str/join "," pairs) "}"))
+    (sequential? x) (str "["
+                         (str/join "," (map dump x))
+                         "]")
+    :else (throw (ex-info (str "Cannot encode " (type x) " to JSON") {}))))
+
+(intern 'json 'load (fn [s] (json/read-json s)))
+(intern 'json 'dump dump)

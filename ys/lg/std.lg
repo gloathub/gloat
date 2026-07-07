@@ -1,0 +1,23 @@
+;; Copyright 2023-2026 Ingy dot Net
+;; This code is licensed under MIT license (See License for details)
+
+;; std namespace for the lg engine: YS code can call ys.std fns
+;; std/-qualified (e.g. std/words). Alias the commonly used ones.
+
+(ns std
+  (:require [clojure.string :as str]))
+
+(defn words [S] (str/split S #"\s+"))
+(defn lines [S]
+  (if (empty? S)
+    []
+    (let [S (if (= (last S) \newline)
+              (subs S 0 (dec (count S)))
+              S)]
+      (str/split S #"\n"))))
+(defn join
+  ([Ss] (str/join Ss))
+  ([S Ss]
+   (if (string? S)
+     (str/join S Ss)
+     (str/join Ss S))))

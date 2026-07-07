@@ -1016,11 +1016,18 @@ Less common:
   ;; The ys stdlib is NOT inlined: lg resolves (:require [ys.v0 ...])
   ;; from source paths, so run output with ys/lg/ on LG_SOURCE_PATHS
   ;; (lg -b embeds the resolved namespaces in the bundle).
+  ;; The str alias comes for free on ys/bb (sci default aliases) but
+  ;; lg needs it required explicitly.
   ;; The *compiling-aot* guard keeps `lg -c/-b/-w` from running the
-  ;; program while compiling it (compiling executes top-level forms).
-  (str (slurp clj-file)
+  ;; program while compiling it (compiling executes top-level forms);
+  ;; the resolve guard tolerates programs with no -main.
+  (str (str/replace-first
+        (slurp clj-file)
+        "[ys.v0 :refer :all]"
+        "[ys.v0 :refer :all]\n   [clojure.string :as str]")
        "\n(when-not *compiling-aot*
-  (apply -main *command-line-args*))\n"))
+  (when-let [main (resolve '-main)]
+    (apply main *command-line-args*)))\n"))
 
 ;;------------------------------------------------------------------------------
 ;; High-Level Orchestrators

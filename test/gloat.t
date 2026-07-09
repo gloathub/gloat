@@ -156,7 +156,9 @@ try "$GLOAT_BIN -q -t LG $FIXTURES_DIR/hello.ys"
 is "$rc" 0 "'gloat -t LG' exits 0"
 has "$got" "package core" "'gloat -t LG' emits a Go package"
 has "$got" "vm.ExecContext" "'gloat -t LG' emits let-go native fns"
-has "$got" "func Main(" "'gloat -t LG' lowers the -main entry"
+# -main lowers variadic; its Go name is Main__main when the program's
+# own main fn (multi-arity, also lowered) claims the bare Main name
+has "$got" "func Main__main(" "'gloat -t LG' lowers the -main entry"
 
 try "$GLOAT_BIN --shell -- 'printf \"%s\\n\" \"\${PATH%%:*}\"' 2>/dev/null"
 is "$rc" 0 "'gloat --shell' exits 0"

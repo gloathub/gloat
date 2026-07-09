@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+
+# Test gloat's lg engine against the RosettaCode YS corpus.
+#
+# This script is part of the gloat repo. On setup it clones the two
+# other repos it needs NEXT TO the gloat repo dir (the directory
+# holding .git/, even when run from a worktree):
+#
+#   ../let-go/  github.com/gloathub/let-go (lg is built from this)
+#   ../rcd/     github.com/acmeism/RosettaCodeData (depth 1)
+#
+# then reads YS file paths from stdin (one per line, # comments ok)
+# and runs each with 'gloat -Elg -rT': timeouts (rc 124) are copied
+# to long/, other failures to fail/, passes to good/, everything
+# tees to ./out. With no piped stdin it stops after setup.
+#
+#   util/ys-rc-corpus-testing                (setup only)
+#   util/ys-rc-corpus-testing < tasks.txt
+#   find ../rcd -name '*.ys' | sort | util/ys-rc-corpus-testing
+#   TIMEOUT=5 util/ys-rc-corpus-testing < tasks.txt
+#
+# Needs: git, curl, make, bash. First run bootstraps gloat's
+# toolchain into .cache/ (go, bb, ys, ...) and builds lg from
+# the let-go checkout; expect a few minutes.
+
+set -euo pipefail
+
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# Checkout root (this worktree) and the main repo dir (owner of .git/)
+top=$(git -C "$script_dir" rev-parse --show-toplevel)
+git_dir=$(git -C "$script_dir" rev-parse --path-format=absolute --git-common-dir)
+repo_dir=$(dirname "$git_dir")
+side_dir=$(dirname "$repo_dir")
+let_go=$side_dir/let-go
+rcd=$side_dir/rcd
+
+PATH=$top/bin:$PATH
+
+# No piped stdin means setup only
+if [[ -t 0 ]]; then
+  [[ -d $let_go ]] ||
+    git clone https://github.com/gloathub/let-go "$let_go"
+  [[ -d $rcd ]] ||
+    git clone --depth 1 https://github.com/acmeism/RosettaCodeData "$rcd"
+
+  # Warm the toolchain (installs deps, builds lg from ../let-go)
+  gloat --which=lg >/dev/null
+
+  echo
+  echo 'Setup complete. Pipe task file paths on stdin to run tests.'
+  echo
+  echo "Corpus: $rcd"
+  echo
+  echo 'Options:'
+  echo '  COUNT=<num>   Number of files to test'
+  echo '  SHUFFLE=1     Shuffle the file list first'
+  echo '  TIMEOUT=<sec> Per-test timeout (default 2, 0 for none)'
+  echo '  JOLT=1        Run with jolt instead of gloat -Elg'
+  echo '  BB=1          Run with bb (babashka) instead of gloat -Elg'
+  echo '  GLOAT=1       With JOLT=1 or BB=1, also run gloat -Elg'
+  echo '  YS=1          Also run each test with ys'
+  echo '  PAUSE=1       Pause after each test'
+  echo
+  echo 'Examples:'
+  echo "  find $rcd -name '*.ys' | COUNT=10 $0"
+  echo "  echo $rcd/Lang/YAMLScript/Arithmetic-numbers/arithmetic-numbers.ys | TIMEOUT=0 YS=1 $0"
+  echo
+  exit 0
+fi
+
+# Piped stdin means testing, which requires a completed setup
+lg=("$top"/.cache/local/let-go-*/bin/lg)
+if [[ ! (-d $let_go && -d $rcd && -x ${lg[0]}) ]]; then
+  echo "Error: setup not complete. First run '$0' with no input." >&2
+  exit 1
+fi
+
+TIMEOUT=${TIMEOUT:-2}
+[[ ${YS-} ]] && ys=$(gloat --which=ys)
+[[ ${BB-} ]] && bb=$(gloat --which=bb)
+[[ ${JOLT-} ]] && jolt=$(make -f <(curl -sL clojure.cc/cmd.mk) jolt)
+mkdir -p good long fail
+
+(
+  [[ ${SHUFFLE-} ]] && exec < <(shuf)
+  n=0
+  while IFS= read -r f; do
+    [[ -z $f || $f == '#'* ]] && continue
+    [[ ${COUNT-} ]] && (( n++ >= COUNT )) && break
+    # </dev/null: the program must not eat the task list
+    rc=0
+    if [[ ${JOLT-} ]]; then
+      echo "=== jolt run $f"
+      gloat -tbb "$f" > file.clj
+      timeout "$TIMEOUT" "$jolt" run file.clj < /dev/null || rc=$?
+    elif [[ ${BB-} ]]; then
+      echo "=== bb $f"
+      timeout "$TIMEOUT" "$bb" <(gloat -tbb "$f") < /dev/null || rc=$?
+    else
+      echo "=== gloat -rTElg $f"
+      timeout "$TIMEOUT" gloat -rTElg "$f" < /dev/null || rc=$?
+    fi
+    if [[ $rc -eq 124 ]]; then
+      cp "$f" long/
+    elif [[ $rc -ne 0 ]]; then
+      cp "$f" fail/
+    else
+      cp "$f" good/
+    fi
+    if [[ (${JOLT-} || ${BB-}) && ${GLOAT-} ]]; then
+      echo "=== gloat -rTElg $f"
+      timeout "$TIMEOUT" gloat -rTElg "$f" < /dev/null || true
+    fi
+    if [[ ${YS-} ]]; then
+      echo "=== ys $f"
+      TIMEFORMAT='> ys run time: %3Rs'
+      time timeout "$TIMEOUT" "$ys" "$f" < /dev/null || true
+    fi
+    # Read from the tty, not the task list on stdin
+    [[ ${PAUSE-} ]] && read -rp 'Press Enter to continue… ' < /dev/tty
+  done
+) |& tee out

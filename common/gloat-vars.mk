@@ -7,6 +7,7 @@ gloat-vars: $(PATH-DEPS)
 	@echo '  :GLOJURE-VERSION "$(GLOJURE-VERSION)"'
 	@echo '  :GO "$(abspath $(GO))"'
 	@echo '  :LG "$(abspath $(LG))"'
+	@echo '  :LET-GO-SRC "$(if $(wildcard $(LET-GO-SRC)),$(abspath $(LET-GO-SRC)),)"'
 	@echo '  :YS "$(abspath $(YS))"'
 	@echo '  :YS-PKG-VERSION "$(YS-PKG-VERSION)"'
 	@echo '}'

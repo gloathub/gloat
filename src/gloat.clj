@@ -265,9 +265,13 @@
         (System/exit (:exit result)))
       (edn/read-string (:out result)))))
 
-(def known-engines #{"glj" "lg"})
+(def known-engines #{"glj" "lg" "LG"})
 
 (def lg-engine-formats #{"lg" "bin"})
+
+;; The LG engine (uppercase) compiles to native Go via let-go's AOT
+;; lowering pipeline; "LG" as a format emits the lowered Go source.
+(def LG-engine-formats #{"LG" "bin"})
 
 (defn resolve-engine [opts]
   (let [engine (or (:engine opts)
@@ -1019,22 +1023,341 @@ Less common:
 
 (def lg-source-paths (str GLOAT-ROOT "/ys/lg:."))
 
-(defn generate-lg [clj-file]
+(defn generate-lg-body [clj-file]
   ;; The ys stdlib is NOT inlined: lg resolves (:require [ys.v0 ...])
   ;; from source paths, so run output with ys/lg/ on LG_SOURCE_PATHS
   ;; (lg -b embeds the resolved namespaces in the bundle).
   ;; The str alias comes for free on ys/bb (sci default aliases) but
   ;; lg needs it required explicitly.
+  (str/replace-first
+   (slurp clj-file)
+   "[ys.v0 :refer :all]"
+   "[ys.v0 :refer :all]\n   [clojure.string :as str]"))
+
+(defn generate-lg [clj-file]
   ;; The *compiling-aot* guard keeps `lg -c/-b/-w` from running the
   ;; program while compiling it (compiling executes top-level forms);
   ;; the resolve guard tolerates programs with no -main.
-  (str (str/replace-first
-        (slurp clj-file)
-        "[ys.v0 :refer :all]"
-        "[ys.v0 :refer :all]\n   [clojure.string :as str]")
+  (str (generate-lg-body clj-file)
        "\n(when-not *compiling-aot*
   (when-let [main (resolve '-main)]
     (apply main *command-line-args*)))\n"))
+
+;;------------------------------------------------------------------------------
+;; LG Engine (native Go via let-go AOT lowering)
+;;------------------------------------------------------------------------------
+
+(defn find-let-go-src
+  "Path to a let-go source checkout: the LG engine needs it for
+  scripts/lg-compile, the gogen source path, and the go.mod replace.
+  The sibling checkout (LET-GO-SRC) is the supported layout."
+  []
+  (let [src (:LET-GO-SRC make-vars)]
+    (if (and src (not (str/blank? src)) (fs/directory? src))
+      (str src)
+      (die "No let-go source checkout found."
+           " Engine 'LG' needs one; clone github.com/gloathub/let-go"
+           " next to the gloat repo dir, or set LET-GO-SRC."))))
+
+(def LG-main-pattern
+  #"(?s)\(defn -main \[& argv\]\s*\(let \[args \(map-parse argv\)\](.*?)\(apply main args\)\)\)")
+
+(defn LG-rewrite-main
+  "Rewrite the ys-generated -main wrapper into a lowering-friendly
+  shape. The original let/alter-var-root body trips let-go lowering
+  bugs (invalid Go: redeclared args, mistyped invokes), so the
+  dynamic-var setup moves to load-time top-level forms (which run as
+  bytecode when the ns chunk loads, after main.go has published
+  *command-line-args*) and -main keeps only the apply, which lowers
+  cleanly. No-op when the wrapper shape isn't recognized."
+  [body]
+  (if-let [m (re-find LG-main-pattern body)]
+    (let [inner (second m)
+          file (second (re-find #"#'FILE \(constantly (\"[^\"]*\")\)"
+                                inner))
+          dir (second (re-find #"#'DIR \(constantly (\"[^\"]*\")\)"
+                               inner))
+          repl (str
+                "(alter-var-root #'ARGV"
+                " (constantly (vec *command-line-args*)))\n"
+                "(alter-var-root #'ARGS"
+                " (constantly (map-parse (vec *command-line-args*))))\n"
+                (when file
+                  (str "(alter-var-root #'FILE (constantly "
+                       file "))\n"))
+                (when dir
+                  (str "(alter-var-root #'DIR (constantly "
+                       dir "))\n"))
+                ;; 0/1-arg calls dispatch DIRECTLY (not via apply) so
+                ;; they lower to static Go calls into the lowered
+                ;; main, entering the native island; apply through a
+                ;; var is dynamic and stays on the VM. The local must
+                ;; NOT be named args: the lowered variadic param is
+                ;; always Go-named args and the collision emits
+                ;; invalid Go (let-go lowering bug).
+                "\n(defn -main [& argv]\n"
+                "  (let [parsed (map-parse (vec argv))]\n"
+                "    (if (empty? parsed)\n"
+                "      (main)\n"
+                "      (if (empty? (rest parsed))\n"
+                "        (main (first parsed))\n"
+                "        (apply main parsed)))))")]
+      (str/replace-first body LG-main-pattern
+                         (str/re-quote-replacement repl)))
+    body))
+
+(defn LG-ns-path [prog-ns]
+  (-> prog-ns
+      (str/replace "." "/")
+      (str/replace "-" "_")))
+
+(defn LG-program-ns
+  "The (ns ...) name of the generated program; the lowered package
+  registers under it and the resolver loads it by path, so it must
+  exist and must not be the bare name 'core' (the bundle decoder
+  treats an NS literally named core as the main chunk)."
+  [body]
+  (let [prog-ns (second (re-find #"\(ns\s+([\w.\-]+)" body))]
+    (when-not prog-ns
+      (die "Engine 'LG' requires the program to have a namespace"))
+    (when (= "core" prog-ns)
+      (die "Engine 'LG' can't use the bare namespace 'core'"))
+    prog-ns))
+
+(defn lower-lg-to-go
+  "Run let-go's lg-compile driver over lg-file, emitting lowered Go
+  packages under out-dir with import prefix <go-module>/lowered.
+  Returns the emitted .go file paths; empty means nothing lowered
+  (the program still runs, pure bytecode)."
+  [lg-file src-dir out-dir go-module]
+  (let [lg (find-lg)
+        let-go-src (find-let-go-src)
+        ;; let-go's deps.edn supplies pkg/rt/gogen when run from its
+        ;; repo root; an explicit LG_SOURCE_PATHS bypasses that, so
+        ;; list it here (lg-compile loads gogen.lg on demand).
+        source-paths (str src-dir ":" GLOAT-ROOT "/ys/lg:"
+                          let-go-src "/pkg/rt/gogen")
+        result (process/shell {:out :string :err :string :continue true
+                               :extra-env
+                               {"LG_SOURCE_PATHS" source-paths}}
+                              lg (str let-go-src "/scripts/lg-compile")
+                              out-dir (str go-module "/lowered") lg-file)
+        out-text (str (:out result) (:err result))]
+    (when-not (zero? (:exit result))
+      (die (str "lg-compile failed:\n" out-text
+                (when (re-find #"gogen" out-text)
+                  (str "\nHint: the lg binary may be older than the"
+                       " let-go checkout; run: make lg-dev")))))
+    (doseq [line (str/split-lines (str (:out result)))]
+      (when (str/includes? line "EMIT-FAIL")
+        (die "lg-compile: " line)))
+    (mapv str (fs/glob out-dir "**/*.go"))))
+
+(defn LG-entry-code [entry-fn]
+  (if entry-fn
+    (str "\tif _, err := prog." entry-fn "(vm.RootExecContext, argv...);"
+         " err != nil {\n\t\tfail(err)\n\t}")
+    (str "\tf := vm.NewFrame(unit.MainChunk, nil)\n"
+         "\t_, err = f.RunProtected()\n"
+         "\tvm.ReleaseFrame(f)\n"
+         "\tif err != nil {\n\t\tfail(err)\n\t}")))
+
+(defn convert-file-LG-bin
+  "Compile input to a native binary via let-go's AOT Go lowering.
+  The program ns is lowered to a Go package, the whole program is
+  bundled to bytecode with lg -c, and a generated main.go executes
+  the bundle with the lowered fns wired in. When -main lowered
+  (gloat's generated -main always does today), entry is a direct
+  native call, so the program-ns call graph runs as plain Go."
+  [input output namespace module]
+  (let [input-type (get-file-type input)
+        tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))
+        src-dir (str tmpdir "/src")
+        build-dir (str tmpdir "/build")
+        lowered-dir (str build-dir "/lowered")
+        clj-file (str tmpdir "/temp.clj")
+        driver-file (str tmpdir "/driver.lg")
+        ns (when (= input-type "ys")
+             (or namespace (derive-namespace input)))]
+    (try
+      (case input-type
+        "ys" (do
+               (msg "Converting" input "(.ys) to Clojure...")
+               (ys-to-clj input clj-file ns))
+        "clj" (fs/copy input clj-file {:replace-existing true})
+        (die "Engine 'LG' can't compile input type: " input-type))
+
+      (let [body (LG-rewrite-main (generate-lg-body clj-file))
+            prog-ns (LG-program-ns body)
+            ns-path (LG-ns-path prog-ns)
+            pkg (last (str/split ns-path #"/"))
+            lg-file (str src-dir "/" ns-path ".lg")
+            go-module (or module
+                          (str "github.com/gloathub/"
+                               (fs/file-name output)))
+            lg (find-lg)
+            let-go-src (find-let-go-src)
+            go-bin (:GO make-vars)]
+        (fs/create-dirs (fs/parent lg-file))
+        (fs/create-dirs lowered-dir)
+        (spit lg-file body)
+        ;; The driver requires the program as a namespace (so its
+        ;; defns exist before the lowered overrides drain) and only
+        ;; calls -main on the VM in the fallback-entry case.
+        (spit driver-file
+              (str "(require '" prog-ns ")\n"
+                   "(when-not *compiling-aot*\n"
+                   "  (when-let [main (resolve '" prog-ns "/-main)]\n"
+                   "    (apply main *command-line-args*)))\n"))
+
+        (msg "Lowering to native Go with lg-compile...")
+        (let [emitted (lower-lg-to-go lg-file src-dir lowered-dir
+                                      go-module)
+              prog-go (str lowered-dir "/" ns-path "/" pkg ".go")
+              ;; Direct native entry targets the fn lowered from
+              ;; gloat's -main wrapper, identified by its exact
+              ;; variadic signature. Its Go name is Main unless the
+              ;; program defines its own main fn, which then owns
+              ;; Main and pushes -main to Main__main.
+              entry-fn (and (fs/exists? prog-go)
+                            (second
+                             (re-find
+                              #"(?m)^func (Main(?:__main)?)\(ec \*vm\.ExecContext, args \.\.\.vm\.Value\)"
+                              (slurp prog-go))))]
+          (when (empty? emitted)
+            (msg "Note: no defns lowered; binary runs pure bytecode"))
+
+          (msg "Bundling bytecode with lg -c...")
+          (let [result (process/shell
+                        {:out :string :err :string :continue true}
+                        lg "-source-paths"
+                        (str src-dir ":" GLOAT-ROOT "/ys/lg")
+                        "-c" (str build-dir "/program.lgb") driver-file)]
+            (when-not (zero? (:exit result))
+              (die (str "lg -c failed:\n"
+                        (:out result) (:err result)))))
+
+          ;; Render go.mod, then build. When the lowered Go fails to
+          ;; compile (the lowering pipeline still has gaps), fall
+          ;; back to a pure-bytecode binary, which matches -Elg
+          ;; semantics, rather than failing the compile.
+          (let [go-directive (or (second
+                                  (re-find #"(?m)^go (\S+)"
+                                           (slurp (str let-go-src
+                                                       "/go.mod"))))
+                                 "1.24")
+                go-mod (-> (slurp (str TEMPLATE "/lg-go.mod"))
+                           (str/replace "GO-MODULE" go-module)
+                           (str/replace "GO-DIRECTIVE" go-directive)
+                           (str/replace "LET-GO-SRC" let-go-src))
+                main-go-for
+                ;; mode :direct = native entry through -main;
+                ;; :overrides = VM entry, lowered packages still
+                ;; imported (their registered overrides apply);
+                ;; :pure = bytecode only.
+                (fn [mode]
+                  (let [imports
+                        (when-not (= :pure mode)
+                          (for [f emitted
+                                :let [dir (str (fs/parent f))
+                                      rel (subs dir
+                                                (inc (count
+                                                      build-dir)))]]
+                            (if (and (= :direct mode) (= f prog-go))
+                              (str "\tprog \"" go-module "/" rel "\"")
+                              (str "\t_ \"" go-module "/" rel "\""))))]
+                    (-> (slurp (str TEMPLATE "/lg-main.go"))
+                        (str/replace "LOWERED-IMPORTS"
+                                     (str/join "\n" imports))
+                        (str/replace "ENTRY-CODE"
+                                     (LG-entry-code
+                                      (when (= :direct mode)
+                                        entry-fn))))))
+                build-env (merge go-env {"GOTOOLCHAIN" "auto"
+                                         "GOFLAGS" "-mod=mod"})
+                out (str (fs/absolutize output))
+                go-build
+                (fn []
+                  (let [tidy (process/shell
+                              {:out :string :err :string
+                               :continue true :dir build-dir
+                               :extra-env build-env}
+                              go-bin "mod" "tidy")]
+                    (if-not (zero? (:exit tidy))
+                      tidy
+                      (process/shell {:out :string :err :string
+                                      :continue true :dir build-dir
+                                      :extra-env build-env}
+                                     go-bin "build"
+                                     "-ldflags" "-s -w"
+                                     "-o" out "."))))]
+            (spit (str build-dir "/go.mod") go-mod)
+            ;; Try the richest mode first, degrading on compile
+            ;; failure: :direct (native -main entry) -> :overrides
+            ;; (VM entry, lowered code still active) -> :pure
+            ;; (bytecode only, matches -Elg). Warnings go to stderr
+            ;; unconditionally (--run implies quiet) so the user
+            ;; knows when a binary runs below full native speed.
+            (loop [[mode & more] (concat
+                                  (when entry-fn [:direct])
+                                  (when (seq emitted) [:overrides])
+                                  [:pure])]
+              (spit (str build-dir "/main.go") (main-go-for mode))
+              (when (= mode (if entry-fn :direct
+                                (if (seq emitted) :overrides :pure)))
+                (msg "Building native binary with go..."))
+              (let [build (go-build)]
+                (cond
+                  (zero? (:exit build))
+                  (msg "Generated:" output)
+
+                  (empty? more)
+                  (die (str "go build failed:\n"
+                            (:out build) (:err build)))
+
+                  :else
+                  (do
+                    (binding [*out* *err*]
+                      (println "Warning: LG" (name mode)
+                               "build failed; retrying as"
+                               (name (first more)))
+                      (println (str/trim (str (:out build)
+                                              (:err build)))))
+                    (recur more))))))))
+      (finally
+        (fs/delete-tree tmpdir)))))
+
+(defn generate-LG-lowered-go
+  "Lower input's program ns and return the emitted Go source text
+  (the -t LG format). Dies when nothing lowered."
+  [input namespace]
+  (let [input-type (get-file-type input)
+        tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))
+        src-dir (str tmpdir "/src")
+        lowered-dir (str tmpdir "/lowered")
+        clj-file (str tmpdir "/temp.clj")
+        ns (when (= input-type "ys")
+             (or namespace (derive-namespace input)))]
+    (try
+      (case input-type
+        "ys" (ys-to-clj input clj-file ns)
+        "clj" (fs/copy input clj-file {:replace-existing true})
+        (die "Engine 'LG' can't compile input type: " input-type))
+      (let [body (LG-rewrite-main (generate-lg-body clj-file))
+            prog-ns (LG-program-ns body)
+            ns-path (LG-ns-path prog-ns)
+            pkg (last (str/split ns-path #"/"))
+            lg-file (str src-dir "/" ns-path ".lg")]
+        (fs/create-dirs (fs/parent lg-file))
+        (fs/create-dirs lowered-dir)
+        (spit lg-file body)
+        (lower-lg-to-go lg-file src-dir lowered-dir "gloatbuild")
+        (let [prog-go (str lowered-dir "/" ns-path "/" pkg ".go")]
+          (when-not (fs/exists? prog-go)
+            (die "-t LG: no lowerable defns in " input))
+          (slurp prog-go)))
+      (finally
+        (fs/delete-tree tmpdir)))))
 
 ;;------------------------------------------------------------------------------
 ;; High-Level Orchestrators
@@ -1073,6 +1396,7 @@ Less common:
         "clj" (print (slurp clj-file))
         "bb" (print (generate-bb clj-file))
         "lg" (print (generate-lg clj-file))
+        "LG" (print (generate-LG-lowered-go input namespace))
         "glj" (do
                 (when (fs/exists? clj-file)
                   (clj-to-glj clj-file glj-file))
@@ -1142,6 +1466,13 @@ Less common:
           (die "Engine 'lg' does not support --platform yet"))
         (convert-file-lg-bin input output namespace))
 
+    ;; LG engine binaries build lowered Go in their own temp module
+    (if (and (= "LG" (:engine *opts*)) (= format "bin"))
+      (do
+        (when platform
+          (die "Engine 'LG' does not support --platform yet"))
+        (convert-file-LG-bin input output namespace module))
+
     ;; For formats that need directory build, delegate
     (if (contains? #{"dir" "bin" "lib" "wasm" "js"} format)
       (let [original-source (str (fs/canonicalize input))
@@ -1188,6 +1519,9 @@ Less common:
             "lg" (do
                    (spit output (generate-lg clj-file))
                    (msg "Generated:" output))
+            "LG" (do
+                   (spit output (generate-LG-lowered-go input namespace))
+                   (msg "Generated:" output))
             "glj" (do
                     (when (fs/exists? clj-file)
                       (msg "Converting Clojure to Glojure...")
@@ -1217,7 +1551,7 @@ Less common:
                             loader-file)))))
 
           (finally
-            (fs/delete-tree tmpdir))))))))
+            (fs/delete-tree tmpdir)))))))))
 
 (defn convert-files [input-files output format namespace module platform]
   "Compile multiple explicit input files to a binary/lib/dir output.
@@ -1803,13 +2137,21 @@ Less common:
                        (if (and run (= "lg" engine)) "lg" "bin")
                        (infer-format output
                                      (when to (str/replace to #"^\." ""))))
-        ;; -t lg / -o foo.lg implies the lg engine
-        engine (if (= "lg" format-guess) "lg" engine)]
+        ;; -t lg / -o foo.lg implies the lg engine; -t LG the LG engine
+        engine (cond
+                 (= "lg" format-guess) "lg"
+                 (= "LG" format-guess) "LG"
+                 :else engine)]
 
     (when (and (= "lg" engine)
                (not (contains? lg-engine-formats format-guess)))
       (die "Engine 'lg' does not yet support format '" format-guess "'"
            " (supported: " (str/join ", " (sort lg-engine-formats)) ")"))
+
+    (when (and (= "LG" engine)
+               (not (contains? LG-engine-formats format-guess)))
+      (die "Engine 'LG' does not yet support format '" format-guess "'"
+           " (supported: " (str/join ", " (sort LG-engine-formats)) ")"))
 
     (when (and (:time opts) (not run))
       (die "--time requires --run"))
@@ -1990,7 +2332,7 @@ Less common:
           ;; Dispatch based on input/output
           (cond
             (nil? (:output opts))
-            (if (contains? #{"clj" "bb" "lg" "glj" "go"} format)
+            (if (contains? #{"clj" "bb" "lg" "LG" "glj" "go"} format)
               (convert-to-stdout
                (:input opts) format (or (:namespace opts) "main.core"))
               (die "Format '" format "' requires -o output"))

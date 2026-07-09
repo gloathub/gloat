@@ -64,7 +64,7 @@ is "$rc" 129 "'gloat --glj' is no longer accepted"
 try "$GLOAT_BIN -Efoo x.clj"
 is "$rc" 1 "'gloat -Efoo' exits 1"
 has "$got" "Unknown engine 'foo'" "'gloat -Efoo' reports unknown engine"
-has "$got" "glj, lg" "'gloat -Efoo' lists known engines"
+has "$got" "LG, glj, lg" "'gloat -Efoo' lists known engines"
 
 try "GLOAT_ENGINE=foo $GLOAT_BIN -t clj x.clj"
 is "$rc" 1 "'GLOAT_ENGINE=foo gloat' exits 1"
@@ -137,6 +137,26 @@ is "$got" "Hello, World!" "lg-bundled binary runs standalone"
 
 try "$TMP/hello-lg Gloat"
 is "$got" "Hello, Gloat!" "lg-bundled binary takes args"
+
+# LG engine (native Go via let-go AOT lowering)
+try "$GLOAT_BIN -ELG -t wasm x.clj"
+is "$rc" 1 "'gloat -ELG -t wasm' exits 1"
+has "$got" "Engine 'LG' does not yet support format 'wasm'" \
+  "'gloat -ELG' reports LG engine unsupported formats"
+has "$got" "(supported: LG, bin)" \
+  "'gloat -ELG' lists LG engine supported formats"
+
+try "GLOAT_ENGINE=LG $GLOAT_BIN -o x.so x.clj"
+is "$rc" 1 "'GLOAT_ENGINE=LG gloat -o x.so' exits 1"
+has "$got" "Engine 'LG' does not yet support format 'lib'" \
+  "'GLOAT_ENGINE=LG' infers format from -o"
+
+# -t LG emits the lowered Go source of the program namespace
+try "$GLOAT_BIN -q -t LG $FIXTURES_DIR/hello.ys"
+is "$rc" 0 "'gloat -t LG' exits 0"
+has "$got" "package core" "'gloat -t LG' emits a Go package"
+has "$got" "vm.ExecContext" "'gloat -t LG' emits let-go native fns"
+has "$got" "func Main(" "'gloat -t LG' lowers the -main entry"
 
 try "$GLOAT_BIN --shell -- 'printf \"%s\\n\" \"\${PATH%%:*}\"' 2>/dev/null"
 is "$rc" 0 "'gloat --shell' exits 0"

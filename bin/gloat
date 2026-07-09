@@ -59,7 +59,7 @@ See https://gloathub.org
 --
 t,to=         Output format (inferred from -o; see --formats)
 o,out=        Output file or directory
-E,engine=     Compilation engine: glj or lg (default: glj)
+E,engine=     Compilation engine: glj, lg, or LG (default: glj)
 
 platform=     Cross-compile (e.g., linux/amd64; see --platforms)
 X,ext=        Enable a processing extension (see --extensions)

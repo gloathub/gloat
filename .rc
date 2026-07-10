@@ -25,6 +25,11 @@ if [[ -d $GLOAT_GIT_DIR/../gojava ]]; then
   GOJAVA_DIR=$(cd "$GLOAT_GIT_DIR/../gojava" && pwd -P)
   export GOJAVA_DIR
 fi
+if [[ -x $GLOAT_GIT_DIR/../jolt/bin/joltc ]]; then
+  GLOAT_JOLT=$(cd "$GLOAT_GIT_DIR/../jolt/bin" && pwd -P)/joltc
+  PATH=$(dirname "$GLOAT_JOLT"):$PATH
+  export GLOAT_JOLT PATH
+fi
 if [[ $(basename "$(dirname "$GLOAT_ROOT")") == worktree && \
       $(basename "$(dirname "$(dirname "$GLOAT_ROOT")")") == gloat ]]; then
   [[ -d $GLOAT_ROOT/workspace/glojure ]] && \

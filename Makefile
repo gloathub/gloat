@@ -25,6 +25,11 @@ include $M/let-go.mk
 include $M/wasmtime.mk
 include $M/yamlscript.mk
 
+ifneq ($(GLOAT_JOLT),)
+JOLT := $(GLOAT_JOLT)
+override PATH := $(dir $(JOLT)):$(PATH)
+endif
+
 include $M/brotli.mk
 include $M/python.mk
 

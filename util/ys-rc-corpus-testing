@@ -10,7 +10,7 @@
 #   ../rcd/     github.com/acmeism/RosettaCodeData (depth 1)
 #
 # then reads YS file paths from stdin (one per line, # comments ok)
-# and runs each with 'gloat -Elg -rT': timeouts (rc 124) are copied
+# and runs each with 'gloat -Elgvm -rT': timeouts (rc 124) are copied
 # to long/, other failures to fail/, passes to good/, everything
 # tees to ./out. With no piped stdin it stops after setup.
 #
@@ -55,9 +55,9 @@ if [[ -t 0 ]]; then
   echo '  COUNT=<num>   Number of files to test'
   echo '  SHUFFLE=1     Shuffle the file list first'
   echo '  TIMEOUT=<sec> Per-test timeout (default 2, 0 for none)'
-  echo '  JOLT=1        Run with jolt instead of gloat -Elg'
-  echo '  BB=1          Run with bb (babashka) instead of gloat -Elg'
-  echo '  GLOAT=1       With JOLT=1 or BB=1, also run gloat -Elg'
+  echo '  JOLT=1        Run with jolt instead of gloat -Elgvm'
+  echo '  BB=1          Run with bb (babashka) instead of gloat -Elgvm'
+  echo '  GLOAT=1       With JOLT=1 or BB=1, also run gloat -Elgvm'
   echo '  YS=1          Also run each test with ys'
   echo '  PAUSE=1       Pause after each test'
   echo
@@ -97,8 +97,8 @@ mkdir -p good long fail
       echo "=== bb $f"
       timeout "$TIMEOUT" "$bb" <(gloat -tbb "$f") < /dev/null || rc=$?
     else
-      echo "=== gloat -rTElg $f"
-      timeout "$TIMEOUT" gloat -rTElg "$f" < /dev/null || rc=$?
+      echo "=== gloat -rTElgvm $f"
+      timeout "$TIMEOUT" gloat -rTElgvm "$f" < /dev/null || rc=$?
     fi
     if [[ $rc -eq 124 ]]; then
       cp "$f" long/
@@ -108,8 +108,8 @@ mkdir -p good long fail
       cp "$f" good/
     fi
     if [[ (${JOLT-} || ${BB-}) && ${GLOAT-} ]]; then
-      echo "=== gloat -rTElg $f"
-      timeout "$TIMEOUT" gloat -rTElg "$f" < /dev/null || true
+      echo "=== gloat -rTElgvm $f"
+      timeout "$TIMEOUT" gloat -rTElgvm "$f" < /dev/null || true
     fi
     if [[ ${YS-} ]]; then
       echo "=== ys $f"

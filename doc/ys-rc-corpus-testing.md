@@ -38,9 +38,9 @@ Options (environment variables):
     COUNT=<num>    Number of files to test
     SHUFFLE=1      Shuffle the file list first
     TIMEOUT=<sec>  Per-test timeout (default 2, 0 for none)
-    JOLT=1         Run with jolt instead of gloat -Elg
-    BB=1           Run with bb (babashka) instead of gloat -Elg
-    GLOAT=1        With JOLT=1 or BB=1, also run gloat -Elg
+    JOLT=1         Run with jolt instead of gloat -Elgvm
+    BB=1           Run with bb (babashka) instead of gloat -Elgvm
+    GLOAT=1        With JOLT=1 or BB=1, also run gloat -Elgvm
     YS=1           Also run each test with ys (timed, for comparison)
     PAUSE=1        Pause after each test
 

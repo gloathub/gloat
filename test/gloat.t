@@ -64,26 +64,26 @@ is "$rc" 129 "'gloat --glj' is no longer accepted"
 try "$GLOAT_BIN -Efoo x.clj"
 is "$rc" 1 "'gloat -Efoo' exits 1"
 has "$got" "Unknown engine 'foo'" "'gloat -Efoo' reports unknown engine"
-has "$got" "LG, glj, lg" "'gloat -Efoo' lists known engines"
+has "$got" "glojure (glj), let-go-lower (lgl), let-go-lower-vm (lglvm), let-go-vm (lgvm)" "'gloat -Efoo' lists known engines"
 
 try "GLOAT_ENGINE=foo $GLOAT_BIN -t clj x.clj"
 is "$rc" 1 "'GLOAT_ENGINE=foo gloat' exits 1"
 has "$got" "Unknown engine 'foo'" "'GLOAT_ENGINE=foo' reports unknown engine"
 
-try "$GLOAT_BIN -Elg -t wasm x.clj"
-is "$rc" 1 "'gloat -Elg -t wasm' exits 1"
-has "$got" "Engine 'lg' does not yet support format 'wasm'" \
-  "'gloat -Elg' reports lg engine unsupported formats"
+try "$GLOAT_BIN -Elgvm -t wasm x.clj"
+is "$rc" 1 "'gloat -Elgvm -t wasm' exits 1"
+has "$got" "Engine 'let-go-vm' does not yet support format 'wasm'" \
+  "'gloat -Elgvm' reports let-go-vm unsupported formats"
 
-try "$GLOAT_BIN --engine=lg -t go x.clj"
-is "$rc" 1 "'gloat --engine=lg -t go' exits 1"
-has "$got" "Engine 'lg' does not yet support format 'go'" \
-  "'gloat --engine=lg' reports format in error"
+try "$GLOAT_BIN --engine=let-go-vm -t go x.clj"
+is "$rc" 1 "'gloat --engine=let-go-vm -t go' exits 1"
+has "$got" "Engine 'let-go-vm' does not yet support format 'go'" \
+  "'gloat --engine=let-go-vm' reports format in error"
 
-try "GLOAT_ENGINE=lg $GLOAT_BIN -o x.so x.clj"
-is "$rc" 1 "'GLOAT_ENGINE=lg gloat -o x.so' exits 1"
-has "$got" "Engine 'lg' does not yet support format 'lib'" \
-  "'GLOAT_ENGINE=lg' infers format from -o"
+try "GLOAT_ENGINE=lgvm $GLOAT_BIN -o x.so x.clj"
+is "$rc" 1 "'GLOAT_ENGINE=lgvm gloat -o x.so' exits 1"
+has "$got" "Engine 'let-go-vm' does not yet support format 'lib'" \
+  "'GLOAT_ENGINE=lgvm' infers format from -o"
 
 # lg output format (-t lg implies the lg engine)
 lg_bin=$("$GLOAT_BIN" --which=lg | tail -1)
@@ -106,20 +106,20 @@ try "$lg_bin -source-paths $lg_paths $TMP/hello.lg Gloat"
 is "$got" "Hello, Gloat!" "hello.lg greets command-line argument"
 
 # --run under the lg engine
-try "$GLOAT_BIN -Elg --run $FIXTURES_DIR/hello.ys"
-is "$rc" 0 "'gloat -Elg --run' exits 0"
-is "$got" "Hello, World!" "'gloat -Elg --run' runs the program"
+try "$GLOAT_BIN -Elgvm --run $FIXTURES_DIR/hello.ys"
+is "$rc" 0 "'gloat -Elgvm --run' exits 0"
+is "$got" "Hello, World!" "'gloat -Elgvm --run' runs the program"
 
-try "$GLOAT_BIN -Elg --run $FIXTURES_DIR/hello.ys -- Gloat"
-is "$got" "Hello, Gloat!" "'gloat -Elg --run' passes program args"
+try "$GLOAT_BIN -Elgvm --run $FIXTURES_DIR/hello.ys -- Gloat"
+is "$got" "Hello, Gloat!" "'gloat -Elgvm --run' passes program args"
 
 printf '(defn -main [] (throw (ex-info "boom" {})))' > "$TMP/boom.clj"
-try "$GLOAT_BIN -Elg --run $TMP/boom.clj"
-is "$rc" 1 "'gloat -Elg --run' propagates failure exit code"
+try "$GLOAT_BIN -Elgvm --run $TMP/boom.clj"
+is "$rc" 1 "'gloat -Elgvm --run' propagates failure exit code"
 
 # --time prints the run time (not compile) to stderr
-try "$GLOAT_BIN -Elg --run --time $FIXTURES_DIR/hello.ys"
-is "$rc" 0 "'gloat -Elg --run --time' exits 0"
+try "$GLOAT_BIN -Elgvm --run --time $FIXTURES_DIR/hello.ys"
+is "$rc" 0 "'gloat -Elgvm --run --time' exits 0"
 has "$got" "Hello, World!" "'--time' run still prints program output"
 like "$got" "> gloat run time: [0-9]\.[0-9][0-9][0-9]s" \
   "'--time' prints labeled run time"
@@ -129,8 +129,8 @@ is "$rc" 1 "'gloat --time' without --run exits 1"
 has "$got" "requires --run" "'--time' requires --run"
 
 # bin format under the lg engine (bundled binary via lg -b)
-try "$GLOAT_BIN -Elg -o $TMP/hello-lg $FIXTURES_DIR/hello.ys"
-is "$rc" 0 "'gloat -Elg -o bin' exits 0"
+try "$GLOAT_BIN -Elgvm -o $TMP/hello-lg $FIXTURES_DIR/hello.ys"
+is "$rc" 0 "'gloat -Elgvm -o bin' exits 0"
 
 try "$TMP/hello-lg"
 is "$got" "Hello, World!" "lg-bundled binary runs standalone"
@@ -139,17 +139,17 @@ try "$TMP/hello-lg Gloat"
 is "$got" "Hello, Gloat!" "lg-bundled binary takes args"
 
 # LG engine (native Go via let-go AOT lowering)
-try "$GLOAT_BIN -ELG -t wasm x.clj"
-is "$rc" 1 "'gloat -ELG -t wasm' exits 1"
-has "$got" "Engine 'LG' does not yet support format 'wasm'" \
-  "'gloat -ELG' reports LG engine unsupported formats"
+try "$GLOAT_BIN -Elglvm -t wasm x.clj"
+is "$rc" 1 "'gloat -Elglvm -t wasm' exits 1"
+has "$got" "Engine 'let-go-lower-vm' does not yet support format 'wasm'" \
+  "'gloat -Elglvm' reports let-go-lower-vm unsupported formats"
 has "$got" "(supported: LG, bin)" \
-  "'gloat -ELG' lists LG engine supported formats"
+  "'gloat -Elglvm' lists let-go-lower-vm supported formats"
 
-try "GLOAT_ENGINE=LG $GLOAT_BIN -o x.so x.clj"
-is "$rc" 1 "'GLOAT_ENGINE=LG gloat -o x.so' exits 1"
-has "$got" "Engine 'LG' does not yet support format 'lib'" \
-  "'GLOAT_ENGINE=LG' infers format from -o"
+try "GLOAT_ENGINE=let-go-lower-vm $GLOAT_BIN -o x.so x.clj"
+is "$rc" 1 "'GLOAT_ENGINE=let-go-lower-vm gloat -o x.so' exits 1"
+has "$got" "Engine 'let-go-lower-vm' does not yet support format 'lib'" \
+  "'GLOAT_ENGINE=let-go-lower-vm' infers format from -o"
 
 # -t LG emits the lowered Go source of the program namespace
 try "$GLOAT_BIN -q -t LG $FIXTURES_DIR/hello.ys"

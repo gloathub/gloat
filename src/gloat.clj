@@ -265,21 +265,42 @@
         (System/exit (:exit result)))
       (edn/read-string (:out result)))))
 
-(def known-engines #{"glj" "lg" "LG"})
+(def known-engines
+  #{"glojure" "let-go-vm" "let-go-lower-vm" "let-go-lower"})
 
+(def engine-aliases {"glj"   "glojure"
+                     "lgvm"  "let-go-vm"
+                     "lglvm" "let-go-lower-vm"
+                     "lgl"   "let-go-lower"})
+
+;; let-go-vm runs/bundles bytecode on the let-go VM; the "lg" format
+;; is its source form (.lg).
 (def lg-engine-formats #{"lg" "bin"})
 
-;; The LG engine (uppercase) compiles to native Go via let-go's AOT
-;; lowering pipeline; "LG" as a format emits the lowered Go source.
+;; let-go-lower-vm compiles to native Go via let-go's AOT lowering
+;; with the VM along for non-lowered code (trampolines); the "LG"
+;; format emits the lowered Go source. let-go-lower (planned) will
+;; prune the VM out entirely: pure lowered Go, no trampoline.
 (def LG-engine-formats #{"LG" "bin"})
 
 (defn resolve-engine [opts]
   (let [engine (or (:engine opts)
                    (not-empty (System/getenv "GLOAT_ENGINE"))
-                   "glj")]
+                   "glojure")
+        engine (get engine-aliases engine engine)]
     (when-not (contains? known-engines engine)
       (die "Unknown engine '" engine "'. Known engines: "
-           (str/join ", " (sort known-engines))))
+           (str/join ", "
+                     (map (fn [e]
+                            (if-let [alias (some (fn [[a c]]
+                                                   (when (= c e) a))
+                                                 engine-aliases)]
+                              (str e " (" alias ")")
+                              e))
+                          (sort known-engines)))))
+    (when (= "let-go-lower" engine)
+      (die "Engine 'let-go-lower' is not yet implemented"
+           " (try let-go-lower-vm)"))
     engine))
 
 ;;------------------------------------------------------------------------------
@@ -1056,7 +1077,8 @@ Less common:
     (if (and src (not (str/blank? src)) (fs/directory? src))
       (str src)
       (die "No let-go source checkout found."
-           " Engine 'LG' needs one; clone github.com/gloathub/let-go"
+           " Engine 'let-go-lower-vm' needs one;
+           clone github.com/gloathub/let-go"
            " next to the gloat repo dir, or set LET-GO-SRC."))))
 
 (def LG-main-pattern
@@ -1119,9 +1141,9 @@ Less common:
   [body]
   (let [prog-ns (second (re-find #"\(ns\s+([\w.\-]+)" body))]
     (when-not prog-ns
-      (die "Engine 'LG' requires the program to have a namespace"))
+      (die "Engine 'let-go-lower-vm' requires the program to have a namespace"))
     (when (= "core" prog-ns)
-      (die "Engine 'LG' can't use the bare namespace 'core'"))
+      (die "Engine 'let-go-lower-vm' can't use the bare namespace 'core'"))
     prog-ns))
 
 (defn lower-lg-to-go
@@ -1185,7 +1207,7 @@ Less common:
                (msg "Converting" input "(.ys) to Clojure...")
                (ys-to-clj input clj-file ns))
         "clj" (fs/copy input clj-file {:replace-existing true})
-        (die "Engine 'LG' can't compile input type: " input-type))
+        (die "Engine 'let-go-lower-vm' can't compile input type: " input-type))
 
       (let [body (LG-rewrite-main (generate-lg-body clj-file))
             prog-ns (LG-program-ns body)
@@ -1342,7 +1364,7 @@ Less common:
       (case input-type
         "ys" (ys-to-clj input clj-file ns)
         "clj" (fs/copy input clj-file {:replace-existing true})
-        (die "Engine 'LG' can't compile input type: " input-type))
+        (die "Engine 'let-go-lower-vm' can't compile input type: " input-type))
       (let [body (LG-rewrite-main (generate-lg-body clj-file))
             prog-ns (LG-program-ns body)
             ns-path (LG-ns-path prog-ns)
@@ -1441,7 +1463,7 @@ Less common:
                (msg "Converting" input "(.ys) to Clojure...")
                (ys-to-clj input clj-file ns))
         "clj" (fs/copy input clj-file {:replace-existing true})
-        (die "Engine 'lg' can't compile input type: " input-type))
+        (die "Engine 'let-go-vm' can't compile input type: " input-type))
       (spit lg-file (generate-lg clj-file))
       (msg "Bundling binary with lg...")
       (let [lg (find-lg)
@@ -1460,17 +1482,17 @@ Less common:
   (let [input-type (get-file-type input)]
 
     ;; lg engine binaries bundle bytecode; no Go build directory
-    (if (and (= "lg" (:engine *opts*)) (= format "bin"))
+    (if (and (= "let-go-vm" (:engine *opts*)) (= format "bin"))
       (do
         (when platform
-          (die "Engine 'lg' does not support --platform yet"))
+          (die "Engine 'let-go-vm' does not support --platform yet"))
         (convert-file-lg-bin input output namespace))
 
     ;; LG engine binaries build lowered Go in their own temp module
-    (if (and (= "LG" (:engine *opts*)) (= format "bin"))
+    (if (and (= "let-go-lower-vm" (:engine *opts*)) (= format "bin"))
       (do
         (when platform
-          (die "Engine 'LG' does not support --platform yet"))
+          (die "Engine 'let-go-lower-vm' does not support --platform yet"))
         (convert-file-LG-bin input output namespace module))
 
     ;; For formats that need directory build, delegate
@@ -2134,23 +2156,23 @@ Less common:
         engine (resolve-engine opts)
         format-guess (if (and (nil? output) (nil? to))
                        ;; --run under the lg engine defaults to lg format
-                       (if (and run (= "lg" engine)) "lg" "bin")
+                       (if (and run (= "let-go-vm" engine)) "lg" "bin")
                        (infer-format output
                                      (when to (str/replace to #"^\." ""))))
-        ;; -t lg / -o foo.lg implies the lg engine; -t LG the LG engine
+        ;; -t lg / -o foo.lg implies let-go-vm; -t LG let-go-lower-vm
         engine (cond
-                 (= "lg" format-guess) "lg"
-                 (= "LG" format-guess) "LG"
+                 (= "lg" format-guess) "let-go-vm"
+                 (= "LG" format-guess) "let-go-lower-vm"
                  :else engine)]
 
-    (when (and (= "lg" engine)
+    (when (and (= "let-go-vm" engine)
                (not (contains? lg-engine-formats format-guess)))
-      (die "Engine 'lg' does not yet support format '" format-guess "'"
+      (die "Engine 'let-go-vm' does not yet support format '" format-guess "'"
            " (supported: " (str/join ", " (sort lg-engine-formats)) ")"))
 
-    (when (and (= "LG" engine)
+    (when (and (= "let-go-lower-vm" engine)
                (not (contains? LG-engine-formats format-guess)))
-      (die "Engine 'LG' does not yet support format '" format-guess "'"
+      (die "Engine 'let-go-lower-vm' does not yet support format '" format-guess "'"
            " (supported: " (str/join ", " (sort LG-engine-formats)) ")"))
 
     (when (and (:time opts) (not run))
@@ -2234,7 +2256,7 @@ Less common:
                       (alter-var-root #'*opts* assoc :run-tmpdir run-tmpdir)
                       (cond
                         (= to "bb") [(str run-tmpdir "/gloat-run.bb") to]
-                        (and (nil? to) (= "lg" engine))
+                        (and (nil? to) (= "let-go-vm" engine))
                         [(str run-tmpdir "/gloat-run.lg") "lg"]
                         (nil? to) [(str run-tmpdir "/gloat-run") "bin"]
                         :else [(str run-tmpdir "/gloat-run." to) to]))

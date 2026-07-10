@@ -1,3 +1,10 @@
+- version: 0.1.57
+  date:    Fri Jul 10 01:33:55 PM EDT 2026
+  changes:
+  - Keep let-go nREPL alive for external REPL
+  - Add Jolt external REPL support
+  - Fix CI failures on macOS and Linux
+
 - version: 0.1.56
   date:    Thu Jul  2 02:43:21 PM EDT 2026
   changes:

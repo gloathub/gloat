@@ -970,7 +970,8 @@ resolve-classpath() {
 # Start an external tool's nREPL server and connect to it
 start-tool-nrepl() {
   local tool=$1
-  local cmd bin port=
+  local cmd bin keep_stdin=
+  local port=
 
   local make_target
   case $tool in
@@ -1003,7 +1004,9 @@ start-tool-nrepl() {
       cmd=("$bin" --nrepl-server "$(random-port)")
       ;;
     let-go|lg)
-      cmd=("$bin" -n)
+      port=$(random-port)
+      cmd=("$bin" -n -p "$port")
+      keep_stdin=true
       ;;
     *)
       die "Error: unknown tool '+$tool'" \
@@ -1018,7 +1021,11 @@ start-tool-nrepl() {
 
   # Run in its own process group so the EXIT trap can take down the whole
   # subtree, not just the server PID we started.
-  setsid "${cmd[@]}" > "$fifo" 2>&1 &
+  if [[ $keep_stdin ]]; then
+    setsid bash -c 'tail -f /dev/null | exec "$@"' bash "${cmd[@]}" > "$fifo" 2>&1 &
+  else
+    setsid "${cmd[@]}" > "$fifo" 2>&1 &
+  fi
   local server_pid=$!
   # shellcheck disable=SC2064
   trap "kill -- -$server_pid 2>/dev/null; rm -f '$fifo'" EXIT

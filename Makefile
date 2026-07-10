@@ -11,10 +11,15 @@ include $M/gh.mk
 include $M/git.mk
 include $M/glojure.mk
 include $M/go.mk
+include $M/hy.mk
+include $M/janet.mk
+include $M/joker.mk
+include $M/jolt.mk
 include $M/lein.mk
 include $M/let-go.mk
 include $M/md2man.mk
 include $M/perl.mk
+include $M/phel.mk
 include $M/shellcheck.mk
 include $M/let-go.mk
 include $M/wasmtime.mk
@@ -173,11 +178,32 @@ bb: $(BB)
 clj: $(CLJ)
 	$@
 
+glj: $(GLJ)
+	$@
+
+gloat:
+	$@ --repl
+
+hy: $(HY)
+	$@
+
+janet: $(JANET)
+	$@
+
+joker: $(JOKER)
+	$@
+
+jolt: $(JOLT)
+	$@ repl
+
 lein: $(LEIN)
 	$@ repl
 
 lg: $(LG)
 	$@
+
+phel: $(PHEL)
+	$(if $(shell command -v rlwrap),rlwrap )$@
 
 which-bb: $(BB)
 	@echo $<
@@ -186,6 +212,9 @@ which-lein: $(LEIN)
 	@echo $<
 
 which-clj: $(CLOJURE)
+	@echo $<
+
+which-jolt: $(JOLT)
 	@echo $<
 
 which-lg: $(LG)

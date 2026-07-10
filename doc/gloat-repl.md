@@ -424,6 +424,7 @@ tab completion, history) while evaluating code on the remote server.
 | `--repl=+bb` | Start Babashka nREPL, connect |
 | `--repl=+lein` | Start Leiningen nREPL, connect |
 | `--repl=+clj` | Start Clojure CLI nREPL, connect |
+| `--repl=+jolt` | Start Jolt nREPL, connect |
 | `--repl=+let-go` | Start let-go nREPL, connect |
 | `--repl=dir/` | Use `dir` as build directory (trailing slash) |
 | `--repl=dir` | Existing directory = build dir; existing file = port file |
@@ -449,6 +450,7 @@ code in the external tool's runtime.
 gloat --repl=+bb      # Babashka
 gloat --repl=+lein    # Leiningen (Clojure + project deps)
 gloat --repl=+clj     # Clojure CLI
+gloat --repl=+jolt    # Jolt (Chez Scheme-based Clojure)
 gloat --repl=+let-go  # let-go (Go-based Clojure)
 ```
 
@@ -744,6 +746,7 @@ available commands.
 | `GLOAT_REPL_HISTORY_BB` | Babashka history file for `--repl=+bb` (JLine format). |
 | `GLOAT_REPL_HISTORY_LEIN` | Leiningen history file for `--repl=+lein` (JLine format). |
 | `GLOAT_REPL_HISTORY_CLJ` | Clojure CLI history file for `--repl=+clj` (JLine format). |
+| `GLOAT_REPL_HISTORY_JOLT` | Jolt history file for `--repl=+jolt` (JLine format). |
 | `GLOAT_REPL_HISTORY_LET_GO` | let-go history file for `--repl=+let-go` (JLine format). |
 | `GLOAT_REPL_HISTORY_LG` | let-go history file for `--repl=+lg` (JLine format). |
 | `INPUTRC` | Path to inputrc config file (default: `~/.inputrc`). |

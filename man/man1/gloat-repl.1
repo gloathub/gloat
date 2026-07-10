@@ -506,6 +506,7 @@ T}
 \fB--repl=+clj\fR	T{
 Start Clojure CLI nREPL, connect
 T}
+\fB--repl=+jolt\fR	Start Jolt nREPL, connect
 \fB--repl=+let-go\fR	Start let-go nREPL, connect
 \fB--repl=dir/\fR	Use \fBdir\fR as build directory (trailing slash)
 \fB--repl=dir\fR	T{
@@ -534,6 +535,7 @@ code in the external tool's runtime.
 gloat --repl=+bb      # Babashka
 gloat --repl=+lein    # Leiningen (Clojure + project deps)
 gloat --repl=+clj     # Clojure CLI
+gloat --repl=+jolt    # Jolt (Chez Scheme-based Clojure)
 gloat --repl=+let-go  # let-go (Go-based Clojure)
 .EE
 
@@ -861,6 +863,7 @@ T}
 \fBGLOAT_REPL_HISTORY_BB\fR	Babashka history file for \fB--repl=+bb\fR (JLine format).
 \fBGLOAT_REPL_HISTORY_LEIN\fR	Leiningen history file for \fB--repl=+lein\fR (JLine format).
 \fBGLOAT_REPL_HISTORY_CLJ\fR	Clojure CLI history file for \fB--repl=+clj\fR (JLine format).
+\fBGLOAT_REPL_HISTORY_JOLT\fR	Jolt history file for \fB--repl=+jolt\fR (JLine format).
 \fBGLOAT_REPL_HISTORY_LET_GO\fR	let-go history file for \fB--repl=+let-go\fR (JLine format).
 \fBGLOAT_REPL_HISTORY_LG\fR	let-go history file for \fB--repl=+lg\fR (JLine format).
 \fBINPUTRC\fR	T{

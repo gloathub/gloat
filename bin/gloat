@@ -51,7 +51,7 @@ See https://gloathub.org
     gloat --repl=dir/                   REPL with 'dir' as build directory
     gloat --repl=port-file              Connect REPL to nREPL port in file
     gloat --repl=7888                   Connect REPL to nREPL server port
-    gloat --repl=+bb                    REPL for bb, clj, lein or let-go
+    gloat --repl=+bb                    REPL for bb, clj, lein, jolt or let-go
     gloat --nrepl                       Start nREPL server; print port
     gloat --nrepl=port-file             Start nREPL; write port to file
     gloat --nrepl=7888                  Start nREPL on specific port
@@ -977,18 +977,14 @@ start-tool-nrepl() {
     bb)       make_target=which-bb ;;
     lein)     make_target=which-lein ;;
     clj)      make_target=which-clj ;;
+    jolt)     make_target=which-jolt ;;
     let-go|lg) make_target=which-lg ;;
     *)
       die "Error: unknown tool '+$tool'" \
-          "Supported: +bb, +lein, +clj, +let-go"
+          "Supported: +bb, +lein, +clj, +jolt, +let-go"
       ;;
   esac
 
-  local local_bin=$root/.cache/local/bin
-  local tool_bin=$local_bin/${make_target#which-}
-  if [[ ! -x $tool_bin ]]; then
-    echo "Installing '$tool' locally..." >&2
-  fi
   bin=$(make --quiet --no-print-directory -C "$root" "$make_target" | tail -1)
 
   case $tool in
@@ -1003,12 +999,15 @@ start-tool-nrepl() {
         -Sdeps '{:deps {nrepl/nrepl {:mvn/version "1.3.0"}}}'
         -M -m nrepl.cmdline)
       ;;
+    jolt)
+      cmd=("$bin" --nrepl-server "$(random-port)")
+      ;;
     let-go|lg)
       cmd=("$bin" -n)
       ;;
     *)
       die "Error: unknown tool '+$tool'" \
-          "Supported: +bb, +lein, +clj, +let-go"
+          "Supported: +bb, +lein, +clj, +jolt, +let-go"
       ;;
   esac
 
@@ -1048,10 +1047,24 @@ start-tool-nrepl() {
   local hist_var=GLOAT_REPL_HISTORY_${tool_key}
   local hist=${!hist_var:-}
 
-  find-glj
+  local glj_bin
+  glj_bin=$(find-local-glj)
+  [[ $glj_bin ]] || die "Error: could not find local glj"
   local hist_flag=()
   [[ $hist ]] && hist_flag=(--history "$hist" --history-fmt jline)
-  glj --nrepl-connect "localhost:$port" "${hist_flag[@]}"
+  "$glj_bin" --nrepl-connect "localhost:$port" "${hist_flag[@]}"
+}
+
+random-port() {
+  local port
+  for _ in {1..20}; do
+    port=$((20000 + RANDOM % 41000))
+    if ! (:</dev/tcp/127.0.0.1/$port) >/dev/null 2>&1; then
+      printf '%s\n' "$port"
+      return 0
+    fi
+  done
+  die "Error: could not find a free local port"
 }
 
 # Find local glj binary and add to PATH

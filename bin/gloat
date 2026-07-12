@@ -1001,7 +1001,7 @@ start-tool-nrepl() {
         -M -m nrepl.cmdline)
       ;;
     jolt)
-      cmd=("$bin" --nrepl-server "$(random-port)")
+      cmd=("$bin" nrepl-server "$(random-port)")
       ;;
     let-go|lg)
       port=$(random-port)
@@ -1032,6 +1032,7 @@ start-tool-nrepl() {
 
   # Read lines until we find the port
   while IFS= read -r line; do
+    [[ $line =~ ^[[:space:]]*at[[:space:]] ]] && continue
     if [[ $line =~ :([0-9]+)$ ]] ||
        [[ $line =~ port\ ([0-9]+) ]]; then
       port=${BASH_REMATCH[1]}

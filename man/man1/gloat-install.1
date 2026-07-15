@@ -5,9 +5,9 @@ use.
 
 .PP
 There are two main ways to get started: cloning the repository and sourcing
-the \fB\&.rc\fR file (recommended), or the one-line installer.
+the \fB\&.rc\fR file, or the quick install script.
 
-.SH Clone and Setup (Recommended)
+.SH Clone and Source (Recommended)
 For Bash, Fish or Zsh:
 
 .EX
@@ -26,8 +26,9 @@ YAMLScript, Babashka, etc) to \fB\&.cache/local/\fR within the project directory
 Just run \fBgloat --help\fR once to complete the setup.
 
 .PP
-To make Gloat available permanently, simply add this to your shell's rc file
-(\fB~/.bashrc\fR, \fB~/.config/fish/config.fish\fR or \fB~/.zshrc\fR):
+To make Gloat available permanently, simply add this to your shell's (Bash,
+Zsh or Fish) rc file (\fB~/.bashrc\fR, \fB~/.config/fish/config.fish\fR or
+\fB~/.zshrc\fR):
 
 .EX
 source /path/to/gloat/.rc
@@ -36,53 +37,51 @@ source /path/to/gloat/.rc
 .PP
 Yes, that command and \fB\&.rc\fR file actually supports all three shells!
 
-.SH One-Line Installer
-Install \fBgloat\fR (or \fBglj\fR) to \fB~/.local/bin/\fR with a single command:
+.SH Quick Install
+For Bash or Zsh, install \fBgloat\fR to \fB~/.local\fR and load its shell setup in
+the current shell:
 
 .EX
-make -f <(curl -sL gloathub.org/make) install
+source <(curl -sL gloathub.org/install)
 .EE
 
 .PP
-Installing \fBgloat\fR clones the gloat repository to \fB~/.local/share/gloat\fR,
-creates a symlink at \fB~/.local/bin/gloat\fR, and installs all the required
-dependencies automatically.
-
-.PP
-The installer refuses to run if \fB~/.local/bin\fR is not on your \fBPATH\fR —
-add \fBexport PATH=~/.local/bin:$PATH\fR to your shell rc and start a new
-shell, or pass \fBPREFIX=/path/to\fR where \fB/path/to/bin\fR is already on your
-\fBPATH\fR\&. Then run \fBgloat --help\fR\&.
-
-.PP
-\fBOptions:\fP
+For Fish:
 
 .EX
-# Install to a custom prefix
-make -f <(curl -sL gloathub.org/make) install PREFIX=~/.gloat
-
-# Install a specific version
-make -f <(curl -sL gloathub.org/make) install VERSION=v0.1.37
-
-# Also install the Glojure glj (prebuilt binary) command
-make -f <(curl -sL gloathub.org/make) install-glj
-
-# Uninstall
-make -f <(curl -sL gloathub.org/make) uninstall
-make -f <(curl -sL gloathub.org/make) uninstall-glj
-
-# Show the installer Makefile rules:
-make -f <(curl -sL gloathub.org/make) help
+curl -sL gloathub.org/install | source
 .EE
 
 .PP
-On success the installer prints the exact \fBsource .../share/gloat/.rc\fR
-command to enable tab completion and \fBgloat*\fR man pages, plus the shell rc
-file where you can add it permanently.
+This runs the Makefile installer, clones the gloat repository to
+\fB~/.local/share/gloat\fR, creates a symlink at \fB~/.local/bin/gloat\fR, installs
+all required dependencies, and then sources \fB~/.local/share/gloat/.rc\fR\&.
 
 .PP
-Pass \fBVERSION=v1.2.3\fR to pin to a specific gloat release; the installer
-also picks up the GLJ version that pairs with that gloat tag.
+The sourced \fB\&.rc\fR adds the installed \fBgloat\fR command to your current \fBPATH\fR,
+enables the \fBgloat*\fR man pages and sets up \fBgloat\fR tab completion. To make
+that setup permanent, add this to your shell's rc file (\fB~/.bashrc\fR,
+\fB~/.config/fish/config.fish\fR or \fB~/.zshrc\fR):
+
+.EX
+source ~/.local/share/gloat/.rc
+.EE
+
+.PP
+Pass Makefile variables after the command to customize the install:
+
+.EX
+source <(curl -sL gloathub.org/install) PREFIX=~/.gloat
+source <(curl -sL gloathub.org/install) VERSION=v0.1.37
+.EE
+
+.PP
+For Fish, set \fBPREFIX\fR before sourcing:
+
+.EX
+set -gx PREFIX ~/.gloat
+curl -sL gloathub.org/install | source
+.EE
 
 .SH Upgrading
 Upgrade gloat to the latest release:

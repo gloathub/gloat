@@ -208,8 +208,27 @@ make build
 .EE
 
 .SH Installation
-.SS One-Line Installer
-Install gloat to \fB~/.local\fR with a single command:
+.SS Source Installer
+For Bash or Zsh, install gloat to \fB~/.local\fR and load its shell setup in the
+current shell:
+
+.EX
+source <(curl -sL gloathub.org/install)
+.EE
+
+.PP
+For Fish:
+
+.EX
+curl -sL gloathub.org/install | source
+.EE
+
+.PP
+This runs the Makefile installer, then sources \fB~/.local/share/gloat/.rc\fR for
+tab completion and \fBgloat*\fR man pages.
+
+.SS Makefile Installer
+Install gloat to \fB~/.local\fR with the Makefile installer:
 
 .EX
 make -f <(curl -sL gloathub.org/make) install

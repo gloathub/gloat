@@ -1,3 +1,8 @@
+- version: 0.1.59
+  date:    Wed Jul 15 01:19:43 PM EDT 2026
+  changes:
+  - Add sourced quick install
+
 - version: 0.1.58
   date:    Sun Jul 12 09:20:41 AM EDT 2026
   changes:

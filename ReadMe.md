@@ -198,9 +198,28 @@ make build
 ## Installation
 
 
-### One-Line Installer
+### Source Installer
 
-Install gloat to `~/.local` with a single command:
+For Bash or Zsh, install gloat to `~/.local` and load its shell setup in the
+current shell:
+
+```bash
+source <(curl -sL gloathub.org/install)
+```
+
+For Fish:
+
+```fish
+curl -sL gloathub.org/install | source
+```
+
+This runs the Makefile installer, then sources `~/.local/share/gloat/.rc` for
+tab completion and `gloat*` man pages.
+
+
+### Makefile Installer
+
+Install gloat to `~/.local` with the Makefile installer:
 
 ```bash
 make -f <(curl -sL gloathub.org/make) install

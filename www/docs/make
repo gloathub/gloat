@@ -2,6 +2,8 @@
 #
 # Usage:
 #   make -f <(curl -sL gloathub.org/make) install
+#   source <(curl -sL gloathub.org/install)  # bash/zsh
+#   curl -sL gloathub.org/install | source   # fish
 #   make -f <(curl -sL gloathub.org/make) install PREFIX=~/.mydir
 #   make -f <(curl -sL gloathub.org/make) install-gloat
 #   make -f <(curl -sL gloathub.org/make) install-glj
@@ -77,7 +79,8 @@ help:
 install:
 	@# PATH check up front — refuse to install if BIN-DIR isn't on PATH so
 	@# the user doesn't end up with a 'gloat' they can't run.
-	@if ! echo ":$$PATH:" | grep -q ':$(BIN-DIR):'; then \
+	@if [[ '$(GLOAT_INSTALL_SOURCE)' != 1 ]] && \
+	    ! echo ":$$PATH:" | grep -q ':$(BIN-DIR):'; then \
 	  echo "$$PATH_ERROR" >&2; \
 	  exit 1; \
 	fi
@@ -134,22 +137,24 @@ install:
 	@echo ''
 	@echo '  Installed to: $(INSTALL-DIR)'
 	@echo '  Symlink at:   $(GLOAT-BIN)'
-	@echo ''
 	@# Shell-specific rc hint for man pages and completion
-	@case $$(basename "$${SHELL:-}") in \
-	  bash) echo '> $(RC-HINT-TITLE)'; \
-	        echo '>   source $(INSTALL-DIR)/.rc'; \
-	        echo '> (or add it to your ~/.bashrc file to make it permanent)'; \
-	        echo '> See: $(RC-HINT-URL)' ;; \
-	  fish) echo '> $(RC-HINT-TITLE)'; \
-	        echo '>   source $(INSTALL-DIR)/.rc'; \
-	        echo '> (or add it to your ~/.config/fish/config.fish file to make it permanent)'; \
-	        echo '> See: $(RC-HINT-URL)' ;; \
-	  zsh)  echo '> $(RC-HINT-TITLE)'; \
-	        echo '>   source $(INSTALL-DIR)/.rc'; \
-	        echo '> (or add it to your ~/.zshrc file to make it permanent)'; \
-	        echo '> See: $(RC-HINT-URL)' ;; \
-	esac
+	@if [[ '$(GLOAT_INSTALL_SOURCE)' != 1 ]]; then \
+	  echo ''; \
+	  case $$(basename "$${SHELL:-}") in \
+	    bash) echo '> $(RC-HINT-TITLE)'; \
+	          echo '>   source $(INSTALL-DIR)/.rc'; \
+	          echo '> (or add it to your ~/.bashrc file to make it permanent)'; \
+	          echo '> See: $(RC-HINT-URL)' ;; \
+	    fish) echo '> $(RC-HINT-TITLE)'; \
+	          echo '>   source $(INSTALL-DIR)/.rc'; \
+	          echo '> (or add it to your ~/.config/fish/config.fish file to make it permanent)'; \
+	          echo '> See: $(RC-HINT-URL)' ;; \
+	    zsh)  echo '> $(RC-HINT-TITLE)'; \
+	          echo '>   source $(INSTALL-DIR)/.rc'; \
+	          echo '> (or add it to your ~/.zshrc file to make it permanent)'; \
+	          echo '> See: $(RC-HINT-URL)' ;; \
+	  esac; \
+	fi
 	@echo ''
 	@echo "Run 'gloat --help' to get started."
 

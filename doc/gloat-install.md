@@ -4,10 +4,10 @@ Gloat has **zero dependencies** - everything installs automatically on first
 use.
 
 There are two main ways to get started: cloning the repository and sourcing
-the `.rc` file (recommended), or the one-line installer.
+the `.rc` file, or the quick install script.
 
 
-## Clone and Setup (Recommended)
+## Clone and Source (Recommended)
 
 For Bash, Fish or Zsh:
 
@@ -24,8 +24,9 @@ On first run, Gloat will automatically install all required tools (Go, Glojure,
 YAMLScript, Babashka, etc) to `.cache/local/` within the project directory.
 Just run `gloat --help` once to complete the setup.
 
-To make Gloat available permanently, simply add this to your shell's rc file
-(`~/.bashrc`, `~/.config/fish/config.fish` or `~/.zshrc`):
+To make Gloat available permanently, simply add this to your shell's (Bash,
+Zsh or Fish) rc file (`~/.bashrc`, `~/.config/fish/config.fish` or
+`~/.zshrc`):
 
 ```bash
 source /path/to/gloat/.rc
@@ -34,7 +35,50 @@ source /path/to/gloat/.rc
 Yes, that command and `.rc` file actually supports all three shells!
 
 
-## One-Line Installer
+## Quick Install
+
+For Bash or Zsh, install `gloat` to `~/.local` and load its shell setup in
+the current shell:
+
+```bash
+source <(curl -sL gloathub.org/install)
+```
+
+For Fish:
+
+```fish
+curl -sL gloathub.org/install | source
+```
+
+This runs the Makefile installer, clones the gloat repository to
+`~/.local/share/gloat`, creates a symlink at `~/.local/bin/gloat`, installs
+all required dependencies, and then sources `~/.local/share/gloat/.rc`.
+
+The sourced `.rc` adds the installed `gloat` command to your current `PATH`,
+enables the `gloat*` man pages and sets up `gloat` tab completion. To make
+that setup permanent, add this to your shell's rc file (`~/.bashrc`,
+`~/.config/fish/config.fish` or `~/.zshrc`):
+
+```bash
+source ~/.local/share/gloat/.rc
+```
+
+Pass Makefile variables after the command to customize the install:
+
+```bash
+source <(curl -sL gloathub.org/install) PREFIX=~/.gloat
+source <(curl -sL gloathub.org/install) VERSION=v0.1.37
+```
+
+For Fish, set `PREFIX` before sourcing:
+
+```fish
+set -gx PREFIX ~/.gloat
+curl -sL gloathub.org/install | source
+```
+
+<!--
+## Makefile Installer
 
 Install `gloat` (or `glj`) to `~/.local/bin/` with a single command:
 
@@ -77,6 +121,7 @@ file where you can add it permanently.
 
 Pass `VERSION=v1.2.3` to pin to a specific gloat release; the installer
 also picks up the GLJ version that pairs with that gloat tag.
+-->
 
 
 ## Upgrading

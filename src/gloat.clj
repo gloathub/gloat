@@ -317,6 +317,7 @@
     (str/ends-with? file ".wasm") "wasm"
     (str/ends-with? file ".so") "lib"
     (str/ends-with? file ".dylib") "lib"
+    (str/ends-with? file ".dll") "lib"
     (str/ends-with? file "/") "dir"
     :else
     ;; Check shebang and file content for type detection
@@ -357,6 +358,7 @@
     (str/ends-with? output ".go") "go"
     (str/ends-with? output ".so") "lib"
     (str/ends-with? output ".dylib") "lib"
+    (str/ends-with? output ".dll") "lib"
     (str/ends-with? output ".wasm") "wasm"
     (str/ends-with? output ".js") "js"
     (str/ends-with? output "/") "dir"
@@ -1625,17 +1627,19 @@ Less common:
                      :else (str/replace output #"/$" ""))
         binary-name (when is-binary (fs/file-name output))
         build-mode (when (= format "lib") "-buildmode=c-shared")
-        binary-name
-        (if (and (= format "lib")
-                 (not (str/ends-with? output ".dylib"))
-                 (not (str/ends-with? output ".so")))
-          (str binary-name ".so")
-          binary-name)
         [goos goarch] (cond
                         (= format "wasm") ["wasip1" "wasm"]
                         (= format "js") ["js" "wasm"]
                         platform (str/split platform #"/")
-                        :else [nil nil])]
+                        :else [nil nil])
+        binary-name
+        (if (and (= format "lib")
+                 (not (str/ends-with? output ".dylib"))
+                 (not (str/ends-with? output ".so"))
+                 (not (str/ends-with? output ".dll")))
+          ;; Default lib extension follows the target OS
+          (str binary-name (if (= goos "windows") ".dll" ".so"))
+          binary-name)]
 
     (msg "Converting directory" input-dir "to" output-dir)
     (fs/create-dirs output-dir)
@@ -1957,6 +1961,19 @@ Less common:
                     build-env (merge go-env
                                      {"GONOSUMCHECK" "*"}
                                      (when (= format "lib") {"CGO_ENABLED" "1"})
+                                     ;; Cross-compiling a lib needs a C cross
+                                     ;; toolchain: for windows targets, use
+                                     ;; mingw-w64 unless the user set CC.
+                                     (when (and (= format "lib")
+                                                (= goos "windows")
+                                                (not (System/getenv "CC")))
+                                       (let [cc "x86_64-w64-mingw32-gcc"]
+                                         (when-not (fs/which cc)
+                                           (die "Windows lib cross-compile"
+                                                " needs mingw-w64 (" cc ");"
+                                                " install gcc-mingw-w64-x86-64"
+                                                " or set CC"))
+                                         {"CC" cc}))
                                      (when goos {"GOOS" goos})
                                      (when goarch {"GOARCH" goarch})
                                      (when (and (= goos "plan9")
@@ -2038,14 +2055,11 @@ Less common:
 
                       ;; Copy .h file for shared libraries
                       (when (= format "lib")
-                        (let [h-file (-> binary-name
-                                         (str/replace #"\.so$" "")
-                                         (str/replace #"\.dylib$" "")
-                                         (str ".h"))
-                              h-output (-> output
-                                           (str/replace #"\.so$" "")
-                                           (str/replace #"\.dylib$" "")
-                                           (str ".h"))
+                        (let [strip-lib-ext
+                              (fn [s] (str/replace
+                                       s #"\.(so|dylib|dll)$" ""))
+                              h-file (str (strip-lib-ext binary-name) ".h")
+                              h-output (str (strip-lib-ext output) ".h")
                               h-source (str output-dir "/" h-file)]
                           (when (fs/exists? h-source)
                             (fs/copy h-source h-output {:replace-existing true})

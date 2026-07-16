@@ -1,11 +1,23 @@
 #!/usr/bin/env python3
-"""Test the greet shared library via ctypes."""
+"""Test the greet shared library via ctypes.
+
+Usage: ffi-example.py [path-to-library]
+With no argument, loads example.{so,dylib,dll} for the platform.
+"""
 
 import ctypes
+import os
 import sys
 
-lib_ext = "dylib" if sys.platform == "darwin" else "so"
-lib = ctypes.CDLL(f"example.{lib_ext}")
+if len(sys.argv) > 1:
+    lib_path = os.path.abspath(sys.argv[1])
+elif sys.platform == "darwin":
+    lib_path = "example.dylib"
+elif sys.platform == "win32":
+    lib_path = os.path.abspath("example.dll")
+else:
+    lib_path = "example.so"
+lib = ctypes.CDLL(lib_path)
 
 # factorial(int) -> int
 lib.factorial.argtypes = [ctypes.c_longlong]

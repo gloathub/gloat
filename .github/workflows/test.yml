@@ -148,6 +148,88 @@ jobs:
     - name: Test so-bindings
       run: make -C demo/so-bindings/ test
 
+  build-dll:
+    name: Build so-bindings DLL (Linux cross)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Linux dependencies
+      run: |
+        sudo apt-get install -y build-essential curl perl xz-utils \
+          gcc-mingw-w64-x86-64
+
+    - name: Cache Makes dependencies
+      uses: actions/cache@v4
+      with:
+        path: .cache/
+        key: makes-dll-Linux-${{ hashFiles('Makefile', 'common/common.mk') }}
+        restore-keys: makes-dll-Linux-
+
+    - name: Cross-compile example.dll
+      env:
+        # Static-link the mingw C runtime so the DLL has no
+        # libwinpthread/libgcc runtime dependencies on the consumer
+        CGO_LDFLAGS: -static
+      run: |
+        ./bin/gloat demo/so-bindings/example.ys -q -f \
+          --platform=windows/amd64 -o example.dll
+        file example.dll
+        ls -l example.dll example.h
+
+    - name: Upload DLL artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: example-dll
+        path: |
+          example.dll
+          example.h
+        retention-days: 3
+
+    - name: Prune Linux DLL cache
+      if: always()
+      run: |
+        if [ -d .cache/local ]; then
+          chmod -R u+w .cache/local 2>/dev/null || true
+          rm -rf .cache/local/cache/* || true
+          find .cache/local -mindepth 1 -maxdepth 1 -type d \
+            ! -name 'babashka-*' \
+            ! -name 'bin' \
+            ! -name 'glojure-*' \
+            ! -name 'go-*' \
+            ! -name 'home' \
+            ! -name 'include' \
+            ! -name 'lib' \
+            ! -name 'man' \
+            ! -name 'perl-*' \
+            ! -name 'share' \
+            ! -name 'tmp' \
+            -exec rm -rf {} + || true
+        fi
+        du -sh .cache || true
+
+  test-so-bindings-windows:
+    name: Test so-bindings (Windows)
+    runs-on: windows-latest
+    timeout-minutes: 15
+    needs: build-dll
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download DLL artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: example-dll
+
+    - name: Test DLL via python ctypes
+      shell: pwsh
+      run: |
+        Get-ChildItem example.dll, example.h
+        python demo/so-bindings/python/ffi-example.py example.dll
+
   test-slow:
     name: Test slow (Linux, main only)
     runs-on: ubuntu-latest

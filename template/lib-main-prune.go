@@ -33,11 +33,11 @@ YS-REQUIRES
 			envPairs = append(envPairs, e[:idx], e[idx+1:])
 		}
 	}
-	envVar := glj.Var("NAMESPACE", "ENV")
+	envVar := glj.Var("ys.v0", "ENV")
 	alterVarRoot.Invoke(envVar, constantly.Invoke(lang.NewMap(envPairs...)))
 
 	// NS: the user's namespace object
-	nsVar := glj.Var("NAMESPACE", "NS")
+	nsVar := glj.Var("ys.v0", "NS")
 	nsObj := lang.FindOrCreateNamespace(lang.NewSymbol("NAMESPACE"))
 	alterVarRoot.Invoke(nsVar, constantly.Invoke(nsObj))
 
@@ -49,14 +49,14 @@ YS-REQUIRES
 
 	// CWD: current working directory
 	cwd, _ := os.Getwd()
-	cwdVar := glj.Var("NAMESPACE", "CWD")
+	cwdVar := glj.Var("ys.v0", "CWD")
 	alterVarRoot.Invoke(cwdVar, constantly.Invoke(cwd))
 
 	// RUN: runtime metadata map (no args for libraries, just pid)
 	runMap := lang.NewMap(
 		lang.NewKeyword("pid"), int64(os.Getpid()),
 	)
-	runVar := glj.Var("NAMESPACE", "RUN")
+	runVar := glj.Var("ys.v0", "RUN")
 	alterVarRoot.Invoke(runVar, constantly.Invoke(runMap))
 }
 

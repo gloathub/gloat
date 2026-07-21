@@ -1,6 +1,6 @@
-GLOAT-VERSION := 0.1.59
+GLOAT-VERSION := 0.1.60
 
-GLOJURE-VERSION := 0.6.8
+GLOJURE-VERSION := 0.7.0
 GLOJURE-REPO := https://github.com/glojurelang/glojure
 
 # Gloat fork of let-go, carrying fixes not yet in a nooga/let-go

@@ -1,3 +1,33 @@
+- version: 0.1.60
+  date:    Tue Jul 21 04:23:23 PM EDT 2026
+  changes:
+  - Add Windows DLL cross-compile and CI test
+  - Rename engines to glojure and let-go family
+  - Update -tLG test for lowered multi-arity main
+  - Add ys-rc-corpus-testing util and doc
+  - Add LG engine for native Go via let-go AOT
+  - Add java-time shim and quote-aware sh tokenizer
+  - Fix replace shadowing and sh string tokenization
+  - Fill lg runtime gaps found by full corpus sweep
+  - Add fs, ipc, base64, and stdio to lg runtime
+  - Harden lg source generation for corpus code
+  - Make say and warn variadic in lg runtime
+  - Add -T/--time option to time --run execution
+  - Update YAMLScript version to 0.2.26
+  - Add bin format to lg engine via lg bundling
+  - Port ys.std pure-Clojure surface to lg engine
+  - Self-heal lg install from local checkout
+  - Port dwim wrappers and get+ to lg runtime
+  - Add --run support to the lg engine
+  - Wire lg env and surface install failures
+  - Add lg source output format to gloat
+  - Pin let-go to gloathub fork release
+  - Add on-demand lg install via path-lg target
+  - Add engine selection option to gloat CLI
+  - Build lean AOT binaries by default
+  - Support optimized symbol declarations when pruning
+  - Initialize shared globals in ys.v0
+
 - version: 0.1.59
   date:    Wed Jul 15 01:19:43 PM EDT 2026
   changes:

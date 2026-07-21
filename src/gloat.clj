@@ -828,6 +828,13 @@ Less common:
   (let [parsed (parse-extensions (or (:ext *opts*) []))]
     (contains? parsed "goimports")))
 
+(defn aot-build-tags []
+  (concat
+   ["glj_aot_runtime"]
+   (when (and (not (goimports?)) (not (prune?)))
+     ["glj_no_goimports"])
+   (when (prune?) ["glj_no_aot_stdlib"])))
+
 (defn report-ext []
   (let [parsed (parse-extensions (or (:ext *opts*) []))
         val (get parsed "report")]
@@ -1523,10 +1530,7 @@ Less common:
                   ;; Build
                   (timer-start)
                   (let [build-tags
-                        (str/join ","
-                                  (concat (when (and (not (goimports?)) (not (prune?)))
-                                            ["glj_no_goimports"])
-                                          (when (prune?) ["glj_no_aot_stdlib"])))
+                        (str/join "," (aot-build-tags))
                         build-args
                         (concat [go-bin "build"
                                  "-ldflags" "-s -w"
@@ -1548,8 +1552,10 @@ Less common:
                       (msg "Generated:" output)
 
                       ;; Compress WASM if needed
-                      (let [compress-exts (keys (dissoc (parse-extensions (or (:ext *opts*) []))
-                                                        "prune" "html" "serve" "open" "report"))]
+                      (let [compress-exts
+                            (filter #{"gzip" "brotli"}
+                                    (keys (parse-extensions
+                                           (or (:ext *opts*) []))))]
                         (when (and (contains? #{"wasm" "js"} format)
                                    (seq compress-exts))
                           (compress-wasm output compress-exts)))
@@ -1598,13 +1604,7 @@ Less common:
                               keep-path (str output "-unstripped")
                               unstripped-name "unstripped-report"
                               a-build-tags
-                              (str/join ","
-                                        (concat
-                                         (when (and (not (goimports?))
-                                                    (not (prune?)))
-                                           ["glj_no_goimports"])
-                                         (when (prune?)
-                                           ["glj_no_aot_stdlib"])))
+                              (str/join "," (aot-build-tags))
                               unstripped-args
                               (concat [go-bin "build"
                                        "-o" unstripped-name]
@@ -1659,14 +1659,15 @@ Less common:
                     (msg "Generated Go module in:" output-dir)
                     (if (prune?)
                       (msg "To build: cd" output-dir
-                           "&& go build -tags glj_no_aot_stdlib")
+                           (str "&& go build -tags "
+                                (str/join "," (aot-build-tags))))
                       (msg "To build: cd" output-dir "&& make")))
                   (do
                     (msg "Generated Go module in:" output-dir)
                     (msg "To build: cd" output-dir
                          (if (goimports?)
-                           "&& go build"
-                           "&& go build -tags glj_no_goimports"))))))))
+                           "&& go build -tags glj_aot_runtime"
+                           "&& go build -tags glj_aot_runtime,glj_no_goimports"))))))))
 
           (finally
             (fs/delete-tree shared-tmpdir)))))))

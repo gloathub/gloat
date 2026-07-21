@@ -1,3 +1,8 @@
+- version: 0.1.61
+  date:    Tue Jul 21 04:47:47 PM EDT 2026
+  changes:
+  - Update let-go to 1.12.2
+
 - version: 0.1.60
   date:    Tue Jul 21 04:23:23 PM EDT 2026
   changes:

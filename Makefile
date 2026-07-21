@@ -207,9 +207,9 @@ lg: lg-ensure
 	$(LG)
 
 # Build lg from a local let-go checkout into the versioned install
-# slot. Dev bridge while the pinned LET-GO-VERSION has no published
-# release on LET-GO-REPO (rerun after 'gloat --reset'). The touched
-# tarball satisfies the module's download prerequisite.
+# slot. This lets Gloat developers test a sibling checkout in place of
+# the pinned release (rerun after 'gloat --reset'). The touched tarball
+# satisfies the module's download prerequisite.
 LET-GO-SRC ?= $(GIT-REPO-DIR)/../let-go
 
 lg-dev: $(GO)

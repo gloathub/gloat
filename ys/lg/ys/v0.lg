@@ -48,7 +48,7 @@
   ([x] (throw (ex-info (str x) {})))
   ([x & xs] (die (apply str x xs))))
 
-;; condf works on lg >= 1.11.2-gloat.1 (condp pred arg order fix)
+;; condf requires let-go's condp predicate argument order to match Clojure.
 (defmacro condf [x & clauses]
   `(condp (fn [f# x#] (f# x#)) ~x ~@clauses))
 

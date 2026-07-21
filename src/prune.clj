@@ -114,8 +114,8 @@
           (let [line (nth lines @i)]
             (cond
               ;; sym_ declaration
-              (re-find #"^\t(sym_\w+)\s*:=\s*lang\.NewSymbol\(" line)
-              (let [m (re-find #"^\t(sym_\w+)\s*:=\s*lang\.NewSymbol\(" line)]
+              (re-find #"^\t(sym_\w+)\s*:=\s*lang\.NewSymbol(?:Unchecked)?\(" line)
+              (let [m (re-find #"^\t(sym_\w+)\s*:=\s*lang\.NewSymbol(?:Unchecked)?\(" line)]
                 (swap! result update :sym-lines conj
                        [(nth lines-with-nl @i) (second m)])
                 (swap! i inc)

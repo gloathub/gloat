@@ -12,6 +12,7 @@ gljrepl/
 /*.html
 /*.js
 /*.md
+/*.sh
 /*.ys
 /app
 /gloat*

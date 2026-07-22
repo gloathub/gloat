@@ -1,4 +1,4 @@
-GLOAT-VERSION := 0.1.61
+GLOAT-VERSION := 0.1.62
 
 GLOJURE-VERSION := 0.7.0
 GLOJURE-REPO := https://github.com/glojurelang/glojure

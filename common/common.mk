@@ -4,6 +4,7 @@ GLOJURE-VERSION := 0.7.0
 GLOJURE-REPO := https://github.com/glojurelang/glojure
 
 LET-GO-VERSION := 1.12.2
+LET-GO-REPO := nooga/let-go
 
 YAMLSCRIPT-VERSION := 0.2.26
 YS-VERSION := $(YAMLSCRIPT-VERSION)

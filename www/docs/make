@@ -117,8 +117,8 @@ install:
 	@# of which bin/gloat version was cloned). Captures each tool's output
 	@# and only dumps it on failure.
 	@echo ''
-	@echo 'Installing gloat dependencies into $(INSTALL-DIR)/.cache/local/'
-	@for tool in bb go glojure glj ys; do \
+	@echo 'Installing gloat dependencies into $(INSTALL-DIR)/.cache/'
+	@for tool in bb go glojure glj ys lg let-go-src; do \
 	  printf '==> Installing %s... ' "$$tool"; \
 	  log=$$(mktemp); \
 	  if $(MAKE) --quiet --no-print-directory -C '$(INSTALL-DIR)' \

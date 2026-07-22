@@ -634,7 +634,7 @@ install-deps() {
 
   check-on-path
 
-  >&2 echo "Installing gloat dependencies into $root/.cache/local/"
+  >&2 echo "Installing gloat dependencies into $root/.cache/"
   install-one bb       path-bb
   install-one go       path-go
   install-one glojure  path-glojure
@@ -651,6 +651,8 @@ install-deps() {
     install-one glj path-glj
   fi
   install-one ys       path-ys
+  install-one lg       path-lg
+  install-one let-go   path-let-go-src
   >&2 echo "All gloat dependencies installed."
 }
 

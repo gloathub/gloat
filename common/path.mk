@@ -19,6 +19,12 @@ path-go: $(GO)
 path-lg: lg-ensure
 	@echo "$(abspath $(LG))"
 
+path-lg-dev: lg-dev-ensure
+	@echo "$(abspath $(LG))"
+
+path-let-go-src: $(LET-GO-SRC)
+	@echo "$(abspath $(LET-GO-SRC))"
+
 path-shellcheck: $(SHELLCHECK)
 	@echo "$(abspath $<)"
 

@@ -55,6 +55,19 @@ $(GLOJURE-DIR):
 	git clone -q -b v$(GLOJURE-VERSION) --config advice.detachedHead=false \
 	  $(GLOJURE-REPO) $@
 
+# A sibling checkout is the development override. Installed copies use
+# a shallow checkout of the pinned release under Gloat's cache.
+LET-GO-DEV-SRC := $(GIT-REPO-DIR)/../let-go
+LET-GO-CACHE-SRC := $(GIT-REPO-DIR)/.cache/let-go
+LET-GO-SRC ?= $(if $(wildcard $(LET-GO-DEV-SRC)),$(LET-GO-DEV-SRC),$(LET-GO-CACHE-SRC))
+LG-DEV-STAMP := $(LET-GO-LOCAL)/.source-revision
+
+$(LET-GO-SRC):
+	@echo "* Cloning let-go v$(LET-GO-VERSION) locally" >&2
+	git clone -q --depth 1 -b v$(LET-GO-VERSION) \
+	  --config advice.detachedHead=false \
+	  https://github.com/$(LET-GO-REPO) '$@'
+
 include common/path.mk
 
 # Auto-discover YS standard library source files
@@ -210,23 +223,40 @@ lg: lg-ensure
 # slot. This lets Gloat developers test a sibling checkout in place of
 # the pinned release (rerun after 'gloat --reset'). The touched tarball
 # satisfies the module's download prerequisite.
-LET-GO-SRC ?= $(GIT-REPO-DIR)/../let-go
 
 lg-dev: $(GO)
 	$Q [[ -d '$(LET-GO-SRC)' ]] || { \
 	  echo "Error: no let-go checkout at '$(LET-GO-SRC)' (set LET-GO-SRC)"; \
 	  exit 1; }
 	@echo "Building lg from $(LET-GO-SRC)"
-	$Q cd '$(LET-GO-SRC)' && \
+	$Q version=$$(git -C '$(LET-GO-SRC)' describe --tags --always --dirty | \
+	    sed 's/^v//') && \
+	  commit=$$(git -C '$(LET-GO-SRC)' rev-parse HEAD) && \
+	  cd '$(LET-GO-SRC)' && \
 	  GOPATH=$(abspath $(LOCAL-PREFIX)/go) \
 	  GOMODCACHE=$(abspath $(LOCAL-PREFIX)/go-mod) \
 	  '$(abspath $(GO))' build -ldflags \
-	    '-s -w -X main.version=$(LET-GO-VERSION) -X main.commit=dev' \
+	    "-s -w -X main.version=$$version -X main.commit=$$commit" \
 	    -o lg .
 	$Q mkdir -p $(LET-GO-LOCAL)/bin $(LOCAL-CACHE)
 	$Q cp '$(LET-GO-SRC)/lg' $(LET-GO-LOCAL)/bin/lg
+	$Q git -C '$(LET-GO-SRC)' rev-parse HEAD > '$(LG-DEV-STAMP)'
 	$Q touch $(LOCAL-CACHE)/$(LET-GO-TAR) $(LET-GO-LOCAL)/bin/lg
 	@echo $(LG)
+
+# Keep the lower-vm encoder built from the same source checkout as its
+# embedded runtime. A dirty checkout rebuilds every time; a clean one
+# rebuilds only when HEAD changes.
+lg-dev-ensure:
+	$Q revision=$$(git -C '$(LET-GO-SRC)' rev-parse HEAD 2>/dev/null) || { \
+	  echo "Error: '$(LET-GO-SRC)' is not a git checkout"; \
+	  exit 1; \
+	}; \
+	installed=$$(cat '$(LG-DEV-STAMP)' 2>/dev/null || true); \
+	dirty=$$(git -C '$(LET-GO-SRC)' status --porcelain --untracked-files=no); \
+	if [[ ! -x '$(LG)' || -n "$$dirty" || "$$installed" != "$$revision" ]]; then \
+	  $(MAKE) --no-print-directory lg-dev > /dev/null; \
+	fi
 
 # Make sure lg is installed: an existing binary wins, then a local
 # let-go checkout (built via lg-dev; the checkout wins over download,
@@ -240,7 +270,7 @@ lg-ensure:
 	  $(MAKE) --no-print-directory '$(LG)'; \
 	fi
 
-.PHONY: lg-ensure
+.PHONY: lg-ensure lg-dev-ensure
 
 phel: $(PHEL)
 	$(if $(shell command -v rlwrap),rlwrap )$@

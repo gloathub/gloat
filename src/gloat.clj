@@ -1044,6 +1044,24 @@ Less common:
                     (:out result) (:err result))))
         path))))
 
+(defn find-lg-dev
+  "Build or reuse lg from LET-GO-SRC for the lower-vm engine."
+  []
+  (let [result (process/shell {:out :string :err :string
+                               :continue true
+                               :dir GLOAT-ROOT
+                               :extra-env go-env}
+                              "make" "--quiet" "--no-print-directory"
+                              "path-lg-dev")
+        path (->> (str/split-lines (str (:out result)))
+                  (remove str/blank?)
+                  last)]
+    (when-not (and (zero? (:exit result))
+                   path (fs/executable? path))
+      (die (str "Failed to build lg from LET-GO-SRC:\n"
+                (:out result) (:err result))))
+    path))
+
 (def lg-source-paths (str GLOAT-ROOT "/ys/lg:."))
 
 (defn generate-lg-body [clj-file]
@@ -1073,15 +1091,59 @@ Less common:
 (defn find-let-go-src
   "Path to a let-go source checkout: the LG engine needs it for
   scripts/lg-compile, the gogen source path, and the go.mod replace.
-  The sibling checkout (LET-GO-SRC) is the supported layout."
+  A sibling checkout is preferred for development; installed copies
+  clone the pinned source into Gloat's cache on demand."
   []
   (let [src (:LET-GO-SRC make-vars)]
     (if (and src (not (str/blank? src)) (fs/directory? src))
       (str src)
-      (die "No let-go source checkout found."
-           " Engine 'let-go-lower-vm' needs one;
-           clone github.com/gloathub/let-go"
-           " next to the gloat repo dir, or set LET-GO-SRC."))))
+      (let [result (process/shell {:out :string :err :string
+                                   :continue true
+                                   :dir GLOAT-ROOT}
+                                  "make" "--quiet" "--no-print-directory"
+                                  "path-let-go-src")
+            path (->> (str/split-lines (str (:out result)))
+                      (remove str/blank?)
+                      last)]
+        (when-not (and (zero? (:exit result))
+                       path (fs/directory? path))
+          (die (str "Failed to install let-go source:\n"
+                    (:out result) (:err result))))
+        path))))
+
+(defn find-LG-lg
+  "Return an lg encoder that matches the source used by lower-vm.
+  Managed installs pair the released lg with the exact cached tag;
+  development checkouts build lg from that checkout. Both paths verify
+  that the encoder commit is the source commit before lowering."
+  [let-go-src]
+  (let [managed-src (str GLOAT-ROOT "/.cache/let-go")
+        managed? (= (str (fs/canonicalize let-go-src))
+                    (str (fs/canonicalize managed-src)))
+        lg (if managed? (find-lg) (find-lg-dev))
+        lg-result (process/shell {:out :string :err :string :continue true}
+                                 lg "--version")
+        lg-text (str (:out lg-result) (:err lg-result))
+        lg-commit (second (re-find #"\(([0-9a-f]{7,40})\)" lg-text))
+        src-result (process/shell {:out :string :err :string :continue true}
+                                  "git" "-C" let-go-src "rev-parse" "HEAD")
+        src-commit (str/trim (str (:out src-result)))]
+    (when-not (and (zero? (:exit lg-result)) lg-commit
+                   (zero? (:exit src-result))
+                   (str/starts-with? src-commit lg-commit))
+      (die (str "let-go toolchain mismatch:\n"
+                "  encoder: " (str/trim lg-text) "\n"
+                "  runtime source: "
+                (if (str/blank? src-commit) let-go-src src-commit) "\n"
+                "Rebuild both from the same let-go revision.")))
+    (when managed?
+      (let [dirty (process/shell {:out :string :err :string :continue true}
+                                 "git" "-C" let-go-src "status"
+                                 "--porcelain" "--untracked-files=no")]
+        (when-not (and (zero? (:exit dirty))
+                       (str/blank? (str (:out dirty))))
+          (die "Managed let-go source has local changes; run gloat --reset."))))
+    lg))
 
 (def LG-main-pattern
   #"(?s)\(defn -main \[& argv\]\s*\(let \[args \(map-parse argv\)\](.*?)\(apply main args\)\)\)")
@@ -1154,8 +1216,8 @@ Less common:
   Returns the emitted .go file paths; empty means nothing lowered
   (the program still runs, pure bytecode)."
   [lg-file src-dir out-dir go-module]
-  (let [lg (find-lg)
-        let-go-src (find-let-go-src)
+  (let [let-go-src (find-let-go-src)
+        lg (find-LG-lg let-go-src)
         ;; let-go's deps.edn supplies pkg/rt/gogen when run from its
         ;; repo root; an explicit LG_SOURCE_PATHS bypasses that, so
         ;; list it here (lg-compile loads gogen.lg on demand).

@@ -92,7 +92,9 @@ install:
 	  cd '$(INSTALL-DIR)' && git fetch --tags --quiet; \
 	else \
 	  echo 'Cloning Gloat from $(GLOAT-REPO)...'; \
-	  git clone --quiet '$(GLOAT-REPO)' '$(INSTALL-DIR)'; \
+	  git clone --quiet --depth 1 --branch '$(VERSION)' \
+	    --config advice.detachedHead=false \
+	    '$(GLOAT-REPO)' '$(INSTALL-DIR)'; \
 	fi
 	@# Validate the requested version exists as a tag
 	@cd '$(INSTALL-DIR)' && \

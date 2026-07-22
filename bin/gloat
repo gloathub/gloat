@@ -655,8 +655,6 @@ install-deps() {
     install-one glj path-glj
   fi
   install-one ys       path-ys
-  install-one lg       path-lg
-  install-one let-go   path-let-go-src
   >&2 echo "All gloat dependencies installed."
 }
 

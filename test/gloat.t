@@ -21,6 +21,15 @@ try "$GLOAT_BIN --version"
 is "$rc" 0 "'gloat --version' exits 0"
 has "$got" "gloat v" "'gloat --version' shows gloat version"
 has "$got" "glj   v" "'gloat --version' shows glj version"
+let_go_version=$(awk '$1 == "LET-GO-VERSION" {print $3; exit}' \
+  "$PROJECT_ROOT/common/common.mk")
+if [[ -x $PROJECT_ROOT/.cache/local/let-go-$let_go_version/bin/lg ]]; then
+  has "$got" "lg    v$let_go_version" \
+    "'gloat --version' shows installed lg version"
+else
+  hasnt "$got" "lg    v" \
+    "'gloat --version' omits uninstalled lg version"
+fi
 
 try "$GLOAT_BIN --which=glj"
 is "$rc" 0 "'gloat --which=glj' exits 0"

@@ -46,6 +46,9 @@ ALL-LANGS := \
   v \
   zig \
 
+SLOW-LANGS := \
+  haskell
+
 # Langs with toolchain issues on macOS (bugs in upstream .mk files)
 # delphi: fpc 3.2.2 macOS download missing from SourceForge
 # lua: LuaJIT fails to build on arm64
@@ -75,7 +78,13 @@ else
 LANGS ?= $(filter-out $(SKIP-LINUX),$(ALL-LANGS))
 endif
 
-TESTS := $(LANGS:%=test-%)
+ifndef slow
+TEST-LANGS := $(filter-out $(SLOW-LANGS),$(LANGS))
+else
+TEST-LANGS := $(LANGS)
+endif
+
+TESTS := $(TEST-LANGS:%=test-%)
 CLEAN := $(LANGS:%=clean-%)
 
 test: $(TESTS)

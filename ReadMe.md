@@ -165,8 +165,11 @@ Java, Julia, Lua, Nim, Node.js, Perl, Python, Raku, Ruby, Rust, V,
 Zig
 
 ```bash
-# Build the shared library and run all 23 language bindings
+# Build the shared library and run the standard language bindings
 make test-so-bindings
+
+# Include the slow Haskell binding
+make -C demo/so-bindings test slow=1
 
 # Build and test the bindings with either let-go engine
 GLOAT_ENGINE=lgvm make -C demo/so-bindings test

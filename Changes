@@ -2,6 +2,7 @@
   date:    Tue Jul 21 09:02:20 PM EDT 2026
   changes:
   - Add shared libraries for let-go VM engines
+  - Make the Haskell shared library binding test opt-in with slow=1
   - Show installed let-go version
   - Install matching let-go source for lower-vm
   - Shallow clone Gloat during install

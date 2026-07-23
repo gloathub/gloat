@@ -47,7 +47,8 @@ ALL-LANGS := \
   zig \
 
 SLOW-LANGS := \
-  haskell
+  haskell \
+  lua
 
 # Langs with toolchain issues on macOS (bugs in upstream .mk files)
 # delphi: fpc 3.2.2 macOS download missing from SourceForge

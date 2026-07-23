@@ -168,7 +168,7 @@ Zig
 # Build the shared library and run the standard language bindings
 make test-so-bindings
 
-# Include the slow Haskell binding
+# Include the slow Haskell and Lua bindings
 make -C demo/so-bindings test slow=1
 
 # Build and test the bindings with either let-go engine

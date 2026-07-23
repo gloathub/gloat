@@ -218,9 +218,17 @@ gloat lib.clj -o libmylib.dylib
 
 # Windows
 gloat lib.clj -o mylib.dll
+
+# Use the let-go bytecode VM
+gloat -Elgvm lib.clj -o libmylib.so
+
+# Use native let-go lowering with VM fallback
+gloat -Elglvm lib.clj -o libmylib.so
 ```
 
 This generates both the library file and a `.h` header file for C bindings.
+The default `glj` engine and both VM-backed let-go engines support shared
+libraries.
 
 Check out the [FFI bindings examples](
 https://github.com/gloathub/gloat/tree/main/demo/so-bindings) for over 20
@@ -228,9 +236,20 @@ languages.
 
 These are all working code and bind to an example shared library written in
 YAMLScript and compiled with Gloat.
-You can run them all with `make test-so-bindings`.
 Every programming language that is needed is auto-installed by the
 [Makes](https://github.com/makeplus/makes) system.
+
+```bash
+# Run the standard language bindings
+make test-so-bindings
+
+# Include the slow Haskell and Lua bindings
+make -C demo/so-bindings test slow=1
+
+# Test the bindings with either let-go engine
+GLOAT_ENGINE=lgvm make -C demo/so-bindings test
+GLOAT_ENGINE=lglvm make -C demo/so-bindings test
+```
 
 
 ## The Gloat Shell

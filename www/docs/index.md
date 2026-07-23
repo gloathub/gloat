@@ -63,7 +63,8 @@ Each intermediate format can be output for inspection or further processing.
     <h3 class="feature-title">Shared Libraries</h3>
     <p class="feature-desc">
       Create .so/.dylib/.dll files with C headers.
-      Integrate with nearly any programming language via FFI.
+      Integrate with nearly any programming language via FFI using the
+      Glojure or let-go engines.
     </p>
   </div>
 

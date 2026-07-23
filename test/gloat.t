@@ -90,9 +90,9 @@ has "$got" "Engine 'let-go-vm' does not yet support format 'go'" \
   "'gloat --engine=let-go-vm' reports format in error"
 
 try "GLOAT_ENGINE=lgvm $GLOAT_BIN -o x.so x.clj"
-is "$rc" 1 "'GLOAT_ENGINE=lgvm gloat -o x.so' exits 1"
-has "$got" "Engine 'let-go-vm' does not yet support format 'lib'" \
-  "'GLOAT_ENGINE=lgvm' infers format from -o"
+is "$rc" 1 "'GLOAT_ENGINE=lgvm gloat -o x.so' validates input"
+has "$got" "Input file/directory does not exist: x.clj" \
+  "'GLOAT_ENGINE=lgvm' accepts lib inferred from -o"
 
 # lg output format (-t lg implies the lg engine)
 lg_bin=$("$GLOAT_BIN" --which=lg | tail -1)
@@ -152,13 +152,13 @@ try "$GLOAT_BIN -Elglvm -t wasm x.clj"
 is "$rc" 1 "'gloat -Elglvm -t wasm' exits 1"
 has "$got" "Engine 'let-go-lower-vm' does not yet support format 'wasm'" \
   "'gloat -Elglvm' reports let-go-lower-vm unsupported formats"
-has "$got" "(supported: LG, bin)" \
+has "$got" "(supported: LG, bin, lib)" \
   "'gloat -Elglvm' lists let-go-lower-vm supported formats"
 
 try "GLOAT_ENGINE=let-go-lower-vm $GLOAT_BIN -o x.so x.clj"
-is "$rc" 1 "'GLOAT_ENGINE=let-go-lower-vm gloat -o x.so' exits 1"
-has "$got" "Engine 'let-go-lower-vm' does not yet support format 'lib'" \
-  "'GLOAT_ENGINE=let-go-lower-vm' infers format from -o"
+is "$rc" 1 "'GLOAT_ENGINE=let-go-lower-vm gloat -o x.so' validates input"
+has "$got" "Input file/directory does not exist: x.clj" \
+  "'GLOAT_ENGINE=let-go-lower-vm' accepts lib inferred from -o"
 
 # -t LG emits the lowered Go source of the program namespace
 try "$GLOAT_BIN -q -t LG $FIXTURES_DIR/hello.ys"

@@ -1,0 +1,13 @@
+;; Copyright 2023-2026 Ingy dot Net
+;; This code is licensed under MIT license (See License for details)
+
+;; Canonical ys.json namespace for the lg engine. jsoncompat installs
+;; YAMLScript-compatible load/dump functions into let-go's json namespace.
+
+(ns ys.json
+  (:require
+   [jsoncompat]
+   [json]))
+
+(def load json/load)
+(def dump json/dump)

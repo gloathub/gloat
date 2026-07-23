@@ -168,9 +168,18 @@ Zig
 # Build the shared library and run all 23 language bindings
 make test-so-bindings
 
+# Build and test the bindings with either let-go engine
+GLOAT_ENGINE=lgvm make -C demo/so-bindings test
+GLOAT_ENGINE=lglvm make -C demo/so-bindings test
+
 # Run a single language binding
 make -C demo/so-bindings/python run
 ```
+
+The default `glj` engine and both VM-backed let-go engines support shared
+libraries. `lgvm` invokes the bundled bytecode, while `lglvm` uses native
+lowered Go functions where possible and falls back to the bundled VM for the
+rest.
 
 
 ## Go Interface Interop

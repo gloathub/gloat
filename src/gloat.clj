@@ -275,13 +275,13 @@
 
 ;; let-go-vm runs/bundles bytecode on the let-go VM; the "lg" format
 ;; is its source form (.lg).
-(def lg-engine-formats #{"lg" "bin"})
+(def lg-engine-formats #{"lg" "bin" "lib"})
 
 ;; let-go-lower-vm compiles to native Go via let-go's AOT lowering
 ;; with the VM along for non-lowered code (trampolines); the "LG"
 ;; format emits the lowered Go source. let-go-lower (planned) will
 ;; prune the VM out entirely: pure lowered Go, no trampoline.
-(def LG-engine-formats #{"LG" "bin"})
+(def LG-engine-formats #{"LG" "bin" "lib"})
 
 (defn resolve-engine [opts]
   (let [engine (or (:engine opts)
@@ -569,6 +569,77 @@
               (map (fn [[fn-name type-spec]]
                      (generate-export-function
                       (name fn-name) type-spec namespace))
+                   export-map))))
+
+(def lg-type-mappings
+  "Map EXPORT type keywords to cgo and let-go VM conversions."
+  {:int    {:go-type "C.longlong"
+            :go-to-lg "vm.Int(arg)"
+            :lg-to-go "C.longlong(result.(vm.Int))"}
+   :float  {:go-type "C.double"
+            :go-to-lg "vm.Float(arg)"
+            :lg-to-go "C.double(result.(vm.Float))"}
+   :str    {:go-type "*C.char"
+            :go-to-lg "vm.String(C.GoString(arg))"
+            :lg-to-go "C.CString(string(result.(vm.String)))"}
+   :bool   {:go-type "C.int"
+            :go-to-lg "vm.Boolean(arg != 0)"
+            :lg-to-go-special true}
+   :null   {:no-return true}})
+
+(defn generate-lg-export-function [fn-name type-spec]
+  "Generate a //export wrapper that invokes a var in a let-go bundle."
+  (let [type-vec (if (vector? type-spec) type-spec [type-spec])
+        return-type (when (seq type-vec) (last type-vec))
+        arg-types (if (> (count type-vec) 1)
+                    (butlast type-vec)
+                    [])
+        return-info (when return-type (get lg-type-mappings return-type))
+        c-fn-name (kebab-to-snake fn-name)
+        params (str/join
+                ", "
+                (map-indexed
+                 (fn [idx arg-type]
+                   (let [type-info (get lg-type-mappings arg-type)]
+                     (str "arg" idx " " (:go-type type-info))))
+                 arg-types))
+        arg-conversions
+        (map-indexed
+         (fn [idx arg-type]
+           (let [conversion (:go-to-lg (get lg-type-mappings arg-type))]
+             (str/replace conversion "arg" (str "arg" idx))))
+         arg-types)
+        no-return (or (nil? return-info) (:no-return return-info))
+        signature (if no-return
+                    (str "func " c-fn-name "(" params ")")
+                    (str "func " c-fn-name "(" params ") "
+                         (:go-type return-info)))
+        invoke (str "invoke(\"" fn-name "\""
+                    (when (seq arg-conversions)
+                      (str ", " (str/join ", " arg-conversions)))
+                    ")")
+        body (if no-return
+               (str "\t" invoke "\n")
+               (str "\tresult := " invoke "\n"
+                    (if (:lg-to-go-special return-info)
+                      (str "\tif result.(vm.Boolean) == vm.TRUE {\n"
+                           "\t\treturn 1\n"
+                           "\t}\n"
+                           "\treturn 0\n")
+                      (str "\treturn " (:lg-to-go return-info) "\n"))))]
+    (str "//export " c-fn-name "\n"
+         signature " {\n"
+         body
+         "}\n")))
+
+(defn generate-lg-export-functions [export-map]
+  "Generate all let-go-backed //export wrappers from EXPORT map."
+  (if (empty? export-map)
+    ""
+    (str/join "\n"
+              (map (fn [[fn-name type-spec]]
+                     (generate-lg-export-function
+                      (name fn-name) type-spec))
                    export-map))))
 
 ;;------------------------------------------------------------------------------
@@ -1205,9 +1276,9 @@ Less common:
   [body]
   (let [prog-ns (second (re-find #"\(ns\s+([\w.\-]+)" body))]
     (when-not prog-ns
-      (die "Engine 'let-go-lower-vm' requires the program to have a namespace"))
+      (die "let-go input must have a namespace"))
     (when (= "core" prog-ns)
-      (die "Engine 'let-go-lower-vm' can't use the bare namespace 'core'"))
+      (die "let-go engines can't use the bare namespace 'core'"))
     prog-ns))
 
 (defn lower-lg-to-go
@@ -1442,6 +1513,189 @@ Less common:
           (when-not (fs/exists? prog-go)
             (die "-t LG: no lowerable defns in " input))
           (slurp prog-go)))
+      (finally
+        (fs/delete-tree tmpdir)))))
+
+(defn convert-files-lg-lib
+  "Build a c-shared library backed by a let-go bytecode bundle.
+  In lower-vm mode, import the emitted Go packages so their native
+  overrides replace eligible vars after each namespace loads."
+  [input-files output namespace module platform lower?]
+  (let [tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))
+        src-dir (str tmpdir "/src")
+        build-dir (str tmpdir "/build")
+        lowered-dir (str build-dir "/lowered")
+        driver-file (str tmpdir "/driver.lg")
+        export-map (atom nil)
+        export-ns (atom nil)
+        all-nses (atom [])
+        lg-files (atom [])
+        has-main (atom false)]
+    (try
+      (fs/create-dirs src-dir)
+      (fs/create-dirs build-dir)
+      (fs/create-dirs lowered-dir)
+
+      (doseq [[idx input] (map-indexed vector input-files)]
+        (let [input (str input)
+              input-type (get-file-type input)
+              clj-file (str tmpdir "/input-" idx ".clj")
+              ns (when (= input-type "ys")
+                   (or namespace (derive-namespace input)))]
+          (case input-type
+            "ys" (do
+                   (msg "Converting" input "(.ys) to Clojure...")
+                   (ys-to-clj input clj-file ns))
+            "clj" (fs/copy input clj-file {:replace-existing true})
+            (die "let-go engines can't compile input type: " input-type))
+
+          (let [clj-content (slurp clj-file)
+                body (generate-lg-body clj-file)
+                prog-ns (LG-program-ns body)
+                ns-path (LG-ns-path prog-ns)
+                lg-file (str src-dir "/" ns-path ".lg")]
+            (when-let [exports (extract-export clj-content)]
+              (when @export-map
+                (die "Library input has more than one EXPORT declaration"))
+              (reset! export-map exports)
+              (reset! export-ns prog-ns))
+            (when (has-main-fn? clj-content)
+              (reset! has-main true))
+            (fs/create-dirs (fs/parent lg-file))
+            (spit lg-file body)
+            (swap! all-nses conj prog-ns)
+            (swap! lg-files conj lg-file))))
+
+      (when-not @export-map
+        (die "Library format requires EXPORT declaration.\n"
+             "Add (def EXPORT {...}) with exported function signatures."))
+      (when @has-main
+        (die "Library format cannot have a main function.\n"
+             "Libraries use EXPORT declaration, binaries use main."))
+
+      ;; Compiling a driver which requires every user namespace puts the
+      ;; namespace chunks and their transitive dependencies into one bundle.
+      (spit driver-file
+            (str/join "\n" (map #(str "(require '" % ")") @all-nses)))
+
+      (let [let-go-src (find-let-go-src)
+            lg (find-LG-lg let-go-src)
+            go-bin (:GO make-vars)
+            go-module (or module
+                          (System/getenv "GLOAT_MODULE")
+                          (str "github.com/gloathub/"
+                               (fs/file-name output)))
+            emitted (if lower?
+                      (do
+                        (msg "Lowering library to native Go with lg-compile...")
+                        (doseq [lg-file @lg-files]
+                          (lower-lg-to-go lg-file src-dir lowered-dir
+                                          go-module))
+                        (mapv str (fs/glob lowered-dir "**/*.go")))
+                      [])
+            _ (when (and lower? (empty? emitted))
+                (msg "Note: no defns lowered; library runs pure bytecode"))]
+
+        (msg "Bundling library bytecode with lg -c...")
+        (let [result (process/shell
+                      {:out :string :err :string :continue true}
+                      lg "-source-paths"
+                      (str src-dir ":" GLOAT-ROOT "/ys/lg")
+                      "-c" (str build-dir "/program.lgb") driver-file)]
+          (when-not (zero? (:exit result))
+            (die (str "lg -c failed:\n" (:out result) (:err result)))))
+
+        (let [go-directive (or (second
+                                (re-find #"(?m)^go (\S+)"
+                                         (slurp (str let-go-src "/go.mod"))))
+                               "1.24")
+              go-mod (-> (slurp (str TEMPLATE "/lg-go.mod"))
+                         (str/replace "GO-MODULE" go-module)
+                         (str/replace "GO-DIRECTIVE" go-directive)
+                         (str/replace "LET-GO-SRC" let-go-src))
+              lowered-imports
+              (->> emitted
+                   (map fs/parent)
+                   distinct
+                   (map (fn [dir]
+                          (let [rel (subs (str dir)
+                                          (inc (count build-dir)))]
+                            (str "\t_ \"" go-module "/" rel "\""))))
+                   (str/join "\n"))
+              main-go-for
+              (fn [mode]
+                (-> (slurp (str TEMPLATE "/lg-lib-main.go"))
+                    (str/replace "LOWERED-IMPORTS"
+                                 (if (= mode :overrides)
+                                   lowered-imports
+                                   ""))
+                    (str/replace "NAMESPACE" @export-ns)
+                    (str/replace "EXPORT-FUNCTIONS"
+                                 (generate-lg-export-functions @export-map))))
+              [goos goarch] (if platform
+                              (str/split platform #"/")
+                              [nil nil])
+              build-env
+              (merge go-env
+                     {"CGO_ENABLED" "1"
+                      "GONOSUMCHECK" "*"
+                      "GOTOOLCHAIN" "auto"
+                      "GOFLAGS" "-mod=mod"}
+                     (when (and (= goos "windows")
+                                (not (System/getenv "CC")))
+                       (let [cc "x86_64-w64-mingw32-gcc"]
+                         (when-not (fs/which cc)
+                           (die "Windows lib cross-compile needs mingw-w64 ("
+                                cc "); install gcc-mingw-w64-x86-64 or set CC"))
+                         {"CC" cc}))
+                     (when goos {"GOOS" goos})
+                     (when goarch {"GOARCH" goarch}))
+              out (str (fs/absolutize output))
+              go-build
+              (fn []
+                (let [tidy (process/shell
+                            {:out :string :err :string
+                             :continue true :dir build-dir
+                             :extra-env build-env}
+                            go-bin "mod" "tidy")]
+                  (if-not (zero? (:exit tidy))
+                    tidy
+                    (process/shell
+                     {:out :string :err :string
+                      :continue true :dir build-dir
+                      :extra-env build-env}
+                     go-bin "build" "-ldflags" "-s -w"
+                     "-buildmode=c-shared" "-o" out "main.go"))))]
+          (spit (str build-dir "/go.mod") go-mod)
+          (msg "Building lib...")
+          (timer-start)
+          (loop [[mode & more] (if (and lower? (seq emitted))
+                                [:overrides :pure]
+                                [:pure])]
+            (spit (str build-dir "/main.go") (main-go-for mode))
+            (let [build (go-build)]
+              (cond
+                (zero? (:exit build))
+                (do
+                  (timer-end "GO→LIB")
+                  (msg "Generated:" output)
+                  (let [header (str
+                                (str/replace out #"\.(so|dylib|dll)$" "")
+                                ".h")]
+                    (when (fs/exists? header)
+                      (msg "Generated:" header))))
+
+                (empty? more)
+                (die (str "go build failed:\n"
+                          (:out build) (:err build)))
+
+                :else
+                (do
+                  (binding [*out* *err*]
+                    (println "Warning: LG overrides build failed;"
+                             "retrying as pure bytecode")
+                    (println (str/trim (str (:out build) (:err build)))))
+                  (recur more)))))))
       (finally
         (fs/delete-tree tmpdir)))))
 
@@ -2284,8 +2538,14 @@ Less common:
             (when (fs/exists? output)
               (die "Output already exists: " output
                    " (use --force to overwrite)")))
-          (binding [*opts* opts]
-            (convert-files files output format namespace module platform))
+          (binding [*opts* (assoc opts :engine engine)]
+            (if (and (= format "lib")
+                     (contains? #{"let-go-vm" "let-go-lower-vm"} engine))
+              (convert-files-lg-lib
+               files output namespace module platform
+               (= engine "let-go-lower-vm"))
+              (convert-files
+               files output format namespace module platform)))
           (System/exit 0)))
 
       ;; Validate input
@@ -2436,22 +2696,42 @@ Less common:
               (die "Format '" format "' requires -o output"))
 
             (fs/regular-file? (:input opts))
-            (convert-file
-             (:input opts)
-             (:output opts)
-             format
-             (:namespace opts)
-             (:module opts)
-             (:platform opts))
+            (if (and (= format "lib")
+                     (contains? #{"let-go-vm" "let-go-lower-vm"}
+                                (:engine opts)))
+              (convert-files-lg-lib
+               [(:input opts)]
+               (:output opts)
+               (:namespace opts)
+               (:module opts)
+               (:platform opts)
+               (= (:engine opts) "let-go-lower-vm"))
+              (convert-file
+               (:input opts)
+               (:output opts)
+               format
+               (:namespace opts)
+               (:module opts)
+               (:platform opts)))
 
             (fs/directory? (:input opts))
-            (convert-directory
-             (:input opts)
-             (:output opts)
-             format
-             (:namespace opts)
-             (:module opts)
-             (:platform opts))
+            (if (and (= format "lib")
+                     (contains? #{"let-go-vm" "let-go-lower-vm"}
+                                (:engine opts)))
+              (convert-files-lg-lib
+               (expand-dir-args [(:input opts)])
+               (:output opts)
+               (:namespace opts)
+               (:module opts)
+               (:platform opts)
+               (= (:engine opts) "let-go-lower-vm"))
+              (convert-directory
+               (:input opts)
+               (:output opts)
+               format
+               (:namespace opts)
+               (:module opts)
+               (:platform opts)))
 
             (= (:input opts) "-")
             (let [content (slurp *in*)
@@ -2462,13 +2742,23 @@ Less common:
                             content)
                   tmpfile (str (fs/create-temp-file {:dir GLOAT-TMP :suffix suffix}))]
               (spit tmpfile content)
-              (convert-file
-               tmpfile
-               (:output opts)
-               format
-               (:namespace opts)
-               (:module opts)
-               (:platform opts))
+              (if (and (= format "lib")
+                       (contains? #{"let-go-vm" "let-go-lower-vm"}
+                                  (:engine opts)))
+                (convert-files-lg-lib
+                 [tmpfile]
+                 (:output opts)
+                 (:namespace opts)
+                 (:module opts)
+                 (:platform opts)
+                 (= (:engine opts) "let-go-lower-vm"))
+                (convert-file
+                 tmpfile
+                 (:output opts)
+                 format
+                 (:namespace opts)
+                 (:module opts)
+                 (:platform opts)))
               (fs/delete tmpfile))
 
             :else

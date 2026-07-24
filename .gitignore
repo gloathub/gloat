@@ -16,6 +16,7 @@ gljrepl/
 /*.ys
 /app
 /gloat*
+/hi
 /test/call
 /test/call.clj
 worktree/*/workspace/

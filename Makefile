@@ -130,7 +130,9 @@ endif
 MAKES-CLEAN := \
   .nrepl-port \
   report.* \
+  out* \
   Changes.tmp \
+  hi \
   $(TEST-CALL) \
 
 # Disable CGO to avoid Go linker issues

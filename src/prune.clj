@@ -272,17 +272,54 @@
                   fn-name (decode-go-name fn-encoded)]
               [closed-var [ns-name fn-name]])))))
 
+(defn parse-var-refs
+  "Map generated var_ identifiers to their namespace and function names."
+  [parsed]
+  (into {}
+        (keep (fn [[_ var-id comment]]
+                (when-let [[_ ns-name fn-name]
+                           (re-find #"^\s*// var (\S+)/(\S+)\s*$"
+                                    comment)]
+                  [var-id [ns-name fn-name]]))
+              (:var-lines parsed))))
+
+(defn parse-external-fn-refs
+  "Map generated cross-namespace AOT call caches to their backing Vars."
+  [preamble-text var-refs]
+  (into {}
+        (keep (fn [[_ fn-id var-id]]
+                (when-let [ref (get var-refs var-id)]
+                  [fn-id ref]))
+              (re-seq #"\b(aotExternalFn\d+)\s*:=\s*aotCacheFn\d+\((var_\w+)\)"
+                      preamble-text))))
+
+(defn parse-ref-context
+  "Build the generated-identifier maps needed to scan loader blocks."
+  [parsed]
+  (let [preamble-text (apply str (:preamble-lines parsed))
+        var-refs (parse-var-refs parsed)]
+    {:closed-refs (parse-closed-vars preamble-text)
+     :var-refs var-refs
+     :external-fn-refs (parse-external-fn-refs preamble-text var-refs)}))
+
 (defn scan-block-refs
-  "Extract var_ references from a function block and decode to
-   [ns fn-name] pairs. Also resolves closedN references using
-   the closed-var-map."
-  [block-text closed-var-map]
+  "Extract namespace/function references from a generated function block.
+   Resolves direct var_ references, closed Vars, and cached cross-namespace
+   AOT calls."
+  [block-text {:keys [closed-refs var-refs external-fn-refs]}]
   (let [{:keys [vars closed]} (find-used-identifiers block-text)
-        ;; Decode var_ references
-        var-refs (keep decode-var-ref vars)
-        ;; Resolve closed variable references
-        closed-refs (keep #(get closed-var-map %) closed)]
-    (into (set var-refs) closed-refs)))
+        external-fns (set (map second
+                               (re-seq #"\b(aotExternalFn\d+)\b"
+                                       block-text)))
+        ;; Prefer declaration comments, which work for arbitrary namespaces.
+        ;; Fall back to decoding known namespaces for older generated loaders.
+        decoded-var-refs (keep #(or (get var-refs %)
+                                    (decode-var-ref %))
+                               vars)
+        decoded-closed-refs (keep #(get closed-refs %) closed)
+        decoded-external-refs (keep #(get external-fn-refs %) external-fns)]
+    (into (into (set decoded-var-refs) decoded-closed-refs)
+          decoded-external-refs)))
 
 ;;------------------------------------------------------------------------------
 ;; Namespace location resolution
@@ -354,9 +391,9 @@
         visited (atom #{})    ;; set of [ns fn]
         worklist (atom [])    ;; [[ns fn] ...]
 
-        ;; Cache parsed loaders and closed-var-maps
+        ;; Cache parsed loaders and generated-reference maps
         loader-cache (atom {})  ;; {path -> parsed}
-        closed-cache (atom {})  ;; {path -> closed-var-map}
+        ref-context-cache (atom {})  ;; {path -> parsed ref context}
 
         get-parsed (fn [ns-name]
                      (let [path (ns-to-loader-path ns-name config)]
@@ -367,18 +404,15 @@
                              (swap! loader-cache assoc path parsed)
                              parsed)))))
 
-        get-closed-map (fn [ns-name]
-                         (let [path (ns-to-loader-path ns-name config)]
-                           (when path
-                             (if-let [cached (get @closed-cache path)]
-                               cached
-                               (when-let [parsed (get-parsed ns-name)]
-                                 (let [preamble-text (apply str
-                                                            (:preamble-lines
-                                                             parsed))
-                                       cmap (parse-closed-vars preamble-text)]
-                                   (swap! closed-cache assoc path cmap)
-                                   cmap))))))
+        get-ref-context (fn [ns-name]
+                          (let [path (ns-to-loader-path ns-name config)]
+                            (when path
+                              (if-let [cached (get @ref-context-cache path)]
+                                cached
+                                (when-let [parsed (get-parsed ns-name)]
+                                  (let [context (parse-ref-context parsed)]
+                                    (swap! ref-context-cache assoc path context)
+                                    context))))))
 
         find-block (fn [ns-name fn-name]
                      (when-let [parsed (get-parsed ns-name)]
@@ -393,8 +427,7 @@
     (doseq [loader-path user-loaders]
       (let [content (slurp loader-path)
             parsed (parse-loader loader-path)
-            preamble-text (apply str (:preamble-lines parsed))
-            closed-map (parse-closed-vars preamble-text)
+            ref-context (parse-ref-context parsed)
             ;; Get the user's namespace from this loader
             ns-match (re-find #"RegisterNSLoader\(\"([^\"]+)\"" content)
             this-ns (when ns-match
@@ -404,7 +437,7 @@
         ;; Cache this parsed loader
         (let [path (str loader-path)]
           (swap! loader-cache assoc path parsed)
-          (swap! closed-cache assoc path closed-map))
+          (swap! ref-context-cache assoc path ref-context))
 
         ;; Detect namespace alias dependencies (e.g. require '[ys.fs :as fs]).
         ;; These compile to ns.AddAlias(sym_alias, FindOrCreateNamespace(...))
@@ -457,7 +490,7 @@
 
         ;; Scan all function blocks in user code
         (doseq [[block-name block-text] (:blocks parsed)]
-          (let [refs (scan-block-refs block-text closed-map)
+          (let [refs (scan-block-refs block-text ref-context)
                 source-key (when this-ns [this-ns block-name])]
             (when source-key
               ;; Record edges from this user function
@@ -478,8 +511,8 @@
           (reset! worklist [])
           (doseq [[ns-name fn-name :as current] items]
             (when-let [block-text (find-block ns-name fn-name)]
-              (let [closed-map (or (get-closed-map ns-name) {})
-                    refs (scan-block-refs block-text closed-map)]
+              (let [ref-context (or (get-ref-context ns-name) {})
+                    refs (scan-block-refs block-text ref-context)]
                 ;; Record edges
                 (swap! edges assoc current refs)
                 ;; Process refs
@@ -755,7 +788,7 @@
                                                   ["clojure.core" fn-name])))
 
                              loader-cache (atom {})
-                             closed-cache (atom {})
+                             ref-context-cache (atom {})
 
                              get-parsed (fn [ns-name]
                                           (let [path (ns-to-loader-path
@@ -769,25 +802,20 @@
                                                          path parsed)
                                                   parsed)))))
 
-                             get-closed-map (fn [ns-name]
-                                              (let [path (ns-to-loader-path
-                                                          ns-name graph-config)]
-                                                (when path
-                                                  (if-let [cached
-                                                           (get @closed-cache
-                                                                path)]
-                                                    cached
-                                                    (when-let [parsed
-                                                               (get-parsed
-                                                                ns-name)]
-                                                      (let [pt (apply str
-                                                                      (:preamble-lines
-                                                                       parsed))
-                                                            cmap (parse-closed-vars
-                                                                  pt)]
-                                                        (swap! closed-cache assoc
-                                                               path cmap)
-                                                        cmap))))))
+                             get-ref-context
+                             (fn [ns-name]
+                               (let [path (ns-to-loader-path
+                                           ns-name graph-config)]
+                                 (when path
+                                   (if-let [cached
+                                            (get @ref-context-cache path)]
+                                     cached
+                                     (when-let [parsed (get-parsed ns-name)]
+                                       (let [context
+                                             (parse-ref-context parsed)]
+                                         (swap! ref-context-cache assoc
+                                                path context)
+                                         context))))))
 
                              find-block (fn [ns-name fn-name]
                                           (when-let [parsed (get-parsed ns-name)]
@@ -814,10 +842,10 @@
                                    (add-keep ns-name fn-name)
                                    (when-let [block-text (find-block
                                                           ns-name fn-name)]
-                                     (let [closed-map (or (get-closed-map
-                                                           ns-name) {})
+                                     (let [ref-context
+                                           (or (get-ref-context ns-name) {})
                                            refs (scan-block-refs
-                                                 block-text closed-map)]
+                                                 block-text ref-context)]
                                        (swap! edges assoc current refs)
                                        (doseq [[ref-ns ref-fn :as ref] refs]
                                          (add-keep ref-ns ref-fn)

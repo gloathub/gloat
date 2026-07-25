@@ -23,6 +23,7 @@ include $M/phel.mk
 include $M/shellcheck.mk
 include $M/wasmtime.mk
 include $M/yamlscript.mk
+include $M/zprint.mk
 
 ifneq ($(GLOAT_JOLT),)
 JOLT := $(GLOAT_JOLT)
@@ -147,6 +148,9 @@ tests := $(wildcard $(test))
 TEST-DEPS :=
 ifneq (,$(filter test/shellcheck.t,$(tests)))
 TEST-DEPS += $(SHELLCHECK)
+endif
+ifneq (,$(filter test/format.t,$(tests)))
+TEST-DEPS += $(PATH-DEPS) $(ZPRINT)
 endif
 ifneq (,$(filter %-bb.t %-bin.t,$(tests)))
 TEST-DEPS += $(TEST-CALL)

@@ -76,8 +76,13 @@ nrepl         Start nREPL server; see 'man gloat-repl'
 srepl         Start socket REPL server; see 'man gloat-repl'
 deps=         Path to gljdeps.edn (Go module deps; AOT or REPL)
 classpath=    Classpath for REPL load paths (e.g. . or src:test)
+
 shell         Start a sub-shell or run a command (-- cmd...)
 shell-all     Like --shell but install all dev tools
+
+F,fmt         Format Clojure code w/ zprint
+C,color       Syntax highlight Clojure code
+
 complete=     Generate shell completion script (bash, fish, zsh)
 which=        Print path to command that gloat uses: go, glj, etc
 
@@ -96,6 +101,11 @@ version       Show version
 "
 
 main() (
+  local -a normalized_args=()
+  normalize-short-args "$@"
+  set -- "${normalized_args[@]}"
+  local -a argv=("$@")
+
   unset MAKES_LOCAL_DIR
 
   self=${BASH_SOURCE[0]}
@@ -214,6 +224,7 @@ main() (
 
   setup "$@"
 
+  [[ $opt_fmt || $opt_color ]] && do-code-filter "${argv[@]}"
   [[ $opt_which_set ]] && do-which "$opt_which"
   [[ $opt_classpath && ! $opt_repl && ! -t 0 ]] && opt_repl=true
 
@@ -235,6 +246,123 @@ main() (
   # Pass parsed opts to gloat.clj via env var — no re-parsing needed
   GLOAT_OPTS="$opts_edn" exec bb "$root/src/gloat.clj"
 )
+
+# Expand supported short-option clusters before any argument handling.
+normalize-short-args() {
+  normalized_args=()
+  local arg flags value_opt attached
+  local past_dashdash=
+  local i
+
+  for arg; do
+    if [[ $past_dashdash ]]; then
+      normalized_args+=("$arg")
+      continue
+    fi
+    if [[ $arg == -- ]]; then
+      past_dashdash=true
+      normalized_args+=("$arg")
+      continue
+    fi
+    if [[ $arg =~ ^-([FCrTfvqh]+)([toEX])(.*)$ ]]; then
+      flags=${BASH_REMATCH[1]}
+      value_opt=${BASH_REMATCH[2]}
+      attached=${BASH_REMATCH[3]}
+      for ((i = 0; i < ${#flags}; i++)); do
+        normalized_args+=("-${flags:i:1}")
+      done
+      normalized_args+=("-$value_opt")
+      [[ $attached ]] && normalized_args+=("$attached")
+    elif [[ $arg =~ ^-([FCrTfvqh]+)$ ]]; then
+      flags=${BASH_REMATCH[1]}
+      for ((i = 0; i < ${#flags}; i++)); do
+        normalized_args+=("-${flags:i:1}")
+      done
+    else
+      normalized_args+=("$arg")
+    fi
+  done
+}
+
+# Handle --fmt / --color
+do-code-filter() {
+  local arg input zprint filter_name
+  local -a inputs=()
+  local past_dashdash=
+
+  if [[ $opt_fmt && $opt_color ]]; then
+    filter_name=fmt/color
+  elif [[ $opt_fmt ]]; then
+    filter_name=fmt
+  else
+    filter_name=color
+  fi
+
+  for arg; do
+    if [[ $past_dashdash ]]; then
+      inputs+=("$arg")
+      continue
+    fi
+    case $arg in
+      -F|--fmt|-C|--color) ;;
+      --) past_dashdash=true ;;
+      -) inputs+=("$arg") ;;
+      -*) die "Error: --$filter_name cannot be combined with '$arg'" ;;
+      *) inputs+=("$arg") ;;
+    esac
+  done
+
+  if [[ ${#inputs[@]} -eq 2 && ${inputs[0]} == - ]]; then
+    inputs=("${inputs[1]}")
+  fi
+
+  [[ ${#inputs[@]} -gt 0 ]] ||
+    die "Error: --$filter_name requires one input path or -"
+  [[ ${#inputs[@]} -eq 1 ]] ||
+    die "Error: --$filter_name accepts only one input path or -"
+  input=${inputs[0]}
+
+  if [[ $input != - ]]; then
+    [[ -r $input ]] ||
+      die "Error: Clojure input path is not readable: $input"
+  fi
+
+  if [[ $opt_color ]]; then
+    find-glj
+  fi
+
+  if [[ $opt_fmt ]]; then
+    zprint=$(find-local-exe "$root/.cache/local/bin" zprint)
+    if [[ -z $zprint ]]; then
+      zprint=$(install-managed-command zprint)
+    fi
+    [[ -x $zprint ]] ||
+      die "Error: could not install zprint"
+  fi
+
+  if [[ $opt_fmt && $opt_color ]]; then
+    if [[ $input == - ]]; then
+      "$zprint" | glj --color
+    else
+      "$zprint" < "$input" | glj --color
+    fi
+    exit
+  fi
+
+  if [[ $opt_color ]]; then
+    if [[ $input == - ]]; then
+      exec glj --color
+    else
+      exec glj --color < "$input"
+    fi
+  fi
+
+  if [[ $input == - ]]; then
+    exec "$zprint"
+  else
+    exec "$zprint" < "$input"
+  fi
+}
 
 # Handle --shell-all / --shell
 do-shell-all() {
@@ -308,7 +436,14 @@ functions -q fish_prompt
 }
 
 explicit-help() {
-  [[ $# -eq 0 || ( $# -eq 1 && ( $1 == --help || $1 == -h ) ) ]]
+  [[ $# -gt 0 ]] || return 0
+
+  local arg
+  for arg; do
+    [[ $arg == -- ]] && return 1
+    [[ $arg == --help || $arg == -h ]] && return 0
+  done
+  return 1
 }
 
 show-help() {
@@ -523,6 +658,8 @@ setup() {
   opt_classpath=
   opt_shell=
   opt_shellall=
+  opt_fmt=
+  opt_color=
   opt_which=
   opt_which_set=
   opt_quiet=
@@ -557,6 +694,9 @@ setup() {
                      proc_args+=("$arg")       ;;
         --shell)     opt_shell=true;           proc_args+=("$arg") ;;
         --shell-all) opt_shellall=true;        proc_args+=("$arg") ;;
+        --format)    die "Error: unknown option '--format'; use '--fmt'" ;;
+        -F|--fmt)    opt_fmt=true;             proc_args+=("$arg") ;;
+        -C|--color)  opt_color=true;           proc_args+=("$arg") ;;
         --which=*)   opt_which_set=true
                      opt_which=${arg#--which=}
                      proc_args+=("$arg")       ;;

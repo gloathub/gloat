@@ -1,9 +1,10 @@
 _gloat() {
-    local -a formats platforms shells
+    local -a formats engines platforms shells
 
     formats=(
         'clj:Clojure source file'
         'bb:Babashka-ready source file'
+        'lg:let-go source file'
         'glj:Glojure source file'
         'go:Go source'
         'dir:Go project directory'
@@ -13,10 +14,23 @@ _gloat() {
         'js:WebAssembly js target'
     )
 
+    engines=(
+        'glj:Glojure'
+        'lgvm:let-go VM'
+        'lglvm:let-go lower VM'
+        'lgl:let-go lower'
+    )
+
     platforms=(
         'linux/amd64' 'linux/arm64' 'linux/386' 'linux/arm'
+        'linux/ppc64le' 'linux/s390x' 'linux/riscv64' 'linux/mips64le'
         'darwin/amd64' 'darwin/arm64'
-        'windows/amd64' 'windows/arm64'
+        'windows/amd64' 'windows/arm64' 'windows/arm' 'windows/386'
+        'freebsd/amd64' 'freebsd/arm64' 'freebsd/386'
+        'openbsd/amd64' 'openbsd/arm64'
+        'netbsd/amd64' 'netbsd/arm64'
+        'dragonfly/amd64'
+        'plan9/amd64' 'plan9/386' 'plan9/arm'
         'wasip1/wasm' 'js/wasm'
     )
 
@@ -30,6 +44,7 @@ _gloat() {
         '(- *)--platforms[List available cross-compilation platforms]' \
         '(-t --to)'{-t,--to}'[Output format]:format:->formats' \
         '(-o --out)'{-o,--out}'[Output file or directory]:output file:_files' \
+        '(-E --engine)'{-E,--engine}'[Compilation engine]:engine:->engines' \
         '--platform[Cross-compile]:platform:->platforms' \
         '(-X --ext)'{-X,--ext}'[Enable processing extension]:extension:(brotli deps goimports gzip html open prune report serve)' \
         '--ns[Override namespace]:namespace:' \
@@ -46,7 +61,10 @@ _gloat() {
         '(- *)--reset[Remove all cached dependencies]' \
         '(- *)--upgrade[Upgrade gloat (use --upgrade=v1.2.3 to pin a version)]' \
         '(- *)--glj-build[Build the associated glj binary]' \
+        '(-F --fmt)'{-F,--fmt}'[Format Clojure code with zprint]' \
+        '(-C --color)'{-C,--color}'[Syntax highlight Clojure code]' \
         '(-r --run)'{-r,--run}'[Compile and run]' \
+        '(-T --time)'{-T,--time}'[With --run, print run time to stderr]' \
         '(-f --force)'{-f,--force}'[Overwrite existing output]' \
         '(-v --verbose)'{-v,--verbose}'[Print timing information]' \
         '(-q --quiet)'{-q,--quiet}'[Suppress progress messages]' \
@@ -55,6 +73,9 @@ _gloat() {
     case "$state" in
         formats)
             _describe 'output format' formats
+            ;;
+        engines)
+            _describe 'compilation engine' engines
             ;;
         platforms)
             _describe 'platform' platforms

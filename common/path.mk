@@ -36,3 +36,6 @@ path-md2man: $(MD2MAN)
 
 path-ys: $(YS)
 	@echo "$(abspath $<)"
+
+path-zprint: $(ZPRINT)
+	@echo "$(abspath $<)"

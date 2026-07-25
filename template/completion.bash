@@ -1,23 +1,36 @@
 _gloat() {
-    local cur prev opts formats platforms shells
+    local cur prev opts formats engines platforms shells
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    opts="-h --help --version -t --to -o --out -r --run -f --force
-          -v --verbose -q --quiet --platform -X --ext --ns --module
+    opts="-h --help --version -t --to -o --out -E --engine
+          -F --fmt -C --color
+          -r --run -T --time -f --force -v --verbose -q --quiet
+          --platform -X --ext --ns --module
           --formats --extensions --platforms --complete --shell --shell-all
           --which --repl --nrepl --srepl --deps --classpath --reset --upgrade
           --glj-build"
 
-    formats="clj bb glj go dir bin lib wasm js"
-    platforms="linux/amd64 linux/arm64 darwin/amd64 darwin/arm64
-                windows/amd64 wasip1/wasm js/wasm"
+    formats="clj bb lg glj go dir bin lib wasm js"
+    engines="glj lgvm lglvm lgl"
+    platforms="linux/amd64 linux/arm64 linux/386 linux/arm
+                linux/ppc64le linux/s390x linux/riscv64 linux/mips64le
+                darwin/amd64 darwin/arm64
+                windows/amd64 windows/arm64 windows/arm windows/386
+                freebsd/amd64 freebsd/arm64 freebsd/386
+                openbsd/amd64 openbsd/arm64 netbsd/amd64 netbsd/arm64
+                dragonfly/amd64 plan9/amd64 plan9/386 plan9/arm
+                wasip1/wasm js/wasm"
     shells="bash zsh fish"
 
     case "${prev}" in
         -t|--to)
             COMPREPLY=( $(compgen -W "${formats}" -- "${cur}") )
+            return 0
+            ;;
+        -E|--engine)
+            COMPREPLY=( $(compgen -W "${engines}" -- "${cur}") )
             return 0
             ;;
         --platform)

@@ -532,6 +532,10 @@ With `-Xserve,html`, the HTML is generated alongside the output.
 
 --shell          Start a sub-shell or run a command (-- cmd...)
 --shell-all      Like --shell but install all dev tools
+
+-F, --fmt        Format Clojure code w/ zprint
+-C, --color      Syntax highlight Clojure code
+
 --complete ...   Generate shell completion script (bash, fish, zsh)
 --which ...      Print path to command that gloat uses: go, glj, etc
 
@@ -546,6 +550,37 @@ With `-Xserve,html`, the HTML is generated alongside the output.
 -h, --help       Show this help
 --version        Show version
 ```
+
+## Formatting and Coloring Clojure Code
+
+`-F` / `--fmt` formats one Clojure input path, or standard input when the
+input is `-`, with zprint and writes plain text to standard output:
+
+```bash
+gloat -F foo.clj
+gloat --fmt - < foo.clj
+gloat -F - <(curl -s https://example.com/code.clj)
+```
+
+`-C` / `--color` writes the input using the same ANSI syntax highlighting and
+rainbow brackets as the Glojure REPL. Coloring is always enabled, including
+when output is redirected or piped:
+
+```bash
+gloat -C foo.clj
+gloat --color - < foo.clj
+gloat -C foo.clj | less -R
+```
+
+The options can be combined in either order. Formatting always happens before
+coloring:
+
+```bash
+gloat -FC foo.clj
+gloat --color --fmt foo.clj
+```
+
+These commands do not change the input file.
 
 
 ## Shell Completion

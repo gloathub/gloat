@@ -45,6 +45,8 @@ main() (
  :force    $(bool-to-edn "${option_force:-false}")
  :verbose  $(bool-to-edn "${option_verbose:-false}")
  :quiet    $(bool-to-edn "${option_quiet:-false}")
+ :fmt      $(bool-to-edn "${option_fmt:-false}")
+ :color    $(bool-to-edn "${option_color:-false}")
  :version  $(bool-to-edn "${option_version:-false}")
  :shell     $(bool-to-edn "${option_shell:-false}")
  :shell-all $(bool-to-edn "${option_shell_all:-false}")

@@ -440,8 +440,8 @@
             (recur in-block out (rest xs))))))))
 
 (defn has-main-fn? [clj-content]
-  "Check if Clojure code contains a (defn main ...) definition."
-  (boolean (re-find #"\(defn\s+main\b" clj-content)))
+  "Check if Clojure code contains a (defn main ...) or (defn -main ...)."
+  (boolean (re-find #"\(defn\s+-?main\b" clj-content)))
 
 (defn extract-export [clj-content]
   "Extract EXPORT map from Clojure code. Returns nil if not found.
@@ -1911,23 +1911,29 @@ Less common:
   convert-directory selects it as the main namespace."
   (let [tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))]
     (try
-      ;; For lib format, find the file with EXPORT to use as main namespace
+      ;; Select the explicit entrypoint file so convert-directory stages it as
+      ;; main and uses its namespace for the generated binary or library.
       (let [export-file (when (= format "lib")
                           (first (filter
                                   #(not-empty
                                     (or (extract-export (slurp (str %))) []))
-                                  input-files)))]
+                                  input-files)))
+            main-file (when (not= format "lib")
+                        (first (filter
+                                #(has-main-fn? (slurp (str %)))
+                                input-files)))
+            entry-file (or export-file main-file)]
         (doseq [[idx source-file] (map-indexed vector input-files)]
           (let [source-file (str source-file)
                 basename (fs/file-name source-file)
                 input-type (get-file-type source-file)
                 file-ns (when (contains? #{"clj" "glj"} input-type)
                           (parse-namespace source-file))
-                ;; Name the EXPORT file 'main' so convert-directory picks it
-                ;; as main-namespace; use namespace-derived names for others
-                ;; to avoid basename collisions between files at different depths
+                ;; Name the entrypoint file 'main' so convert-directory picks
+                ;; its namespace; use namespace-derived names for other files
+                ;; to avoid basename collisions at different paths.
                 unique-name (cond
-                              (= source-file (str export-file))
+                              (= source-file (str entry-file))
                               (str "main." input-type)
 
                               file-ns

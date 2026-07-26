@@ -282,4 +282,12 @@ is "$rc" 1 "'gloat f1 f2' exits 1"
 has "$got" "Multiple input files require -o output" \
   "'gloat f1 f2' shows multiple files error"
 
+# A multi-file binary uses the namespace that defines -main as its entrypoint,
+# regardless of the explicit input order.
+try "$GLOAT_BIN --force '$FIXTURES_DIR/multi-helper.clj' '$FIXTURES_DIR/multi-main.clj' -o '$TMP/multi-bin'"
+is "$rc" 0 "'gloat helper main -o bin' exits 0"
+try "$TMP/multi-bin"
+is "$rc" 0 "multi-file binary runs"
+is "$got" "multi-file main" "multi-file binary selects the -main namespace"
+
 done-testing

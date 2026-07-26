@@ -105,6 +105,14 @@ gloat code.ys -t clj   # See generated Clojure
 gloat code.ys -t glj   # See generated Glojure
 gloat code.ys -t go    # See generated Go
 
+# Format and syntax highlight Clojure
+gloat -F code.clj              # Format with zprint
+gloat -C code.clj | less -R    # Syntax highlight with ANSI colors
+gloat -FCw40 code.clj | less -R # Format at width 40, then highlight
+
+# Source input defaults to stdin when omitted
+cat code.clj | gloat -FC | less -R
+
 # Create a Go build directory
 gloat code.ys -o code/
 make -C code/ build     # Compile to binary

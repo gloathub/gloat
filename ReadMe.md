@@ -314,6 +314,12 @@ The output format is inferred from the `-o` extension, or can be explicitly
 set with `-t`.
 
 
+## Compilation Engines
+
+Use `-E` / `--engine` to select a compilation engine. Run `gloat --engines`
+to list the available engines and implementation status.
+
+
 ## Directory Output
 
 When outputting to a directory (`-o build/`), gloat generates a self-contained
@@ -511,36 +517,43 @@ With `-Xserve,html`, the HTML is generated alongside the output.
 ## Options
 
 ```
--t, --to ...     Output format (inferred from -o; see --formats)
 -o, --out ...    Output file or directory
+-f, --force      Overwrite existing output files
 
---platform ...   Cross-compile (e.g., linux/amd64; see --platforms)
--X, --ext ...    Enable a processing extension (see --extensions)
+-t, --to ...     Output format (inferred from -o; see --formats)
+--formats        List available output formats
 
 --ns ...         Override namespace
 --module ...     Go module name (e.g., github.com/user/project)
 
---formats        List available output formats
---extensions     List available processing extensions
+-E, --engine ... Compilation engine: glj, lgvm, lglvm, or lgl (default: glj)
+--engines        List available compilation engines
+
+--platform ...   Cross-compile (e.g., linux/amd64; see --platforms)
 --platforms      List available cross-compilation platforms
 
---repl[=value]   Start REPL client (see man gloat-repl)
---nrepl[=value]  Start nREPL server (see man gloat-repl)
---srepl[=value]  Start socket REPL server (see man gloat-repl)
---deps=file      Path to gljdeps.edn for --repl/--nrepl/--srepl
---classpath=path Classpath for REPL load paths
+-X, --ext ...    Enable a processing extension (see --extensions)
+--extensions     List available processing extensions
+
+-r, --run        Compile and run (pass program args after --)
+-T, --time       With --run: print the run time (not compile) to stderr
+
+--repl           Start REPL client; see 'man gloat-repl'
+--nrepl          Start nREPL server; see 'man gloat-repl'
+--srepl          Start socket REPL server; see 'man gloat-repl'
+--deps ...       Path to gljdeps.edn (Go module deps; AOT or REPL)
+--classpath ...  Classpath for REPL load paths (e.g. . or src:test)
+
+-C, --color      Syntax highlight Clojure code
+-F, --fmt        Format Clojure code w/ zprint
+-w, --width ...  Width for --fmt formatting
 
 --shell          Start a sub-shell or run a command (-- cmd...)
 --shell-all      Like --shell but install all dev tools
 
--F, --fmt        Format Clojure code w/ zprint
--C, --color      Syntax highlight Clojure code
-
 --complete ...   Generate shell completion script (bash, fish, zsh)
 --which ...      Print path to command that gloat uses: go, glj, etc
 
--r, --run        Compile and run (pass program args after --)
--f, --force      Overwrite existing output files
 -v, --verbose    Print timing for each compilation step
 -q, --quiet      Suppress progress messages
 
@@ -553,13 +566,21 @@ With `-Xserve,html`, the HTML is generated alongside the output.
 
 ## Formatting and Coloring Clojure Code
 
-`-F` / `--fmt` formats one Clojure input path, or standard input when the
-input is `-`, with zprint and writes plain text to standard output:
+`-F` / `--fmt` formats one Clojure input path with zprint and writes plain text
+to standard output. It reads standard input when the path is `-` or omitted:
 
 ```bash
 gloat -F foo.clj
 gloat --fmt - < foo.clj
+curl -s https://example.com/code.clj | gloat -F
 gloat -F - <(curl -s https://example.com/code.clj)
+```
+
+Use `-w` / `--width` to set zprint's formatting width. It requires `--fmt`:
+
+```bash
+gloat -F -w 40 foo.clj
+gloat -FCw40 foo.clj
 ```
 
 `-C` / `--color` writes the input using the same ANSI syntax highlighting and
@@ -581,6 +602,14 @@ gloat --color --fmt foo.clj
 ```
 
 These commands do not change the input file.
+
+Compiler commands also read standard input when their source path is omitted.
+For example, these commands are equivalent:
+
+```bash
+gloat -t clj -
+gloat -t clj
+```
 
 
 ## Shell Completion

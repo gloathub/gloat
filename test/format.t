@@ -7,9 +7,13 @@ source "$(dirname "${BASH_SOURCE[0]}")/init"
 GLOAT_BIN=$PROJECT_ROOT/bin/gloat
 SOURCE=$TMP/format.clj
 OTHER=$TMP/format.txt
+WIDE_SOURCE=$TMP/wide.clj
 
 printf '%s\n' '(defn greet[name](println "Hello,"name))' > "$SOURCE"
 cp "$SOURCE" "$OTHER"
+printf '%s\n' \
+  '(defn wide-function [alpha beta gamma delta epsilon zeta eta theta] (+ alpha beta gamma delta epsilon zeta eta theta))' \
+  > "$WIDE_SOURCE"
 
 try "set -o pipefail; '$GLOAT_BIN' -F '$SOURCE' | cat"
 is "$rc" 0 "'gloat -F file.clj' exits 0"
@@ -22,6 +26,41 @@ try "set -o pipefail; '$GLOAT_BIN' --fmt '$SOURCE' | cat"
 is "$rc" 0 "'gloat --fmt file.clj' exits 0"
 is "$got" "$short_output" "'--fmt' matches '-F'"
 
+try "set -o pipefail; '$GLOAT_BIN' -F -w 40 '$WIDE_SOURCE' | cat"
+is "$rc" 0 "'gloat -F -w 40 file.clj' exits 0"
+has "$got" $'\n   eta theta]' "'-w 40' wraps the argument vector"
+has "$got" $'\n  (+ alpha\n' "'-w 40' wraps the function body"
+narrow_output=$got
+
+try "set -o pipefail; '$GLOAT_BIN' --fmt --width=40 '$WIDE_SOURCE' | cat"
+is "$rc" 0 "'gloat --fmt --width=40 file.clj' exits 0"
+is "$got" "$narrow_output" "'--width=40' matches '-w 40'"
+
+try "set -o pipefail; '$GLOAT_BIN' -Fw40 '$WIDE_SOURCE' | cat"
+is "$rc" 0 "'gloat -Fw40 file.clj' exits 0"
+is "$got" "$narrow_output" "'-Fw40' expands and sets formatting width"
+
+try "set -o pipefail; '$GLOAT_BIN' -FCw40 '$WIDE_SOURCE' | cat"
+is "$rc" 0 "'gloat -FCw40 file.clj' exits 0"
+has "$got" $'\033[' "'gloat -FCw40' emits ANSI highlighting"
+plain=$(printf '%s\n' "$got" | perl -pe 's/\e\[[0-9;]*m//g')
+is "$plain" "$narrow_output" "'-FCw40' formats to width before coloring"
+
+try "$GLOAT_BIN -F --width=0 '$SOURCE'"
+is "$rc" 1 "'gloat -F --width=0' exits 1"
+has "$got" "--width must be a positive integer" \
+  "'gloat -F --width=0' rejects zero"
+
+try "$GLOAT_BIN -C -w 40 '$SOURCE'"
+is "$rc" 1 "'gloat -C -w 40' exits 1"
+has "$got" "--width requires --fmt" \
+  "'gloat -C -w 40' requires formatting"
+
+try "printf '%s\n' '(def widthless 1)' | '$GLOAT_BIN' -w40 -t clj"
+is "$rc" 1 "'gloat -w40 -t clj' exits 1"
+has "$got" "--width requires --fmt" \
+  "'gloat -w40 -t clj' requires formatting"
+
 try "$GLOAT_BIN --format '$SOURCE'"
 is "$rc" 1 "'gloat --format' exits 1"
 has "$got" "use '--fmt'" "'gloat --format' directs users to --fmt"
@@ -32,9 +71,11 @@ is "$rc" 0 "'gloat --fmt -' exits 0"
 has "$got" "(def answer (+ 40 2))" "'gloat --fmt -' formats stdin"
 hasnt "$got" $'\033[' "'gloat --fmt - | cat' omits ANSI highlighting"
 
-try "$GLOAT_BIN -F"
-is "$rc" 1 "'gloat -F' without input exits 1"
-has "$got" "requires one input path or -" "'gloat -F' requires input"
+try "set -o pipefail; printf '%s\n' '(def implicit(+ 20 22))' |
+  '$GLOAT_BIN' -F | cat"
+is "$rc" 0 "'gloat -F' without a path exits 0"
+is "$got" "(def implicit (+ 20 22))" \
+  "'gloat -F' defaults to stdin"
 
 try "$GLOAT_BIN -F '$SOURCE' '$SOURCE'"
 is "$rc" 1 "'gloat -F' with multiple inputs exits 1"
@@ -66,6 +107,11 @@ plain=$(printf '%s\n' "$got" | perl -pe 's/\e\[[0-9;]*m//g')
 is "$plain" '(defn greet[name](println "Hello,"name))' \
   "'gloat -C' does not format its input"
 
+try "set -o pipefail; printf '%s\n' '(def implicit-color 42)' |
+  '$GLOAT_BIN' -C | cat"
+is "$rc" 0 "'gloat -C' without a path exits 0"
+has "$got" $'\033[' "'gloat -C' defaults to stdin"
+
 try "set -o pipefail; printf '%s\n' '(def colorized 42)' |
   '$GLOAT_BIN' --color - | cat"
 is "$rc" 0 "'gloat --color - | cat' exits 0"
@@ -90,6 +136,14 @@ has "$got" $'\033[' "'gloat -FC -' highlights formatted stdin"
 plain=$(printf '%s\n' "$got" | perl -pe 's/\e\[[0-9;]*m//g')
 is "$plain" "(def combined (+ 20 22))" \
   "'gloat -FC -' formats stdin before highlighting"
+
+try "set -o pipefail; printf '%s\n' '(def implicit-combined(+ 20 22))' |
+  '$GLOAT_BIN' -FC | cat"
+is "$rc" 0 "'gloat -FC' without a path exits 0"
+has "$got" $'\033[' "'gloat -FC' highlights implicit stdin"
+plain=$(printf '%s\n' "$got" | perl -pe 's/\e\[[0-9;]*m//g')
+is "$plain" "(def implicit-combined (+ 20 22))" \
+  "'gloat -FC' formats implicit stdin before highlighting"
 
 try "$GLOAT_BIN -FCr '$SOURCE'"
 is "$rc" 1 "'gloat -FCr' exits 1"
@@ -134,6 +188,8 @@ try "$GLOAT_BIN -h"
 is "$rc" 129 "'gloat -h' exits 129"
 has "$got" "-F, --fmt" "'gloat -h' lists the fmt option"
 has "$got" "-C, --color" "'gloat -h' lists the color option"
+has "$got" "-w, --width" "'gloat -h' lists the width option"
+has "$got" "--engines" "'gloat -h' lists the engines option"
 
 for shell in bash zsh fish; do
   try "$GLOAT_BIN --complete=$shell"
@@ -141,11 +197,15 @@ for shell in bash zsh fish; do
   if [[ $shell == fish ]]; then
     has "$got" "-l fmt" "$shell completion includes --fmt"
     has "$got" "-l color" "$shell completion includes --color"
+    has "$got" "-l width" "$shell completion includes --width"
+    has "$got" "-l engines" "$shell completion includes --engines"
     has "$got" "-l engine" "$shell completion includes --engine"
     has "$got" "-l time" "$shell completion includes --time"
   else
     has "$got" "--fmt" "$shell completion includes --fmt"
     has "$got" "--color" "$shell completion includes --color"
+    has "$got" "--width" "$shell completion includes --width"
+    has "$got" "--engines" "$shell completion includes --engines"
     has "$got" "--engine" "$shell completion includes --engine"
     has "$got" "--time" "$shell completion includes --time"
   fi
@@ -168,5 +228,14 @@ try "source '$COMPLETION'
   printf '%s\n' \"\${COMPREPLY[@]}\""
 is "$rc" 0 "bash completion for '--col' exits 0"
 has "$got" "--color" "bash completion for '--col' includes --color"
+
+try "source '$COMPLETION'
+  COMP_WORDS=(gloat --eng)
+  COMP_CWORD=1
+  _gloat
+  printf '%s\n' \"\${COMPREPLY[@]}\""
+is "$rc" 0 "bash completion for '--eng' exits 0"
+has "$got" "--engine" "bash completion for '--eng' includes --engine"
+has "$got" "--engines" "bash completion for '--eng' includes --engines"
 
 done-testing

@@ -40,6 +40,7 @@ _gloat() {
         '(- *)'{-h,--help}'[Show help]' \
         '(- *)--version[Show version]' \
         '(- *)--formats[List available output formats]' \
+        '(- *)--engines[List available compilation engines]' \
         '(- *)--extensions[List available processing extensions]' \
         '(- *)--platforms[List available cross-compilation platforms]' \
         '(-t --to)'{-t,--to}'[Output format]:format:->formats' \
@@ -63,6 +64,7 @@ _gloat() {
         '(- *)--glj-build[Build the associated glj binary]' \
         '(-F --fmt)'{-F,--fmt}'[Format Clojure code with zprint]' \
         '(-C --color)'{-C,--color}'[Syntax highlight Clojure code]' \
+        '(-w --width)'{-w,--width}'[Width for --fmt formatting]:width:' \
         '(-r --run)'{-r,--run}'[Compile and run]' \
         '(-T --time)'{-T,--time}'[With --run, print run time to stderr]' \
         '(-f --force)'{-f,--force}'[Overwrite existing output]' \

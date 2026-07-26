@@ -679,6 +679,16 @@ Format can usually be inferred from -o extension:
      / → dir    <none> → bin   .exe → bin")
     (System/exit 0)))
 
+(defn do-engines []
+  (when (:engines *opts*)
+    (println "Available compilation engines (use with -E/--engine):
+
+  glj     Glojure (default)
+  lgvm    let-go bytecode VM
+  lglvm   let-go native lowering with VM fallback
+  lgl     let-go native lowering (not yet implemented)")
+    (System/exit 0)))
+
 (defn do-extensions []
   (when (:extensions *opts*)
     (println "Available processing extensions (use with -X/--ext):
@@ -2495,6 +2505,12 @@ Less common:
                  (= "LG" format-guess) "let-go-lower-vm"
                  :else engine)]
 
+    (when (:width opts)
+      (when-not (:fmt opts)
+        (die "--width requires --fmt"))
+      (when-not (re-matches #"[1-9][0-9]*" (:width opts))
+        (die "--width must be a positive integer")))
+
     (when (and (= "let-go-vm" engine)
                (not (contains? lg-engine-formats format-guess)))
       (die "Engine 'let-go-vm' does not yet support format '" format-guess "'"
@@ -2549,9 +2565,7 @@ Less common:
           (System/exit 0)))
 
       ;; Validate input
-      (let [input (if (and (nil? input) (nil? output) (nil? to))
-                    (die "Missing input file")
-                    (or input "-"))]
+      (let [input (or input "-")]
 
         ;; Auto-detect file extension if file doesn't exist
         (let [input (if (and input
@@ -2652,6 +2666,7 @@ Less common:
     (binding [*opts* parsed-opts]
       (do-version)
       (do-formats)
+      (do-engines)
       (do-extensions)
       (do-platforms)
       (do-shell)

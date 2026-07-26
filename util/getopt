@@ -26,10 +26,16 @@ main() (
   errfile=$(mktemp)
   emit=$(
     getopt "$@" 2>"$errfile" >&2
+    if [[ ${option_count_width:-0} -gt 0 &&
+          ! ${option_width[0]-} =~ ^[1-9][0-9]*$ ]]; then
+      echo "error: --width must be a positive integer" > "$errfile"
+      exit 1
+    fi
     cat <<...
 {
  :to       $(value-to-edn option_to)
  :out      $(value-to-edn option_out)
+ :width    $(value-to-edn option_width)
  :platform $(value-to-edn option_platform)
  :ns       $(value-to-edn option_ns)
  :module   $(value-to-edn option_module)
@@ -38,6 +44,7 @@ main() (
  :complete $(value-to-edn option_complete)
  :ext      $(array-to-edn option_ext)
  :formats    $(bool-to-edn "${option_formats:-false}")
+ :engines    $(bool-to-edn "${option_engines:-false}")
  :extensions $(bool-to-edn "${option_extensions:-false}")
  :platforms  $(bool-to-edn "${option_platforms:-false}")
  :run      $(bool-to-edn "${option_run:-false}")

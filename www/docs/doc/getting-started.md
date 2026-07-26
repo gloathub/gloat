@@ -41,6 +41,23 @@ For full installation instructions, options, and uninstall steps, see the
 ## Basic Usage
 
 
+### Read from Standard Input
+
+Source-consuming commands read standard input when the source path is omitted.
+An explicit `-` has the same meaning:
+
+```bash
+# These commands are equivalent
+cat app.clj | gloat -t clj
+cat app.clj | gloat -t clj -
+
+# Save compiled stdin to a file
+cat app.clj | gloat -o app.go
+```
+
+Running `gloat` without a command still displays help.
+
+
 ### Compile to Binary
 
 By default, Gloat compiles to a native executable:
@@ -70,6 +87,40 @@ gloat code.ys -t glj
 
 # View generated Go
 gloat code.ys -t go
+```
+
+
+### Format and Syntax Highlight Clojure
+
+Use `-F` / `--fmt` to format Clojure with zprint. Formatting writes plain text
+to standard output:
+
+```bash
+gloat -F code.clj
+cat code.clj | gloat --fmt
+```
+
+Use `-w` / `--width` to set zprint's formatting width. It requires `--fmt`:
+
+```bash
+gloat -F -w 40 code.clj
+gloat -FCw40 code.clj | less -R
+```
+
+Use `-C` / `--color` for the Glojure REPL's ANSI syntax colors and rainbow
+brackets. Coloring is always enabled, including when output is piped or
+redirected:
+
+```bash
+gloat -C code.clj
+gloat --color code.clj | less -R
+```
+
+Combine the options in either order to format first and then color:
+
+```bash
+gloat -FC code.clj | less -R
+cat code.clj | gloat --color --fmt | less -R
 ```
 
 
@@ -108,6 +159,12 @@ Gloat supports multiple output formats:
 | `lib`  | `.so` or `.dylib` | Shared library |
 | `wasm` | `.wasm` | WebAssembly (WASI) |
 | `js`   | `-t js` with `.wasm` | WebAssembly (JavaScript, browser-ready with `-Xhtml`) |
+
+
+## Compilation Engines
+
+Use `-E` / `--engine` to select a compilation engine. Run `gloat --engines`
+to list the available engines and implementation status.
 
 
 ## Directory Output
@@ -268,28 +325,50 @@ Press Ctrl-D or type `exit` to return to your normal shell.
 
 
 ## Command-Line Options
-```
--t, --to ...     Output format (inferred from -o; see --formats)
--o, --out ...    Output file or directory
 
---platform ...   Cross-compile (e.g., linux/amd64; see --platforms)
--X, --ext ...    Enable a processing extension (see --extensions)
+```
+-o, --out ...    Output file or directory
+-f, --force      Overwrite existing output files
+
+-t, --to ...     Output format (inferred from -o; see --formats)
+--formats        List available output formats
 
 --ns ...         Override namespace
 --module ...     Go module name (e.g., github.com/user/project)
 
---formats        List available output formats
---extensions     List available processing extensions
+-E, --engine ... Compilation engine: glj, lgvm, lglvm, or lgl (default: glj)
+--engines        List available compilation engines
+
+--platform ...   Cross-compile (e.g., linux/amd64; see --platforms)
 --platforms      List available cross-compilation platforms
---classpath=path Classpath for REPL load paths
---complete ...   Generate shell completion script (bash, zsh, fish)
---which ...      Print path to command that gloat uses: go, glj, etc
---shell          Start a sub-shell with gloat tools on PATH
+
+-X, --ext ...    Enable a processing extension (see --extensions)
+--extensions     List available processing extensions
 
 -r, --run        Compile and run (pass program args after --)
--f, --force      Overwrite existing output files
+-T, --time       With --run: print the run time (not compile) to stderr
+
+--repl           Start REPL client; see 'man gloat-repl'
+--nrepl          Start nREPL server; see 'man gloat-repl'
+--srepl          Start socket REPL server; see 'man gloat-repl'
+--deps ...       Path to gljdeps.edn (Go module deps; AOT or REPL)
+--classpath ...  Classpath for REPL load paths (e.g. . or src:test)
+
+-C, --color      Syntax highlight Clojure code
+-F, --fmt        Format Clojure code w/ zprint
+-w, --width ...  Width for --fmt formatting
+
+--shell          Start a sub-shell or run a command (-- cmd...)
+--shell-all      Like --shell but install all dev tools
+
+--complete ...   Generate shell completion script (bash, fish, zsh)
+--which ...      Print path to command that gloat uses: go, glj, etc
+
 -v, --verbose    Print timing for each compilation step
 -q, --quiet      Suppress progress messages
+
+--upgrade        Upgrade gloat (use --upgrade=v1.2.3 to pin a version)
+--reset          Remove all cached dependencies and reinstall
 
 -h, --help       Show this help
 --version        Show version

@@ -180,12 +180,25 @@ Java, Julia, Lua, Nim, Node.js, Perl, Python, Raku, Ruby, Rust, V,
 Zig
 
 .EX
-# Build the shared library and run all 23 language bindings
+# Build the shared library and run the standard language bindings
 make test-so-bindings
+
+# Include the slow Haskell and Lua bindings
+make -C demo/so-bindings test slow=1
+
+# Build and test the bindings with either let-go engine
+GLOAT_ENGINE=lgvm make -C demo/so-bindings test
+GLOAT_ENGINE=lglvm make -C demo/so-bindings test
 
 # Run a single language binding
 make -C demo/so-bindings/python run
 .EE
+
+.PP
+The default \fBglj\fR engine and both VM-backed let-go engines support shared
+libraries. \fBlgvm\fR invokes the bundled bytecode, while \fBlglvm\fR uses native
+lowered Go functions where possible and falls back to the bundled VM for the
+rest.
 
 .SH Go Interface Interop
 Gloat supports hybrid builds where a handwritten Go shim implements a Go
@@ -316,6 +329,10 @@ l l l .
 .PP
 The output format is inferred from the \fB-o\fR extension, or can be explicitly
 set with \fB-t\fR\&.
+
+.SH Compilation Engines
+Use \fB-E\fR / \fB--engine\fR to select a compilation engine. Run \fBgloat --engines\fR
+to list the available engines and implementation status.
 
 .SH Directory Output
 When outputting to a directory (\fB-o build/\fR), gloat generates a self-contained
@@ -534,36 +551,43 @@ With \fB-Xserve,html\fR, the HTML is generated alongside the output.
 
 .SH Options
 .EX
--t, --to ...     Output format (inferred from -o; see --formats)
 -o, --out ...    Output file or directory
+-f, --force      Overwrite existing output files
 
---platform ...   Cross-compile (e.g., linux/amd64; see --platforms)
--X, --ext ...    Enable a processing extension (see --extensions)
+-t, --to ...     Output format (inferred from -o; see --formats)
+--formats        List available output formats
 
 --ns ...         Override namespace
 --module ...     Go module name (e.g., github.com/user/project)
 
---formats        List available output formats
---extensions     List available processing extensions
+-E, --engine ... Compilation engine: glj, lgvm, lglvm, or lgl (default: glj)
+--engines        List available compilation engines
+
+--platform ...   Cross-compile (e.g., linux/amd64; see --platforms)
 --platforms      List available cross-compilation platforms
 
---repl[=value]   Start REPL client (see man gloat-repl)
---nrepl[=value]  Start nREPL server (see man gloat-repl)
---srepl[=value]  Start socket REPL server (see man gloat-repl)
---deps=file      Path to gljdeps.edn for --repl/--nrepl/--srepl
---classpath=path Classpath for REPL load paths
+-X, --ext ...    Enable a processing extension (see --extensions)
+--extensions     List available processing extensions
+
+-r, --run        Compile and run (pass program args after --)
+-T, --time       With --run: print the run time (not compile) to stderr
+
+--repl           Start REPL client; see 'man gloat-repl'
+--nrepl          Start nREPL server; see 'man gloat-repl'
+--srepl          Start socket REPL server; see 'man gloat-repl'
+--deps ...       Path to gljdeps.edn (Go module deps; AOT or REPL)
+--classpath ...  Classpath for REPL load paths (e.g. . or src:test)
+
+-C, --color      Syntax highlight Clojure code
+-F, --fmt        Format Clojure code w/ zprint
+-w, --width ...  Width for --fmt formatting
 
 --shell          Start a sub-shell or run a command (-- cmd...)
 --shell-all      Like --shell but install all dev tools
 
--F, --fmt        Format Clojure code w/ zprint
--C, --color      Syntax highlight Clojure code
-
 --complete ...   Generate shell completion script (bash, fish, zsh)
 --which ...      Print path to command that gloat uses: go, glj, etc
 
--r, --run        Compile and run (pass program args after --)
--f, --force      Overwrite existing output files
 -v, --verbose    Print timing for each compilation step
 -q, --quiet      Suppress progress messages
 
@@ -575,13 +599,22 @@ With \fB-Xserve,html\fR, the HTML is generated alongside the output.
 .EE
 
 .SH Formatting and Coloring Clojure Code
-\fB-F\fR / \fB--fmt\fR formats one Clojure input path, or standard input when the
-input is \fB-\fR, with zprint and writes plain text to standard output:
+\fB-F\fR / \fB--fmt\fR formats one Clojure input path with zprint and writes plain text
+to standard output. It reads standard input when the path is \fB-\fR or omitted:
 
 .EX
 gloat -F foo.clj
 gloat --fmt - < foo.clj
+curl -s https://example.com/code.clj | gloat -F
 gloat -F - <(curl -s https://example.com/code.clj)
+.EE
+
+.PP
+Use \fB-w\fR / \fB--width\fR to set zprint's formatting width. It requires \fB--fmt\fR:
+
+.EX
+gloat -F -w 40 foo.clj
+gloat -FCw40 foo.clj
 .EE
 
 .PP
@@ -606,6 +639,15 @@ gloat --color --fmt foo.clj
 
 .PP
 These commands do not change the input file.
+
+.PP
+Compiler commands also read standard input when their source path is omitted.
+For example, these commands are equivalent:
+
+.EX
+gloat -t clj -
+gloat -t clj
+.EE
 
 .SH Shell Completion
 Gloat provides tab completion for all shells.

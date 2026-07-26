@@ -70,6 +70,19 @@ try "$GLOAT_BIN --glj"
 is "$rc" 129 "'gloat --glj' is no longer accepted"
 
 # Engine selection (-E/--engine/GLOAT_ENGINE)
+try "$GLOAT_BIN --engines"
+is "$rc" 0 "'gloat --engines' exits 0"
+has "$got" "Available compilation engines" \
+  "'gloat --engines' prints its heading"
+has "$got" "glj     Glojure (default)" \
+  "'gloat --engines' lists glj"
+has "$got" "lgvm    let-go bytecode VM" \
+  "'gloat --engines' lists lgvm"
+has "$got" "lglvm   let-go native lowering with VM fallback" \
+  "'gloat --engines' lists lglvm"
+has "$got" "lgl     let-go native lowering (not yet implemented)" \
+  "'gloat --engines' describes lgl status"
+
 try "$GLOAT_BIN -Efoo x.clj"
 is "$rc" 1 "'gloat -Efoo' exits 1"
 has "$got" "Unknown engine 'foo'" "'gloat -Efoo' reports unknown engine"

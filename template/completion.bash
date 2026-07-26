@@ -5,10 +5,11 @@ _gloat() {
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
     opts="-h --help --version -t --to -o --out -E --engine
-          -F --fmt -C --color
+          -F --fmt -C --color -w --width
           -r --run -T --time -f --force -v --verbose -q --quiet
           --platform -X --ext --ns --module
-          --formats --extensions --platforms --complete --shell --shell-all
+          --formats --engines --extensions --platforms
+          --complete --shell --shell-all
           --which --repl --nrepl --srepl --deps --classpath --reset --upgrade
           --glj-build"
 
@@ -61,7 +62,7 @@ _gloat() {
             COMPREPLY=( $(compgen -d -- "${cur}") )
             return 0
             ;;
-        --ns|--module|--which)
+        -w|--width|--ns|--module|--which)
             # No completion for free-form text
             return 0
             ;;

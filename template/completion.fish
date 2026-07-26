@@ -3,6 +3,7 @@
 complete -c gloat -s h -l help -d 'Show help'
 complete -c gloat -l version -d 'Show version'
 complete -c gloat -l formats -d 'List available output formats'
+complete -c gloat -l engines -d 'List available compilation engines'
 complete -c gloat -l extensions -d 'List available processing extensions'
 complete -c gloat -l platforms -d 'List available cross-compilation platforms'
 
@@ -29,6 +30,7 @@ complete -c gloat -l glj-build -d 'Build the associated glj binary'
 
 complete -c gloat -s F -l fmt -d 'Format Clojure code with zprint'
 complete -c gloat -s C -l color -d 'Syntax highlight Clojure code'
+complete -c gloat -s w -l width -d 'Width for --fmt formatting' -x
 complete -c gloat -s r -l run -d 'Compile and run'
 complete -c gloat -s T -l time -d 'With --run, print run time to stderr'
 complete -c gloat -s f -l force -d 'Overwrite existing output'

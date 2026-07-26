@@ -25,7 +25,7 @@ export CGO_ENABLED=0
 # bin/gloat runs this first; gloat.clj receives parsed EDN via GLOAT_OPTS.
 export GETOPT_SPEC="getopt_default=(--help)
 
-gloat [<options>] <file>...
+gloat [<options>] [<file>...]
 
 Glojure Automation Tool - version $GLOAT_VERSION
 
@@ -35,7 +35,7 @@ See https://gloathub.org
 
   FILE:
     path      Source file (.clj or .ys) or directory
-    -         Read from stdin
+    -         Read from stdin (default when omitted)
 
   Examples:
     gloat foo.clj                       Compile to 'foo' binary
@@ -57,19 +57,26 @@ See https://gloathub.org
     gloat --nrepl=7888                  Start nREPL on specific port
     gloat --srepl                       Socket server (w/ --nrepl= opts)
 --
-t,to=         Output format (inferred from -o; see --formats)
 o,out=        Output file or directory
-E,engine=     Compilation engine: glj, lgvm, lglvm, or lgl (default: glj)
+f,force       Overwrite existing output files
 
-platform=     Cross-compile (e.g., linux/amd64; see --platforms)
-X,ext=        Enable a processing extension (see --extensions)
+t,to=         Output format (inferred from -o; see --formats)
+formats       List available output formats
 
 ns=           Override namespace
 module=       Go module name (e.g., github.com/user/project)
 
-formats       List available output formats
-extensions    List available processing extensions
+E,engine=     Compilation engine: glj, lgvm, lglvm, or lgl (default: glj)
+engines       List available compilation engines
+
+platform=     Cross-compile (e.g., linux/amd64; see --platforms)
 platforms     List available cross-compilation platforms
+
+X,ext=        Enable a processing extension (see --extensions)
+extensions    List available processing extensions
+
+r,run         Compile and run (pass program args after --)
+T,time        With --run: print the run time (not compile) to stderr
 
 repl          Start REPL client; see 'man gloat-repl'
 nrepl         Start nREPL server; see 'man gloat-repl'
@@ -77,18 +84,15 @@ srepl         Start socket REPL server; see 'man gloat-repl'
 deps=         Path to gljdeps.edn (Go module deps; AOT or REPL)
 classpath=    Classpath for REPL load paths (e.g. . or src:test)
 
+C,color       Syntax highlight Clojure code
+F,fmt         Format Clojure code w/ zprint
+w,width=num   Width for --fmt formatting
+
 shell         Start a sub-shell or run a command (-- cmd...)
 shell-all     Like --shell but install all dev tools
 
-F,fmt         Format Clojure code w/ zprint
-C,color       Syntax highlight Clojure code
-
 complete=     Generate shell completion script (bash, fish, zsh)
 which=        Print path to command that gloat uses: go, glj, etc
-
-r,run         Compile and run (pass program args after --)
-T,time        With --run: print the run time (not compile) to stderr
-f,force       Overwrite existing output files
 
 v,verbose     Print timing for each compilation step
 q,quiet       Suppress progress messages
@@ -264,7 +268,7 @@ normalize-short-args() {
       normalized_args+=("$arg")
       continue
     fi
-    if [[ $arg =~ ^-([FCrTfvqh]+)([toEX])(.*)$ ]]; then
+    if [[ $arg =~ ^-([FCrTfvqh]+)([toEXw])(.*)$ ]]; then
       flags=${BASH_REMATCH[1]}
       value_opt=${BASH_REMATCH[2]}
       attached=${BASH_REMATCH[3]}
@@ -286,9 +290,12 @@ normalize-short-args() {
 
 # Handle --fmt / --color
 do-code-filter() {
-  local arg input zprint filter_name
+  local arg input zprint filter_name width=
+  local -a args=("$@")
   local -a inputs=()
+  local -a zprint_args=()
   local past_dashdash=
+  local i
 
   if [[ $opt_fmt && $opt_color ]]; then
     filter_name=fmt/color
@@ -298,13 +305,20 @@ do-code-filter() {
     filter_name=color
   fi
 
-  for arg; do
+  for ((i = 0; i < ${#args[@]}; i++)); do
+    arg=${args[i]}
     if [[ $past_dashdash ]]; then
       inputs+=("$arg")
       continue
     fi
     case $arg in
       -F|--fmt|-C|--color) ;;
+      -w|--width)
+        i=$((i + 1))
+        width=${args[i]}
+        ;;
+      -w?*) width=${arg#-w} ;;
+      --width=*) width=${arg#--width=} ;;
       --) past_dashdash=true ;;
       -) inputs+=("$arg") ;;
       -*) die "Error: --$filter_name cannot be combined with '$arg'" ;;
@@ -316,11 +330,20 @@ do-code-filter() {
     inputs=("${inputs[1]}")
   fi
 
-  [[ ${#inputs[@]} -gt 0 ]] ||
-    die "Error: --$filter_name requires one input path or -"
+  if [[ ${#inputs[@]} -eq 0 ]]; then
+    inputs=(-)
+  fi
   [[ ${#inputs[@]} -eq 1 ]] ||
     die "Error: --$filter_name accepts only one input path or -"
   input=${inputs[0]}
+
+  if [[ $width ]]; then
+    [[ $opt_fmt ]] ||
+      die "Error: --width requires --fmt"
+    [[ $width =~ ^[1-9][0-9]*$ ]] ||
+      die "Error: --width must be a positive integer"
+    zprint_args=("{:width $width}")
+  fi
 
   if [[ $input != - ]]; then
     [[ -r $input ]] ||
@@ -342,9 +365,9 @@ do-code-filter() {
 
   if [[ $opt_fmt && $opt_color ]]; then
     if [[ $input == - ]]; then
-      "$zprint" | glj --color
+      "$zprint" "${zprint_args[@]}" | glj --color
     else
-      "$zprint" < "$input" | glj --color
+      "$zprint" "${zprint_args[@]}" < "$input" | glj --color
     fi
     exit
   fi
@@ -358,9 +381,9 @@ do-code-filter() {
   fi
 
   if [[ $input == - ]]; then
-    exec "$zprint"
+    exec "$zprint" "${zprint_args[@]}"
   else
-    exec "$zprint" < "$input"
+    exec "$zprint" "${zprint_args[@]}" < "$input"
   fi
 }
 

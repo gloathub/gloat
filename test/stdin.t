@@ -22,4 +22,12 @@ try "echo '$INPUT' | $GLOAT_BIN -t clj"
 is "$rc" 0 "-t clj (implicit stdin) exits 0"
 has "$got" "defn -main" "-t clj (implicit stdin) produces clj output"
 
+# Test 3: gloat -o output.clj <<<input (no explicit source)
+OUTPUT=$TMP/stdin.clj
+try "echo '$INPUT' | $GLOAT_BIN -q -o '$OUTPUT'"
+is "$rc" 0 "-o output.clj (implicit stdin) exits 0"
+ok "$([[ -f $OUTPUT ]])" "-o output.clj (implicit stdin) creates output"
+has "$(cat "$OUTPUT")" "defn -main" \
+  "-o output.clj (implicit stdin) compiles stdin"
+
 done-testing

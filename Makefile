@@ -152,7 +152,7 @@ ifneq (,$(filter test/shellcheck.t,$(tests)))
 TEST-DEPS += $(SHELLCHECK)
 endif
 ifneq (,$(filter test/format.t,$(tests)))
-TEST-DEPS += $(PATH-DEPS) $(ZPRINT)
+TEST-DEPS += $(PATH-DEPS) $(WASMTIME) $(ZPRINT)
 endif
 ifneq (,$(filter %-bb.t %-bin.t,$(tests)))
 TEST-DEPS += $(TEST-CALL)

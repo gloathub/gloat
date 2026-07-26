@@ -15,8 +15,19 @@ func LoadNS() {
 		sym_println,
 	)
 	aotExternalFn0 := aotCacheFn1(var_clojure_DOT_core_println)
+	aotExternalFn1 := aotCacheFn1(var_clojure_DOT_core_println)
+	aotExternalFn2 := aotCacheFn1(var_clojure_DOT_core_println)
+	var closed0 any
+	var closed1 any
+	{
+		closed0 = aotExternalFn2("keep")
+	}
+	{
+		closed1 = "drop"
+	}
 	// keep
 	{
+		_ = closed0
 		_ = aotExternalFn0("hello")
 	}
 }

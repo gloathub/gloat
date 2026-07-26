@@ -8,6 +8,7 @@
 (ns prune
   (:require
    [babashka.fs :as fs]
+   [clojure.set :as set]
    [clojure.string :as str]
    [clojure.java.io :as io]))
 
@@ -532,37 +533,109 @@
 ;; Loader pruning (reused from prune-core.py logic)
 ;;------------------------------------------------------------------------------
 
-(defn prune-closed-vars
-  "Remove unused closed variable blocks from preamble text."
-  [preamble-text used-closed]
+(defn split-preamble-segments
+  "Split a generated preamble into lines and top-level initializer blocks."
+  [preamble-text]
   (let [lines (str/split-lines preamble-text)
         n (count lines)]
     (loop [i 0
            result []]
       (if (>= i n)
-        (str (str/join "\n" result)
-             (when (seq result) "\n"))
-        (let [line (nth lines i)
-              closed-match (re-find #"^\tvar (closed\d+) any" line)]
-          (if (and closed-match
-                   (not (contains? used-closed (second closed-match))))
-            ;; Skip this declaration and its block
-            (let [next-i (inc i)
-                  skip-to (if (and (< next-i n)
-                                   (= (str/trim (nth lines next-i)) "{"))
-                            ;; Skip past the { ... } block
-                            (loop [j (inc next-i)
-                                   depth 1]
-                              (if (or (>= j n) (<= depth 0))
-                                j
-                                (let [l (nth lines j)
-                                      nd (+ depth
-                                            (count (re-seq #"\{" l))
-                                            (- (count (re-seq #"\}" l))))]
-                                  (recur (inc j) (if (<= nd 0) 0 nd)))))
-                            next-i)]
-              (recur skip-to result))
-            (recur (inc i) (conj result line))))))))
+        result
+        (if (= (nth lines i) "\t{")
+          (let [end (loop [j (inc i)]
+                      (cond
+                        (>= j n) n
+                        (= (nth lines j) "\t}") (inc j)
+                        :else (recur (inc j))))]
+            (recur end (conj result (subvec lines i end))))
+          (recur (inc i) (conj result [(nth lines i)])))))))
+
+(defn assigned-closed-vars
+  "Find captured-value variables assigned by an initializer segment."
+  [segment]
+  (set
+   (map second
+        (re-seq #"\b(closed\d+)\s*=(?!=)"
+                (str/join "\n" segment)))))
+
+(defn closed-dependency-closure
+  "Expand retained captured values through their initializer dependencies."
+  [segments initial-used]
+  (loop [used initial-used]
+    (let [expanded
+          (reduce
+           (fn [result segment]
+             (let [assigned (assigned-closed-vars segment)]
+               (if (seq (set/intersection used assigned))
+                 (into result
+                       (:closed
+                        (find-used-identifiers (str/join "\n" segment))))
+                 result)))
+           used
+           segments)]
+      (if (= expanded used)
+        used
+        (recur expanded)))))
+
+(defn prune-closed-vars
+  "Remove unused captured-value declarations and initializer blocks."
+  [preamble-text used-closed]
+  (let [segments (split-preamble-segments preamble-text)
+        used-closed (closed-dependency-closure segments used-closed)
+        kept
+        (keep
+         (fn [segment]
+           (let [line (first segment)
+                 declaration (when (= 1 (count segment))
+                               (second
+                                (re-find #"^\s*var (closed\d+) any\s*$"
+                                         line)))
+                 assigned (assigned-closed-vars segment)]
+             (cond
+               declaration
+               (when (contains? used-closed declaration) segment)
+
+               (seq assigned)
+               (when (seq (set/intersection used-closed assigned)) segment)
+
+               :else segment)))
+         segments)
+        lines (mapcat identity kept)]
+    (str (str/join "\n" lines)
+         (when (seq lines) "\n"))))
+
+(defn find-aot-external-identifiers
+  "Find generated cached-call bindings referenced by retained blocks."
+  [code-text]
+  (set
+   (map second
+        (re-seq #"\b(aotExternal(?:Fn|Default|RootVersion)\d+)\b"
+                code-text))))
+
+(defn find-aot-external-references
+  "Find cached-call references, excluding their own binding declarations."
+  [code-text]
+  (find-aot-external-identifiers
+   (str/replace
+    code-text
+    #"(?m)^\s*aotExternal(?:Fn|Default|RootVersion)\d+\s*:=.*\n?"
+    "")))
+
+(defn prune-aot-external-bindings
+  "Remove cached-call bindings whose function blocks were pruned."
+  [preamble-text used-bindings]
+  (let [lines
+        (remove
+         (fn [line]
+           (when-let [[_ binding]
+                      (re-find
+                       #"^\s*(aotExternal(?:Fn|Default|RootVersion)\d+)\s*:="
+                       line)]
+             (not (contains? used-bindings binding))))
+         (str/split-lines preamble-text))]
+    (str (str/join "\n" lines)
+         (when (seq lines) "\n"))))
 
 (defn find-used-imports
   "Determine which import aliases are actually used in the code."
@@ -621,7 +694,13 @@
         all-kept-code (apply str (map second kept-blocks))
         preamble-text (apply str (:preamble-lines parsed))
         {:keys [closed]} (find-used-identifiers all-kept-code)
-        pruned-preamble (prune-closed-vars preamble-text closed)
+        closed-pruned-preamble (prune-closed-vars preamble-text closed)
+        used-aot-externals
+        (find-aot-external-references
+         (str closed-pruned-preamble all-kept-code))
+        pruned-preamble
+        (prune-aot-external-bindings closed-pruned-preamble
+                                    used-aot-externals)
 
         ;; Step 3: Find used var_ identifiers
         code-for-var-scan (str pruned-preamble all-kept-code)

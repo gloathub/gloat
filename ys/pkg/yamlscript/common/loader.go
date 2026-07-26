@@ -17,6 +17,60 @@ var aotRootVersion1 *lang.VarRootVersion
 var aotDirectFn2 lang.FnFunc1
 var aotRootVersion2 *lang.VarRootVersion
 
+func aotCacheFn1(vr *lang.Var) lang.FnFunc1 {
+	version := vr.RootVersion()
+	fn := checkDerefVar(vr)
+	if direct, ok := fn.(lang.FnFunc1); ok {
+		return func(p0 any) any {
+			if vr.RootVersion() == version {
+				return direct(p0)
+			}
+			return lang.Apply1(checkDerefVar(vr), p0)
+		}
+	}
+	if fixed, ok := fn.(lang.FixedArityFn1); ok {
+		return func(p0 any) any {
+			if vr.RootVersion() == version {
+				return fixed.Invoke1(p0)
+			}
+			return lang.Apply1(checkDerefVar(vr), p0)
+		}
+	}
+	return func(p0 any) any {
+		if vr.RootVersion() == version {
+			return lang.Apply1(fn, p0)
+		}
+		return lang.Apply1(checkDerefVar(vr), p0)
+	}
+}
+
+func aotCacheFn2(vr *lang.Var) lang.FnFunc2 {
+	version := vr.RootVersion()
+	fn := checkDerefVar(vr)
+	if direct, ok := fn.(lang.FnFunc2); ok {
+		return func(p0 any, p1 any) any {
+			if vr.RootVersion() == version {
+				return direct(p0, p1)
+			}
+			return lang.Apply2(checkDerefVar(vr), p0, p1)
+		}
+	}
+	if fixed, ok := fn.(lang.FixedArityFn2); ok {
+		return func(p0 any, p1 any) any {
+			if vr.RootVersion() == version {
+				return fixed.Invoke2(p0, p1)
+			}
+			return lang.Apply2(checkDerefVar(vr), p0, p1)
+		}
+	}
+	return func(p0 any, p1 any) any {
+		if vr.RootVersion() == version {
+			return lang.Apply2(fn, p0, p1)
+		}
+		return lang.Apply2(checkDerefVar(vr), p0, p1)
+	}
+}
+
 func init() {
 	runtime.RegisterNSLoader("yamlscript/common", LoadNS)
 }
@@ -91,6 +145,13 @@ func LoadNS() {
 	var_yamlscript_DOT_common_re_DASH_find_PLUS_ := lang.InternVarName(sym_yamlscript_DOT_common, sym_re_DASH_find_PLUS_)
 	// var yamlscript.common/regex?
 	var_yamlscript_DOT_common_regex_QMARK_ := lang.InternVarName(sym_yamlscript_DOT_common, sym_regex_QMARK_)
+	aotExternalFn0 := aotCacheFn2(var_clojure_DOT_core__EQ_)
+	aotExternalFn1 := aotCacheFn1(var_clojure_DOT_core_type)
+	aotExternalFn2 := aotCacheFn2(var_clojure_DOT_core_drop_DASH_last)
+	aotExternalFn3 := aotCacheFn1(var_clojure_DOT_core_string_QMARK_)
+	aotExternalFn4 := aotCacheFn2(var_clojure_DOT_string_join)
+	aotExternalFn5 := aotCacheFn2(var_clojure_DOT_core_re_DASH_find)
+	aotExternalFn6 := aotCacheFn1(var_clojure_DOT_core_str)
 	// reference fmt to avoid unused import error
 	_ = fmt.Printf
 	// reference reflect to avoid unused import error
@@ -186,11 +247,9 @@ func LoadNS() {
 		tmp1 = lang.FnFunc1(func(p0 any) any {
 			v2 := p0
 			_ = v2
-			tmp3 := checkDerefVar(var_clojure_DOT_core__EQ_)
-			tmp4 := checkDerefVar(var_clojure_DOT_core_type)
-			tmp5 := lang.Apply1(tmp4, v2)
-			tmp6 := lang.Apply2(tmp3, tmp5, nil)
-			return tmp6
+			tmp3 := aotExternalFn1(v2)
+			tmp4 := aotExternalFn0(tmp3, nil)
+			return tmp4
 		})
 		aotDirectFn0 = tmp1
 		var_yamlscript_DOT_common_atom_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
@@ -220,21 +279,18 @@ func LoadNS() {
 				var tmp4 any
 				{ // let
 					// let binding "lst"
-					tmp5 := checkDerefVar(var_clojure_DOT_core_drop_DASH_last)
-					tmp6 := lang.Apply2(tmp5, v2, v3)
-					var v7 any = tmp6
-					_ = v7
-					var tmp8 any
-					tmp9 := checkDerefVar(var_clojure_DOT_core_string_QMARK_)
-					tmp10 := lang.Apply1(tmp9, v3)
-					if lang.IsTruthy(tmp10) {
-						tmp11 := checkDerefVar(var_clojure_DOT_string_join)
-						tmp12 := lang.Apply2(tmp11, "", v7)
-						tmp8 = tmp12
+					tmp5 := aotExternalFn2(v2, v3)
+					var v6 any = tmp5
+					_ = v6
+					var tmp7 any
+					tmp8 := aotExternalFn3(v3)
+					if lang.IsTruthy(tmp8) {
+						tmp9 := aotExternalFn4("", v6)
+						tmp7 = tmp9
 					} else {
-						tmp8 = v7
+						tmp7 = v6
 					}
-					tmp4 = tmp8
+					tmp4 = tmp7
 				} // end let
 				return tmp4
 			}),
@@ -257,11 +313,9 @@ func LoadNS() {
 			_ = v2
 			v3 := p1
 			_ = v3
-			tmp4 := checkDerefVar(var_clojure_DOT_core_re_DASH_find)
-			tmp5 := checkDerefVar(var_clojure_DOT_core_str)
-			tmp6 := lang.Apply1(tmp5, v3)
-			tmp7 := lang.Apply2(tmp4, v2, tmp6)
-			return tmp7
+			tmp4 := aotExternalFn6(v3)
+			tmp5 := aotExternalFn5(v2, tmp4)
+			return tmp5
 		})
 		aotDirectFn1 = tmp1
 		var_yamlscript_DOT_common_re_DASH_find_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
@@ -277,12 +331,10 @@ func LoadNS() {
 		tmp1 = lang.FnFunc1(func(p0 any) any {
 			v2 := p0
 			_ = v2
-			tmp3 := checkDerefVar(var_clojure_DOT_core__EQ_)
-			tmp4 := checkDerefVar(var_clojure_DOT_core_type)
-			tmp5 := lang.Apply1(tmp4, v2)
-			tmp6 := reflect.TypeOf((*regexp4.Regexp)(nil))
-			tmp7 := lang.Apply2(tmp3, tmp5, tmp6)
-			return tmp7
+			tmp3 := aotExternalFn1(v2)
+			tmp4 := reflect.TypeOf((*regexp4.Regexp)(nil))
+			tmp5 := aotExternalFn0(tmp3, tmp4)
+			return tmp5
 		})
 		aotDirectFn2 = tmp1
 		var_yamlscript_DOT_common_regex_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)

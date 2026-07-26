@@ -1,3 +1,18 @@
+- version: 0.1.63
+  date:    Sun Jul 26 03:07:35 PM EDT 2026
+  changes:
+  - Initialize user namespaces in pruned builds
+  - Silence YS namespace replacement warnings
+  - Update Glojure to 0.7.1
+  - Test namespace changes during runtime eval
+  - Fix pruning of cached external calls
+  - Select main namespace in multi-file builds
+  - Add Clojure formatting and coloring filters
+  - Document let-go shared libraries on website
+  - Make Lua binding test slow-only
+  - Make Haskell binding test slow-only
+  - Add let-go shared library support
+
 - version: 0.1.62
   date:    Tue Jul 21 09:02:20 PM EDT 2026
   changes:

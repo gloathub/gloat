@@ -1,12 +1,13 @@
 --- ys/src/ys/fs.clj	2026-02-10 07:58:39.634210986 -0800
 +++ ys/bb/ys/fs.clj	2026-02-10 08:04:06.958409369 -0800
-@@ -1,14 +1,13 @@
+@@ -1,15 +1,14 @@
  (ns ys.fs
--  (:require [clojure.string :as str]))
+-  (:require [clojure.string :as str])
 +  (:require
 +    [babashka.fs :as fs]
 +    [clojure.java.io :as io]
-+    [clojure.string :as str]))
++    [clojure.string :as str])
+   (:refer-clojure :exclude [abs empty? find read]))
  
  ;;------------------------------------------------------------------------------
  ;; Helper functions

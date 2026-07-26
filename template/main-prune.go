@@ -12,11 +12,13 @@ import (
 	_ "github.com/glojurelang/glojure/pkg/stdlib/clojure/string"
 	_ "github.com/glojurelang/glojure/pkg/stdlib/glojure/go/io"
 YS-IMPORTS
+ALL-NS-IMPORTS
 )
 
 func main() {
 	require := glj.Var("clojure.core", "require")
 YS-REQUIRES
+ALL-NS-REQUIRES
 	require.Invoke(lang.NewSymbol("NAMESPACE"))
 
 	// Set up dynamic variables

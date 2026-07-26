@@ -59,4 +59,14 @@ is "$rc" 0 'pruned binary with cached external AOT calls runs'
 is "$got" 'Hello from a pruned binary' \
   'pruned binary keeps the externally cached function'
 
+try "gloat -qf -Xprune -o '$TMP/prune-multi' \
+  '$PROJECT_ROOT/test/fixtures/multi-helper.clj' \
+  '$PROJECT_ROOT/test/fixtures/multi-main.clj'"
+is "$rc" 0 'pruned multi-file binary builds'
+
+try "$TMP/prune-multi"
+is "$rc" 0 'pruned multi-file binary runs'
+is "$got" 'multi-file main' \
+  'pruned multi-file binary initializes required user namespaces'
+
 done-testing

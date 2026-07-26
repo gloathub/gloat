@@ -11,7 +11,7 @@
     [atom? re-find+ regex?]]
    [yamlscript.util :as util]
    [ys.ipc :as ipc])
-  (:refer-clojure :exclude [atom print read replace reverse set]))
+  (:refer-clojure :exclude [atom die print read replace reverse set]))
 
 #_(ns ys.std
   (:require

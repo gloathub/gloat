@@ -130,7 +130,6 @@ endif
 MAKES-CLEAN := \
   .nrepl-port \
   report.* \
-  out* \
   Changes.tmp \
   hi \
   $(TEST-CALL) \

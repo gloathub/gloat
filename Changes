@@ -1,3 +1,8 @@
+- version: 0.1.65
+  date:    Mon Jul 27 01:58:54 PM EDT 2026
+  changes:
+  - Depend on yamlscript 0.2.27 (w/ linux/amd64 support)
+
 - version: 0.1.64
   date:    Mon Jul 27 08:37:24 AM EDT 2026
   changes:

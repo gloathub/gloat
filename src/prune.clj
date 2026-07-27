@@ -285,14 +285,33 @@
               (:var-lines parsed))))
 
 (defn parse-external-fn-refs
-  "Map generated cross-namespace AOT call caches to their backing Vars."
+  "Map generated cross-namespace cached or linked AOT calls to backing Vars."
   [preamble-text var-refs]
   (into {}
         (keep (fn [[_ fn-id var-id]]
                 (when-let [ref (get var-refs var-id)]
                   [fn-id ref]))
-              (re-seq #"\b(aotExternalFn\d+)\s*:=\s*aotCacheFn\d+\((var_\w+)\)"
+              (re-seq #"\b(aotExternalFn\d+)\s*:=\s*aot(?:Cache|Link)Fn\d+\((var_\w+)\)"
                       preamble-text))))
+
+(defn parse-direct-fn-refs
+  "Map generated same-namespace AOT call slots to their function blocks."
+  [parsed]
+  (let [header-text (apply str (:header-lines parsed))
+        ns-match (re-find #"RegisterNSLoader\(\"([^\"]+)\"" header-text)
+        ns-name (when ns-match
+                  (str/replace (second ns-match) "/" "."))]
+    (if ns-name
+      (into {}
+            (mapcat
+             (fn [[block-name block-text]]
+               (for [[_ fn-id]
+                     (re-seq
+                      #"\b(aotDirectFn\d+(?:Arity\d+)?)\s*="
+                      block-text)]
+                 [fn-id [ns-name block-name]]))
+             (:blocks parsed)))
+      {})))
 
 (defn parse-ref-context
   "Build the generated-identifier maps needed to scan loader blocks."
@@ -301,26 +320,36 @@
         var-refs (parse-var-refs parsed)]
     {:closed-refs (parse-closed-vars preamble-text)
      :var-refs var-refs
-     :external-fn-refs (parse-external-fn-refs preamble-text var-refs)}))
+     :external-fn-refs (parse-external-fn-refs preamble-text var-refs)
+     :direct-fn-refs (parse-direct-fn-refs parsed)}))
 
 (defn scan-block-refs
   "Extract namespace/function references from a generated function block.
-   Resolves direct var_ references, closed Vars, and cached cross-namespace
-   AOT calls."
-  [block-text {:keys [closed-refs var-refs external-fn-refs]}]
+   Resolves direct var_ references, closed Vars, same-namespace direct calls,
+   and cached or linked cross-namespace AOT calls."
+  [block-text
+   {:keys [closed-refs var-refs external-fn-refs direct-fn-refs]}]
   (let [{:keys [vars closed]} (find-used-identifiers block-text)
         external-fns (set (map second
                                (re-seq #"\b(aotExternalFn\d+)\b"
                                        block-text)))
+        direct-fns (set (map second
+                             (re-seq
+                              #"\b(aotDirectFn\d+(?:Arity\d+)?)\b"
+                              block-text)))
         ;; Prefer declaration comments, which work for arbitrary namespaces.
         ;; Fall back to decoding known namespaces for older generated loaders.
         decoded-var-refs (keep #(or (get var-refs %)
                                     (decode-var-ref %))
                                vars)
         decoded-closed-refs (keep #(get closed-refs %) closed)
-        decoded-external-refs (keep #(get external-fn-refs %) external-fns)]
-    (into (into (set decoded-var-refs) decoded-closed-refs)
-          decoded-external-refs)))
+        decoded-external-refs (keep #(get external-fn-refs %) external-fns)
+        decoded-direct-refs (keep #(get direct-fn-refs %) direct-fns)]
+    (into
+     (into
+      (into (set decoded-var-refs) decoded-closed-refs)
+      decoded-external-refs)
+     decoded-direct-refs)))
 
 ;;------------------------------------------------------------------------------
 ;; Namespace location resolution

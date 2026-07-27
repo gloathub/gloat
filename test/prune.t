@@ -4,6 +4,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/init"
 
 loader=$PROJECT_ROOT/test/fixtures/prune-loader.go
 direct_loader=$PROJECT_ROOT/test/fixtures/prune-direct-loader.go
+linked_loader=$PROJECT_ROOT/test/fixtures/prune-linked-loader.go
 
 try "bb -cp '$PROJECT_ROOT/src' -e '
   (require (quote prune))
@@ -49,6 +50,39 @@ hasnt "$got" 'var closed1 any' \
   'prune removes an unused grouped captured-value declaration'
 hasnt "$got" 'closed1 = "drop"' \
   'prune removes the unused captured-value initializer'
+
+try "bb -cp '$PROJECT_ROOT/src' -e '
+  (require (quote prune))
+  (let [parsed (prune/parse-loader (first *command-line-args*))
+        context (prune/parse-ref-context parsed)
+        blocks (into {} (:blocks parsed))]
+    (prn (prune/scan-block-refs (get blocks \"keep\") context))
+    (prn (prune/scan-block-refs (get blocks \"helper\") context)))
+' '$linked_loader'"
+
+is "$rc" 0 'prune scanner accepts linked AOT calls'
+has "$got" '["fixture" "helper"]' \
+  'prune scanner resolves same-namespace direct AOT calls'
+has "$got" '["clojure.core" "println"]' \
+  'prune scanner resolves linked external AOT calls'
+
+try "bb -cp '$PROJECT_ROOT/src' -e '
+  (require (quote prune))
+  (let [parsed (prune/parse-loader (first *command-line-args*))
+        result (prune/generate-pruned-loader
+                 parsed #{\"keep\" \"helper\"})]
+    (print (:output result)))
+' '$linked_loader'"
+
+is "$rc" 0 'prune generator accepts linked AOT calls'
+has "$got" 'aotDirectFn1 = ' \
+  'prune keeps a directly called same-namespace function'
+hasnt "$got" 'aotDirectFn2 = ' \
+  'prune removes an orphaned same-namespace function'
+has "$got" 'aotExternalFn0 :=' \
+  'prune keeps a linked external call used by a retained block'
+hasnt "$got" 'aotExternalFn1 :=' \
+  'prune removes an orphaned linked external call'
 
 try "gloat -qf -Xprune -o '$TMP/prune-main' \
   '$PROJECT_ROOT/test/fixtures/prune-main.clj'"

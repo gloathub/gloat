@@ -8,10 +8,251 @@ import (
 	runtime "github.com/glojurelang/glojure/pkg/runtime"
 	reflect "reflect"
 	regexp4 "regexp"
+	sync "sync"
 )
 
-var aotDirectFn0 lang.FnFunc1
-var aotRootVersion0 *lang.VarRootVersion
+var aotDirectFn0 lang.ArityFn
+var aotDirectFn1 lang.ArityFn
+var aotDirectFn2 lang.ArityFn
+var aotDirectFn3 lang.ArityFn
+var aotDirectFn4 lang.ArityFn
+var aotDirectFn5 lang.ArityFn
+var aotDirectFn6 lang.ArityFn
+var aotDirectFn7 lang.ArityFn
+var aotDirectFn8 lang.ArityFn
+var aotDirectFn9 lang.ArityFn
+var aotDirectFn10 lang.ArityFn
+var aotDirectFn11 lang.ArityFn
+var aotDirectFn12 lang.ArityFn
+var aotDirectFn13 lang.ArityFn
+var aotDirectFn14 lang.ArityFn
+var aotDirectFn15 lang.ArityFn
+var aotDirectFn16 lang.ArityFn
+var aotDirectFn17 lang.ArityFn
+var aotDirectFn18 lang.ArityFn
+var aotDirectFn19 lang.ArityFn
+var aotDirectFn20 lang.ArityFn
+var aotDirectFn21 lang.ArityFn
+var aotDirectFn22 lang.ArityFn
+var aotDirectFn23 lang.ArityFn
+var aotDirectFn24 lang.ArityFn
+var aotDirectFn25 lang.ArityFn
+var aotDirectFn26 lang.ArityFn
+var aotDirectFn27 lang.ArityFn
+var aotDirectFn28 lang.ArityFn
+var aotDirectFn29 lang.ArityFn
+var aotDirectFn30 lang.ArityFn
+var aotDirectFn31 lang.ArityFn
+var aotDirectFn32 lang.ArityFn
+var aotDirectFn33 lang.ArityFn
+var aotDirectFn34 lang.ArityFn
+var aotDirectFn35 lang.ArityFn
+var aotDirectFn36 lang.ArityFn
+var aotDirectFn37 lang.ArityFn
+var aotDirectFn38 lang.ArityFn
+var aotDirectFn39 lang.ArityFn
+var aotDirectFn40 lang.ArityFn
+var aotDirectFn41 lang.ArityFn
+var aotDirectFn42 lang.ArityFn
+var aotDirectFn43 lang.ArityFn
+var aotDirectFn44 lang.ArityFn
+var aotDirectFn45 lang.ArityFn
+var aotDirectFn46 lang.ArityFn
+var aotDirectFn47 lang.ArityFn
+var aotDirectFn48 lang.ArityFn
+var aotDirectFn49 lang.ArityFn
+var aotDirectFn50 lang.ArityFn
+var aotDirectFn51 lang.ArityFn
+var aotDirectFn52 lang.ArityFn
+var aotDirectFn53 lang.ArityFn
+var aotDirectFn54 lang.ArityFn
+var aotDirectFn55 lang.ArityFn
+var aotDirectFn56 lang.ArityFn
+var aotDirectFn57 lang.ArityFn
+var aotDirectFn58 lang.ArityFn
+var aotDirectFn59 lang.ArityFn
+var aotDirectFn60 lang.ArityFn
+var aotDirectFn61 lang.ArityFn
+var aotDirectFn62 lang.ArityFn
+var aotDirectFn63 lang.ArityFn
+var aotDirectFn64 lang.ArityFn
+var aotDirectFn65 lang.ArityFn
+var aotDirectFn66 lang.ArityFn
+var aotDirectFn67 lang.ArityFn
+var aotDirectFn68 lang.ArityFn
+var aotDirectFn69 lang.ArityFn
+var aotDirectFn70 lang.ArityFn
+var aotDirectFn71 lang.ArityFn
+var aotDirectFn72 lang.ArityFn
+var aotDirectFn73 lang.ArityFn
+var aotDirectFn74 lang.ArityFn
+var aotDirectFn75 lang.ArityFn
+var aotDirectFn76 lang.ArityFn
+var aotDirectFn77 lang.ArityFn
+var aotDirectFn78 lang.ArityFn
+var aotDirectFn79 lang.ArityFn
+var aotDirectFn80 lang.ArityFn
+var aotDirectFn81 lang.ArityFn
+var aotDirectFn82 lang.ArityFn
+var aotDirectFn83 lang.ArityFn
+var aotDirectFn84 lang.ArityFn
+var aotDirectFn85 lang.ArityFn
+var aotDirectFn86 lang.ArityFn
+var aotDirectFn87 lang.ArityFn
+var aotDirectFn88 lang.ArityFn
+var aotDirectFn89 lang.ArityFn
+var aotDirectFn90 lang.ArityFn
+var aotDirectFn91 lang.ArityFn
+var aotDirectFn92 lang.ArityFn
+var aotDirectFn93 lang.ArityFn
+var aotDirectFn94 lang.ArityFn
+var aotDirectFn95 lang.ArityFn
+var aotDirectFn96 lang.ArityFn
+var aotDirectFn97 lang.ArityFn
+var aotDirectFn98 lang.ArityFn
+var aotDirectFn99 lang.ArityFn
+var aotDirectFn100 lang.ArityFn
+var aotDirectFn101 lang.ArityFn
+var aotDirectFn102 lang.ArityFn
+var aotDirectFn103 lang.ArityFn
+var aotDirectFn104 lang.ArityFn
+var aotDirectFn105 lang.ArityFn
+var aotDirectFn106 lang.ArityFn
+var aotDirectFn107 lang.ArityFn
+var aotDirectFn108 lang.ArityFn
+var aotDirectFn109 lang.ArityFn
+var aotDirectFn110 lang.ArityFn
+var aotDirectFn111 lang.ArityFn
+var aotDirectFn112 lang.ArityFn
+var aotDirectFn113 lang.ArityFn
+var aotDirectFn114 lang.ArityFn
+var aotDirectFn115 lang.ArityFn
+var aotDirectFn116 lang.ArityFn
+var aotDirectFn117 lang.ArityFn
+var aotDirectFn118 lang.ArityFn
+var aotDirectFn119 lang.ArityFn
+var aotDirectFn120 lang.ArityFn
+var aotDirectFn121 lang.ArityFn
+var aotDirectFn122 lang.ArityFn
+var aotDirectFn123 lang.ArityFn
+var aotDirectFn124 lang.ArityFn
+var aotDirectFn125 lang.ArityFn
+var aotDirectFn126 lang.ArityFn
+var aotDirectFn127 lang.ArityFn
+var aotDirectFn128 lang.ArityFn
+var aotDirectFn129 lang.ArityFn
+var aotDirectFn130 lang.ArityFn
+var aotDirectFn131 lang.ArityFn
+var aotDirectFn132 lang.ArityFn
+var aotDirectFn133 lang.ArityFn
+var aotDirectFn134 lang.ArityFn
+var aotDirectFn135 lang.ArityFn
+var aotDirectFn136 lang.ArityFn
+var aotDirectFn137 lang.FnFunc1
+var aotDirectFn138 lang.ArityFn
+var aotDirectFn139 lang.ArityFn
+var aotDirectFn140 lang.ArityFn
+var aotDirectFn141 lang.ArityFn
+var aotDirectFn142 lang.ArityFn
+var aotDirectFn143 lang.ArityFn
+var aotDirectFn144 lang.ArityFn
+var aotDirectFn145 lang.ArityFn
+var aotDirectFn146 lang.ArityFn
+var aotDirectFn147 lang.ArityFn
+var aotDirectFn148 lang.ArityFn
+var aotDirectFn149 lang.ArityFn
+var aotDirectFn150 lang.ArityFn
+var aotDirectFn151 lang.ArityFn
+var aotDirectFn152 lang.ArityFn
+var aotDirectFn153 lang.ArityFn
+var aotDirectFn154 lang.ArityFn
+var aotDirectFn155 lang.ArityFn
+var aotDirectFn156 lang.ArityFn
+var aotDirectFn157 lang.ArityFn
+var aotDirectFn158 lang.ArityFn
+var aotDirectFn159 lang.ArityFn
+var aotDirectFn160 lang.ArityFn
+var aotDirectFn161 lang.ArityFn
+var aotDirectFn162 lang.ArityFn
+var aotDirectFn163 lang.ArityFn
+var aotDirectFn164 lang.ArityFn
+var aotDirectFn165 lang.ArityFn
+var aotDirectFn166 lang.ArityFn
+var aotDirectFn167 lang.ArityFn
+var aotDirectFn168 lang.ArityFn
+var aotDirectFn169 lang.ArityFn
+var aotDirectFn170 lang.ArityFn
+var aotDirectFn171 lang.ArityFn
+var aotDirectFn172 lang.ArityFn
+var aotDirectFn173 lang.ArityFn
+var aotDirectFn174 lang.ArityFn
+var aotDirectFn175 lang.ArityFn
+var aotDirectFn176 lang.ArityFn
+var aotDirectFn177 lang.ArityFn
+var aotDirectFn178 lang.ArityFn
+var aotDirectFn179 lang.ArityFn
+var aotDirectFn180 lang.ArityFn
+var aotDirectFn181 lang.ArityFn
+var aotDirectFn182 lang.ArityFn
+var aotDirectFn183 lang.ArityFn
+var aotDirectFn184 lang.ArityFn
+var aotDirectFn185 lang.ArityFn
+var aotDirectFn186 lang.ArityFn
+var aotDirectFn187 lang.ArityFn
+var aotDirectFn188 lang.ArityFn
+var aotDirectFn189 lang.ArityFn
+
+func aotLinkFn1(vr *lang.Var) lang.FnFunc1 {
+	if vr.IsBound() {
+		return aotLinkBoundFn1(vr)
+	}
+	var once sync.Once
+	var linked lang.FnFunc1
+	return func(p0 any) any {
+		if !vr.IsBound() {
+			return lang.Apply1(checkDerefVar(vr), p0)
+		}
+		once.Do(func() { linked = aotLinkBoundFn1(vr) })
+		return linked(p0)
+	}
+}
+
+func aotLinkBoundFn1(vr *lang.Var) lang.FnFunc1 {
+	fn := checkDerefVar(vr)
+	if direct, ok := fn.(lang.FnFunc1); ok {
+		return direct
+	}
+	if fixed, ok := fn.(lang.FixedArityFn1); ok {
+		return fixed.Invoke1
+	}
+	return func(p0 any) any { return lang.Apply1(fn, p0) }
+}
+
+func aotLinkFn2(vr *lang.Var) lang.FnFunc2 {
+	if vr.IsBound() {
+		return aotLinkBoundFn2(vr)
+	}
+	var once sync.Once
+	var linked lang.FnFunc2
+	return func(p0 any, p1 any) any {
+		if !vr.IsBound() {
+			return lang.Apply2(checkDerefVar(vr), p0, p1)
+		}
+		once.Do(func() { linked = aotLinkBoundFn2(vr) })
+		return linked(p0, p1)
+	}
+}
+
+func aotLinkBoundFn2(vr *lang.Var) lang.FnFunc2 {
+	fn := checkDerefVar(vr)
+	if direct, ok := fn.(lang.FnFunc2); ok {
+		return direct
+	}
+	if fixed, ok := fn.(lang.FixedArityFn2); ok {
+		return fixed.Invoke2
+	}
+	return func(p0 any, p1 any) any { return lang.Apply2(fn, p0, p1) }
+}
 
 func init() {
 	runtime.RegisterNSLoader("ys/v0", LoadNS)
@@ -740,6 +981,11 @@ func LoadNS() {
 	var_ys_DOT_v0_words := lang.InternVarName(sym_ys_DOT_v0, sym_words)
 	// var ys.v0/write
 	var_ys_DOT_v0_write := lang.InternVarName(sym_ys_DOT_v0, sym_write)
+	aotExternalFn0 := aotLinkFn2(var_clojure_DOT_core_apply)
+	aotExternalFn1 := aotLinkFn1(var_clojure_DOT_core_deref)
+	aotExternalFn2 := aotLinkFn2(var_clojure_DOT_core_mapv)
+	aotExternalFn3 := aotLinkFn2(var_clojure_DOT_core_re_DASH_matches)
+	aotExternalFn4 := aotLinkFn1(var_clojure_DOT_core_read_DASH_string)
 	// reference fmt to avoid unused import error
 	_ = fmt.Printf
 	// reference reflect to avoid unused import error
@@ -761,8 +1007,6 @@ func LoadNS() {
 			"case-map",
 			"check-cyclic-dependency",
 			"check-valid-options",
-			"cond-lets",
-			"condf",
 			"data-reader-urls",
 			"data-reader-var",
 			"def-aset",
@@ -773,12 +1017,9 @@ func LoadNS() {
 			"emit-extend-protocol",
 			"emit-extend-type",
 			"emit-hinted-impl",
-			"eprint",
-			"eprintln",
 			"filter-key",
 			"fits-table?",
 			"global-hierarchy",
-			"if-lets",
 			"into1",
 			"libspec?",
 			"lift-ns",
@@ -829,834 +1070,837 @@ func LoadNS() {
 			"system-newline",
 			"tapset",
 			"throw-if",
-			"when-lets",
 		})
 	}
 	var closed0 any
+	var closed1 any
+	var closed10 any
+	var closed100 any
+	var closed101 any
+	var closed102 any
+	var closed103 any
+	var closed104 any
+	var closed105 any
+	var closed106 any
+	var closed107 any
+	var closed108 any
+	var closed109 any
+	var closed11 any
+	var closed110 any
+	var closed111 any
+	var closed112 any
+	var closed113 any
+	var closed114 any
+	var closed115 any
+	var closed116 any
+	var closed117 any
+	var closed118 any
+	var closed119 any
+	var closed12 any
+	var closed120 any
+	var closed121 any
+	var closed122 any
+	var closed123 any
+	var closed124 any
+	var closed125 any
+	var closed126 any
+	var closed127 any
+	var closed128 any
+	var closed129 any
+	var closed13 any
+	var closed130 any
+	var closed131 any
+	var closed132 any
+	var closed133 any
+	var closed134 any
+	var closed135 any
+	var closed136 any
+	var closed137 any
+	var closed138 any
+	var closed139 any
+	var closed14 any
+	var closed140 any
+	var closed141 any
+	var closed142 any
+	var closed143 any
+	var closed144 any
+	var closed145 any
+	var closed146 any
+	var closed147 any
+	var closed148 any
+	var closed149 any
+	var closed15 any
+	var closed150 any
+	var closed151 any
+	var closed152 any
+	var closed153 any
+	var closed154 any
+	var closed155 any
+	var closed156 any
+	var closed157 any
+	var closed158 any
+	var closed159 any
+	var closed16 any
+	var closed160 any
+	var closed161 any
+	var closed162 any
+	var closed163 any
+	var closed164 any
+	var closed165 any
+	var closed166 any
+	var closed167 any
+	var closed168 any
+	var closed169 any
+	var closed17 any
+	var closed170 any
+	var closed171 any
+	var closed172 any
+	var closed173 any
+	var closed174 any
+	var closed175 any
+	var closed176 any
+	var closed177 any
+	var closed178 any
+	var closed179 any
+	var closed18 any
+	var closed180 any
+	var closed181 any
+	var closed182 any
+	var closed183 any
+	var closed184 any
+	var closed185 any
+	var closed186 any
+	var closed187 any
+	var closed188 any
+	var closed189 any
+	var closed19 any
+	var closed190 any
+	var closed191 any
+	var closed192 any
+	var closed193 any
+	var closed194 any
+	var closed195 any
+	var closed196 any
+	var closed197 any
+	var closed198 any
+	var closed199 any
+	var closed2 any
+	var closed20 any
+	var closed200 any
+	var closed201 any
+	var closed202 any
+	var closed203 any
+	var closed204 any
+	var closed205 any
+	var closed206 any
+	var closed207 any
+	var closed21 any
+	var closed22 any
+	var closed23 any
+	var closed24 any
+	var closed25 any
+	var closed26 any
+	var closed27 any
+	var closed28 any
+	var closed29 any
+	var closed3 any
+	var closed30 any
+	var closed31 any
+	var closed32 any
+	var closed33 any
+	var closed34 any
+	var closed35 any
+	var closed36 any
+	var closed37 any
+	var closed38 any
+	var closed39 any
+	var closed4 any
+	var closed40 any
+	var closed41 any
+	var closed42 any
+	var closed43 any
+	var closed44 any
+	var closed45 any
+	var closed46 any
+	var closed47 any
+	var closed48 any
+	var closed49 any
+	var closed5 any
+	var closed50 any
+	var closed51 any
+	var closed52 any
+	var closed53 any
+	var closed54 any
+	var closed55 any
+	var closed56 any
+	var closed57 any
+	var closed58 any
+	var closed59 any
+	var closed6 any
+	var closed60 any
+	var closed61 any
+	var closed62 any
+	var closed63 any
+	var closed64 any
+	var closed65 any
+	var closed66 any
+	var closed67 any
+	var closed68 any
+	var closed69 any
+	var closed7 any
+	var closed70 any
+	var closed71 any
+	var closed72 any
+	var closed73 any
+	var closed74 any
+	var closed75 any
+	var closed76 any
+	var closed77 any
+	var closed78 any
+	var closed79 any
+	var closed8 any
+	var closed80 any
+	var closed81 any
+	var closed82 any
+	var closed83 any
+	var closed84 any
+	var closed85 any
+	var closed86 any
+	var closed87 any
+	var closed88 any
+	var closed89 any
+	var closed9 any
+	var closed90 any
+	var closed91 any
+	var closed92 any
+	var closed93 any
+	var closed94 any
+	var closed95 any
+	var closed96 any
+	var closed97 any
+	var closed98 any
+	var closed99 any
 	{
 		closed0 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym__BANG__DASH__DASH_)
 	}
-	var closed1 any
 	{
 		closed1 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym__BANG__DASH__DASH__DASH_)
 	}
-	var closed10 any
 	{
 		closed10 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS__PLUS_replace)
 	}
-	var closed100 any
 	{
 		closed100 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_dirname)
 	}
-	var closed101 any
 	{
 		closed101 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_e)
 	}
-	var closed102 any
 	{
 		closed102 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_f)
 	}
-	var closed103 any
 	{
 		closed103 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_filename)
 	}
-	var closed104 any
 	{
 		closed104 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_find)
 	}
-	var closed105 any
 	{
 		closed105 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_glob)
 	}
-	var closed106 any
 	{
 		closed106 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_l)
 	}
-	var closed107 any
 	{
 		closed107 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_ls)
 	}
-	var closed108 any
 	{
 		closed108 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_mkdir)
 	}
-	var closed109 any
 	{
 		closed109 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_mkdir_DASH_p)
 	}
-	var closed11 any
 	{
 		closed11 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS__PLUS_take_DASH_while)
 	}
-	var closed110 any
 	{
 		closed110 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_mktemp)
 	}
-	var closed111 any
 	{
 		closed111 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_mktemp_DASH_d)
 	}
-	var closed112 any
 	{
 		closed112 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_mtime)
 	}
-	var closed113 any
 	{
 		closed113 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_mv)
 	}
-	var closed114 any
 	{
 		closed114 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_path)
 	}
-	var closed115 any
 	{
 		closed115 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_r)
 	}
-	var closed116 any
 	{
 		closed116 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_readlink)
 	}
-	var closed117 any
 	{
 		closed117 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_rel)
 	}
-	var closed118 any
 	{
 		closed118 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_rel_QMARK_)
 	}
-	var closed119 any
 	{
 		closed119 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_rm)
 	}
-	var closed12 any
 	{
 		closed12 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_apply)
 	}
-	var closed120 any
 	{
 		closed120 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_rm_DASH_r)
 	}
-	var closed121 any
 	{
 		closed121 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_rmdir)
 	}
-	var closed122 any
 	{
 		closed122 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_s)
 	}
-	var closed123 any
 	{
 		closed123 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_touch)
 	}
-	var closed124 any
 	{
 		closed124 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_w)
 	}
-	var closed125 any
 	{
 		closed125 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_which)
 	}
-	var closed126 any
 	{
 		closed126 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_x)
 	}
-	var closed127 any
 	{
 		closed127 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_z)
 	}
-	var closed128 any
 	{
 		closed128 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_ge)
 	}
-	var closed129 any
 	{
 		closed129 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_get_PLUS_)
 	}
-	var closed13 any
 	{
 		closed13 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym__PLUS_concat)
 	}
-	var closed130 any
 	{
 		closed130 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_grep)
 	}
-	var closed131 any
 	{
 		closed131 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_gt)
 	}
-	var closed132 any
 	{
 		closed132 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_has_QMARK_)
 	}
-	var closed133 any
 	{
 		closed133 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_in_QMARK_)
 	}
-	var closed134 any
 	{
 		closed134 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_inc_PLUS_)
 	}
-	var closed135 any
 	{
 		closed135 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_index)
 	}
-	var closed136 any
 	{
 		closed136 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_join)
 	}
-	var closed137 any
 	{
 		closed137 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_joins)
 	}
-	var closed138 any
 	{
 		closed138 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_lc)
 	}
-	var closed139 any
 	{
 		closed139 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_le)
 	}
-	var closed14 any
 	{
 		closed14 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_cons)
 	}
-	var closed140 any
 	{
 		closed140 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_len)
 	}
-	var closed141 any
 	{
 		closed141 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_lines)
 	}
-	var closed142 any
 	{
 		closed142 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_lt)
 	}
-	var closed143 any
 	{
-		closed143 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_mul)
+		closed143 = regexp4.MustCompile("^[+-]?[0-9]+\\.?[0-9]*([eE][+-]?[0-9]+)?$")
 	}
-	var closed144 any
 	{
-		closed144 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_mul_PLUS_)
+		closed144 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_mul)
 	}
-	var closed145 any
 	{
-		closed145 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_ne)
+		closed145 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_mul_PLUS_)
 	}
-	var closed146 any
 	{
-		closed146 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_omap)
+		closed146 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_ne)
 	}
-	var closed147 any
 	{
-		closed147 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_or_QMARK_)
+		closed147 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_omap)
 	}
-	var closed148 any
 	{
-		closed148 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_out)
+		closed148 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_or_QMARK_)
 	}
-	var closed149 any
 	{
-		closed149 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_print)
+		closed149 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_out)
 	}
-	var closed15 any
 	{
 		closed15 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_contains_QMARK_)
 	}
-	var closed150 any
 	{
-		closed150 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_process)
+		closed150 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_print)
 	}
-	var closed151 any
 	{
-		closed151 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_q)
+		closed151 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_process)
 	}
-	var closed152 any
 	{
-		closed152 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_ql)
+		closed152 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_q)
 	}
-	var closed153 any
 	{
-		closed153 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_qm)
+		closed153 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_ql)
 	}
-	var closed154 any
 	{
-		closed154 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_qo)
+		closed154 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_qm)
 	}
-	var closed155 any
 	{
-		closed155 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_qr)
+		closed155 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_qo)
 	}
-	var closed156 any
 	{
-		closed156 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_qs)
+		closed156 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_qr)
 	}
-	var closed157 any
 	{
-		closed157 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_qv)
+		closed157 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_qs)
 	}
-	var closed158 any
 	{
-		closed158 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_qw)
+		closed158 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_qv)
 	}
-	var closed159 any
 	{
-		closed159 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_read)
+		closed159 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_qw)
 	}
-	var closed16 any
 	{
 		closed16 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_drop)
 	}
-	var closed160 any
 	{
-		closed160 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_replace)
+		closed160 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_read)
 	}
-	var closed161 any
 	{
-		closed161 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_replace1)
+		closed161 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_replace)
 	}
-	var closed162 any
 	{
-		closed162 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_reset)
+		closed162 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_replace1)
 	}
-	var closed163 any
 	{
-		closed163 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_reverse)
+		closed163 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_reset)
 	}
-	var closed164 any
 	{
-		closed164 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_rindex)
+		closed164 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_reverse)
 	}
-	var closed165 any
 	{
-		closed165 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_rng)
+		closed165 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_rindex)
 	}
-	var closed166 any
 	{
-		closed166 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_say)
+		closed166 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_rng)
 	}
-	var closed167 any
 	{
-		closed167 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_set)
+		closed167 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_say)
 	}
-	var closed168 any
 	{
-		closed168 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_sh)
+		closed168 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_set)
 	}
-	var closed169 any
 	{
-		closed169 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_sh_DASH_out)
+		closed169 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_sh)
 	}
-	var closed17 any
 	{
 		closed17 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_drop_DASH_last)
 	}
-	var closed170 any
 	{
-		closed170 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_shell)
+		closed170 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_sh_DASH_out)
 	}
-	var closed171 any
 	{
-		closed171 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_slice)
+		closed171 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_shell)
 	}
-	var closed172 any
 	{
-		closed172 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_source)
+		closed172 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_slice)
 	}
-	var closed173 any
 	{
-		closed173 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_split)
+		closed173 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_source)
 	}
-	var closed174 any
 	{
-		closed174 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_sqrt)
+		closed174 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_split)
 	}
-	var closed175 any
 	{
-		closed175 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_starts_QMARK_)
+		closed175 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_sqrt)
 	}
-	var closed176 any
 	{
-		closed176 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_sub)
+		closed176 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_starts_QMARK_)
 	}
-	var closed177 any
 	{
-		closed177 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_sub_PLUS_)
+		closed177 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_sub)
 	}
-	var closed178 any
 	{
-		closed178 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_substr)
+		closed178 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_sub_PLUS_)
 	}
-	var closed179 any
 	{
-		closed179 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_sum)
+		closed179 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_substr)
 	}
-	var closed18 any
 	{
 		closed18 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_drop_DASH_while)
 	}
-	var closed180 any
 	{
-		closed180 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_swap)
+		closed180 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_sum)
 	}
-	var closed181 any
 	{
-		closed181 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_text)
+		closed181 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_swap)
 	}
-	var closed182 any
 	{
-		closed182 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_bool)
+		closed182 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_text)
 	}
-	var closed183 any
 	{
-		closed183 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_char)
+		closed183 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_bool)
 	}
-	var closed184 any
 	{
-		closed184 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_float)
+		closed184 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_char)
 	}
-	var closed185 any
 	{
-		closed185 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_int)
+		closed185 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_float)
 	}
-	var closed186 any
 	{
-		closed186 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_keyw)
+		closed186 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_int)
 	}
-	var closed187 any
 	{
-		closed187 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_list)
+		closed187 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_keyw)
 	}
-	var closed188 any
 	{
-		closed188 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_map)
+		closed188 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_list)
 	}
-	var closed189 any
 	{
-		closed189 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_num)
+		closed189 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_map)
 	}
-	var closed19 any
 	{
 		closed19 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_escape)
 	}
-	var closed190 any
 	{
-		closed190 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_omap)
+		closed190 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_num)
 	}
-	var closed191 any
 	{
-		closed191 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_set)
+		closed191 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_omap)
 	}
-	var closed192 any
 	{
-		closed192 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_str)
+		closed192 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_set)
 	}
-	var closed193 any
 	{
-		closed193 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_type)
+		closed193 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_str)
 	}
-	var closed194 any
 	{
-		closed194 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_vec)
+		closed194 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_type)
 	}
-	var closed195 any
 	{
-		closed195 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_trim)
+		closed195 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_to_DASH_vec)
 	}
-	var closed196 any
 	{
-		closed196 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_triml)
+		closed196 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_trim)
 	}
-	var closed197 any
 	{
-		closed197 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_trimr)
+		closed197 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_triml)
 	}
-	var closed198 any
 	{
-		closed198 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_truey_QMARK_)
+		closed198 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_trimr)
 	}
-	var closed199 any
 	{
-		closed199 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_uc)
+		closed199 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_truey_QMARK_)
 	}
-	var closed2 any
 	{
 		closed2 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym__PCT_)
 	}
-	var closed20 any
 	{
 		closed20 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_every_QMARK_)
 	}
-	var closed200 any
 	{
-		closed200 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_uc1)
+		closed200 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_uc)
 	}
-	var closed201 any
 	{
-		closed201 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_value)
+		closed201 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_uc1)
 	}
-	var closed202 any
 	{
-		closed202 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_warn)
+		closed202 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_value)
 	}
-	var closed203 any
 	{
-		closed203 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_when_PLUS_)
+		closed203 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_warn)
 	}
-	var closed204 any
 	{
-		closed204 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_words)
+		closed204 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_when_PLUS_)
 	}
-	var closed205 any
 	{
-		closed205 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_write)
+		closed205 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_words)
 	}
-	var closed206 any
 	{
-		closed206 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym__U007C__U007C__U007C_)
+		closed206 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_write)
 	}
-	var closed21 any
+	{
+		closed207 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym__U007C__U007C__U007C_)
+	}
 	{
 		closed21 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_filter)
 	}
-	var closed22 any
 	{
 		closed22 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_filterv)
 	}
-	var closed23 any
 	{
 		closed23 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_format)
 	}
-	var closed24 any
 	{
 		closed24 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_interpose)
 	}
-	var closed25 any
 	{
 		closed25 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_keep)
 	}
-	var closed26 any
 	{
 		closed26 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_map)
 	}
-	var closed27 any
 	{
 		closed27 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_mapcat)
 	}
-	var closed28 any
 	{
 		closed28 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_mapv)
 	}
-	var closed29 any
 	{
 		closed29 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym__PLUS_merge)
 	}
-	var closed3 any
 	{
 		closed3 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym__AMP__AMP__AMP_)
 	}
-	var closed30 any
 	{
 		closed30 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_not_DASH_any_QMARK_)
 	}
-	var closed31 any
 	{
 		closed31 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_nth)
 	}
-	var closed32 any
 	{
 		closed32 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_partition)
 	}
-	var closed33 any
 	{
 		closed33 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_random_DASH_sample)
 	}
-	var closed34 any
 	{
 		closed34 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_re_DASH_find)
 	}
-	var closed35 any
 	{
 		closed35 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_re_DASH_matches)
 	}
-	var closed36 any
 	{
 		closed36 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_re_DASH_seq)
 	}
-	var closed37 any
 	{
 		closed37 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_reduce)
 	}
-	var closed38 any
 	{
 		closed38 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_remove)
 	}
-	var closed39 any
 	{
 		closed39 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_repeat)
 	}
-	var closed4 any
 	{
 		closed4 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS__PLUS_filter)
 	}
-	var closed40 any
 	{
 		closed40 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_replace)
 	}
-	var closed41 any
 	{
 		closed41 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_some)
 	}
-	var closed42 any
 	{
 		closed42 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_sort)
 	}
-	var closed43 any
 	{
 		closed43 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_sort_DASH_by)
 	}
-	var closed44 any
 	{
 		closed44 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_split_DASH_at)
 	}
-	var closed45 any
 	{
 		closed45 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_split_DASH_with)
 	}
-	var closed46 any
 	{
 		closed46 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_take)
 	}
-	var closed47 any
 	{
 		closed47 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_take_DASH_last)
 	}
-	var closed48 any
 	{
 		closed48 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS_take_DASH_while)
 	}
-	var closed49 any
 	{
 		closed49 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym__EQ__DASH__DASH_)
 	}
-	var closed5 any
 	{
 		closed5 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS__PLUS_filterv)
 	}
-	var closed50 any
 	{
 		closed50 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym__EQ__DASH__DASH__DASH_)
 	}
-	var closed51 any
 	{
 		closed51 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_B)
 	}
-	var closed52 any
 	{
 		closed52 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_C)
 	}
-	var closed53 any
 	{
 		closed53 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_F)
 	}
-	var closed54 any
 	{
 		closed54 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_F_QMARK_)
 	}
-	var closed55 any
 	{
 		closed55 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_I)
 	}
-	var closed56 any
 	{
 		closed56 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_K)
 	}
-	var closed57 any
 	{
 		closed57 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_L)
 	}
-	var closed58 any
 	{
 		closed58 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_L_PLUS_)
 	}
-	var closed59 any
 	{
 		closed59 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_M)
 	}
-	var closed6 any
 	{
 		closed6 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS__PLUS_keep)
 	}
-	var closed60 any
 	{
 		closed60 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_M_PLUS_)
 	}
-	var closed61 any
 	{
 		closed61 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_N)
 	}
-	var closed62 any
 	{
 		closed62 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_O)
 	}
-	var closed63 any
 	{
 		closed63 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_O_PLUS_)
 	}
-	var closed64 any
 	{
 		closed64 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_S)
 	}
-	var closed65 any
 	{
 		closed65 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_T)
 	}
-	var closed66 any
 	{
 		closed66 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_T_QMARK_)
 	}
-	var closed67 any
 	{
 		closed67 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_V)
 	}
-	var closed68 any
 	{
 		closed68 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_V_PLUS_)
 	}
-	var closed69 any
 	{
 		closed69 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_a)
 	}
-	var closed7 any
 	{
 		closed7 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS__PLUS_map)
 	}
-	var closed70 any
 	{
 		closed70 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_add)
 	}
-	var closed71 any
 	{
 		closed71 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_add_PLUS_)
 	}
-	var closed72 any
 	{
 		closed72 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_and_QMARK_)
 	}
-	var closed73 any
 	{
 		closed73 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_atom)
 	}
-	var closed74 any
 	{
 		closed74 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_bash)
 	}
-	var closed75 any
 	{
 		closed75 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_bash_DASH_out)
 	}
-	var closed76 any
 	{
 		closed76 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_blank_QMARK_)
 	}
-	var closed77 any
 	{
 		closed77 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_call)
 	}
-	var closed78 any
 	{
 		closed78 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_chomp)
 	}
-	var closed79 any
 	{
 		closed79 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_dec_PLUS_)
 	}
-	var closed8 any
 	{
 		closed8 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS__PLUS_mapv)
 	}
-	var closed80 any
 	{
 		closed80 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_die)
 	}
-	var closed81 any
 	{
 		closed81 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_digits)
 	}
-	var closed82 any
 	{
 		closed82 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_div)
 	}
-	var closed83 any
 	{
 		closed83 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_div_PLUS_)
 	}
-	var closed84 any
 	{
 		closed84 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_each)
 	}
-	var closed85 any
 	{
 		closed85 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_ends_QMARK_)
 	}
-	var closed86 any
 	{
 		closed86 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_eq)
 	}
-	var closed87 any
 	{
 		closed87 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_err)
 	}
-	var closed88 any
 	{
 		closed88 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_escape)
 	}
-	var closed89 any
 	{
 		closed89 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_exit)
 	}
-	var closed9 any
 	{
 		closed9 = lang.FindOrCreateNamespace(sym_ys_DOT_dwim).FindInternedVar(sym__PLUS__PLUS_remove)
 	}
-	var closed90 any
 	{
 		closed90 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_falsey_QMARK_)
 	}
-	var closed91 any
 	{
 		closed91 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_flat)
 	}
-	var closed92 any
 	{
 		closed92 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_flip)
 	}
-	var closed93 any
 	{
 		closed93 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_abs)
 	}
-	var closed94 any
 	{
 		closed94 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_abs_QMARK_)
 	}
-	var closed95 any
 	{
 		closed95 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_basename)
 	}
-	var closed96 any
 	{
 		closed96 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_cp)
 	}
-	var closed97 any
 	{
 		closed97 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_cp_DASH_r)
 	}
-	var closed98 any
 	{
 		closed98 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_cwd)
 	}
-	var closed99 any
 	{
 		closed99 = lang.FindOrCreateNamespace(sym_ys_DOT_std).FindInternedVar(sym_fs_DASH_d)
 	}
@@ -1665,7 +1909,7 @@ func LoadNS() {
 		tmp0 := sym_ARGS
 		var_ys_DOT_v0_ARGS = ns.InternWithValue(tmp0, lang.NewVector(), true)
 		var_ys_DOT_v0_ARGS.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(19), kw_column, int(6), kw_end_DASH_line, int(19), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(20), kw_column, int(6), kw_end_DASH_line, int(20), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
 		})
 		var_ys_DOT_v0_ARGS.SetDynamic()
 	}
@@ -1674,63 +1918,9 @@ func LoadNS() {
 		tmp0 := sym_ARGV
 		var_ys_DOT_v0_ARGV = ns.InternWithValue(tmp0, lang.NewVector(), true)
 		var_ys_DOT_v0_ARGV.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(18), kw_column, int(6), kw_end_DASH_line, int(18), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(19), kw_column, int(6), kw_end_DASH_line, int(19), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
 		})
 		var_ys_DOT_v0_ARGV.SetDynamic()
-	}
-	// CWD
-	{
-		tmp0 := sym_CWD
-		var_ys_DOT_v0_CWD = ns.InternWithValue(tmp0, "", true)
-		var_ys_DOT_v0_CWD.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(25), kw_column, int(6), kw_end_DASH_line, int(25), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
-		})
-		var_ys_DOT_v0_CWD.SetDynamic()
-	}
-	// DIR
-	{
-		tmp0 := sym_DIR
-		var_ys_DOT_v0_DIR = ns.InternWithValue(tmp0, "", true)
-		var_ys_DOT_v0_DIR.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(24), kw_column, int(6), kw_end_DASH_line, int(24), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
-		})
-		var_ys_DOT_v0_DIR.SetDynamic()
-	}
-	// ENV
-	{
-		tmp0 := sym_ENV
-		var_ys_DOT_v0_ENV = ns.InternWithValue(tmp0, lang.NewMap(), true)
-		var_ys_DOT_v0_ENV.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(20), kw_column, int(6), kw_end_DASH_line, int(20), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
-		})
-		var_ys_DOT_v0_ENV.SetDynamic()
-	}
-	// FILE
-	{
-		tmp0 := sym_FILE
-		var_ys_DOT_v0_FILE = ns.InternWithValue(tmp0, "", true)
-		var_ys_DOT_v0_FILE.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(23), kw_column, int(6), kw_end_DASH_line, int(23), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
-		})
-		var_ys_DOT_v0_FILE.SetDynamic()
-	}
-	// NS
-	{
-		tmp0 := sym_NS
-		var_ys_DOT_v0_NS = ns.InternWithValue(tmp0, nil, true)
-		var_ys_DOT_v0_NS.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(21), kw_column, int(6), kw_end_DASH_line, int(21), kw_end_DASH_column, int(17), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
-		})
-		var_ys_DOT_v0_NS.SetDynamic()
-	}
-	// RUN
-	{
-		tmp0 := sym_RUN
-		var_ys_DOT_v0_RUN = ns.InternWithValue(tmp0, lang.NewMap(), true)
-		var_ys_DOT_v0_RUN.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(22), kw_column, int(6), kw_end_DASH_line, int(22), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
-		})
-		var_ys_DOT_v0_RUN.SetDynamic()
 	}
 	// B
 	{
@@ -1745,14 +1935,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed51)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed51)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn50 = tmp1
 		var_ys_DOT_v0_B = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_B.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(745), kw_column, int(18), kw_end_DASH_line, int(745), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -1771,18 +1960,44 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed52)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed52)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn51 = tmp1
 		var_ys_DOT_v0_C = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_C.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(747), kw_column, int(18), kw_end_DASH_line, int(747), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
 		})
+	}
+	// CWD
+	{
+		tmp0 := sym_CWD
+		var_ys_DOT_v0_CWD = ns.InternWithValue(tmp0, "", true)
+		var_ys_DOT_v0_CWD.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(26), kw_column, int(6), kw_end_DASH_line, int(26), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+		})
+		var_ys_DOT_v0_CWD.SetDynamic()
+	}
+	// DIR
+	{
+		tmp0 := sym_DIR
+		var_ys_DOT_v0_DIR = ns.InternWithValue(tmp0, "", true)
+		var_ys_DOT_v0_DIR.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(25), kw_column, int(6), kw_end_DASH_line, int(25), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+		})
+		var_ys_DOT_v0_DIR.SetDynamic()
+	}
+	// ENV
+	{
+		tmp0 := sym_ENV
+		var_ys_DOT_v0_ENV = ns.InternWithValue(tmp0, lang.NewMap(), true)
+		var_ys_DOT_v0_ENV.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(21), kw_column, int(6), kw_end_DASH_line, int(21), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+		})
+		var_ys_DOT_v0_ENV.SetDynamic()
 	}
 	// F
 	{
@@ -1797,18 +2012,26 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed53)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed53)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn52 = tmp1
 		var_ys_DOT_v0_F = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_F.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(749), kw_column, int(18), kw_end_DASH_line, int(749), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
 		})
+	}
+	// FILE
+	{
+		tmp0 := sym_FILE
+		var_ys_DOT_v0_FILE = ns.InternWithValue(tmp0, "", true)
+		var_ys_DOT_v0_FILE.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(24), kw_column, int(6), kw_end_DASH_line, int(24), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+		})
+		var_ys_DOT_v0_FILE.SetDynamic()
 	}
 	// F?
 	{
@@ -1823,17 +2046,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed54)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed54)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_F_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_F_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(789), kw_column, int(11), kw_end_DASH_line, int(789), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(789), kw_column, int(11), kw_end_DASH_line, int(789), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// I
@@ -1849,14 +2070,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed55)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed55)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn53 = tmp1
 		var_ys_DOT_v0_I = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_I.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(750), kw_column, int(18), kw_end_DASH_line, int(750), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -1875,14 +2095,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed56)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed56)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn54 = tmp1
 		var_ys_DOT_v0_K = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_K.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(752), kw_column, int(18), kw_end_DASH_line, int(752), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -1901,14 +2120,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed57)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed57)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn55 = tmp1
 		var_ys_DOT_v0_L = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_L.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(754), kw_column, int(18), kw_end_DASH_line, int(754), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -1927,14 +2145,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed58)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed58)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn56 = tmp1
 		var_ys_DOT_v0_L_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_L_PLUS_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(769), kw_column, int(18), kw_end_DASH_line, int(769), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -1953,14 +2170,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed59)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed59)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn57 = tmp1
 		var_ys_DOT_v0_M = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_M.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(756), kw_column, int(18), kw_end_DASH_line, int(756), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -1979,14 +2195,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed60)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed60)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn58 = tmp1
 		var_ys_DOT_v0_M_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_M_PLUS_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(771), kw_column, int(18), kw_end_DASH_line, int(771), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2005,18 +2220,26 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed61)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed61)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn59 = tmp1
 		var_ys_DOT_v0_N = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_N.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(758), kw_column, int(18), kw_end_DASH_line, int(758), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
 		})
+	}
+	// NS
+	{
+		tmp0 := sym_NS
+		var_ys_DOT_v0_NS = ns.InternWithValue(tmp0, nil, true)
+		var_ys_DOT_v0_NS.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(22), kw_column, int(6), kw_end_DASH_line, int(22), kw_end_DASH_column, int(17), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+		})
+		var_ys_DOT_v0_NS.SetDynamic()
 	}
 	// O
 	{
@@ -2031,14 +2254,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed62)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed62)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn60 = tmp1
 		var_ys_DOT_v0_O = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_O.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(760), kw_column, int(18), kw_end_DASH_line, int(760), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2057,18 +2279,26 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed63)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed63)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn61 = tmp1
 		var_ys_DOT_v0_O_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_O_PLUS_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(773), kw_column, int(18), kw_end_DASH_line, int(773), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
 		})
+	}
+	// RUN
+	{
+		tmp0 := sym_RUN
+		var_ys_DOT_v0_RUN = ns.InternWithValue(tmp0, lang.NewMap(), true)
+		var_ys_DOT_v0_RUN.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(23), kw_column, int(6), kw_end_DASH_line, int(23), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+		})
+		var_ys_DOT_v0_RUN.SetDynamic()
 	}
 	// S
 	{
@@ -2083,14 +2313,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed64)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed64)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn62 = tmp1
 		var_ys_DOT_v0_S = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_S.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(762), kw_column, int(18), kw_end_DASH_line, int(762), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2109,14 +2338,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed65)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed65)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn63 = tmp1
 		var_ys_DOT_v0_T = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_T.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(764), kw_column, int(18), kw_end_DASH_line, int(764), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2135,17 +2363,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed66)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed66)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_T_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_T_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(794), kw_column, int(11), kw_end_DASH_line, int(794), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(794), kw_column, int(11), kw_end_DASH_line, int(794), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// V
@@ -2161,14 +2387,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed67)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed67)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn64 = tmp1
 		var_ys_DOT_v0_V = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_V.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(766), kw_column, int(18), kw_end_DASH_line, int(766), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2187,14 +2412,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed68)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed68)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn65 = tmp1
 		var_ys_DOT_v0_V_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_V_PLUS_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(775), kw_column, int(18), kw_end_DASH_line, int(775), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2213,17 +2437,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed3)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed3)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0__AMP__AMP__AMP_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__AMP__AMP__AMP_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(812), kw_column, int(11), kw_end_DASH_line, int(812), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(812), kw_column, int(11), kw_end_DASH_line, int(812), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// !--
@@ -2239,14 +2461,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed0)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed0)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn0 = tmp1
 		var_ys_DOT_v0__BANG__DASH__DASH_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__BANG__DASH__DASH_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(526), kw_column, int(7), kw_end_DASH_line, int(526), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_S, sym_R)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2265,14 +2486,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed1)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed1)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn1 = tmp1
 		var_ys_DOT_v0__BANG__DASH__DASH__DASH_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__BANG__DASH__DASH__DASH_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(532), kw_column, int(7), kw_end_DASH_line, int(532), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_S, sym_R)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2291,14 +2511,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed49)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed49)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn48 = tmp1
 		var_ys_DOT_v0__EQ__DASH__DASH_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__EQ__DASH__DASH_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(523), kw_column, int(7), kw_end_DASH_line, int(523), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_S, sym_R)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2317,14 +2536,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed50)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed50)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn49 = tmp1
 		var_ys_DOT_v0__EQ__DASH__DASH__DASH_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__EQ__DASH__DASH__DASH_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(529), kw_column, int(7), kw_end_DASH_line, int(529), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_S, sym_R)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2343,14 +2561,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed2)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed2)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn2 = tmp1
 		var_ys_DOT_v0__PCT_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PCT_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(265), kw_column, int(7), kw_end_DASH_line, int(265), kw_end_DASH_column, int(7), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2369,14 +2586,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed4)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed4)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn3 = tmp1
 		var_ys_DOT_v0__PLUS__PLUS_filter = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS__PLUS_filter.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/dwim.glj", kw_line, int(19), kw_column, int(7), kw_end_DASH_line, int(19), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_a, sym_b)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2395,14 +2611,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed5)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed5)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn4 = tmp1
 		var_ys_DOT_v0__PLUS__PLUS_filterv = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS__PLUS_filterv.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/dwim.glj", kw_line, int(21), kw_column, int(7), kw_end_DASH_line, int(21), kw_end_DASH_column, int(15), kw_arglists, lang.NewList(lang.NewVector(sym_a, sym_b)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2421,14 +2636,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed6)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed6)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn5 = tmp1
 		var_ys_DOT_v0__PLUS__PLUS_keep = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS__PLUS_keep.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/dwim.glj", kw_line, int(23), kw_column, int(7), kw_end_DASH_line, int(23), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_a, sym_b)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2447,14 +2661,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed7)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed7)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn6 = tmp1
 		var_ys_DOT_v0__PLUS__PLUS_map = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS__PLUS_map.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/dwim.glj", kw_line, int(25), kw_column, int(7), kw_end_DASH_line, int(25), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_a, sym_b)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2473,14 +2686,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed8)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed8)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn7 = tmp1
 		var_ys_DOT_v0__PLUS__PLUS_mapv = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS__PLUS_mapv.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/dwim.glj", kw_line, int(30), kw_column, int(7), kw_end_DASH_line, int(30), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_a, sym_b)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2499,14 +2711,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed9)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed9)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn8 = tmp1
 		var_ys_DOT_v0__PLUS__PLUS_remove = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS__PLUS_remove.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/dwim.glj", kw_line, int(35), kw_column, int(7), kw_end_DASH_line, int(35), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_a, sym_b)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2525,14 +2736,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed10)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed10)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn9 = tmp1
 		var_ys_DOT_v0__PLUS__PLUS_replace = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS__PLUS_replace.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/dwim.glj", kw_line, int(37), kw_column, int(7), kw_end_DASH_line, int(37), kw_end_DASH_column, int(15), kw_arglists, lang.NewList(lang.NewVector(sym_a, sym_b), lang.NewVector(sym_a, sym_b, sym_c)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2551,14 +2761,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed11)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed11)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn10 = tmp1
 		var_ys_DOT_v0__PLUS__PLUS_take_DASH_while = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS__PLUS_take_DASH_while.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/dwim.glj", kw_line, int(41), kw_column, int(7), kw_end_DASH_line, int(41), kw_end_DASH_column, int(18), kw_arglists, lang.NewList(lang.NewVector(sym_a, sym_b)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2577,14 +2786,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed12)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed12)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn11 = tmp1
 		var_ys_DOT_v0__PLUS_apply = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_apply.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2603,14 +2811,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed13)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed13)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn12 = tmp1
 		var_ys_DOT_v0__PLUS_concat = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_concat.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(231), kw_column, int(7), kw_end_DASH_line, int(231), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_C)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2629,14 +2836,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed14)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed14)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn13 = tmp1
 		var_ys_DOT_v0__PLUS_cons = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_cons.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2655,14 +2861,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed15)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed15)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn14 = tmp1
 		var_ys_DOT_v0__PLUS_contains_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_contains_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2681,14 +2886,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed16)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed16)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn15 = tmp1
 		var_ys_DOT_v0__PLUS_drop = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_drop.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2707,14 +2911,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed17)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed17)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn16 = tmp1
 		var_ys_DOT_v0__PLUS_drop_DASH_last = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_drop_DASH_last.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2733,14 +2936,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed18)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed18)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn17 = tmp1
 		var_ys_DOT_v0__PLUS_drop_DASH_while = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_drop_DASH_while.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2759,14 +2961,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed19)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed19)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn18 = tmp1
 		var_ys_DOT_v0__PLUS_escape = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_escape.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2785,14 +2986,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed20)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed20)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn19 = tmp1
 		var_ys_DOT_v0__PLUS_every_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_every_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2811,14 +3011,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed21)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed21)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn20 = tmp1
 		var_ys_DOT_v0__PLUS_filter = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_filter.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2837,14 +3036,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed22)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed22)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn21 = tmp1
 		var_ys_DOT_v0__PLUS_filterv = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_filterv.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2863,14 +3061,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed23)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed23)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn22 = tmp1
 		var_ys_DOT_v0__PLUS_format = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_format.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__, sym__AMP_, sym_xs__2__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2889,14 +3086,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed24)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed24)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn23 = tmp1
 		var_ys_DOT_v0__PLUS_interpose = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_interpose.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2915,14 +3111,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed25)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed25)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn24 = tmp1
 		var_ys_DOT_v0__PLUS_keep = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_keep.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2941,14 +3136,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed26)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed26)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn25 = tmp1
 		var_ys_DOT_v0__PLUS_map = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_map.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2967,14 +3161,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed27)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed27)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn26 = tmp1
 		var_ys_DOT_v0__PLUS_mapcat = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_mapcat.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -2993,14 +3186,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed28)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed28)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn27 = tmp1
 		var_ys_DOT_v0__PLUS_mapv = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_mapv.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3019,14 +3211,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed29)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed29)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn28 = tmp1
 		var_ys_DOT_v0__PLUS_merge = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_merge.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(242), kw_column, int(7), kw_end_DASH_line, int(242), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_M)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3045,14 +3236,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed30)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed30)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn29 = tmp1
 		var_ys_DOT_v0__PLUS_not_DASH_any_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_not_DASH_any_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3071,14 +3261,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed31)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed31)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn30 = tmp1
 		var_ys_DOT_v0__PLUS_nth = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_nth.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3097,14 +3286,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed32)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed32)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn31 = tmp1
 		var_ys_DOT_v0__PLUS_partition = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_partition.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym__AMP_, sym_xs__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3123,14 +3311,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed33)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed33)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn32 = tmp1
 		var_ys_DOT_v0__PLUS_random_DASH_sample = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_random_DASH_sample.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3149,14 +3336,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed34)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed34)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn33 = tmp1
 		var_ys_DOT_v0__PLUS_re_DASH_find = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_re_DASH_find.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3175,14 +3361,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed35)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed35)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn34 = tmp1
 		var_ys_DOT_v0__PLUS_re_DASH_matches = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_re_DASH_matches.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3201,14 +3386,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed36)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed36)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn35 = tmp1
 		var_ys_DOT_v0__PLUS_re_DASH_seq = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_re_DASH_seq.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3227,14 +3411,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed37)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed37)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn36 = tmp1
 		var_ys_DOT_v0__PLUS_reduce = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_reduce.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym__AMP_, sym_xs__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3253,14 +3436,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed38)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed38)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn37 = tmp1
 		var_ys_DOT_v0__PLUS_remove = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_remove.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3279,14 +3461,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed39)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed39)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn38 = tmp1
 		var_ys_DOT_v0__PLUS_repeat = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_repeat.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3305,14 +3486,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed40)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed40)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn39 = tmp1
 		var_ys_DOT_v0__PLUS_replace = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_replace.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__), lang.NewVector(sym_x__0__auto__, sym_y__1__auto__, sym_z__2__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3331,14 +3511,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed41)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed41)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn40 = tmp1
 		var_ys_DOT_v0__PLUS_some = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_some.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3357,14 +3536,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed42)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed42)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn41 = tmp1
 		var_ys_DOT_v0__PLUS_sort = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_sort.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3383,14 +3561,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed43)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed43)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn42 = tmp1
 		var_ys_DOT_v0__PLUS_sort_DASH_by = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_sort_DASH_by.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3409,14 +3586,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed44)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed44)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn43 = tmp1
 		var_ys_DOT_v0__PLUS_split_DASH_at = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_split_DASH_at.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3435,14 +3611,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed45)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed45)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn44 = tmp1
 		var_ys_DOT_v0__PLUS_split_DASH_with = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_split_DASH_with.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3461,14 +3636,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed46)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed46)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn45 = tmp1
 		var_ys_DOT_v0__PLUS_take = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_take.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3487,14 +3661,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed47)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed47)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn46 = tmp1
 		var_ys_DOT_v0__PLUS_take_DASH_last = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_take_DASH_last.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3513,14 +3686,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed48)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed48)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn47 = tmp1
 		var_ys_DOT_v0__PLUS_take_DASH_while = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__PLUS_take_DASH_while.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_arglists, lang.NewList(lang.NewVector(sym_x__0__auto__, sym_y__1__auto__)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3539,17 +3711,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed206)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed207)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0__U007C__U007C__U007C_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0__U007C__U007C__U007C_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(803), kw_column, int(11), kw_end_DASH_line, int(803), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(803), kw_column, int(11), kw_end_DASH_line, int(803), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// a
@@ -3565,14 +3735,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed69)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed69)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn66 = tmp1
 		var_ys_DOT_v0_a = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_a.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(567), kw_column, int(18), kw_end_DASH_line, int(567), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3591,14 +3760,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed70)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed70)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn67 = tmp1
 		var_ys_DOT_v0_add = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_add.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(300), kw_column, int(7), kw_end_DASH_line, int(300), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3617,14 +3785,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed71)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed71)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn68 = tmp1
 		var_ys_DOT_v0_add_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_add_PLUS_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(391), kw_column, int(7), kw_end_DASH_line, int(391), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3643,17 +3810,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed72)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed72)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_and_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_and_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(805), kw_column, int(11), kw_end_DASH_line, int(805), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x), lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(805), kw_column, int(11), kw_end_DASH_line, int(805), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x), lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// atom
@@ -3669,14 +3834,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed73)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed73)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn69 = tmp1
 		var_ys_DOT_v0_atom = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_atom.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(1029), kw_column, int(7), kw_end_DASH_line, int(1029), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3695,14 +3859,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed74)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed74)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn70 = tmp1
 		var_ys_DOT_v0_bash = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_bash.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(969), kw_column, int(7), kw_end_DASH_line, int(969), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3721,14 +3884,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed75)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed75)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn71 = tmp1
 		var_ys_DOT_v0_bash_DASH_out = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_bash_DASH_out.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(973), kw_column, int(7), kw_end_DASH_line, int(973), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3747,14 +3909,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed76)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed76)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn72 = tmp1
 		var_ys_DOT_v0_blank_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_blank_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(63), kw_column, int(18), kw_end_DASH_line, int(63), kw_end_DASH_column, int(23), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3773,17 +3934,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed77)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed77)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_call = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_call.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(466), kw_column, int(11), kw_end_DASH_line, int(466), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(466), kw_column, int(11), kw_end_DASH_line, int(466), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// chomp
@@ -3799,14 +3958,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed78)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed78)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn73 = tmp1
 		var_ys_DOT_v0_chomp = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_chomp.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(65), kw_column, int(18), kw_end_DASH_line, int(65), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3825,14 +3983,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed79)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed79)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn74 = tmp1
 		var_ys_DOT_v0_dec_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_dec_PLUS_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(382), kw_column, int(7), kw_end_DASH_line, int(382), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3851,14 +4008,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed80)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed80)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn75 = tmp1
 		var_ys_DOT_v0_die = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_die.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(472), kw_column, int(18), kw_end_DASH_line, int(472), kw_end_DASH_column, int(20), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3877,14 +4033,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed81)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed81)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn76 = tmp1
 		var_ys_DOT_v0_digits = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_digits.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(327), kw_column, int(7), kw_end_DASH_line, int(327), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_n)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3903,14 +4058,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed82)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed82)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn77 = tmp1
 		var_ys_DOT_v0_div = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_div.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(317), kw_column, int(7), kw_end_DASH_line, int(317), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3929,14 +4083,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed83)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed83)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn78 = tmp1
 		var_ys_DOT_v0_div_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_div_PLUS_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(416), kw_column, int(7), kw_end_DASH_line, int(416), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -3955,17 +4108,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed84)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed84)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_each = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_each.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(474), kw_column, int(11), kw_end_DASH_line, int(474), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_bindings, sym__AMP_, sym_body)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(474), kw_column, int(11), kw_end_DASH_line, int(474), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_bindings, sym__AMP_, sym_body)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// ends?
@@ -3981,14 +4132,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed85)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed85)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn79 = tmp1
 		var_ys_DOT_v0_ends_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_ends_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(68), kw_column, int(18), kw_end_DASH_line, int(68), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4007,14 +4157,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed86)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed86)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn80 = tmp1
 		var_ys_DOT_v0_eq = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_eq.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(598), kw_column, int(7), kw_end_DASH_line, int(598), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4033,14 +4182,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed87)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed87)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn81 = tmp1
 		var_ys_DOT_v0_err = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_err.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(477), kw_column, int(7), kw_end_DASH_line, int(477), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4059,14 +4207,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed88)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed88)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn82 = tmp1
 		var_ys_DOT_v0_escape = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_escape.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(70), kw_column, int(18), kw_end_DASH_line, int(70), kw_end_DASH_column, int(23), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4085,14 +4232,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed89)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed89)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn83 = tmp1
 		var_ys_DOT_v0_exit = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_exit.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(483), kw_column, int(7), kw_end_DASH_line, int(483), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_I)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4111,14 +4257,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed90)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed90)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn84 = tmp1
 		var_ys_DOT_v0_falsey_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_falsey_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(782), kw_column, int(7), kw_end_DASH_line, int(782), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4137,14 +4282,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed91)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed91)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn85 = tmp1
 		var_ys_DOT_v0_flat = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_flat.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(204), kw_column, int(7), kw_end_DASH_line, int(204), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_C)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4163,14 +4307,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed92)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed92)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn86 = tmp1
 		var_ys_DOT_v0_flip = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_flip.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(504), kw_column, int(7), kw_end_DASH_line, int(504), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_f)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4189,14 +4332,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed93)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed93)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn87 = tmp1
 		var_ys_DOT_v0_fs_DASH_abs = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_abs.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(837), kw_column, int(18), kw_end_DASH_line, int(837), kw_end_DASH_column, int(23), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4215,14 +4357,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed94)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed94)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn88 = tmp1
 		var_ys_DOT_v0_fs_DASH_abs_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_abs_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(839), kw_column, int(18), kw_end_DASH_line, int(839), kw_end_DASH_column, int(24), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4241,14 +4382,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed95)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed95)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn89 = tmp1
 		var_ys_DOT_v0_fs_DASH_basename = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_basename.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(845), kw_column, int(18), kw_end_DASH_line, int(845), kw_end_DASH_column, int(28), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4267,14 +4407,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed96)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed96)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn90 = tmp1
 		var_ys_DOT_v0_fs_DASH_cp = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_cp.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(860), kw_column, int(18), kw_end_DASH_line, int(860), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4293,14 +4432,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed97)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed97)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn91 = tmp1
 		var_ys_DOT_v0_fs_DASH_cp_DASH_r = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_cp_DASH_r.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(861), kw_column, int(18), kw_end_DASH_line, int(861), kw_end_DASH_column, int(24), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4319,14 +4457,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed98)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed98)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn92 = tmp1
 		var_ys_DOT_v0_fs_DASH_cwd = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_cwd.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(862), kw_column, int(18), kw_end_DASH_line, int(862), kw_end_DASH_column, int(23), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4345,14 +4482,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed99)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed99)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn93 = tmp1
 		var_ys_DOT_v0_fs_DASH_d = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_d.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(819), kw_column, int(18), kw_end_DASH_line, int(819), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4371,14 +4507,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed100)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed100)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn94 = tmp1
 		var_ys_DOT_v0_fs_DASH_dirname = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_dirname.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(841), kw_column, int(18), kw_end_DASH_line, int(841), kw_end_DASH_column, int(27), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4397,14 +4532,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed101)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed101)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn95 = tmp1
 		var_ys_DOT_v0_fs_DASH_e = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_e.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(821), kw_column, int(18), kw_end_DASH_line, int(821), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4423,14 +4557,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed102)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed102)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn96 = tmp1
 		var_ys_DOT_v0_fs_DASH_f = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_f.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(823), kw_column, int(18), kw_end_DASH_line, int(823), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4449,14 +4582,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed103)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed103)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn97 = tmp1
 		var_ys_DOT_v0_fs_DASH_filename = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_filename.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(843), kw_column, int(18), kw_end_DASH_line, int(843), kw_end_DASH_column, int(28), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4475,14 +4607,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed104)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed104)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn98 = tmp1
 		var_ys_DOT_v0_fs_DASH_find = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_find.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(863), kw_column, int(18), kw_end_DASH_line, int(863), kw_end_DASH_column, int(24), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4501,14 +4632,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed105)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed105)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn99 = tmp1
 		var_ys_DOT_v0_fs_DASH_glob = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_glob.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(847), kw_column, int(18), kw_end_DASH_line, int(847), kw_end_DASH_column, int(24), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4527,14 +4657,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed106)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed106)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn100 = tmp1
 		var_ys_DOT_v0_fs_DASH_l = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_l.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(825), kw_column, int(18), kw_end_DASH_line, int(825), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4553,14 +4682,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed107)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed107)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn101 = tmp1
 		var_ys_DOT_v0_fs_DASH_ls = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_ls.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(849), kw_column, int(18), kw_end_DASH_line, int(849), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4579,14 +4707,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed108)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed108)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn102 = tmp1
 		var_ys_DOT_v0_fs_DASH_mkdir = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_mkdir.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(864), kw_column, int(18), kw_end_DASH_line, int(864), kw_end_DASH_column, int(25), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4605,14 +4732,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed109)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed109)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn103 = tmp1
 		var_ys_DOT_v0_fs_DASH_mkdir_DASH_p = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_mkdir_DASH_p.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(865), kw_column, int(18), kw_end_DASH_line, int(865), kw_end_DASH_column, int(27), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4631,14 +4757,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed110)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed110)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn104 = tmp1
 		var_ys_DOT_v0_fs_DASH_mktemp = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_mktemp.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(873), kw_column, int(18), kw_end_DASH_line, int(873), kw_end_DASH_column, int(26), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4657,14 +4782,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed111)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed111)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn105 = tmp1
 		var_ys_DOT_v0_fs_DASH_mktemp_DASH_d = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_mktemp_DASH_d.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(874), kw_column, int(18), kw_end_DASH_line, int(874), kw_end_DASH_column, int(28), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4683,14 +4807,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed112)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed112)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn106 = tmp1
 		var_ys_DOT_v0_fs_DASH_mtime = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_mtime.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(851), kw_column, int(18), kw_end_DASH_line, int(851), kw_end_DASH_column, int(25), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4709,14 +4832,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed113)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed113)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn107 = tmp1
 		var_ys_DOT_v0_fs_DASH_mv = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_mv.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(866), kw_column, int(18), kw_end_DASH_line, int(866), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4735,14 +4857,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed114)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed114)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn108 = tmp1
 		var_ys_DOT_v0_fs_DASH_path = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_path.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(867), kw_column, int(18), kw_end_DASH_line, int(867), kw_end_DASH_column, int(24), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4761,14 +4882,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed115)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed115)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn109 = tmp1
 		var_ys_DOT_v0_fs_DASH_r = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_r.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(827), kw_column, int(18), kw_end_DASH_line, int(827), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4787,14 +4907,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed116)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed116)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn110 = tmp1
 		var_ys_DOT_v0_fs_DASH_readlink = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_readlink.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(868), kw_column, int(18), kw_end_DASH_line, int(868), kw_end_DASH_column, int(28), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4813,14 +4932,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed117)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed117)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn111 = tmp1
 		var_ys_DOT_v0_fs_DASH_rel = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_rel.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(853), kw_column, int(18), kw_end_DASH_line, int(853), kw_end_DASH_column, int(23), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4839,14 +4957,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed118)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed118)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn112 = tmp1
 		var_ys_DOT_v0_fs_DASH_rel_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_rel_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(855), kw_column, int(18), kw_end_DASH_line, int(855), kw_end_DASH_column, int(24), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4865,14 +4982,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed119)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed119)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn113 = tmp1
 		var_ys_DOT_v0_fs_DASH_rm = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_rm.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(869), kw_column, int(18), kw_end_DASH_line, int(869), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4891,14 +5007,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed120)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed120)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn114 = tmp1
 		var_ys_DOT_v0_fs_DASH_rm_DASH_r = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_rm_DASH_r.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(870), kw_column, int(18), kw_end_DASH_line, int(870), kw_end_DASH_column, int(24), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4917,14 +5032,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed121)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed121)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn115 = tmp1
 		var_ys_DOT_v0_fs_DASH_rmdir = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_rmdir.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(871), kw_column, int(18), kw_end_DASH_line, int(871), kw_end_DASH_column, int(25), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4943,14 +5057,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed122)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed122)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn116 = tmp1
 		var_ys_DOT_v0_fs_DASH_s = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_s.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(829), kw_column, int(18), kw_end_DASH_line, int(829), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4969,14 +5082,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed123)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed123)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn117 = tmp1
 		var_ys_DOT_v0_fs_DASH_touch = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_touch.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(872), kw_column, int(18), kw_end_DASH_line, int(872), kw_end_DASH_column, int(25), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -4995,14 +5107,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed124)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed124)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn118 = tmp1
 		var_ys_DOT_v0_fs_DASH_w = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_w.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(831), kw_column, int(18), kw_end_DASH_line, int(831), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5021,14 +5132,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed125)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed125)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn119 = tmp1
 		var_ys_DOT_v0_fs_DASH_which = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_which.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(857), kw_column, int(18), kw_end_DASH_line, int(857), kw_end_DASH_column, int(25), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5047,14 +5157,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed126)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed126)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn120 = tmp1
 		var_ys_DOT_v0_fs_DASH_x = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_x.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(833), kw_column, int(18), kw_end_DASH_line, int(833), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5073,14 +5182,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed127)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed127)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn121 = tmp1
 		var_ys_DOT_v0_fs_DASH_z = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_fs_DASH_z.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(835), kw_column, int(18), kw_end_DASH_line, int(835), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5099,14 +5207,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed128)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed128)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn122 = tmp1
 		var_ys_DOT_v0_ge = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_ge.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(613), kw_column, int(7), kw_end_DASH_line, int(613), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5125,14 +5232,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed129)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed129)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn123 = tmp1
 		var_ys_DOT_v0_get_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_get_PLUS_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(179), kw_column, int(7), kw_end_DASH_line, int(179), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_C, sym_K)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5151,14 +5257,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed130)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed130)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn124 = tmp1
 		var_ys_DOT_v0_grep = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_grep.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(209), kw_column, int(7), kw_end_DASH_line, int(209), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_P, sym_C)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5177,14 +5282,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed131)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed131)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn125 = tmp1
 		var_ys_DOT_v0_gt = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_gt.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(608), kw_column, int(7), kw_end_DASH_line, int(608), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5203,14 +5307,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed132)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed132)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn126 = tmp1
 		var_ys_DOT_v0_has_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_has_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(218), kw_column, int(7), kw_end_DASH_line, int(218), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_C), lang.NewVector(sym_C, sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5229,14 +5332,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed133)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed133)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn127 = tmp1
 		var_ys_DOT_v0_in_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_in_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(227), kw_column, int(7), kw_end_DASH_line, int(227), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_C), lang.NewVector(sym_x, sym_C)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5255,14 +5357,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed134)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed134)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn128 = tmp1
 		var_ys_DOT_v0_inc_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_inc_PLUS_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(373), kw_column, int(7), kw_end_DASH_line, int(373), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5281,14 +5382,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed135)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed135)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn129 = tmp1
 		var_ys_DOT_v0_index = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_index.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(72), kw_column, int(18), kw_end_DASH_line, int(72), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5307,14 +5407,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed136)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed136)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn130 = tmp1
 		var_ys_DOT_v0_join = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_join.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(81), kw_column, int(7), kw_end_DASH_line, int(81), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_Ss), lang.NewVector(sym_S, sym_Ss), lang.NewVector(sym_S, sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5333,14 +5432,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed137)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed137)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn131 = tmp1
 		var_ys_DOT_v0_joins = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_joins.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(90), kw_column, int(7), kw_end_DASH_line, int(90), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_Ss)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5359,14 +5457,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed138)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed138)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn132 = tmp1
 		var_ys_DOT_v0_lc = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_lc.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(93), kw_column, int(18), kw_end_DASH_line, int(93), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5385,14 +5482,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed139)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed139)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn133 = tmp1
 		var_ys_DOT_v0_le = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_le.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(623), kw_column, int(7), kw_end_DASH_line, int(623), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5411,14 +5507,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed140)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed140)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn134 = tmp1
 		var_ys_DOT_v0_len = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_len.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(570), kw_column, int(18), kw_end_DASH_line, int(570), kw_end_DASH_column, int(20), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5437,14 +5532,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed141)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed141)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn135 = tmp1
 		var_ys_DOT_v0_lines = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_lines.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(95), kw_column, int(7), kw_end_DASH_line, int(95), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_S)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5463,14 +5557,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed142)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed142)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn136 = tmp1
 		var_ys_DOT_v0_lt = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_lt.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(618), kw_column, int(7), kw_end_DASH_line, int(618), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5483,31 +5576,27 @@ func LoadNS() {
 		tmp1 = lang.FnFunc1(func(p0 any) any {
 			v2 := p0
 			_ = v2
-			tmp3 := checkDerefVar(var_clojure_DOT_core_mapv)
-			var tmp4 lang.FnFunc1
-			tmp4 = lang.FnFunc1(func(p0 any) any {
-				v5 := p0
-				_ = v5
-				var tmp6 any
-				tmp7 := checkDerefVar(var_clojure_DOT_core_re_DASH_matches)
-				tmp8 := lang.Apply2(tmp7, regexp4.MustCompile("^[+-]?[0-9]+\\.?[0-9]*([eE][+-]?[0-9]+)?$"), v5)
-				if lang.IsTruthy(tmp8) {
-					tmp9 := checkDerefVar(var_clojure_DOT_core_read_DASH_string)
-					tmp10 := lang.Apply1(tmp9, v5)
-					tmp6 = tmp10
+			var tmp3 lang.FnFunc1
+			tmp3 = lang.FnFunc1(func(p0 any) any {
+				v4 := p0
+				_ = v4
+				var tmp5 any
+				tmp6 := aotExternalFn3(closed143, v4)
+				if lang.IsTruthy(tmp6) {
+					tmp7 := aotExternalFn4(v4)
+					tmp5 = tmp7
 				} else {
-					tmp6 = v5
+					tmp5 = v4
 				}
-				return tmp6
+				return tmp5
 			})
-			tmp5 := lang.Apply2(tmp3, tmp4, v2)
-			return tmp5
+			tmp4 := aotExternalFn2(tmp3, v2)
+			return tmp4
 		})
-		aotDirectFn0 = tmp1
+		aotDirectFn137 = tmp1
 		var_ys_DOT_v0_map_DASH_parse = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion0 = var_ys_DOT_v0_map_DASH_parse.RootVersion()
 		var_ys_DOT_v0_map_DASH_parse.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(27), kw_column, int(7), kw_end_DASH_line, int(27), kw_end_DASH_column, int(15), kw_arglists, lang.NewList(lang.NewVector(sym_args)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+			return lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(28), kw_column, int(7), kw_end_DASH_line, int(28), kw_end_DASH_column, int(15), kw_arglists, lang.NewList(lang.NewVector(sym_args)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
 		})
 	}
 	// mul
@@ -5523,14 +5612,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed143)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed144)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn138 = tmp1
 		var_ys_DOT_v0_mul = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_mul.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(311), kw_column, int(7), kw_end_DASH_line, int(311), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5549,14 +5637,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed144)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed145)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn139 = tmp1
 		var_ys_DOT_v0_mul_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_mul_PLUS_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(418), kw_column, int(7), kw_end_DASH_line, int(418), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5575,14 +5662,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed145)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed146)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn140 = tmp1
 		var_ys_DOT_v0_ne = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_ne.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(603), kw_column, int(7), kw_end_DASH_line, int(603), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5601,14 +5687,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed146)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed147)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn141 = tmp1
 		var_ys_DOT_v0_omap = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_omap.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(262), kw_column, int(7), kw_end_DASH_line, int(262), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5627,17 +5712,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed147)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed148)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_or_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_or_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(796), kw_column, int(11), kw_end_DASH_line, int(796), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x), lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(796), kw_column, int(11), kw_end_DASH_line, int(796), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x), lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// out
@@ -5653,14 +5736,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed148)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed149)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn142 = tmp1
 		var_ys_DOT_v0_out = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_out.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(544), kw_column, int(7), kw_end_DASH_line, int(544), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5679,14 +5761,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed149)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed150)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn143 = tmp1
 		var_ys_DOT_v0_print = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_print.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(550), kw_column, int(7), kw_end_DASH_line, int(550), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5705,14 +5786,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed150)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed151)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn144 = tmp1
 		var_ys_DOT_v0_process = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_process.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(953), kw_column, int(7), kw_end_DASH_line, int(953), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5731,17 +5811,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed151)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed152)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_q = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_q.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(577), kw_column, int(11), kw_end_DASH_line, int(577), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(577), kw_column, int(11), kw_end_DASH_line, int(577), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// ql
@@ -5757,17 +5835,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed152)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed153)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_ql = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_ql.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(581), kw_column, int(11), kw_end_DASH_line, int(581), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(581), kw_column, int(11), kw_end_DASH_line, int(581), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// qm
@@ -5783,17 +5859,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed153)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed154)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_qm = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_qm.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(582), kw_column, int(11), kw_end_DASH_line, int(582), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(582), kw_column, int(11), kw_end_DASH_line, int(582), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// qo
@@ -5809,17 +5883,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed154)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed155)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_qo = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_qo.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(583), kw_column, int(11), kw_end_DASH_line, int(583), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(583), kw_column, int(11), kw_end_DASH_line, int(583), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// qr
@@ -5835,14 +5907,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed155)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed156)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn145 = tmp1
 		var_ys_DOT_v0_qr = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_qr.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(588), kw_column, int(7), kw_end_DASH_line, int(588), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_S)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5861,17 +5932,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed156)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed157)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_qs = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_qs.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(584), kw_column, int(11), kw_end_DASH_line, int(584), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(584), kw_column, int(11), kw_end_DASH_line, int(584), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// qv
@@ -5887,17 +5956,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed157)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed158)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_qv = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_qv.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(586), kw_column, int(11), kw_end_DASH_line, int(586), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(586), kw_column, int(11), kw_end_DASH_line, int(586), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// qw
@@ -5913,17 +5980,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed158)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed159)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_qw = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_qw.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(590), kw_column, int(11), kw_end_DASH_line, int(590), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(590), kw_column, int(11), kw_end_DASH_line, int(590), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// read
@@ -5939,14 +6004,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed159)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed160)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn146 = tmp1
 		var_ys_DOT_v0_read = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_read.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(540), kw_column, int(18), kw_end_DASH_line, int(540), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5965,14 +6029,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed160)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed161)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn147 = tmp1
 		var_ys_DOT_v0_replace = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_replace.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(108), kw_column, int(7), kw_end_DASH_line, int(108), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym_z)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -5991,14 +6054,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed161)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed162)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn148 = tmp1
 		var_ys_DOT_v0_replace1 = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_replace1.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(116), kw_column, int(18), kw_end_DASH_line, int(116), kw_end_DASH_column, int(25), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6017,14 +6079,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed162)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed163)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn149 = tmp1
 		var_ys_DOT_v0_reset = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_reset.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(1033), kw_column, int(7), kw_end_DASH_line, int(1033), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym_y)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6043,14 +6104,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed163)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed164)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn150 = tmp1
 		var_ys_DOT_v0_reverse = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_reverse.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(269), kw_column, int(7), kw_end_DASH_line, int(269), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6069,14 +6129,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed164)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed165)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn151 = tmp1
 		var_ys_DOT_v0_rindex = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_rindex.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(118), kw_column, int(18), kw_end_DASH_line, int(118), kw_end_DASH_column, int(23), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6095,14 +6154,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed165)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed166)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn152 = tmp1
 		var_ys_DOT_v0_rng = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_rng.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(276), kw_column, int(7), kw_end_DASH_line, int(276), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym_y)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6121,14 +6179,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed166)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed167)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn153 = tmp1
 		var_ys_DOT_v0_say = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_say.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(555), kw_column, int(7), kw_end_DASH_line, int(555), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6147,14 +6204,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed167)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed168)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn154 = tmp1
 		var_ys_DOT_v0_set = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_set.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(696), kw_column, int(7), kw_end_DASH_line, int(696), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6173,14 +6229,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed168)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed169)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn155 = tmp1
 		var_ys_DOT_v0_sh = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_sh.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(956), kw_column, int(7), kw_end_DASH_line, int(956), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6199,14 +6254,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed169)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed170)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn156 = tmp1
 		var_ys_DOT_v0_sh_DASH_out = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_sh_DASH_out.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(962), kw_column, int(7), kw_end_DASH_line, int(962), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6225,14 +6279,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed170)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed171)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn157 = tmp1
 		var_ys_DOT_v0_shell = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_shell.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(959), kw_column, int(7), kw_end_DASH_line, int(959), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6251,14 +6304,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed171)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed172)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn158 = tmp1
 		var_ys_DOT_v0_slice = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_slice.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(290), kw_column, int(7), kw_end_DASH_line, int(290), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_C, sym__AMP_, sym_ks)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6277,17 +6329,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed172)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed173)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_source = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_source.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(1045), kw_column, int(11), kw_end_DASH_line, int(1045), kw_end_DASH_column, int(16), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(1045), kw_column, int(11), kw_end_DASH_line, int(1045), kw_end_DASH_column, int(16), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// split
@@ -6303,14 +6353,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed173)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed174)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn159 = tmp1
 		var_ys_DOT_v0_split = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_split.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(120), kw_column, int(7), kw_end_DASH_line, int(120), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_S), lang.NewVector(sym_S, sym_R)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6329,14 +6378,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed174)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed175)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn160 = tmp1
 		var_ys_DOT_v0_sqrt = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_sqrt.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(358), kw_column, int(7), kw_end_DASH_line, int(358), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6355,14 +6403,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed175)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed176)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn161 = tmp1
 		var_ys_DOT_v0_starts_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_starts_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(133), kw_column, int(18), kw_end_DASH_line, int(133), kw_end_DASH_column, int(24), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6381,14 +6428,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed176)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed177)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn162 = tmp1
 		var_ys_DOT_v0_sub = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_sub.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(306), kw_column, int(7), kw_end_DASH_line, int(306), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6407,14 +6453,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed177)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed178)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn163 = tmp1
 		var_ys_DOT_v0_sub_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_sub_PLUS_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(434), kw_column, int(7), kw_end_DASH_line, int(434), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x, sym_y), lang.NewVector(sym_x, sym_y, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6433,14 +6478,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed178)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed179)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn164 = tmp1
 		var_ys_DOT_v0_substr = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_substr.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(135), kw_column, int(7), kw_end_DASH_line, int(135), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_str, sym_off), lang.NewVector(sym_str, sym_off, sym_len)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6459,14 +6503,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed179)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed180)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn165 = tmp1
 		var_ys_DOT_v0_sum = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_sum.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(351), kw_column, int(7), kw_end_DASH_line, int(351), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6485,14 +6528,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed180)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed181)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn166 = tmp1
 		var_ys_DOT_v0_swap = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_swap.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(1036), kw_column, int(7), kw_end_DASH_line, int(1036), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_f, sym__AMP_, sym_xs)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6511,14 +6553,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed181)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed182)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn167 = tmp1
 		var_ys_DOT_v0_text = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_text.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(154), kw_column, int(7), kw_end_DASH_line, int(154), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_Ss)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6537,14 +6578,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed182)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed183)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn168 = tmp1
 		var_ys_DOT_v0_to_DASH_bool = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_to_DASH_bool.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(634), kw_column, int(7), kw_end_DASH_line, int(634), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6563,14 +6603,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed183)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed184)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn169 = tmp1
 		var_ys_DOT_v0_to_DASH_char = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_to_DASH_char.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(636), kw_column, int(7), kw_end_DASH_line, int(636), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6589,14 +6628,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed184)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed185)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn170 = tmp1
 		var_ys_DOT_v0_to_DASH_float = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_to_DASH_float.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(645), kw_column, int(7), kw_end_DASH_line, int(645), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6615,14 +6653,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed185)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed186)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn171 = tmp1
 		var_ys_DOT_v0_to_DASH_int = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_to_DASH_int.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(647), kw_column, int(7), kw_end_DASH_line, int(647), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6641,14 +6678,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed186)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed187)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn172 = tmp1
 		var_ys_DOT_v0_to_DASH_keyw = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_to_DASH_keyw.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(649), kw_column, int(7), kw_end_DASH_line, int(649), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6667,17 +6703,16 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed187)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed188)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn173 = tmp1
 		var_ys_DOT_v0_to_DASH_list = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_to_DASH_list.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(651), kw_column, int(7), kw_end_DASH_line, int(651), kw_end_DASH_column, int(13), kw_declared, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_arglists, lang.NewList(lang.NewVector(sym_x)))
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(651), kw_column, int(7), kw_end_DASH_line, int(651), kw_end_DASH_column, int(13), kw_declared, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_arglists, lang.NewList(lang.NewVector(sym_x)))
 		})
 	}
 	// to-map
@@ -6693,17 +6728,16 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed188)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed189)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn174 = tmp1
 		var_ys_DOT_v0_to_DASH_map = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_to_DASH_map.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(659), kw_column, int(7), kw_end_DASH_line, int(659), kw_end_DASH_column, int(12), kw_declared, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_arglists, lang.NewList(lang.NewVector(sym_x)))
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(659), kw_column, int(7), kw_end_DASH_line, int(659), kw_end_DASH_column, int(12), kw_declared, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_arglists, lang.NewList(lang.NewVector(sym_x)))
 		})
 	}
 	// to-num
@@ -6719,17 +6753,16 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed189)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed190)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn175 = tmp1
 		var_ys_DOT_v0_to_DASH_num = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_to_DASH_num.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(668), kw_column, int(7), kw_end_DASH_line, int(668), kw_end_DASH_column, int(12), kw_declared, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_default)))
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(668), kw_column, int(7), kw_end_DASH_line, int(668), kw_end_DASH_column, int(12), kw_declared, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_arglists, lang.NewList(lang.NewVector(sym_x), lang.NewVector(sym_x, sym_default)))
 		})
 	}
 	// to-omap
@@ -6745,14 +6778,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed190)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed191)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn176 = tmp1
 		var_ys_DOT_v0_to_DASH_omap = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_to_DASH_omap.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(682), kw_column, int(7), kw_end_DASH_line, int(682), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6771,17 +6803,16 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed191)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed192)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn177 = tmp1
 		var_ys_DOT_v0_to_DASH_set = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_to_DASH_set.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(689), kw_column, int(7), kw_end_DASH_line, int(689), kw_end_DASH_column, int(12), kw_declared, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_arglists, lang.NewList(lang.NewVector(sym_x)))
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(689), kw_column, int(7), kw_end_DASH_line, int(689), kw_end_DASH_column, int(12), kw_declared, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_arglists, lang.NewList(lang.NewVector(sym_x)))
 		})
 	}
 	// to-str
@@ -6797,14 +6828,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed192)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed193)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn178 = tmp1
 		var_ys_DOT_v0_to_DASH_str = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_to_DASH_str.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(700), kw_column, int(7), kw_end_DASH_line, int(700), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6823,17 +6853,16 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed193)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed194)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn179 = tmp1
 		var_ys_DOT_v0_to_DASH_type = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_to_DASH_type.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(706), kw_column, int(7), kw_end_DASH_line, int(706), kw_end_DASH_column, int(13), kw_declared, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_arglists, lang.NewList(lang.NewVector(sym_x)))
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(706), kw_column, int(7), kw_end_DASH_line, int(706), kw_end_DASH_column, int(13), kw_declared, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_arglists, lang.NewList(lang.NewVector(sym_x)))
 		})
 	}
 	// to-vec
@@ -6849,17 +6878,16 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed194)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed195)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn180 = tmp1
 		var_ys_DOT_v0_to_DASH_vec = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_to_DASH_vec.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(736), kw_column, int(7), kw_end_DASH_line, int(736), kw_end_DASH_column, int(12), kw_declared, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_arglists, lang.NewList(lang.NewVector(sym_x)))
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(736), kw_column, int(7), kw_end_DASH_line, int(736), kw_end_DASH_column, int(12), kw_declared, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_arglists, lang.NewList(lang.NewVector(sym_x)))
 		})
 	}
 	// trim
@@ -6875,14 +6903,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed195)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed196)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn181 = tmp1
 		var_ys_DOT_v0_trim = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_trim.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(161), kw_column, int(18), kw_end_DASH_line, int(161), kw_end_DASH_column, int(21), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6901,14 +6928,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed196)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed197)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn182 = tmp1
 		var_ys_DOT_v0_triml = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_triml.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(163), kw_column, int(18), kw_end_DASH_line, int(163), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6927,14 +6953,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed197)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed198)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn183 = tmp1
 		var_ys_DOT_v0_trimr = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_trimr.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(165), kw_column, int(18), kw_end_DASH_line, int(165), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6953,14 +6978,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed198)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed199)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn184 = tmp1
 		var_ys_DOT_v0_truey_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_truey_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(791), kw_column, int(7), kw_end_DASH_line, int(791), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -6979,14 +7003,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed199)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed200)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn185 = tmp1
 		var_ys_DOT_v0_uc = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_uc.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(168), kw_column, int(18), kw_end_DASH_line, int(168), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -7005,14 +7028,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed200)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed201)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn186 = tmp1
 		var_ys_DOT_v0_uc1 = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_uc1.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(170), kw_column, int(18), kw_end_DASH_line, int(170), kw_end_DASH_column, int(20), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -7031,17 +7053,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed201)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed202)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_value = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_value.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(458), kw_column, int(11), kw_end_DASH_line, int(458), kw_end_DASH_column, int(15), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(458), kw_column, int(11), kw_end_DASH_line, int(458), kw_end_DASH_column, int(15), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// warn
@@ -7057,14 +7077,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed202)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed203)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn187 = tmp1
 		var_ys_DOT_v0_warn = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_warn.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(558), kw_column, int(7), kw_end_DASH_line, int(558), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -7083,17 +7102,15 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed203)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed204)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
 		var_ys_DOT_v0_when_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_when_PLUS_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(496), kw_column, int(11), kw_end_DASH_line, int(496), kw_end_DASH_column, int(15), kw_arglists, lang.NewList(lang.NewVector(sym_test, sym__AMP_, sym_body)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/std.glj", kw_line, int(496), kw_column, int(11), kw_end_DASH_line, int(496), kw_end_DASH_column, int(15), kw_arglists, lang.NewList(lang.NewVector(sym_test, sym__AMP_, sym_body)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0), kw_macro, true)
 		})
 	}
 	// words
@@ -7109,14 +7126,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed204)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed205)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn188 = tmp1
 		var_ys_DOT_v0_words = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_words.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(172), kw_column, int(7), kw_end_DASH_line, int(172), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_S)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
@@ -7135,14 +7151,13 @@ func LoadNS() {
 			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
 				var v2 any = rest
 				_ = v2
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_clojure_DOT_core_deref)
-				tmp5 := lang.Apply1(tmp4, closed205)
-				tmp6 := lang.Apply2(tmp3, tmp5, v2)
-				return tmp6
+				tmp3 := aotExternalFn1(closed206)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
 			}),
 			0,
 		)
+		aotDirectFn189 = tmp1
 		var_ys_DOT_v0_write = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_v0_write.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/std.glj", kw_line, int(542), kw_column, int(18), kw_end_DASH_line, int(542), kw_end_DASH_column, int(22), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))

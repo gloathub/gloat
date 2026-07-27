@@ -5,94 +5,152 @@ package fs
 import (
 	fmt "fmt"
 	lang "github.com/glojurelang/glojure/pkg/lang"
+	pkgmap6 "github.com/glojurelang/glojure/pkg/pkgmap"
 	runtime "github.com/glojurelang/glojure/pkg/runtime"
 	os5 "os"
-	exec7 "os/exec"
+	exec8 "os/exec"
 	filepath4 "path/filepath"
 	reflect "reflect"
-	time6 "time"
+	sync "sync"
+	time7 "time"
 )
 
 var aotDirectFn0 lang.FnFunc1
-var aotRootVersion0 *lang.VarRootVersion
 var aotDirectFn1 lang.FnFunc1
-var aotRootVersion1 *lang.VarRootVersion
 var aotDirectFn2 lang.FnFunc1
-var aotRootVersion2 *lang.VarRootVersion
 var aotDirectFn3 lang.FnFunc2
-var aotRootVersion3 *lang.VarRootVersion
 var aotDirectFn4 lang.FnFunc2
-var aotRootVersion4 *lang.VarRootVersion
 var aotDirectFn5 lang.FnFunc1
-var aotRootVersion5 *lang.VarRootVersion
 var aotDirectFn6 lang.FnFunc0
-var aotRootVersion6 *lang.VarRootVersion
-var aotDirectFn7 lang.FnFunc1
-var aotRootVersion7 *lang.VarRootVersion
+var aotDirectFn7 lang.ArityFn
 var aotDirectFn8 lang.FnFunc1
-var aotRootVersion8 *lang.VarRootVersion
 var aotDirectFn9 lang.FnFunc1
-var aotRootVersion9 *lang.VarRootVersion
-var aotDirectFn10 lang.FnFunc1
-var aotRootVersion10 *lang.VarRootVersion
+var aotDirectFn10 lang.ArityFn
 var aotDirectFn11 lang.FnFunc1
-var aotRootVersion11 *lang.VarRootVersion
 var aotDirectFn12 lang.FnFunc1
-var aotRootVersion12 *lang.VarRootVersion
 var aotDirectFn13 lang.FnFunc1
-var aotRootVersion13 *lang.VarRootVersion
-var aotDirectFn14 lang.FnFunc1
-var aotRootVersion14 *lang.VarRootVersion
+var aotDirectFn14 lang.ArityFn
 var aotDirectFn15 lang.FnFunc1
-var aotRootVersion15 *lang.VarRootVersion
 var aotDirectFn16 lang.FnFunc1
-var aotRootVersion16 *lang.VarRootVersion
-var aotDirectFn17 lang.FnFunc1
-var aotRootVersion17 *lang.VarRootVersion
+var aotDirectFn17 lang.ArityFn
 var aotDirectFn18 lang.FnFunc1
-var aotRootVersion18 *lang.VarRootVersion
 var aotDirectFn19 lang.FnFunc1
-var aotRootVersion19 *lang.VarRootVersion
 var aotDirectFn20 lang.FnFunc1
-var aotRootVersion20 *lang.VarRootVersion
-var aotDirectFn21 lang.FnFunc1
-var aotRootVersion21 *lang.VarRootVersion
+var aotDirectFn21 lang.ArityFn
 var aotDirectFn22 lang.FnFunc1
-var aotRootVersion22 *lang.VarRootVersion
-var aotDirectFn23 lang.FnFunc2
-var aotRootVersion23 *lang.VarRootVersion
+var aotDirectFn23 lang.FnFunc1
 var aotDirectFn24 lang.FnFunc1
-var aotRootVersion24 *lang.VarRootVersion
 var aotDirectFn25 lang.FnFunc1
-var aotRootVersion25 *lang.VarRootVersion
-var aotDirectFn26 lang.FnFunc1
-var aotRootVersion26 *lang.VarRootVersion
-var aotDirectFn27 lang.FnFunc1
-var aotRootVersion27 *lang.VarRootVersion
+var aotDirectFn26 lang.ArityFn
+var aotDirectFn26Arity0 lang.FnFunc0
+var aotDirectFn26Arity1 lang.FnFunc1
+var aotDirectFn26Arity2 lang.FnFunc2
+var aotDirectFn27 lang.ArityFn
+var aotDirectFn27Arity0 lang.FnFunc0
+var aotDirectFn27Arity1 lang.FnFunc1
+var aotDirectFn27Arity2 lang.FnFunc2
 var aotDirectFn28 lang.FnFunc1
-var aotRootVersion28 *lang.VarRootVersion
 var aotDirectFn29 lang.FnFunc1
-var aotRootVersion29 *lang.VarRootVersion
-var aotDirectFn30 lang.FnFunc1
-var aotRootVersion30 *lang.VarRootVersion
+var aotDirectFn30 lang.FnFunc2
 var aotDirectFn31 lang.FnFunc1
-var aotRootVersion31 *lang.VarRootVersion
-var aotDirectFn32 lang.FnFunc1
-var aotRootVersion32 *lang.VarRootVersion
+var aotDirectFn32 lang.ArityFn
 var aotDirectFn33 lang.FnFunc1
-var aotRootVersion33 *lang.VarRootVersion
 var aotDirectFn34 lang.FnFunc1
-var aotRootVersion34 *lang.VarRootVersion
 var aotDirectFn35 lang.FnFunc1
-var aotRootVersion35 *lang.VarRootVersion
 var aotDirectFn36 lang.FnFunc1
-var aotRootVersion36 *lang.VarRootVersion
 var aotDirectFn37 lang.FnFunc1
-var aotRootVersion37 *lang.VarRootVersion
-var aotDirectFn38 lang.FnFunc2
-var aotRootVersion38 *lang.VarRootVersion
+var aotDirectFn38 lang.FnFunc1
 var aotDirectFn39 lang.FnFunc1
-var aotRootVersion39 *lang.VarRootVersion
+var aotDirectFn40 lang.FnFunc1
+var aotDirectFn41 lang.FnFunc1
+var aotDirectFn42 lang.ArityFn
+var aotDirectFn43 lang.FnFunc1
+var aotDirectFn44 lang.FnFunc1
+var aotDirectFn45 lang.ArityFn
+var aotDirectFn46 lang.FnFunc1
+var aotDirectFn47 lang.FnFunc1
+var aotDirectFn48 lang.FnFunc2
+var aotDirectFn49 lang.FnFunc1
+var aotDirectFn50 lang.ArityFn
+var aotDirectFn51 lang.ArityFn
+
+func aotLinkFn1(vr *lang.Var) lang.FnFunc1 {
+	if vr.IsBound() {
+		return aotLinkBoundFn1(vr)
+	}
+	var once sync.Once
+	var linked lang.FnFunc1
+	return func(p0 any) any {
+		if !vr.IsBound() {
+			return lang.Apply1(checkDerefVar(vr), p0)
+		}
+		once.Do(func() { linked = aotLinkBoundFn1(vr) })
+		return linked(p0)
+	}
+}
+
+func aotLinkBoundFn1(vr *lang.Var) lang.FnFunc1 {
+	fn := checkDerefVar(vr)
+	if direct, ok := fn.(lang.FnFunc1); ok {
+		return direct
+	}
+	if fixed, ok := fn.(lang.FixedArityFn1); ok {
+		return fixed.Invoke1
+	}
+	return func(p0 any) any { return lang.Apply1(fn, p0) }
+}
+
+func aotLinkFn2(vr *lang.Var) lang.FnFunc2 {
+	if vr.IsBound() {
+		return aotLinkBoundFn2(vr)
+	}
+	var once sync.Once
+	var linked lang.FnFunc2
+	return func(p0 any, p1 any) any {
+		if !vr.IsBound() {
+			return lang.Apply2(checkDerefVar(vr), p0, p1)
+		}
+		once.Do(func() { linked = aotLinkBoundFn2(vr) })
+		return linked(p0, p1)
+	}
+}
+
+func aotLinkBoundFn2(vr *lang.Var) lang.FnFunc2 {
+	fn := checkDerefVar(vr)
+	if direct, ok := fn.(lang.FnFunc2); ok {
+		return direct
+	}
+	if fixed, ok := fn.(lang.FixedArityFn2); ok {
+		return fixed.Invoke2
+	}
+	return func(p0 any, p1 any) any { return lang.Apply2(fn, p0, p1) }
+}
+
+func aotLinkFn3(vr *lang.Var) lang.FnFunc3 {
+	if vr.IsBound() {
+		return aotLinkBoundFn3(vr)
+	}
+	var once sync.Once
+	var linked lang.FnFunc3
+	return func(p0 any, p1 any, p2 any) any {
+		if !vr.IsBound() {
+			return lang.Apply3(checkDerefVar(vr), p0, p1, p2)
+		}
+		once.Do(func() { linked = aotLinkBoundFn3(vr) })
+		return linked(p0, p1, p2)
+	}
+}
+
+func aotLinkBoundFn3(vr *lang.Var) lang.FnFunc3 {
+	fn := checkDerefVar(vr)
+	if direct, ok := fn.(lang.FnFunc3); ok {
+		return direct
+	}
+	if fixed, ok := fn.(lang.FixedArityFn3); ok {
+		return fixed.Invoke3
+	}
+	return func(p0 any, p1 any, p2 any) any { return lang.Apply3(fn, p0, p1, p2) }
+}
 
 func init() {
 	runtime.RegisterNSLoader("ys/fs", LoadNS)
@@ -133,7 +191,6 @@ func LoadNS() {
 	sym_clojure_DOT_string := lang.NewSymbolUnchecked("clojure.string")
 	sym_conj := lang.NewSymbolUnchecked("conj")
 	sym_content := lang.NewSymbolUnchecked("content")
-	sym_count := lang.NewSymbolUnchecked("count")
 	sym_cp := lang.NewSymbolUnchecked("cp")
 	sym_cp_DASH_r := lang.NewSymbolUnchecked("cp-r")
 	sym_ctime := lang.NewSymbolUnchecked("ctime")
@@ -152,7 +209,6 @@ func LoadNS() {
 	sym_file_QMARK_ := lang.NewSymbolUnchecked("file?")
 	sym_filename := lang.NewSymbolUnchecked("filename")
 	sym_find := lang.NewSymbolUnchecked("find")
-	sym_first := lang.NewSymbolUnchecked("first")
 	sym_get_DASH_file_DASH_info := lang.NewSymbolUnchecked("get-file-info")
 	sym_get_DASH_link_DASH_info := lang.NewSymbolUnchecked("get-link-info")
 	sym_glob := lang.NewSymbolUnchecked("glob")
@@ -169,9 +225,7 @@ func LoadNS() {
 	sym_multi := lang.NewSymbolUnchecked("multi")
 	sym_mv := lang.NewSymbolUnchecked("mv")
 	sym_name := lang.NewSymbolUnchecked("name")
-	sym_next := lang.NewSymbolUnchecked("next")
 	sym_not := lang.NewSymbolUnchecked("not")
-	sym_nth := lang.NewSymbolUnchecked("nth")
 	sym_p := lang.NewSymbolUnchecked("p")
 	sym_path := lang.NewSymbolUnchecked("path")
 	sym_pattern := lang.NewSymbolUnchecked("pattern")
@@ -188,7 +242,6 @@ func LoadNS() {
 	sym_rm_DASH_r := lang.NewSymbolUnchecked("rm-r")
 	sym_rmdir := lang.NewSymbolUnchecked("rmdir")
 	sym_s := lang.NewSymbolUnchecked("s")
-	sym_seq := lang.NewSymbolUnchecked("seq")
 	sym_size_QMARK_ := lang.NewSymbolUnchecked("size?")
 	sym_src := lang.NewSymbolUnchecked("src")
 	sym_str := lang.NewSymbolUnchecked("str")
@@ -224,22 +277,12 @@ func LoadNS() {
 	var_clojure_DOT_core_chunked_DASH_seq_QMARK_ := lang.InternVarName(sym_clojure_DOT_core, sym_chunked_DASH_seq_QMARK_)
 	// var clojure.core/conj
 	var_clojure_DOT_core_conj := lang.InternVarName(sym_clojure_DOT_core, sym_conj)
-	// var clojure.core/count
-	var_clojure_DOT_core_count := lang.InternVarName(sym_clojure_DOT_core, sym_count)
 	// var clojure.core/deref
 	var_clojure_DOT_core_deref := lang.InternVarName(sym_clojure_DOT_core, sym_deref)
-	// var clojure.core/first
-	var_clojure_DOT_core_first := lang.InternVarName(sym_clojure_DOT_core, sym_first)
 	// var clojure.core/map
 	var_clojure_DOT_core_map := lang.InternVarName(sym_clojure_DOT_core, sym_map)
-	// var clojure.core/next
-	var_clojure_DOT_core_next := lang.InternVarName(sym_clojure_DOT_core, sym_next)
 	// var clojure.core/not
 	var_clojure_DOT_core_not := lang.InternVarName(sym_clojure_DOT_core, sym_not)
-	// var clojure.core/nth
-	var_clojure_DOT_core_nth := lang.InternVarName(sym_clojure_DOT_core, sym_nth)
-	// var clojure.core/seq
-	var_clojure_DOT_core_seq := lang.InternVarName(sym_clojure_DOT_core, sym_seq)
 	// var clojure.core/str
 	var_clojure_DOT_core_str := lang.InternVarName(sym_clojure_DOT_core, sym_str)
 	// var clojure.core/subs
@@ -354,6 +397,19 @@ func LoadNS() {
 	var_ys_DOT_fs_x := lang.InternVarName(sym_ys_DOT_fs, sym_x)
 	// var ys.fs/z
 	var_ys_DOT_fs_z := lang.InternVarName(sym_ys_DOT_fs, sym_z)
+	aotExternalFn1 := aotLinkFn2(var_clojure_DOT_core__EQ_)
+	aotExternalFn11 := aotLinkFn2(var_clojure_DOT_string_includes_QMARK_)
+	aotExternalFn12 := aotLinkFn1(var_clojure_DOT_core_chunked_DASH_seq_QMARK_)
+	aotExternalFn13 := aotLinkFn1(var_clojure_DOT_core_chunk_DASH_first)
+	aotExternalFn14 := aotLinkFn1(var_clojure_DOT_core_chunk_DASH_rest)
+	aotExternalFn16 := aotLinkFn1(var_clojure_DOT_core_deref)
+	aotExternalFn18 := aotLinkFn1(var_clojure_DOT_core_str)
+	aotExternalFn4 := aotLinkFn2(var_clojure_DOT_core_map)
+	aotExternalFn5 := aotLinkFn1(var_clojure_DOT_core_not)
+	aotExternalFn6 := aotLinkFn1(var_clojure_DOT_string_blank_QMARK_)
+	aotExternalFn7 := aotLinkFn3(var_clojure_DOT_core_subs)
+	aotExternalFn8 := aotLinkFn1(var_clojure_DOT_core_atom)
+	aotExternalFn9 := aotLinkFn3(var_clojure_DOT_core_swap_BANG_)
 	// reference fmt to avoid unused import error
 	_ = fmt.Printf
 	// reference reflect to avoid unused import error
@@ -438,6 +494,502 @@ func LoadNS() {
 		})
 	}
 	ns.AddAlias(sym_str, lang.FindOrCreateNamespace(sym_clojure_DOT_string))
+	var closed0 any
+	var closed1 any
+	var closed2 any
+	var closed3 any
+	var closed4 any
+	var closed5 any
+	var closed6 any
+	var closed7 any
+	var closed8 any
+	{
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
+			_ = v1
+			_ = "True if path is a directory"
+			var tmp2 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp3 := aotDirectFn18(v1)
+				var v4 any = tmp3
+				_ = v4
+				var tmp5 any
+				if lang.IsTruthy(v4) {
+					var tmp6 any
+					{ // let
+						// let binding "info"
+						var v7 any = v4
+						_ = v7
+						tmp8, ok := lang.FieldOrMethod(v7, "IsDir")
+						if !ok {
+							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v7, "IsDir")))
+						}
+						var tmp9 any
+						switch reflect.TypeOf(tmp8).Kind() {
+						case reflect.Func:
+							tmp9 = lang.Apply(tmp8, nil)
+						default:
+							tmp9 = tmp8
+						}
+						tmp6 = tmp9
+					} // end let
+					tmp5 = tmp6
+				} else {
+					tmp5 = false
+				}
+				tmp2 = tmp5
+			} // end let
+			return tmp2
+		})
+		closed0 = tmp0
+	}
+	{
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
+			_ = v1
+			_ = "True if path exists"
+			tmp2 := aotDirectFn18(v1)
+			tmp3 := lang.Identical(tmp2, nil)
+			tmp4 := aotExternalFn5(tmp3)
+			return tmp4
+		})
+		closed1 = tmp0
+	}
+	{
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
+			_ = v1
+			_ = "True if path is a regular file"
+			var tmp2 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp3 := aotDirectFn18(v1)
+				var v4 any = tmp3
+				_ = v4
+				var tmp5 any
+				if lang.IsTruthy(v4) {
+					var tmp6 any
+					{ // let
+						// let binding "info"
+						var v7 any = v4
+						_ = v7
+						var tmp8 any
+						{ // let
+							// let binding "mode"
+							tmp9, ok := lang.FieldOrMethod(v7, "Mode")
+							if !ok {
+								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v7, "Mode")))
+							}
+							var tmp10 any
+							switch reflect.TypeOf(tmp9).Kind() {
+							case reflect.Func:
+								tmp10 = lang.Apply(tmp9, nil)
+							default:
+								tmp10 = tmp9
+							}
+							var v11 any = tmp10
+							_ = v11
+							tmp12, ok := lang.FieldOrMethod(v11, "IsRegular")
+							if !ok {
+								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v11, "IsRegular")))
+							}
+							var tmp13 any
+							switch reflect.TypeOf(tmp12).Kind() {
+							case reflect.Func:
+								tmp13 = lang.Apply(tmp12, nil)
+							default:
+								tmp13 = tmp12
+							}
+							tmp8 = tmp13
+						} // end let
+						tmp6 = tmp8
+					} // end let
+					tmp5 = tmp6
+				} else {
+					tmp5 = false
+				}
+				tmp2 = tmp5
+			} // end let
+			return tmp2
+		})
+		closed2 = tmp0
+	}
+	{
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
+			_ = v1
+			_ = "True if path is a symbolic link"
+			var tmp2 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp3 := aotDirectFn19(v1)
+				var v4 any = tmp3
+				_ = v4
+				var tmp5 any
+				if lang.IsTruthy(v4) {
+					var tmp6 any
+					{ // let
+						// let binding "info"
+						var v7 any = v4
+						_ = v7
+						var tmp8 any
+						{ // let
+							// let binding "mode"
+							tmp9, ok := lang.FieldOrMethod(v7, "Mode")
+							if !ok {
+								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v7, "Mode")))
+							}
+							var tmp10 any
+							switch reflect.TypeOf(tmp9).Kind() {
+							case reflect.Func:
+								tmp10 = lang.Apply(tmp9, nil)
+							default:
+								tmp10 = tmp9
+							}
+							var v11 any = tmp10
+							_ = v11
+							// let binding "link-bit"
+							tmp12 := lang.Numbers.And(v11, os5.ModeSymlink)
+							var v13 any = tmp12
+							_ = v13
+							tmp14 := lang.Numbers.IsZero(v13)
+							tmp15 := aotExternalFn5(tmp14)
+							tmp8 = tmp15
+						} // end let
+						tmp6 = tmp8
+					} // end let
+					tmp5 = tmp6
+				} else {
+					tmp5 = false
+				}
+				tmp2 = tmp5
+			} // end let
+			return tmp2
+		})
+		closed3 = tmp0
+	}
+	{
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
+			_ = v1
+			_ = "True if path is readable"
+			var tmp2 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp3 := aotDirectFn18(v1)
+				var v4 any = tmp3
+				_ = v4
+				var tmp5 any
+				if lang.IsTruthy(v4) {
+					var tmp6 any
+					{ // let
+						// let binding "info"
+						var v7 any = v4
+						_ = v7
+						var tmp8 any
+						{ // let
+							// let binding "mode"
+							tmp9, ok := lang.FieldOrMethod(v7, "Mode")
+							if !ok {
+								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v7, "Mode")))
+							}
+							var tmp10 any
+							switch reflect.TypeOf(tmp9).Kind() {
+							case reflect.Func:
+								tmp10 = lang.Apply(tmp9, nil)
+							default:
+								tmp10 = tmp9
+							}
+							var v11 any = tmp10
+							_ = v11
+							// let binding "read-bits"
+							tmp12 := lang.Numbers.And(v11, int64(292))
+							var v13 any = tmp12
+							_ = v13
+							tmp14 := lang.Numbers.IsZero(v13)
+							tmp15 := aotExternalFn5(tmp14)
+							tmp8 = tmp15
+						} // end let
+						tmp6 = tmp8
+					} // end let
+					tmp5 = tmp6
+				} else {
+					tmp5 = false
+				}
+				tmp2 = tmp5
+			} // end let
+			return tmp2
+		})
+		closed4 = tmp0
+	}
+	{
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
+			_ = v1
+			_ = "True if file size > 0"
+			var tmp2 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp3 := aotDirectFn18(v1)
+				var v4 any = tmp3
+				_ = v4
+				var tmp5 any
+				if lang.IsTruthy(v4) {
+					var tmp6 any
+					{ // let
+						// let binding "info"
+						var v7 any = v4
+						_ = v7
+						tmp8, ok := lang.FieldOrMethod(v7, "Size")
+						if !ok {
+							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v7, "Size")))
+						}
+						var tmp9 any
+						switch reflect.TypeOf(tmp8).Kind() {
+						case reflect.Func:
+							tmp9 = lang.Apply(tmp8, nil)
+						default:
+							tmp9 = tmp8
+						}
+						tmp10 := lang.Numbers.Gt(tmp9, int64(0))
+						tmp6 = tmp10
+					} // end let
+					tmp5 = tmp6
+				} else {
+					tmp5 = false
+				}
+				tmp2 = tmp5
+			} // end let
+			return tmp2
+		})
+		closed5 = tmp0
+	}
+	{
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
+			_ = v1
+			_ = "True if path is writable"
+			var tmp2 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp3 := aotDirectFn18(v1)
+				var v4 any = tmp3
+				_ = v4
+				var tmp5 any
+				if lang.IsTruthy(v4) {
+					var tmp6 any
+					{ // let
+						// let binding "info"
+						var v7 any = v4
+						_ = v7
+						var tmp8 any
+						{ // let
+							// let binding "mode"
+							tmp9, ok := lang.FieldOrMethod(v7, "Mode")
+							if !ok {
+								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v7, "Mode")))
+							}
+							var tmp10 any
+							switch reflect.TypeOf(tmp9).Kind() {
+							case reflect.Func:
+								tmp10 = lang.Apply(tmp9, nil)
+							default:
+								tmp10 = tmp9
+							}
+							var v11 any = tmp10
+							_ = v11
+							// let binding "write-bits"
+							tmp12 := lang.Numbers.And(v11, int64(146))
+							var v13 any = tmp12
+							_ = v13
+							tmp14 := lang.Numbers.IsZero(v13)
+							tmp15 := aotExternalFn5(tmp14)
+							tmp8 = tmp15
+						} // end let
+						tmp6 = tmp8
+					} // end let
+					tmp5 = tmp6
+				} else {
+					tmp5 = false
+				}
+				tmp2 = tmp5
+			} // end let
+			return tmp2
+		})
+		closed6 = tmp0
+	}
+	{
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
+			_ = v1
+			_ = "True if path is executable"
+			var tmp2 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp3 := aotDirectFn18(v1)
+				var v4 any = tmp3
+				_ = v4
+				var tmp5 any
+				if lang.IsTruthy(v4) {
+					var tmp6 any
+					{ // let
+						// let binding "info"
+						var v7 any = v4
+						_ = v7
+						var tmp8 any
+						{ // let
+							// let binding "mode"
+							tmp9, ok := lang.FieldOrMethod(v7, "Mode")
+							if !ok {
+								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v7, "Mode")))
+							}
+							var tmp10 any
+							switch reflect.TypeOf(tmp9).Kind() {
+							case reflect.Func:
+								tmp10 = lang.Apply(tmp9, nil)
+							default:
+								tmp10 = tmp9
+							}
+							var v11 any = tmp10
+							_ = v11
+							// let binding "exec-bits"
+							tmp12 := lang.Numbers.And(v11, int64(73))
+							var v13 any = tmp12
+							_ = v13
+							tmp14 := lang.Numbers.IsZero(v13)
+							tmp15 := aotExternalFn5(tmp14)
+							tmp8 = tmp15
+						} // end let
+						tmp6 = tmp8
+					} // end let
+					tmp5 = tmp6
+				} else {
+					tmp5 = false
+				}
+				tmp2 = tmp5
+			} // end let
+			return tmp2
+		})
+		closed7 = tmp0
+	}
+	{
+		var tmp0 lang.FnFunc1
+		tmp0 = lang.FnFunc1(func(p0 any) any {
+			v1 := p0
+			_ = v1
+			_ = "True if file size is 0 or directory is empty"
+			var tmp2 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp3 := aotDirectFn18(v1)
+				var v4 any = tmp3
+				_ = v4
+				var tmp5 any
+				if lang.IsTruthy(v4) {
+					var tmp6 any
+					{ // let
+						// let binding "info"
+						var v7 any = v4
+						_ = v7
+						var tmp8 any
+						tmp9, ok := lang.FieldOrMethod(v7, "IsDir")
+						if !ok {
+							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v7, "IsDir")))
+						}
+						var tmp10 any
+						switch reflect.TypeOf(tmp9).Kind() {
+						case reflect.Func:
+							tmp10 = lang.Apply(tmp9, nil)
+						default:
+							tmp10 = tmp9
+						}
+						if lang.IsTruthy(tmp10) {
+							var tmp11 any
+							{ // let
+								// let binding "entries"
+								tmp12 := lang.Apply1(os5.ReadDir, v1)
+								var v13 any = tmp12
+								_ = v13
+								tmp14 := lang.Count(v13)
+								tmp15 := lang.Numbers.IsZero(tmp14)
+								tmp11 = tmp15
+							} // end let
+							tmp8 = tmp11
+						} else {
+							tmp12, ok := lang.FieldOrMethod(v7, "Size")
+							if !ok {
+								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v7, "Size")))
+							}
+							var tmp13 any
+							switch reflect.TypeOf(tmp12).Kind() {
+							case reflect.Func:
+								tmp13 = lang.Apply(tmp12, nil)
+							default:
+								tmp13 = tmp12
+							}
+							tmp14 := lang.Numbers.IsZero(tmp13)
+							tmp8 = tmp14
+						}
+						tmp6 = tmp8
+					} // end let
+					tmp5 = tmp6
+				} else {
+					tmp5 = false
+				}
+				tmp2 = tmp5
+			} // end let
+			return tmp2
+		})
+		closed8 = tmp0
+	}
+	// abs
+	{
+		tmp0 := sym_abs
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Return absolute path"
+			var tmp3 any
+			{ // let
+				// let binding "vec__7"
+				tmp4 := lang.Apply1(filepath4.Abs, v2)
+				var v5 any = tmp4
+				_ = v5
+				// let binding "result"
+				tmp6 := runtime.RT.NthDefault(v5, lang.IntCast(int64(0)), nil)
+				var v7 any = tmp6
+				_ = v7
+				// let binding "err"
+				tmp8 := runtime.RT.NthDefault(v5, lang.IntCast(int64(1)), nil)
+				var v9 any = tmp8
+				_ = v9
+				var tmp10 any
+				tmp11 := lang.Identical(v9, nil)
+				if lang.IsTruthy(tmp11) {
+					tmp10 = v7
+				} else {
+					tmp10 = v2
+				}
+				tmp3 = tmp10
+			} // end let
+			return tmp3
+		})
+		aotDirectFn0 = tmp1
+		var_ys_DOT_fs_abs = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_abs.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(125), kw_column, int(7), kw_end_DASH_line, int(125), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
 	// abs?
 	{
 		tmp0 := sym_abs_QMARK_
@@ -451,9 +1003,1068 @@ func LoadNS() {
 		})
 		aotDirectFn1 = tmp1
 		var_ys_DOT_fs_abs_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion1 = var_ys_DOT_fs_abs_QMARK_.RootVersion()
 		var_ys_DOT_fs_abs_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(37), kw_column, int(7), kw_end_DASH_line, int(37), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(38), kw_column, int(7), kw_end_DASH_line, int(38), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// basename
+	{
+		tmp0 := sym_basename
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Return basename of path (follows symlinks)"
+			var tmp3 any
+			{ // let
+				// let binding "vec__10"
+				tmp4 := lang.Apply1(filepath4.EvalSymlinks, v2)
+				var v5 any = tmp4
+				_ = v5
+				// let binding "real-path"
+				tmp6 := runtime.RT.NthDefault(v5, lang.IntCast(int64(0)), nil)
+				var v7 any = tmp6
+				_ = v7
+				// let binding "err"
+				tmp8 := runtime.RT.NthDefault(v5, lang.IntCast(int64(1)), nil)
+				var v9 any = tmp8
+				_ = v9
+				var tmp10 any
+				tmp11 := lang.Identical(v9, nil)
+				if lang.IsTruthy(tmp11) {
+					tmp10 = v7
+				} else {
+					tmp10 = v2
+				}
+				tmp12 := lang.Apply1(filepath4.Base, tmp10)
+				tmp3 = tmp12
+			} // end let
+			return tmp3
+		})
+		aotDirectFn2 = tmp1
+		var_ys_DOT_fs_basename = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_basename.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(130), kw_column, int(7), kw_end_DASH_line, int(130), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// cp
+	{
+		tmp0 := sym_cp
+		var tmp1 lang.FnFunc2
+		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
+			_ = v2
+			v3 := p1
+			_ = v3
+			_ = "Copy file from src to dst"
+			var tmp4 any
+			{ // let
+				// let binding "vec__44"
+				tmp5 := lang.Apply1(os5.ReadFile, v2)
+				var v6 any = tmp5
+				_ = v6
+				// let binding "content"
+				tmp7 := runtime.RT.NthDefault(v6, lang.IntCast(int64(0)), nil)
+				var v8 any = tmp7
+				_ = v8
+				// let binding "err"
+				tmp9 := runtime.RT.NthDefault(v6, lang.IntCast(int64(1)), nil)
+				var v10 any = tmp9
+				_ = v10
+				var tmp11 any
+				tmp12 := lang.Identical(v10, nil)
+				if lang.IsTruthy(tmp12) {
+					tmp13 := lang.Apply3(os5.WriteFile, v3, v8, int64(420))
+					tmp11 = tmp13
+				} else {
+				}
+				tmp4 = tmp11
+			} // end let
+			return tmp4
+		})
+		aotDirectFn3 = tmp1
+		var_ys_DOT_fs_cp = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_cp.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(234), kw_column, int(7), kw_end_DASH_line, int(234), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_src, sym_dst)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// cp-r
+	{
+		tmp0 := sym_cp_DASH_r
+		var tmp1 lang.FnFunc2
+		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
+			_ = v2
+			v3 := p1
+			_ = v3
+			_ = "Recursively copy directory"
+			var tmp4 lang.FnFunc3
+			tmp4 = lang.FnFunc3(func(p0, p1, p2 any) any {
+				v5 := p0
+				_ = v5
+				v6 := p1
+				_ = v6
+				v7 := p2
+				_ = v7
+				var tmp8 any
+				tmp9 := lang.Identical(v7, nil)
+				if lang.IsTruthy(tmp9) {
+					var tmp10 any
+					{ // let
+						// let binding "vec__47"
+						tmp11 := lang.Apply2(filepath4.Rel, v2, v5)
+						var v12 any = tmp11
+						_ = v12
+						// let binding "rel-path"
+						tmp13 := runtime.RT.NthDefault(v12, lang.IntCast(int64(0)), nil)
+						var v14 any = tmp13
+						_ = v14
+						// let binding "_"
+						tmp15 := runtime.RT.NthDefault(v12, lang.IntCast(int64(1)), nil)
+						var v16 any = tmp15
+						_ = v16
+						// let binding "dst-path"
+						tmp17 := lang.Apply2(filepath4.Join, v3, v14)
+						var v18 any = tmp17
+						_ = v18
+						var tmp19 any
+						tmp20, ok := lang.FieldOrMethod(v6, "IsDir")
+						if !ok {
+							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v6, "IsDir")))
+						}
+						var tmp21 any
+						switch reflect.TypeOf(tmp20).Kind() {
+						case reflect.Func:
+							tmp21 = lang.Apply(tmp20, nil)
+						default:
+							tmp21 = tmp20
+						}
+						if lang.IsTruthy(tmp21) {
+							tmp22 := lang.Apply2(os5.MkdirAll, v18, int64(493))
+							tmp19 = tmp22
+						} else {
+							var tmp23 any
+							{ // let
+								// let binding "vec__50"
+								tmp24 := lang.Apply1(os5.ReadFile, v5)
+								var v25 any = tmp24
+								_ = v25
+								// let binding "content"
+								tmp26 := runtime.RT.NthDefault(v25, lang.IntCast(int64(0)), nil)
+								var v27 any = tmp26
+								_ = v27
+								// let binding "read-err"
+								tmp28 := runtime.RT.NthDefault(v25, lang.IntCast(int64(1)), nil)
+								var v29 any = tmp28
+								_ = v29
+								var tmp30 any
+								tmp31 := lang.Identical(v29, nil)
+								if lang.IsTruthy(tmp31) {
+									tmp32, ok := lang.FieldOrMethod(v6, "Mode")
+									if !ok {
+										panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v6, "Mode")))
+									}
+									var tmp33 any
+									switch reflect.TypeOf(tmp32).Kind() {
+									case reflect.Func:
+										tmp33 = lang.Apply(tmp32, nil)
+									default:
+										tmp33 = tmp32
+									}
+									tmp34 := lang.Apply3(os5.WriteFile, v18, v27, tmp33)
+									tmp30 = tmp34
+								} else {
+								}
+								tmp23 = tmp30
+							} // end let
+							tmp19 = tmp23
+						}
+						tmp10 = tmp19
+					} // end let
+					tmp8 = tmp10
+				} else {
+				}
+				_ = tmp8
+				return nil
+			})
+			tmp5 := lang.Apply2(filepath4.Walk, v2, tmp4)
+			_ = tmp5
+			return nil
+		})
+		aotDirectFn4 = tmp1
+		var_ys_DOT_fs_cp_DASH_r = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_cp_DASH_r.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(240), kw_column, int(7), kw_end_DASH_line, int(240), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_src, sym_dst)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// ctime
+	{
+		tmp0 := sym_ctime
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Return creation time in milliseconds (same as mtime in Unix)"
+			var tmp3 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp4 := aotDirectFn18(v2)
+				var v5 any = tmp4
+				_ = v5
+				var tmp6 any
+				if lang.IsTruthy(v5) {
+					var tmp7 any
+					{ // let
+						// let binding "info"
+						var v8 any = v5
+						_ = v8
+						tmp9, ok := lang.FieldOrMethod(v8, "ModTime")
+						if !ok {
+							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v8, "ModTime")))
+						}
+						var tmp10 any
+						switch reflect.TypeOf(tmp9).Kind() {
+						case reflect.Func:
+							tmp10 = lang.Apply(tmp9, nil)
+						default:
+							tmp10 = tmp9
+						}
+						tmp11, ok := lang.FieldOrMethod(tmp10, "UnixMilli")
+						if !ok {
+							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", tmp10, "UnixMilli")))
+						}
+						var tmp12 any
+						switch reflect.TypeOf(tmp11).Kind() {
+						case reflect.Func:
+							tmp12 = lang.Apply(tmp11, nil)
+						default:
+							tmp12 = tmp11
+						}
+						tmp7 = tmp12
+					} // end let
+					tmp6 = tmp7
+				} else {
+				}
+				tmp3 = tmp6
+			} // end let
+			return tmp3
+		})
+		aotDirectFn5 = tmp1
+		var_ys_DOT_fs_ctime = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_ctime.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(135), kw_column, int(7), kw_end_DASH_line, int(135), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// cwd
+	{
+		tmp0 := sym_cwd
+		var tmp1 lang.FnFunc0
+		tmp1 = lang.FnFunc0(func() any {
+			_ = "Return current working directory"
+			var tmp2 any
+			{ // let
+				// let binding "vec__13"
+				tmp3 := lang.Apply0(os5.Getwd)
+				var v4 any = tmp3
+				_ = v4
+				// let binding "result"
+				tmp5 := runtime.RT.NthDefault(v4, lang.IntCast(int64(0)), nil)
+				var v6 any = tmp5
+				_ = v6
+				// let binding "err"
+				tmp7 := runtime.RT.NthDefault(v4, lang.IntCast(int64(1)), nil)
+				var v8 any = tmp7
+				_ = v8
+				var tmp9 any
+				tmp10 := lang.Identical(v8, nil)
+				if lang.IsTruthy(tmp10) {
+					tmp9 = v6
+				} else {
+					tmp9 = "."
+				}
+				tmp2 = tmp9
+			} // end let
+			return tmp2
+		})
+		aotDirectFn6 = tmp1
+		var_ys_DOT_fs_cwd = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_cwd.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(147), kw_column, int(7), kw_end_DASH_line, int(147), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector()), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// d
+	{
+		tmp0 := sym_d
+		var tmp1 lang.ArityFn
+		tmp1 = lang.NewArityFn(
+			nil,
+			nil,
+			nil,
+			nil,
+			nil,
+			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
+				var v2 any = rest
+				_ = v2
+				var tmp3 any
+				tmp4 := lang.Count(v2)
+				tmp5 := aotExternalFn1(int64(1), tmp4)
+				if lang.IsTruthy(tmp5) {
+					tmp6 := lang.First(v2)
+					tmp7 := lang.Apply1(closed0, tmp6)
+					tmp3 = tmp7
+				} else {
+					tmp8 := aotExternalFn4(closed0, v2)
+					tmp3 = tmp8
+				}
+				return tmp3
+			}),
+			0,
+		)
+		aotDirectFn7 = tmp1
+		var_ys_DOT_fs_d = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_d.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(111), kw_column, int(6), kw_end_DASH_line, int(111), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// dir?
+	{
+		tmp0 := sym_dir_QMARK_
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "True if path is a directory"
+			var tmp3 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp4 := aotDirectFn18(v2)
+				var v5 any = tmp4
+				_ = v5
+				var tmp6 any
+				if lang.IsTruthy(v5) {
+					var tmp7 any
+					{ // let
+						// let binding "info"
+						var v8 any = v5
+						_ = v8
+						tmp9, ok := lang.FieldOrMethod(v8, "IsDir")
+						if !ok {
+							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v8, "IsDir")))
+						}
+						var tmp10 any
+						switch reflect.TypeOf(tmp9).Kind() {
+						case reflect.Func:
+							tmp10 = lang.Apply(tmp9, nil)
+						default:
+							tmp10 = tmp9
+						}
+						tmp7 = tmp10
+					} // end let
+					tmp6 = tmp7
+				} else {
+					tmp6 = false
+				}
+				tmp3 = tmp6
+			} // end let
+			return tmp3
+		})
+		aotDirectFn8 = tmp1
+		var_ys_DOT_fs_dir_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_dir_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(42), kw_column, int(7), kw_end_DASH_line, int(42), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// dirname
+	{
+		tmp0 := sym_dirname
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Return directory name of path (follows symlinks)"
+			var tmp3 any
+			{ // let
+				// let binding "vec__16"
+				tmp4 := lang.Apply1(filepath4.EvalSymlinks, v2)
+				var v5 any = tmp4
+				_ = v5
+				// let binding "real-path"
+				tmp6 := runtime.RT.NthDefault(v5, lang.IntCast(int64(0)), nil)
+				var v7 any = tmp6
+				_ = v7
+				// let binding "err"
+				tmp8 := runtime.RT.NthDefault(v5, lang.IntCast(int64(1)), nil)
+				var v9 any = tmp8
+				_ = v9
+				var tmp10 any
+				tmp11 := lang.Identical(v9, nil)
+				if lang.IsTruthy(tmp11) {
+					tmp10 = v7
+				} else {
+					tmp10 = v2
+				}
+				tmp12 := lang.Apply1(filepath4.Dir, tmp10)
+				tmp3 = tmp12
+			} // end let
+			return tmp3
+		})
+		aotDirectFn9 = tmp1
+		var_ys_DOT_fs_dirname = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_dirname.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(152), kw_column, int(7), kw_end_DASH_line, int(152), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// e
+	{
+		tmp0 := sym_e
+		var tmp1 lang.ArityFn
+		tmp1 = lang.NewArityFn(
+			nil,
+			nil,
+			nil,
+			nil,
+			nil,
+			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
+				var v2 any = rest
+				_ = v2
+				var tmp3 any
+				tmp4 := lang.Count(v2)
+				tmp5 := aotExternalFn1(int64(1), tmp4)
+				if lang.IsTruthy(tmp5) {
+					tmp6 := lang.First(v2)
+					tmp7 := lang.Apply1(closed1, tmp6)
+					tmp3 = tmp7
+				} else {
+					tmp8 := aotExternalFn4(closed1, v2)
+					tmp3 = tmp8
+				}
+				return tmp3
+			}),
+			0,
+		)
+		aotDirectFn10 = tmp1
+		var_ys_DOT_fs_e = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_e.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(112), kw_column, int(6), kw_end_DASH_line, int(112), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// empty?
+	{
+		tmp0 := sym_empty_QMARK_
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "True if file size is 0 or directory is empty"
+			var tmp3 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp4 := aotDirectFn18(v2)
+				var v5 any = tmp4
+				_ = v5
+				var tmp6 any
+				if lang.IsTruthy(v5) {
+					var tmp7 any
+					{ // let
+						// let binding "info"
+						var v8 any = v5
+						_ = v8
+						var tmp9 any
+						tmp10, ok := lang.FieldOrMethod(v8, "IsDir")
+						if !ok {
+							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v8, "IsDir")))
+						}
+						var tmp11 any
+						switch reflect.TypeOf(tmp10).Kind() {
+						case reflect.Func:
+							tmp11 = lang.Apply(tmp10, nil)
+						default:
+							tmp11 = tmp10
+						}
+						if lang.IsTruthy(tmp11) {
+							var tmp12 any
+							{ // let
+								// let binding "entries"
+								tmp13 := lang.Apply1(os5.ReadDir, v2)
+								var v14 any = tmp13
+								_ = v14
+								tmp15 := lang.Count(v14)
+								tmp16 := lang.Numbers.IsZero(tmp15)
+								tmp12 = tmp16
+							} // end let
+							tmp9 = tmp12
+						} else {
+							tmp13, ok := lang.FieldOrMethod(v8, "Size")
+							if !ok {
+								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v8, "Size")))
+							}
+							var tmp14 any
+							switch reflect.TypeOf(tmp13).Kind() {
+							case reflect.Func:
+								tmp14 = lang.Apply(tmp13, nil)
+							default:
+								tmp14 = tmp13
+							}
+							tmp15 := lang.Numbers.IsZero(tmp14)
+							tmp9 = tmp15
+						}
+						tmp7 = tmp9
+					} // end let
+					tmp6 = tmp7
+				} else {
+					tmp6 = false
+				}
+				tmp3 = tmp6
+			} // end let
+			return tmp3
+		})
+		aotDirectFn11 = tmp1
+		var_ys_DOT_fs_empty_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_empty_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(48), kw_column, int(7), kw_end_DASH_line, int(48), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// exec?
+	{
+		tmp0 := sym_exec_QMARK_
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "True if path is executable"
+			var tmp3 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp4 := aotDirectFn18(v2)
+				var v5 any = tmp4
+				_ = v5
+				var tmp6 any
+				if lang.IsTruthy(v5) {
+					var tmp7 any
+					{ // let
+						// let binding "info"
+						var v8 any = v5
+						_ = v8
+						var tmp9 any
+						{ // let
+							// let binding "mode"
+							tmp10, ok := lang.FieldOrMethod(v8, "Mode")
+							if !ok {
+								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v8, "Mode")))
+							}
+							var tmp11 any
+							switch reflect.TypeOf(tmp10).Kind() {
+							case reflect.Func:
+								tmp11 = lang.Apply(tmp10, nil)
+							default:
+								tmp11 = tmp10
+							}
+							var v12 any = tmp11
+							_ = v12
+							// let binding "exec-bits"
+							tmp13 := lang.Numbers.And(v12, int64(73))
+							var v14 any = tmp13
+							_ = v14
+							tmp15 := lang.Numbers.IsZero(v14)
+							tmp16 := aotExternalFn5(tmp15)
+							tmp9 = tmp16
+						} // end let
+						tmp7 = tmp9
+					} // end let
+					tmp6 = tmp7
+				} else {
+					tmp6 = false
+				}
+				tmp3 = tmp6
+			} // end let
+			return tmp3
+		})
+		aotDirectFn12 = tmp1
+		var_ys_DOT_fs_exec_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_exec_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(57), kw_column, int(7), kw_end_DASH_line, int(57), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// exists?
+	{
+		tmp0 := sym_exists_QMARK_
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "True if path exists"
+			tmp3 := aotDirectFn18(v2)
+			tmp4 := lang.Identical(tmp3, nil)
+			tmp5 := aotExternalFn5(tmp4)
+			return tmp5
+		})
+		aotDirectFn13 = tmp1
+		var_ys_DOT_fs_exists_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_exists_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(65), kw_column, int(7), kw_end_DASH_line, int(65), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// f
+	{
+		tmp0 := sym_f
+		var tmp1 lang.ArityFn
+		tmp1 = lang.NewArityFn(
+			nil,
+			nil,
+			nil,
+			nil,
+			nil,
+			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
+				var v2 any = rest
+				_ = v2
+				var tmp3 any
+				tmp4 := lang.Count(v2)
+				tmp5 := aotExternalFn1(int64(1), tmp4)
+				if lang.IsTruthy(tmp5) {
+					tmp6 := lang.First(v2)
+					tmp7 := lang.Apply1(closed2, tmp6)
+					tmp3 = tmp7
+				} else {
+					tmp8 := aotExternalFn4(closed2, v2)
+					tmp3 = tmp8
+				}
+				return tmp3
+			}),
+			0,
+		)
+		aotDirectFn14 = tmp1
+		var_ys_DOT_fs_f = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_f.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(113), kw_column, int(6), kw_end_DASH_line, int(113), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// file?
+	{
+		tmp0 := sym_file_QMARK_
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "True if path is a regular file"
+			var tmp3 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp4 := aotDirectFn18(v2)
+				var v5 any = tmp4
+				_ = v5
+				var tmp6 any
+				if lang.IsTruthy(v5) {
+					var tmp7 any
+					{ // let
+						// let binding "info"
+						var v8 any = v5
+						_ = v8
+						var tmp9 any
+						{ // let
+							// let binding "mode"
+							tmp10, ok := lang.FieldOrMethod(v8, "Mode")
+							if !ok {
+								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v8, "Mode")))
+							}
+							var tmp11 any
+							switch reflect.TypeOf(tmp10).Kind() {
+							case reflect.Func:
+								tmp11 = lang.Apply(tmp10, nil)
+							default:
+								tmp11 = tmp10
+							}
+							var v12 any = tmp11
+							_ = v12
+							tmp13, ok := lang.FieldOrMethod(v12, "IsRegular")
+							if !ok {
+								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v12, "IsRegular")))
+							}
+							var tmp14 any
+							switch reflect.TypeOf(tmp13).Kind() {
+							case reflect.Func:
+								tmp14 = lang.Apply(tmp13, nil)
+							default:
+								tmp14 = tmp13
+							}
+							tmp9 = tmp14
+						} // end let
+						tmp7 = tmp9
+					} // end let
+					tmp6 = tmp7
+				} else {
+					tmp6 = false
+				}
+				tmp3 = tmp6
+			} // end let
+			return tmp3
+		})
+		aotDirectFn15 = tmp1
+		var_ys_DOT_fs_file_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_file_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(69), kw_column, int(7), kw_end_DASH_line, int(69), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// filename
+	{
+		tmp0 := sym_filename
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Return filename without extension"
+			var tmp3 any
+			{ // let
+				// let binding "base"
+				tmp4 := lang.Apply1(filepath4.Base, v2)
+				var v5 any = tmp4
+				_ = v5
+				// let binding "ext"
+				tmp6 := lang.Apply1(filepath4.Ext, v5)
+				var v7 any = tmp6
+				_ = v7
+				var tmp8 any
+				tmp9 := aotExternalFn6(v7)
+				if lang.IsTruthy(tmp9) {
+					tmp8 = v5
+				} else {
+					tmp10 := lang.Count(v5)
+					tmp11 := lang.Count(v7)
+					tmp12 := lang.Numbers.Minus(tmp10, tmp11)
+					tmp13 := aotExternalFn7(v5, int64(0), tmp12)
+					tmp8 = tmp13
+				}
+				tmp3 = tmp8
+			} // end let
+			return tmp3
+		})
+		aotDirectFn16 = tmp1
+		var_ys_DOT_fs_filename = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_filename.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(157), kw_column, int(7), kw_end_DASH_line, int(157), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// get-file-info
+	{
+		tmp0 := sym_get_DASH_file_DASH_info
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Get os.FileInfo for path, returns nil on error"
+			var tmp3 any
+			func() {
+				defer func() {
+					if r := recover(); r != nil {
+						if lang.CatchMatches(r, lang.Builtins["any"]) {
+							v4 := r
+							_ = v4
+						} else {
+							panic(r)
+						}
+					}
+				}()
+				var tmp4 any
+				{ // let
+					// let binding "vec__1"
+					tmp5 := lang.Apply1(os5.Stat, v2)
+					var v6 any = tmp5
+					_ = v6
+					// let binding "info"
+					tmp7 := runtime.RT.NthDefault(v6, lang.IntCast(int64(0)), nil)
+					var v8 any = tmp7
+					_ = v8
+					// let binding "err"
+					tmp9 := runtime.RT.NthDefault(v6, lang.IntCast(int64(1)), nil)
+					var v10 any = tmp9
+					_ = v10
+					var tmp11 any
+					tmp12 := lang.Identical(v10, nil)
+					if lang.IsTruthy(tmp12) {
+						tmp11 = v8
+					} else {
+					}
+					tmp4 = tmp11
+				} // end let
+				tmp3 = tmp4
+			}()
+			return tmp3
+		})
+		aotDirectFn18 = tmp1
+		var_ys_DOT_fs_get_DASH_file_DASH_info = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_get_DASH_file_DASH_info.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMapUniqueKeys(kw_file, "ys/fs.glj", kw_line, int(20), kw_column, int(8), kw_end_DASH_line, int(20), kw_end_DASH_column, int(20), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// get-link-info
+	{
+		tmp0 := sym_get_DASH_link_DASH_info
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Get os.FileInfo for symlink (don't follow), returns nil on error"
+			var tmp3 any
+			func() {
+				defer func() {
+					if r := recover(); r != nil {
+						if lang.CatchMatches(r, lang.Builtins["any"]) {
+							v4 := r
+							_ = v4
+						} else {
+							panic(r)
+						}
+					}
+				}()
+				var tmp4 any
+				{ // let
+					// let binding "vec__4"
+					tmp5 := lang.Apply1(os5.Lstat, v2)
+					var v6 any = tmp5
+					_ = v6
+					// let binding "info"
+					tmp7 := runtime.RT.NthDefault(v6, lang.IntCast(int64(0)), nil)
+					var v8 any = tmp7
+					_ = v8
+					// let binding "err"
+					tmp9 := runtime.RT.NthDefault(v6, lang.IntCast(int64(1)), nil)
+					var v10 any = tmp9
+					_ = v10
+					var tmp11 any
+					tmp12 := lang.Identical(v10, nil)
+					if lang.IsTruthy(tmp12) {
+						tmp11 = v8
+					} else {
+					}
+					tmp4 = tmp11
+				} // end let
+				tmp3 = tmp4
+			}()
+			return tmp3
+		})
+		aotDirectFn19 = tmp1
+		var_ys_DOT_fs_get_DASH_link_DASH_info = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_get_DASH_link_DASH_info.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMapUniqueKeys(kw_file, "ys/fs.glj", kw_line, int(27), kw_column, int(8), kw_end_DASH_line, int(27), kw_end_DASH_column, int(20), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// glob
+	{
+		tmp0 := sym_glob
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Return paths matching glob pattern"
+			var tmp3 any
+			{ // let
+				// let binding "vec__23"
+				tmp4 := lang.Apply1(filepath4.Glob, v2)
+				var v5 any = tmp4
+				_ = v5
+				// let binding "result"
+				tmp6 := runtime.RT.NthDefault(v5, lang.IntCast(int64(0)), nil)
+				var v7 any = tmp6
+				_ = v7
+				// let binding "err"
+				tmp8 := runtime.RT.NthDefault(v5, lang.IntCast(int64(1)), nil)
+				var v9 any = tmp8
+				_ = v9
+				var tmp10 any
+				tmp11 := lang.Identical(v9, nil)
+				if lang.IsTruthy(tmp11) {
+					tmp10 = v7
+				} else {
+					tmp12 := lang.NewVector()
+					tmp10 = tmp12
+				}
+				tmp3 = tmp10
+			} // end let
+			return tmp3
+		})
+		aotDirectFn20 = tmp1
+		var_ys_DOT_fs_glob = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_glob.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(180), kw_column, int(7), kw_end_DASH_line, int(180), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_pattern)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// l
+	{
+		tmp0 := sym_l
+		var tmp1 lang.ArityFn
+		tmp1 = lang.NewArityFn(
+			nil,
+			nil,
+			nil,
+			nil,
+			nil,
+			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
+				var v2 any = rest
+				_ = v2
+				var tmp3 any
+				tmp4 := lang.Count(v2)
+				tmp5 := aotExternalFn1(int64(1), tmp4)
+				if lang.IsTruthy(tmp5) {
+					tmp6 := lang.First(v2)
+					tmp7 := lang.Apply1(closed3, tmp6)
+					tmp3 = tmp7
+				} else {
+					tmp8 := aotExternalFn4(closed3, v2)
+					tmp3 = tmp8
+				}
+				return tmp3
+			}),
+			0,
+		)
+		aotDirectFn21 = tmp1
+		var_ys_DOT_fs_l = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_l.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(114), kw_column, int(6), kw_end_DASH_line, int(114), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// link?
+	{
+		tmp0 := sym_link_QMARK_
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "True if path is a symbolic link"
+			var tmp3 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp4 := aotDirectFn19(v2)
+				var v5 any = tmp4
+				_ = v5
+				var tmp6 any
+				if lang.IsTruthy(v5) {
+					var tmp7 any
+					{ // let
+						// let binding "info"
+						var v8 any = v5
+						_ = v8
+						var tmp9 any
+						{ // let
+							// let binding "mode"
+							tmp10, ok := lang.FieldOrMethod(v8, "Mode")
+							if !ok {
+								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v8, "Mode")))
+							}
+							var tmp11 any
+							switch reflect.TypeOf(tmp10).Kind() {
+							case reflect.Func:
+								tmp11 = lang.Apply(tmp10, nil)
+							default:
+								tmp11 = tmp10
+							}
+							var v12 any = tmp11
+							_ = v12
+							// let binding "link-bit"
+							tmp13 := lang.Numbers.And(v12, os5.ModeSymlink)
+							var v14 any = tmp13
+							_ = v14
+							tmp15 := lang.Numbers.IsZero(v14)
+							tmp16 := aotExternalFn5(tmp15)
+							tmp9 = tmp16
+						} // end let
+						tmp7 = tmp9
+					} // end let
+					tmp6 = tmp7
+				} else {
+					tmp6 = false
+				}
+				tmp3 = tmp6
+			} // end let
+			return tmp3
+		})
+		aotDirectFn22 = tmp1
+		var_ys_DOT_fs_link_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_link_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(76), kw_column, int(7), kw_end_DASH_line, int(76), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// ls
+	{
+		tmp0 := sym_ls
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "List directory contents"
+			var tmp3 any
+			{ // let
+				// let binding "vec__26"
+				tmp4 := lang.Apply1(os5.ReadDir, v2)
+				var v5 any = tmp4
+				_ = v5
+				// let binding "entries"
+				tmp6 := runtime.RT.NthDefault(v5, lang.IntCast(int64(0)), nil)
+				var v7 any = tmp6
+				_ = v7
+				// let binding "err"
+				tmp8 := runtime.RT.NthDefault(v5, lang.IntCast(int64(1)), nil)
+				var v9 any = tmp8
+				_ = v9
+				var tmp10 any
+				tmp11 := lang.Identical(v9, nil)
+				if lang.IsTruthy(tmp11) {
+					var tmp12 any
+					{ // let
+						// let binding "i"
+						var v13 any = int64(0)
+						_ = v13
+						// let binding "n"
+						tmp14 := lang.Count(v7)
+						var v15 any = tmp14
+						_ = v15
+						// let binding "result"
+						tmp16 := lang.NewVector()
+						var v17 any = tmp16
+						_ = v17
+						for {
+							var tmp18 any
+							tmp19 := lang.Numbers.Lt(v13, v15)
+							if lang.IsTruthy(tmp19) {
+								tmp21 := lang.Numbers.Inc(v13)
+								var tmp20 any = tmp21
+								var tmp22 any = v15
+								tmp24 := runtime.RT.Nth(v7, lang.IntCast(v13))
+								tmp25, ok := lang.FieldOrMethod(tmp24, "Name")
+								if !ok {
+									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", tmp24, "Name")))
+								}
+								var tmp26 any
+								switch reflect.TypeOf(tmp25).Kind() {
+								case reflect.Func:
+									tmp26 = lang.Apply(tmp25, nil)
+								default:
+									tmp26 = tmp25
+								}
+								tmp27 := lang.ConjAny(v17, tmp26)
+								var tmp23 any = tmp27
+								v13 = tmp20
+								v15 = tmp22
+								v17 = tmp23
+								continue
+							} else {
+								tmp18 = v17
+							}
+							tmp12 = tmp18
+							break
+						}
+					} // end let
+					tmp10 = tmp12
+				} else {
+					tmp13 := lang.NewVector()
+					tmp10 = tmp13
+				}
+				tmp3 = tmp10
+			} // end let
+			return tmp3
+		})
+		aotDirectFn23 = tmp1
+		var_ys_DOT_fs_ls = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_ls.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(185), kw_column, int(7), kw_end_DASH_line, int(185), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
 		})
 	}
 	// mkdir
@@ -467,11 +2078,10 @@ func LoadNS() {
 			tmp3 := lang.Apply2(os5.Mkdir, v2, int64(493))
 			return tmp3
 		})
-		aotDirectFn19 = tmp1
+		aotDirectFn24 = tmp1
 		var_ys_DOT_fs_mkdir = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion19 = var_ys_DOT_fs_mkdir.RootVersion()
 		var_ys_DOT_fs_mkdir.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(255), kw_column, int(7), kw_end_DASH_line, int(255), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(256), kw_column, int(7), kw_end_DASH_line, int(256), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
 		})
 	}
 	// mkdir-p
@@ -485,11 +2095,249 @@ func LoadNS() {
 			tmp3 := lang.Apply2(os5.MkdirAll, v2, int64(493))
 			return tmp3
 		})
-		aotDirectFn20 = tmp1
+		aotDirectFn25 = tmp1
 		var_ys_DOT_fs_mkdir_DASH_p = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion20 = var_ys_DOT_fs_mkdir_DASH_p.RootVersion()
 		var_ys_DOT_fs_mkdir_DASH_p.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(259), kw_column, int(7), kw_end_DASH_line, int(259), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(260), kw_column, int(7), kw_end_DASH_line, int(260), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// mktemp
+	{
+		tmp0 := sym_mktemp
+		var tmp1 lang.ArityFn
+		aotDirectFn26Arity0 = lang.FnFunc0(func() any {
+			tmp2 := aotDirectFn26Arity2("", "ys-")
+			return tmp2
+		})
+		aotDirectFn26Arity1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			tmp3 := aotDirectFn26Arity2("", v2)
+			return tmp3
+		})
+		aotDirectFn26Arity2 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
+			_ = v2
+			v3 := p1
+			_ = v3
+			var tmp4 any
+			{ // let
+				// let binding "vec__56"
+				tmp5 := lang.Apply2(os5.CreateTemp, v2, v3)
+				var v6 any = tmp5
+				_ = v6
+				// let binding "f"
+				tmp7 := runtime.RT.NthDefault(v6, lang.IntCast(int64(0)), nil)
+				var v8 any = tmp7
+				_ = v8
+				// let binding "err"
+				tmp9 := runtime.RT.NthDefault(v6, lang.IntCast(int64(1)), nil)
+				var v10 any = tmp9
+				_ = v10
+				var tmp11 any
+				tmp12 := lang.Identical(v10, nil)
+				if lang.IsTruthy(tmp12) {
+					tmp13, ok := lang.FieldOrMethod(v8, "Close")
+					if !ok {
+						panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v8, "Close")))
+					}
+					var tmp14 any
+					switch reflect.TypeOf(tmp13).Kind() {
+					case reflect.Func:
+						tmp14 = lang.Apply(tmp13, nil)
+					default:
+						tmp14 = tmp13
+					}
+					_ = tmp14
+					tmp15, ok := lang.FieldOrMethod(v8, "Name")
+					if !ok {
+						panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v8, "Name")))
+					}
+					var tmp16 any
+					switch reflect.TypeOf(tmp15).Kind() {
+					case reflect.Func:
+						tmp16 = lang.Apply(tmp15, nil)
+					default:
+						tmp16 = tmp15
+					}
+					tmp17 := aotExternalFn18(tmp16)
+					tmp11 = tmp17
+				} else {
+				}
+				tmp4 = tmp11
+			} // end let
+			return tmp4
+		})
+		tmp1 = lang.NewArityFn(
+			aotDirectFn26Arity0,
+			aotDirectFn26Arity1,
+			aotDirectFn26Arity2,
+			nil,
+			nil,
+			nil,
+			0,
+		)
+		aotDirectFn26 = tmp1
+		var_ys_DOT_fs_mktemp = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_mktemp.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMapUniqueKeys(kw_file, "ys/fs.glj", kw_line, int(295), kw_column, int(7), kw_end_DASH_line, int(295), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_prefix), lang.NewVector(sym_dir, sym_prefix)), kw_doc, "Create temporary file and return path", kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// mktemp-d
+	{
+		tmp0 := sym_mktemp_DASH_d
+		var tmp1 lang.ArityFn
+		aotDirectFn27Arity0 = lang.FnFunc0(func() any {
+			tmp2 := aotDirectFn27Arity2("", "ys-")
+			return tmp2
+		})
+		aotDirectFn27Arity1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			tmp3 := aotDirectFn27Arity2("", v2)
+			return tmp3
+		})
+		aotDirectFn27Arity2 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
+			_ = v2
+			v3 := p1
+			_ = v3
+			var tmp4 any
+			{ // let
+				// let binding "vec__59"
+				tmp5 := lang.Apply2(os5.MkdirTemp, v2, v3)
+				var v6 any = tmp5
+				_ = v6
+				// let binding "path"
+				tmp7 := runtime.RT.NthDefault(v6, lang.IntCast(int64(0)), nil)
+				var v8 any = tmp7
+				_ = v8
+				// let binding "err"
+				tmp9 := runtime.RT.NthDefault(v6, lang.IntCast(int64(1)), nil)
+				var v10 any = tmp9
+				_ = v10
+				var tmp11 any
+				tmp12 := lang.Identical(v10, nil)
+				if lang.IsTruthy(tmp12) {
+					tmp11 = v8
+				} else {
+				}
+				tmp4 = tmp11
+			} // end let
+			return tmp4
+		})
+		tmp1 = lang.NewArityFn(
+			aotDirectFn27Arity0,
+			aotDirectFn27Arity1,
+			aotDirectFn27Arity2,
+			nil,
+			nil,
+			nil,
+			0,
+		)
+		aotDirectFn27 = tmp1
+		var_ys_DOT_fs_mktemp_DASH_d = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_mktemp_DASH_d.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMapUniqueKeys(kw_file, "ys/fs.glj", kw_line, int(305), kw_column, int(7), kw_end_DASH_line, int(305), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_prefix), lang.NewVector(sym_dir, sym_prefix)), kw_doc, "Create temporary directory and return path", kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// mtime
+	{
+		tmp0 := sym_mtime
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Return modification time in milliseconds"
+			var tmp3 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp4 := aotDirectFn18(v2)
+				var v5 any = tmp4
+				_ = v5
+				var tmp6 any
+				if lang.IsTruthy(v5) {
+					var tmp7 any
+					{ // let
+						// let binding "info"
+						var v8 any = v5
+						_ = v8
+						tmp9, ok := lang.FieldOrMethod(v8, "ModTime")
+						if !ok {
+							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v8, "ModTime")))
+						}
+						var tmp10 any
+						switch reflect.TypeOf(tmp9).Kind() {
+						case reflect.Func:
+							tmp10 = lang.Apply(tmp9, nil)
+						default:
+							tmp10 = tmp9
+						}
+						tmp11, ok := lang.FieldOrMethod(tmp10, "UnixMilli")
+						if !ok {
+							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", tmp10, "UnixMilli")))
+						}
+						var tmp12 any
+						switch reflect.TypeOf(tmp11).Kind() {
+						case reflect.Func:
+							tmp12 = lang.Apply(tmp11, nil)
+						default:
+							tmp12 = tmp11
+						}
+						tmp7 = tmp12
+					} // end let
+					tmp6 = tmp7
+				} else {
+				}
+				tmp3 = tmp6
+			} // end let
+			return tmp3
+		})
+		aotDirectFn28 = tmp1
+		var_ys_DOT_fs_mtime = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_mtime.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(141), kw_column, int(7), kw_end_DASH_line, int(141), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// multi
+	{
+		tmp0 := sym_multi
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Wrap single-path function to support multiple paths"
+			var tmp3 lang.ArityFn
+			tmp3 = lang.NewArityFn(
+				nil,
+				nil,
+				nil,
+				nil,
+				nil,
+				lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
+					var v4 any = rest
+					_ = v4
+					var tmp5 any
+					tmp6 := lang.Count(v4)
+					tmp7 := aotExternalFn1(int64(1), tmp6)
+					if lang.IsTruthy(tmp7) {
+						tmp8 := lang.First(v4)
+						tmp9 := lang.Apply1(v2, tmp8)
+						tmp5 = tmp9
+					} else {
+						tmp10 := aotExternalFn4(v2, v4)
+						tmp5 = tmp10
+					}
+					return tmp5
+				}),
+				0,
+			)
+			return tmp3
+		})
+		aotDirectFn29 = tmp1
+		var_ys_DOT_fs_multi = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_multi.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMapUniqueKeys(kw_file, "ys/fs.glj", kw_line, int(13), kw_column, int(8), kw_end_DASH_line, int(13), kw_end_DASH_column, int(12), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_f)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
 		})
 	}
 	// mv
@@ -505,11 +2353,288 @@ func LoadNS() {
 			tmp4 := lang.Apply2(os5.Rename, v2, v3)
 			return tmp4
 		})
-		aotDirectFn23 = tmp1
+		aotDirectFn30 = tmp1
 		var_ys_DOT_fs_mv = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion23 = var_ys_DOT_fs_mv.RootVersion()
 		var_ys_DOT_fs_mv.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(263), kw_column, int(7), kw_end_DASH_line, int(263), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_src, sym_dst)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(264), kw_column, int(7), kw_end_DASH_line, int(264), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_src, sym_dst)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// path
+	{
+		tmp0 := sym_path
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Return canonical path (follows symlinks)"
+			var tmp3 any
+			{ // let
+				// let binding "vec__29"
+				tmp4 := lang.Apply1(filepath4.EvalSymlinks, v2)
+				var v5 any = tmp4
+				_ = v5
+				// let binding "result"
+				tmp6 := runtime.RT.NthDefault(v5, lang.IntCast(int64(0)), nil)
+				var v7 any = tmp6
+				_ = v7
+				// let binding "err"
+				tmp8 := runtime.RT.NthDefault(v5, lang.IntCast(int64(1)), nil)
+				var v9 any = tmp8
+				_ = v9
+				var tmp10 any
+				tmp11 := lang.Identical(v9, nil)
+				if lang.IsTruthy(tmp11) {
+					tmp10 = v7
+				} else {
+					tmp10 = v2
+				}
+				tmp3 = tmp10
+			} // end let
+			return tmp3
+		})
+		aotDirectFn31 = tmp1
+		var_ys_DOT_fs_path = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_path.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(195), kw_column, int(7), kw_end_DASH_line, int(195), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_p)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// r
+	{
+		tmp0 := sym_r
+		var tmp1 lang.ArityFn
+		tmp1 = lang.NewArityFn(
+			nil,
+			nil,
+			nil,
+			nil,
+			nil,
+			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
+				var v2 any = rest
+				_ = v2
+				var tmp3 any
+				tmp4 := lang.Count(v2)
+				tmp5 := aotExternalFn1(int64(1), tmp4)
+				if lang.IsTruthy(tmp5) {
+					tmp6 := lang.First(v2)
+					tmp7 := lang.Apply1(closed4, tmp6)
+					tmp3 = tmp7
+				} else {
+					tmp8 := aotExternalFn4(closed4, v2)
+					tmp3 = tmp8
+				}
+				return tmp3
+			}),
+			0,
+		)
+		aotDirectFn32 = tmp1
+		var_ys_DOT_fs_r = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_r.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(115), kw_column, int(6), kw_end_DASH_line, int(115), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// read
+	{
+		tmp0 := sym_read
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Read file contents as string"
+			var tmp3 any
+			{ // let
+				// let binding "vec__41"
+				tmp4 := lang.Apply1(os5.ReadFile, v2)
+				var v5 any = tmp4
+				_ = v5
+				// let binding "bytes"
+				tmp6 := runtime.RT.NthDefault(v5, lang.IntCast(int64(0)), nil)
+				var v7 any = tmp6
+				_ = v7
+				// let binding "err"
+				tmp8 := runtime.RT.NthDefault(v5, lang.IntCast(int64(1)), nil)
+				var v9 any = tmp8
+				_ = v9
+				var tmp10 any
+				tmp11 := lang.Identical(v9, nil)
+				if lang.IsTruthy(tmp11) {
+					tmp12 := lang.Apply2(fmt.Sprintf, "%s", v7)
+					tmp10 = tmp12
+				} else {
+					tmp13, ok := pkgmap6.Get("util.die")
+					if !ok {
+						panic(lang.NewIllegalArgumentError("unable to resolve host form: util.die"))
+					}
+					tmp14 := lang.Apply2(tmp13, "Failed to read file: ", v2)
+					tmp10 = tmp14
+				}
+				tmp3 = tmp10
+			} // end let
+			return tmp3
+		})
+		aotDirectFn33 = tmp1
+		var_ys_DOT_fs_read = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_read.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(216), kw_column, int(7), kw_end_DASH_line, int(216), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// read?
+	{
+		tmp0 := sym_read_QMARK_
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "True if path is readable"
+			var tmp3 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp4 := aotDirectFn18(v2)
+				var v5 any = tmp4
+				_ = v5
+				var tmp6 any
+				if lang.IsTruthy(v5) {
+					var tmp7 any
+					{ // let
+						// let binding "info"
+						var v8 any = v5
+						_ = v8
+						var tmp9 any
+						{ // let
+							// let binding "mode"
+							tmp10, ok := lang.FieldOrMethod(v8, "Mode")
+							if !ok {
+								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v8, "Mode")))
+							}
+							var tmp11 any
+							switch reflect.TypeOf(tmp10).Kind() {
+							case reflect.Func:
+								tmp11 = lang.Apply(tmp10, nil)
+							default:
+								tmp11 = tmp10
+							}
+							var v12 any = tmp11
+							_ = v12
+							// let binding "read-bits"
+							tmp13 := lang.Numbers.And(v12, int64(292))
+							var v14 any = tmp13
+							_ = v14
+							tmp15 := lang.Numbers.IsZero(v14)
+							tmp16 := aotExternalFn5(tmp15)
+							tmp9 = tmp16
+						} // end let
+						tmp7 = tmp9
+					} // end let
+					tmp6 = tmp7
+				} else {
+					tmp6 = false
+				}
+				tmp3 = tmp6
+			} // end let
+			return tmp3
+		})
+		aotDirectFn34 = tmp1
+		var_ys_DOT_fs_read_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_read_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(84), kw_column, int(7), kw_end_DASH_line, int(84), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// readlink
+	{
+		tmp0 := sym_readlink
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Read symbolic link target"
+			var tmp3 any
+			{ // let
+				// let binding "vec__32"
+				tmp4 := lang.Apply1(os5.Readlink, v2)
+				var v5 any = tmp4
+				_ = v5
+				// let binding "result"
+				tmp6 := runtime.RT.NthDefault(v5, lang.IntCast(int64(0)), nil)
+				var v7 any = tmp6
+				_ = v7
+				// let binding "err"
+				tmp8 := runtime.RT.NthDefault(v5, lang.IntCast(int64(1)), nil)
+				var v9 any = tmp8
+				_ = v9
+				var tmp10 any
+				tmp11 := lang.Identical(v9, nil)
+				if lang.IsTruthy(tmp11) {
+					tmp10 = v7
+				} else {
+				}
+				tmp3 = tmp10
+			} // end let
+			return tmp3
+		})
+		aotDirectFn35 = tmp1
+		var_ys_DOT_fs_readlink = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_readlink.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(200), kw_column, int(7), kw_end_DASH_line, int(200), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// rel
+	{
+		tmp0 := sym_rel
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Return path relative to current directory"
+			var tmp3 any
+			{ // let
+				// let binding "cwd-path"
+				tmp4 := aotDirectFn6()
+				var v5 any = tmp4
+				_ = v5
+				// let binding "vec__35"
+				tmp6 := lang.Apply2(filepath4.Rel, v5, v2)
+				var v7 any = tmp6
+				_ = v7
+				// let binding "result"
+				tmp8 := runtime.RT.NthDefault(v7, lang.IntCast(int64(0)), nil)
+				var v9 any = tmp8
+				_ = v9
+				// let binding "err"
+				tmp10 := runtime.RT.NthDefault(v7, lang.IntCast(int64(1)), nil)
+				var v11 any = tmp10
+				_ = v11
+				var tmp12 any
+				tmp13 := lang.Identical(v11, nil)
+				if lang.IsTruthy(tmp13) {
+					tmp12 = v9
+				} else {
+					tmp12 = v2
+				}
+				tmp3 = tmp12
+			} // end let
+			return tmp3
+		})
+		aotDirectFn36 = tmp1
+		var_ys_DOT_fs_rel = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_rel.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(205), kw_column, int(7), kw_end_DASH_line, int(205), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// rel?
+	{
+		tmp0 := sym_rel_QMARK_
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "True if path is relative"
+			tmp3 := lang.Apply1(filepath4.IsAbs, v2)
+			tmp4 := aotExternalFn5(tmp3)
+			return tmp4
+		})
+		aotDirectFn37 = tmp1
+		var_ys_DOT_fs_rel_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_rel_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(92), kw_column, int(7), kw_end_DASH_line, int(92), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
 		})
 	}
 	// rm
@@ -523,11 +2648,10 @@ func LoadNS() {
 			tmp3 := lang.Apply1(os5.Remove, v2)
 			return tmp3
 		})
-		aotDirectFn30 = tmp1
+		aotDirectFn38 = tmp1
 		var_ys_DOT_fs_rm = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion30 = var_ys_DOT_fs_rm.RootVersion()
 		var_ys_DOT_fs_rm.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(267), kw_column, int(7), kw_end_DASH_line, int(267), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(268), kw_column, int(7), kw_end_DASH_line, int(268), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
 		})
 	}
 	// rm-f
@@ -555,11 +2679,10 @@ func LoadNS() {
 			}()
 			return tmp3
 		})
-		aotDirectFn31 = tmp1
+		aotDirectFn39 = tmp1
 		var_ys_DOT_fs_rm_DASH_f = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion31 = var_ys_DOT_fs_rm_DASH_f.RootVersion()
 		var_ys_DOT_fs_rm_DASH_f.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(271), kw_column, int(7), kw_end_DASH_line, int(271), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(272), kw_column, int(7), kw_end_DASH_line, int(272), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
 		})
 	}
 	// rm-r
@@ -573,11 +2696,10 @@ func LoadNS() {
 			tmp3 := lang.Apply1(os5.RemoveAll, v2)
 			return tmp3
 		})
-		aotDirectFn32 = tmp1
+		aotDirectFn40 = tmp1
 		var_ys_DOT_fs_rm_DASH_r = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion32 = var_ys_DOT_fs_rm_DASH_r.RootVersion()
 		var_ys_DOT_fs_rm_DASH_r.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(277), kw_column, int(7), kw_end_DASH_line, int(277), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(278), kw_column, int(7), kw_end_DASH_line, int(278), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
 		})
 	}
 	// rmdir
@@ -591,11 +2713,252 @@ func LoadNS() {
 			tmp3 := lang.Apply1(os5.Remove, v2)
 			return tmp3
 		})
-		aotDirectFn33 = tmp1
+		aotDirectFn41 = tmp1
 		var_ys_DOT_fs_rmdir = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion33 = var_ys_DOT_fs_rmdir.RootVersion()
 		var_ys_DOT_fs_rmdir.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(281), kw_column, int(7), kw_end_DASH_line, int(281), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(282), kw_column, int(7), kw_end_DASH_line, int(282), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// s
+	{
+		tmp0 := sym_s
+		var tmp1 lang.ArityFn
+		tmp1 = lang.NewArityFn(
+			nil,
+			nil,
+			nil,
+			nil,
+			nil,
+			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
+				var v2 any = rest
+				_ = v2
+				var tmp3 any
+				tmp4 := lang.Count(v2)
+				tmp5 := aotExternalFn1(int64(1), tmp4)
+				if lang.IsTruthy(tmp5) {
+					tmp6 := lang.First(v2)
+					tmp7 := lang.Apply1(closed5, tmp6)
+					tmp3 = tmp7
+				} else {
+					tmp8 := aotExternalFn4(closed5, v2)
+					tmp3 = tmp8
+				}
+				return tmp3
+			}),
+			0,
+		)
+		aotDirectFn42 = tmp1
+		var_ys_DOT_fs_s = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_s.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(116), kw_column, int(6), kw_end_DASH_line, int(116), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// size?
+	{
+		tmp0 := sym_size_QMARK_
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "True if file size > 0"
+			var tmp3 any
+			{ // let
+				// let binding "temp__0__auto__"
+				tmp4 := aotDirectFn18(v2)
+				var v5 any = tmp4
+				_ = v5
+				var tmp6 any
+				if lang.IsTruthy(v5) {
+					var tmp7 any
+					{ // let
+						// let binding "info"
+						var v8 any = v5
+						_ = v8
+						tmp9, ok := lang.FieldOrMethod(v8, "Size")
+						if !ok {
+							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v8, "Size")))
+						}
+						var tmp10 any
+						switch reflect.TypeOf(tmp9).Kind() {
+						case reflect.Func:
+							tmp10 = lang.Apply(tmp9, nil)
+						default:
+							tmp10 = tmp9
+						}
+						tmp11 := lang.Numbers.Gt(tmp10, int64(0))
+						tmp7 = tmp11
+					} // end let
+					tmp6 = tmp7
+				} else {
+					tmp6 = false
+				}
+				tmp3 = tmp6
+			} // end let
+			return tmp3
+		})
+		aotDirectFn43 = tmp1
+		var_ys_DOT_fs_size_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_size_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(96), kw_column, int(7), kw_end_DASH_line, int(96), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// touch
+	{
+		tmp0 := sym_touch
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Update file timestamp or create if doesn't exist"
+			var tmp3 any
+			tmp4 := aotDirectFn13(v2)
+			if lang.IsTruthy(tmp4) {
+				var tmp5 any
+				{ // let
+					// let binding "now"
+					tmp6 := time7.Now()
+					var v7 any = tmp6
+					_ = v7
+					tmp8 := lang.Apply3(os5.Chtimes, v2, v7, v7)
+					tmp5 = tmp8
+				} // end let
+				tmp3 = tmp5
+			} else {
+				var tmp6 any
+				{ // let
+					// let binding "vec__53"
+					tmp7 := lang.Apply1(os5.Create, v2)
+					var v8 any = tmp7
+					_ = v8
+					// let binding "f"
+					tmp9 := runtime.RT.NthDefault(v8, lang.IntCast(int64(0)), nil)
+					var v10 any = tmp9
+					_ = v10
+					// let binding "err"
+					tmp11 := runtime.RT.NthDefault(v8, lang.IntCast(int64(1)), nil)
+					var v12 any = tmp11
+					_ = v12
+					var tmp13 any
+					tmp14 := lang.Identical(v12, nil)
+					if lang.IsTruthy(tmp14) {
+						tmp15, ok := lang.FieldOrMethod(v10, "Close")
+						if !ok {
+							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v10, "Close")))
+						}
+						var tmp16 any
+						switch reflect.TypeOf(tmp15).Kind() {
+						case reflect.Func:
+							tmp16 = lang.Apply(tmp15, nil)
+						default:
+							tmp16 = tmp15
+						}
+						tmp13 = tmp16
+					} else {
+					}
+					tmp6 = tmp13
+				} // end let
+				tmp3 = tmp6
+			}
+			return tmp3
+		})
+		aotDirectFn44 = tmp1
+		var_ys_DOT_fs_touch = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_touch.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(286), kw_column, int(7), kw_end_DASH_line, int(286), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// w
+	{
+		tmp0 := sym_w
+		var tmp1 lang.ArityFn
+		tmp1 = lang.NewArityFn(
+			nil,
+			nil,
+			nil,
+			nil,
+			nil,
+			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
+				var v2 any = rest
+				_ = v2
+				var tmp3 any
+				tmp4 := lang.Count(v2)
+				tmp5 := aotExternalFn1(int64(1), tmp4)
+				if lang.IsTruthy(tmp5) {
+					tmp6 := lang.First(v2)
+					tmp7 := lang.Apply1(closed6, tmp6)
+					tmp3 = tmp7
+				} else {
+					tmp8 := aotExternalFn4(closed6, v2)
+					tmp3 = tmp8
+				}
+				return tmp3
+			}),
+			0,
+		)
+		aotDirectFn45 = tmp1
+		var_ys_DOT_fs_w = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_w.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(117), kw_column, int(6), kw_end_DASH_line, int(117), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// when-str
+	{
+		tmp0 := sym_when_DASH_str
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Convert to string or return nil"
+			var tmp3 any
+			if lang.IsTruthy(v2) {
+				tmp4 := aotExternalFn18(v2)
+				tmp3 = tmp4
+			} else {
+			}
+			return tmp3
+		})
+		aotDirectFn46 = tmp1
+		var_ys_DOT_fs_when_DASH_str = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_when_DASH_str.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMapUniqueKeys(kw_file, "ys/fs.glj", kw_line, int(9), kw_column, int(8), kw_end_DASH_line, int(9), kw_end_DASH_column, int(15), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		})
+	}
+	// which
+	{
+		tmp0 := sym_which
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			_ = "Find executable in PATH"
+			var tmp3 any
+			{ // let
+				// let binding "vec__38"
+				tmp4 := lang.Apply1(exec8.LookPath, v2)
+				var v5 any = tmp4
+				_ = v5
+				// let binding "result"
+				tmp6 := runtime.RT.NthDefault(v5, lang.IntCast(int64(0)), nil)
+				var v7 any = tmp6
+				_ = v7
+				// let binding "err"
+				tmp8 := runtime.RT.NthDefault(v5, lang.IntCast(int64(1)), nil)
+				var v9 any = tmp8
+				_ = v9
+				var tmp10 any
+				tmp11 := lang.Identical(v9, nil)
+				if lang.IsTruthy(tmp11) {
+					tmp10 = v7
+				} else {
+				}
+				tmp3 = tmp10
+			} // end let
+			return tmp3
+		})
+		aotDirectFn47 = tmp1
+		var_ys_DOT_fs_which = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_which.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(211), kw_column, int(7), kw_end_DASH_line, int(211), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_name)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
 		})
 	}
 	// write
@@ -632,1296 +2995,87 @@ func LoadNS() {
 				tmp11 := lang.Identical(v9, nil)
 				if lang.IsTruthy(tmp11) {
 				} else {
-					tmp12 := lang.Apply2(nil, "Failed to write file: ", v2)
-					tmp10 = tmp12
+					tmp12, ok := pkgmap6.Get("util.die")
+					if !ok {
+						panic(lang.NewIllegalArgumentError("unable to resolve host form: util.die"))
+					}
+					tmp13 := lang.Apply2(tmp12, "Failed to write file: ", v2)
+					tmp10 = tmp13
 				}
 				tmp4 = tmp10
 			} // end let
 			return tmp4
 		})
-		aotDirectFn38 = tmp1
+		aotDirectFn48 = tmp1
 		var_ys_DOT_fs_write = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion38 = var_ys_DOT_fs_write.RootVersion()
 		var_ys_DOT_fs_write.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(222), kw_column, int(7), kw_end_DASH_line, int(222), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path, sym_content)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(223), kw_column, int(7), kw_end_DASH_line, int(223), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path, sym_content)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
 		})
 	}
-	var closed0 any
+	// write?
 	{
-		var tmp0 lang.FnFunc1
-		tmp0 = lang.FnFunc1(func(p0 any) any {
-			v1 := p0
-			_ = v1
-			_ = "True if path is a directory"
-			var tmp2 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp3 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp4 any
-				if !tmp3 {
-					tmp4 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp5 any
-				if tmp3 {
-					tmp5 = aotDirectFn14(v1)
-				} else {
-					tmp5 = lang.Apply1(tmp4, v1)
-				}
-				var v6 any = tmp5
-				_ = v6
-				var tmp7 any
-				if lang.IsTruthy(v6) {
-					var tmp8 any
-					{ // let
-						// let binding "info"
-						var v9 any = v6
-						_ = v9
-						tmp10, ok := lang.FieldOrMethod(v9, "IsDir")
-						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v9, "IsDir")))
-						}
-						var tmp11 any
-						switch reflect.TypeOf(tmp10).Kind() {
-						case reflect.Func:
-							tmp11 = lang.Apply(tmp10, nil)
-						default:
-							tmp11 = tmp10
-						}
-						tmp8 = tmp11
-					} // end let
-					tmp7 = tmp8
-				} else {
-					tmp7 = false
-				}
-				tmp2 = tmp7
-			} // end let
-			return tmp2
-		})
-		closed0 = tmp0
-	}
-	var closed1 any
-	{
-		var tmp0 lang.FnFunc1
-		tmp0 = lang.FnFunc1(func(p0 any) any {
-			v1 := p0
-			_ = v1
-			_ = "True if path exists"
-			tmp2 := checkDerefVar(var_clojure_DOT_core_not)
-			tmp3 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-			var tmp4 any
-			if !tmp3 {
-				tmp4 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-			}
-			var tmp5 any
-			if tmp3 {
-				tmp5 = aotDirectFn14(v1)
-			} else {
-				tmp5 = lang.Apply1(tmp4, v1)
-			}
-			tmp6 := lang.Identical(tmp5, nil)
-			tmp7 := lang.Apply1(tmp2, tmp6)
-			return tmp7
-		})
-		closed1 = tmp0
-	}
-	var closed2 any
-	{
-		var tmp0 lang.FnFunc1
-		tmp0 = lang.FnFunc1(func(p0 any) any {
-			v1 := p0
-			_ = v1
-			_ = "True if path is a regular file"
-			var tmp2 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp3 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp4 any
-				if !tmp3 {
-					tmp4 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp5 any
-				if tmp3 {
-					tmp5 = aotDirectFn14(v1)
-				} else {
-					tmp5 = lang.Apply1(tmp4, v1)
-				}
-				var v6 any = tmp5
-				_ = v6
-				var tmp7 any
-				if lang.IsTruthy(v6) {
-					var tmp8 any
-					{ // let
-						// let binding "info"
-						var v9 any = v6
-						_ = v9
-						var tmp10 any
-						{ // let
-							// let binding "mode"
-							tmp11, ok := lang.FieldOrMethod(v9, "Mode")
-							if !ok {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v9, "Mode")))
-							}
-							var tmp12 any
-							switch reflect.TypeOf(tmp11).Kind() {
-							case reflect.Func:
-								tmp12 = lang.Apply(tmp11, nil)
-							default:
-								tmp12 = tmp11
-							}
-							var v13 any = tmp12
-							_ = v13
-							tmp14, ok := lang.FieldOrMethod(v13, "IsRegular")
-							if !ok {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v13, "IsRegular")))
-							}
-							var tmp15 any
-							switch reflect.TypeOf(tmp14).Kind() {
-							case reflect.Func:
-								tmp15 = lang.Apply(tmp14, nil)
-							default:
-								tmp15 = tmp14
-							}
-							tmp10 = tmp15
-						} // end let
-						tmp8 = tmp10
-					} // end let
-					tmp7 = tmp8
-				} else {
-					tmp7 = false
-				}
-				tmp2 = tmp7
-			} // end let
-			return tmp2
-		})
-		closed2 = tmp0
-	}
-	var closed3 any
-	{
-		var tmp0 lang.FnFunc1
-		tmp0 = lang.FnFunc1(func(p0 any) any {
-			v1 := p0
-			_ = v1
-			_ = "True if path is a symbolic link"
-			var tmp2 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp3 := var_ys_DOT_fs_get_DASH_link_DASH_info.RootVersion() == aotRootVersion15 && !var_ys_DOT_fs_get_DASH_link_DASH_info.IsMacro()
-				var tmp4 any
-				if !tmp3 {
-					tmp4 = checkDerefVar(var_ys_DOT_fs_get_DASH_link_DASH_info)
-				}
-				var tmp5 any
-				if tmp3 {
-					tmp5 = aotDirectFn15(v1)
-				} else {
-					tmp5 = lang.Apply1(tmp4, v1)
-				}
-				var v6 any = tmp5
-				_ = v6
-				var tmp7 any
-				if lang.IsTruthy(v6) {
-					var tmp8 any
-					{ // let
-						// let binding "info"
-						var v9 any = v6
-						_ = v9
-						var tmp10 any
-						{ // let
-							// let binding "mode"
-							tmp11, ok := lang.FieldOrMethod(v9, "Mode")
-							if !ok {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v9, "Mode")))
-							}
-							var tmp12 any
-							switch reflect.TypeOf(tmp11).Kind() {
-							case reflect.Func:
-								tmp12 = lang.Apply(tmp11, nil)
-							default:
-								tmp12 = tmp11
-							}
-							var v13 any = tmp12
-							_ = v13
-							// let binding "link-bit"
-							tmp14 := lang.Numbers.And(v13, os5.ModeSymlink)
-							var v15 any = tmp14
-							_ = v15
-							tmp16 := checkDerefVar(var_clojure_DOT_core_not)
-							tmp17 := lang.Numbers.IsZero(v15)
-							tmp18 := lang.Apply1(tmp16, tmp17)
-							tmp10 = tmp18
-						} // end let
-						tmp8 = tmp10
-					} // end let
-					tmp7 = tmp8
-				} else {
-					tmp7 = false
-				}
-				tmp2 = tmp7
-			} // end let
-			return tmp2
-		})
-		closed3 = tmp0
-	}
-	var closed4 any
-	{
-		var tmp0 lang.FnFunc1
-		tmp0 = lang.FnFunc1(func(p0 any) any {
-			v1 := p0
-			_ = v1
-			_ = "True if path is readable"
-			var tmp2 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp3 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp4 any
-				if !tmp3 {
-					tmp4 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp5 any
-				if tmp3 {
-					tmp5 = aotDirectFn14(v1)
-				} else {
-					tmp5 = lang.Apply1(tmp4, v1)
-				}
-				var v6 any = tmp5
-				_ = v6
-				var tmp7 any
-				if lang.IsTruthy(v6) {
-					var tmp8 any
-					{ // let
-						// let binding "info"
-						var v9 any = v6
-						_ = v9
-						var tmp10 any
-						{ // let
-							// let binding "mode"
-							tmp11, ok := lang.FieldOrMethod(v9, "Mode")
-							if !ok {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v9, "Mode")))
-							}
-							var tmp12 any
-							switch reflect.TypeOf(tmp11).Kind() {
-							case reflect.Func:
-								tmp12 = lang.Apply(tmp11, nil)
-							default:
-								tmp12 = tmp11
-							}
-							var v13 any = tmp12
-							_ = v13
-							// let binding "read-bits"
-							tmp14 := lang.Numbers.And(v13, int64(292))
-							var v15 any = tmp14
-							_ = v15
-							tmp16 := checkDerefVar(var_clojure_DOT_core_not)
-							tmp17 := lang.Numbers.IsZero(v15)
-							tmp18 := lang.Apply1(tmp16, tmp17)
-							tmp10 = tmp18
-						} // end let
-						tmp8 = tmp10
-					} // end let
-					tmp7 = tmp8
-				} else {
-					tmp7 = false
-				}
-				tmp2 = tmp7
-			} // end let
-			return tmp2
-		})
-		closed4 = tmp0
-	}
-	var closed5 any
-	{
-		var tmp0 lang.FnFunc1
-		tmp0 = lang.FnFunc1(func(p0 any) any {
-			v1 := p0
-			_ = v1
-			_ = "True if file size > 0"
-			var tmp2 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp3 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp4 any
-				if !tmp3 {
-					tmp4 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp5 any
-				if tmp3 {
-					tmp5 = aotDirectFn14(v1)
-				} else {
-					tmp5 = lang.Apply1(tmp4, v1)
-				}
-				var v6 any = tmp5
-				_ = v6
-				var tmp7 any
-				if lang.IsTruthy(v6) {
-					var tmp8 any
-					{ // let
-						// let binding "info"
-						var v9 any = v6
-						_ = v9
-						tmp10, ok := lang.FieldOrMethod(v9, "Size")
-						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v9, "Size")))
-						}
-						var tmp11 any
-						switch reflect.TypeOf(tmp10).Kind() {
-						case reflect.Func:
-							tmp11 = lang.Apply(tmp10, nil)
-						default:
-							tmp11 = tmp10
-						}
-						tmp12 := lang.Numbers.Gt(tmp11, int64(0))
-						tmp8 = tmp12
-					} // end let
-					tmp7 = tmp8
-				} else {
-					tmp7 = false
-				}
-				tmp2 = tmp7
-			} // end let
-			return tmp2
-		})
-		closed5 = tmp0
-	}
-	var closed6 any
-	{
-		var tmp0 lang.FnFunc1
-		tmp0 = lang.FnFunc1(func(p0 any) any {
-			v1 := p0
-			_ = v1
+		tmp0 := sym_write_QMARK_
+		var tmp1 lang.FnFunc1
+		tmp1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
 			_ = "True if path is writable"
-			var tmp2 any
+			var tmp3 any
 			{ // let
 				// let binding "temp__0__auto__"
-				tmp3 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp4 any
-				if !tmp3 {
-					tmp4 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp5 any
-				if tmp3 {
-					tmp5 = aotDirectFn14(v1)
-				} else {
-					tmp5 = lang.Apply1(tmp4, v1)
-				}
-				var v6 any = tmp5
-				_ = v6
-				var tmp7 any
-				if lang.IsTruthy(v6) {
-					var tmp8 any
+				tmp4 := aotDirectFn18(v2)
+				var v5 any = tmp4
+				_ = v5
+				var tmp6 any
+				if lang.IsTruthy(v5) {
+					var tmp7 any
 					{ // let
 						// let binding "info"
-						var v9 any = v6
-						_ = v9
-						var tmp10 any
+						var v8 any = v5
+						_ = v8
+						var tmp9 any
 						{ // let
 							// let binding "mode"
-							tmp11, ok := lang.FieldOrMethod(v9, "Mode")
+							tmp10, ok := lang.FieldOrMethod(v8, "Mode")
 							if !ok {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v9, "Mode")))
+								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v8, "Mode")))
 							}
-							var tmp12 any
-							switch reflect.TypeOf(tmp11).Kind() {
+							var tmp11 any
+							switch reflect.TypeOf(tmp10).Kind() {
 							case reflect.Func:
-								tmp12 = lang.Apply(tmp11, nil)
+								tmp11 = lang.Apply(tmp10, nil)
 							default:
-								tmp12 = tmp11
+								tmp11 = tmp10
 							}
-							var v13 any = tmp12
-							_ = v13
+							var v12 any = tmp11
+							_ = v12
 							// let binding "write-bits"
-							tmp14 := lang.Numbers.And(v13, int64(146))
-							var v15 any = tmp14
-							_ = v15
-							tmp16 := checkDerefVar(var_clojure_DOT_core_not)
-							tmp17 := lang.Numbers.IsZero(v15)
-							tmp18 := lang.Apply1(tmp16, tmp17)
-							tmp10 = tmp18
-						} // end let
-						tmp8 = tmp10
-					} // end let
-					tmp7 = tmp8
-				} else {
-					tmp7 = false
-				}
-				tmp2 = tmp7
-			} // end let
-			return tmp2
-		})
-		closed6 = tmp0
-	}
-	var closed7 any
-	{
-		var tmp0 lang.FnFunc1
-		tmp0 = lang.FnFunc1(func(p0 any) any {
-			v1 := p0
-			_ = v1
-			_ = "True if path is executable"
-			var tmp2 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp3 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp4 any
-				if !tmp3 {
-					tmp4 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp5 any
-				if tmp3 {
-					tmp5 = aotDirectFn14(v1)
-				} else {
-					tmp5 = lang.Apply1(tmp4, v1)
-				}
-				var v6 any = tmp5
-				_ = v6
-				var tmp7 any
-				if lang.IsTruthy(v6) {
-					var tmp8 any
-					{ // let
-						// let binding "info"
-						var v9 any = v6
-						_ = v9
-						var tmp10 any
-						{ // let
-							// let binding "mode"
-							tmp11, ok := lang.FieldOrMethod(v9, "Mode")
-							if !ok {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v9, "Mode")))
-							}
-							var tmp12 any
-							switch reflect.TypeOf(tmp11).Kind() {
-							case reflect.Func:
-								tmp12 = lang.Apply(tmp11, nil)
-							default:
-								tmp12 = tmp11
-							}
-							var v13 any = tmp12
-							_ = v13
-							// let binding "exec-bits"
-							tmp14 := lang.Numbers.And(v13, int64(73))
-							var v15 any = tmp14
-							_ = v15
-							tmp16 := checkDerefVar(var_clojure_DOT_core_not)
-							tmp17 := lang.Numbers.IsZero(v15)
-							tmp18 := lang.Apply1(tmp16, tmp17)
-							tmp10 = tmp18
-						} // end let
-						tmp8 = tmp10
-					} // end let
-					tmp7 = tmp8
-				} else {
-					tmp7 = false
-				}
-				tmp2 = tmp7
-			} // end let
-			return tmp2
-		})
-		closed7 = tmp0
-	}
-	var closed8 any
-	{
-		var tmp0 lang.FnFunc1
-		tmp0 = lang.FnFunc1(func(p0 any) any {
-			v1 := p0
-			_ = v1
-			_ = "True if file size is 0 or directory is empty"
-			var tmp2 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp3 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp4 any
-				if !tmp3 {
-					tmp4 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp5 any
-				if tmp3 {
-					tmp5 = aotDirectFn14(v1)
-				} else {
-					tmp5 = lang.Apply1(tmp4, v1)
-				}
-				var v6 any = tmp5
-				_ = v6
-				var tmp7 any
-				if lang.IsTruthy(v6) {
-					var tmp8 any
-					{ // let
-						// let binding "info"
-						var v9 any = v6
-						_ = v9
-						var tmp10 any
-						tmp11, ok := lang.FieldOrMethod(v9, "IsDir")
-						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v9, "IsDir")))
-						}
-						var tmp12 any
-						switch reflect.TypeOf(tmp11).Kind() {
-						case reflect.Func:
-							tmp12 = lang.Apply(tmp11, nil)
-						default:
-							tmp12 = tmp11
-						}
-						if lang.IsTruthy(tmp12) {
-							var tmp13 any
-							{ // let
-								// let binding "entries"
-								tmp14 := lang.Apply1(os5.ReadDir, v1)
-								var v15 any = tmp14
-								_ = v15
-								tmp16 := checkDerefVar(var_clojure_DOT_core_count)
-								tmp17 := lang.Apply1(tmp16, v15)
-								tmp18 := lang.Numbers.IsZero(tmp17)
-								tmp13 = tmp18
-							} // end let
-							tmp10 = tmp13
-						} else {
-							tmp14, ok := lang.FieldOrMethod(v9, "Size")
-							if !ok {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v9, "Size")))
-							}
-							var tmp15 any
-							switch reflect.TypeOf(tmp14).Kind() {
-							case reflect.Func:
-								tmp15 = lang.Apply(tmp14, nil)
-							default:
-								tmp15 = tmp14
-							}
-							tmp16 := lang.Numbers.IsZero(tmp15)
-							tmp10 = tmp16
-						}
-						tmp8 = tmp10
-					} // end let
-					tmp7 = tmp8
-				} else {
-					tmp7 = false
-				}
-				tmp2 = tmp7
-			} // end let
-			return tmp2
-		})
-		closed8 = tmp0
-	}
-	// abs
-	{
-		tmp0 := sym_abs
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Return absolute path"
-			var tmp3 any
-			{ // let
-				// let binding "vec__7"
-				tmp4 := lang.Apply1(filepath4.Abs, v2)
-				var v5 any = tmp4
-				_ = v5
-				// let binding "result"
-				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
-				var v8 any = tmp7
-				_ = v8
-				// let binding "err"
-				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
-				var v11 any = tmp10
-				_ = v11
-				var tmp12 any
-				tmp13 := lang.Identical(v11, nil)
-				if lang.IsTruthy(tmp13) {
-					tmp12 = v8
-				} else {
-					tmp12 = v2
-				}
-				tmp3 = tmp12
-			} // end let
-			return tmp3
-		})
-		aotDirectFn0 = tmp1
-		var_ys_DOT_fs_abs = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion0 = var_ys_DOT_fs_abs.RootVersion()
-		var_ys_DOT_fs_abs.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(124), kw_column, int(7), kw_end_DASH_line, int(124), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// basename
-	{
-		tmp0 := sym_basename
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Return basename of path (follows symlinks)"
-			var tmp3 any
-			{ // let
-				// let binding "vec__10"
-				tmp4 := lang.Apply1(filepath4.EvalSymlinks, v2)
-				var v5 any = tmp4
-				_ = v5
-				// let binding "real-path"
-				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
-				var v8 any = tmp7
-				_ = v8
-				// let binding "err"
-				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
-				var v11 any = tmp10
-				_ = v11
-				var tmp12 any
-				tmp13 := lang.Identical(v11, nil)
-				if lang.IsTruthy(tmp13) {
-					tmp12 = v8
-				} else {
-					tmp12 = v2
-				}
-				tmp14 := lang.Apply1(filepath4.Base, tmp12)
-				tmp3 = tmp14
-			} // end let
-			return tmp3
-		})
-		aotDirectFn2 = tmp1
-		var_ys_DOT_fs_basename = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion2 = var_ys_DOT_fs_basename.RootVersion()
-		var_ys_DOT_fs_basename.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(129), kw_column, int(7), kw_end_DASH_line, int(129), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// cp
-	{
-		tmp0 := sym_cp
-		var tmp1 lang.FnFunc2
-		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
-			v2 := p0
-			_ = v2
-			v3 := p1
-			_ = v3
-			_ = "Copy file from src to dst"
-			var tmp4 any
-			{ // let
-				// let binding "vec__44"
-				tmp5 := lang.Apply1(os5.ReadFile, v2)
-				var v6 any = tmp5
-				_ = v6
-				// let binding "content"
-				tmp7 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp8 := lang.Apply3(tmp7, v6, int64(0), nil)
-				var v9 any = tmp8
-				_ = v9
-				// let binding "err"
-				tmp10 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp11 := lang.Apply3(tmp10, v6, int64(1), nil)
-				var v12 any = tmp11
-				_ = v12
-				var tmp13 any
-				tmp14 := lang.Identical(v12, nil)
-				if lang.IsTruthy(tmp14) {
-					tmp15 := lang.Apply3(os5.WriteFile, v3, v9, int64(420))
-					tmp13 = tmp15
-				} else {
-				}
-				tmp4 = tmp13
-			} // end let
-			return tmp4
-		})
-		aotDirectFn3 = tmp1
-		var_ys_DOT_fs_cp = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion3 = var_ys_DOT_fs_cp.RootVersion()
-		var_ys_DOT_fs_cp.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(233), kw_column, int(7), kw_end_DASH_line, int(233), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_src, sym_dst)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// cp-r
-	{
-		tmp0 := sym_cp_DASH_r
-		var tmp1 lang.FnFunc2
-		tmp1 = lang.FnFunc2(func(p0, p1 any) any {
-			v2 := p0
-			_ = v2
-			v3 := p1
-			_ = v3
-			_ = "Recursively copy directory"
-			var tmp4 lang.FnFunc3
-			tmp4 = lang.FnFunc3(func(p0, p1, p2 any) any {
-				v5 := p0
-				_ = v5
-				v6 := p1
-				_ = v6
-				v7 := p2
-				_ = v7
-				var tmp8 any
-				tmp9 := lang.Identical(v7, nil)
-				if lang.IsTruthy(tmp9) {
-					var tmp10 any
-					{ // let
-						// let binding "vec__47"
-						tmp11 := lang.Apply2(filepath4.Rel, v2, v5)
-						var v12 any = tmp11
-						_ = v12
-						// let binding "rel-path"
-						tmp13 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp14 := lang.Apply3(tmp13, v12, int64(0), nil)
-						var v15 any = tmp14
-						_ = v15
-						// let binding "_"
-						tmp16 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp17 := lang.Apply3(tmp16, v12, int64(1), nil)
-						var v18 any = tmp17
-						_ = v18
-						// let binding "dst-path"
-						tmp19 := lang.Apply2(filepath4.Join, v3, v15)
-						var v20 any = tmp19
-						_ = v20
-						var tmp21 any
-						tmp22, ok := lang.FieldOrMethod(v6, "IsDir")
-						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v6, "IsDir")))
-						}
-						var tmp23 any
-						switch reflect.TypeOf(tmp22).Kind() {
-						case reflect.Func:
-							tmp23 = lang.Apply(tmp22, nil)
-						default:
-							tmp23 = tmp22
-						}
-						if lang.IsTruthy(tmp23) {
-							tmp24 := lang.Apply2(os5.MkdirAll, v20, int64(493))
-							tmp21 = tmp24
-						} else {
-							var tmp25 any
-							{ // let
-								// let binding "vec__50"
-								tmp26 := lang.Apply1(os5.ReadFile, v5)
-								var v27 any = tmp26
-								_ = v27
-								// let binding "content"
-								tmp28 := checkDerefVar(var_clojure_DOT_core_nth)
-								tmp29 := lang.Apply3(tmp28, v27, int64(0), nil)
-								var v30 any = tmp29
-								_ = v30
-								// let binding "read-err"
-								tmp31 := checkDerefVar(var_clojure_DOT_core_nth)
-								tmp32 := lang.Apply3(tmp31, v27, int64(1), nil)
-								var v33 any = tmp32
-								_ = v33
-								var tmp34 any
-								tmp35 := lang.Identical(v33, nil)
-								if lang.IsTruthy(tmp35) {
-									tmp36, ok := lang.FieldOrMethod(v6, "Mode")
-									if !ok {
-										panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v6, "Mode")))
-									}
-									var tmp37 any
-									switch reflect.TypeOf(tmp36).Kind() {
-									case reflect.Func:
-										tmp37 = lang.Apply(tmp36, nil)
-									default:
-										tmp37 = tmp36
-									}
-									tmp38 := lang.Apply3(os5.WriteFile, v20, v30, tmp37)
-									tmp34 = tmp38
-								} else {
-								}
-								tmp25 = tmp34
-							} // end let
-							tmp21 = tmp25
-						}
-						tmp10 = tmp21
-					} // end let
-					tmp8 = tmp10
-				} else {
-				}
-				_ = tmp8
-				return nil
-			})
-			tmp5 := lang.Apply2(filepath4.Walk, v2, tmp4)
-			_ = tmp5
-			return nil
-		})
-		aotDirectFn4 = tmp1
-		var_ys_DOT_fs_cp_DASH_r = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion4 = var_ys_DOT_fs_cp_DASH_r.RootVersion()
-		var_ys_DOT_fs_cp_DASH_r.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(239), kw_column, int(7), kw_end_DASH_line, int(239), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_src, sym_dst)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// ctime
-	{
-		tmp0 := sym_ctime
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Return creation time in milliseconds (same as mtime in Unix)"
-			var tmp3 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp4 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp5 any
-				if !tmp4 {
-					tmp5 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp6 any
-				if tmp4 {
-					tmp6 = aotDirectFn14(v2)
-				} else {
-					tmp6 = lang.Apply1(tmp5, v2)
-				}
-				var v7 any = tmp6
-				_ = v7
-				var tmp8 any
-				if lang.IsTruthy(v7) {
-					var tmp9 any
-					{ // let
-						// let binding "info"
-						var v10 any = v7
-						_ = v10
-						tmp11, ok := lang.FieldOrMethod(v10, "ModTime")
-						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v10, "ModTime")))
-						}
-						var tmp12 any
-						switch reflect.TypeOf(tmp11).Kind() {
-						case reflect.Func:
-							tmp12 = lang.Apply(tmp11, nil)
-						default:
-							tmp12 = tmp11
-						}
-						tmp13, ok := lang.FieldOrMethod(tmp12, "UnixMilli")
-						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", tmp12, "UnixMilli")))
-						}
-						var tmp14 any
-						switch reflect.TypeOf(tmp13).Kind() {
-						case reflect.Func:
-							tmp14 = lang.Apply(tmp13, nil)
-						default:
-							tmp14 = tmp13
-						}
-						tmp9 = tmp14
-					} // end let
-					tmp8 = tmp9
-				} else {
-				}
-				tmp3 = tmp8
-			} // end let
-			return tmp3
-		})
-		aotDirectFn5 = tmp1
-		var_ys_DOT_fs_ctime = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion5 = var_ys_DOT_fs_ctime.RootVersion()
-		var_ys_DOT_fs_ctime.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(134), kw_column, int(7), kw_end_DASH_line, int(134), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// cwd
-	{
-		tmp0 := sym_cwd
-		var tmp1 lang.FnFunc0
-		tmp1 = lang.FnFunc0(func() any {
-			_ = "Return current working directory"
-			var tmp2 any
-			{ // let
-				// let binding "vec__13"
-				tmp3 := lang.Apply0(os5.Getwd)
-				var v4 any = tmp3
-				_ = v4
-				// let binding "result"
-				tmp5 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp6 := lang.Apply3(tmp5, v4, int64(0), nil)
-				var v7 any = tmp6
-				_ = v7
-				// let binding "err"
-				tmp8 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp9 := lang.Apply3(tmp8, v4, int64(1), nil)
-				var v10 any = tmp9
-				_ = v10
-				var tmp11 any
-				tmp12 := lang.Identical(v10, nil)
-				if lang.IsTruthy(tmp12) {
-					tmp11 = v7
-				} else {
-					tmp11 = "."
-				}
-				tmp2 = tmp11
-			} // end let
-			return tmp2
-		})
-		aotDirectFn6 = tmp1
-		var_ys_DOT_fs_cwd = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion6 = var_ys_DOT_fs_cwd.RootVersion()
-		var_ys_DOT_fs_cwd.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(146), kw_column, int(7), kw_end_DASH_line, int(146), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector()), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// d
-	{
-		tmp0 := sym_d
-		var tmp1 lang.ArityFn
-		tmp1 = lang.NewArityFn(
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
-				var v2 any = rest
-				_ = v2
-				var tmp3 any
-				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
-				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply1(tmp5, v2)
-				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
-				if lang.IsTruthy(tmp7) {
-					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply1(tmp8, v2)
-					tmp10 := lang.Apply1(closed0, tmp9)
-					tmp3 = tmp10
-				} else {
-					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply2(tmp11, closed0, v2)
-					tmp3 = tmp12
-				}
-				return tmp3
-			}),
-			0,
-		)
-		var_ys_DOT_fs_d = ns.InternWithValue(tmp0, tmp1, true)
-		var_ys_DOT_fs_d.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(110), kw_column, int(6), kw_end_DASH_line, int(110), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// dir?
-	{
-		tmp0 := sym_dir_QMARK_
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "True if path is a directory"
-			var tmp3 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp4 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp5 any
-				if !tmp4 {
-					tmp5 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp6 any
-				if tmp4 {
-					tmp6 = aotDirectFn14(v2)
-				} else {
-					tmp6 = lang.Apply1(tmp5, v2)
-				}
-				var v7 any = tmp6
-				_ = v7
-				var tmp8 any
-				if lang.IsTruthy(v7) {
-					var tmp9 any
-					{ // let
-						// let binding "info"
-						var v10 any = v7
-						_ = v10
-						tmp11, ok := lang.FieldOrMethod(v10, "IsDir")
-						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v10, "IsDir")))
-						}
-						var tmp12 any
-						switch reflect.TypeOf(tmp11).Kind() {
-						case reflect.Func:
-							tmp12 = lang.Apply(tmp11, nil)
-						default:
-							tmp12 = tmp11
-						}
-						tmp9 = tmp12
-					} // end let
-					tmp8 = tmp9
-				} else {
-					tmp8 = false
-				}
-				tmp3 = tmp8
-			} // end let
-			return tmp3
-		})
-		aotDirectFn7 = tmp1
-		var_ys_DOT_fs_dir_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion7 = var_ys_DOT_fs_dir_QMARK_.RootVersion()
-		var_ys_DOT_fs_dir_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(41), kw_column, int(7), kw_end_DASH_line, int(41), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// dirname
-	{
-		tmp0 := sym_dirname
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Return directory name of path (follows symlinks)"
-			var tmp3 any
-			{ // let
-				// let binding "vec__16"
-				tmp4 := lang.Apply1(filepath4.EvalSymlinks, v2)
-				var v5 any = tmp4
-				_ = v5
-				// let binding "real-path"
-				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
-				var v8 any = tmp7
-				_ = v8
-				// let binding "err"
-				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
-				var v11 any = tmp10
-				_ = v11
-				var tmp12 any
-				tmp13 := lang.Identical(v11, nil)
-				if lang.IsTruthy(tmp13) {
-					tmp12 = v8
-				} else {
-					tmp12 = v2
-				}
-				tmp14 := lang.Apply1(filepath4.Dir, tmp12)
-				tmp3 = tmp14
-			} // end let
-			return tmp3
-		})
-		aotDirectFn8 = tmp1
-		var_ys_DOT_fs_dirname = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion8 = var_ys_DOT_fs_dirname.RootVersion()
-		var_ys_DOT_fs_dirname.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(151), kw_column, int(7), kw_end_DASH_line, int(151), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// e
-	{
-		tmp0 := sym_e
-		var tmp1 lang.ArityFn
-		tmp1 = lang.NewArityFn(
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
-				var v2 any = rest
-				_ = v2
-				var tmp3 any
-				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
-				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply1(tmp5, v2)
-				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
-				if lang.IsTruthy(tmp7) {
-					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply1(tmp8, v2)
-					tmp10 := lang.Apply1(closed1, tmp9)
-					tmp3 = tmp10
-				} else {
-					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply2(tmp11, closed1, v2)
-					tmp3 = tmp12
-				}
-				return tmp3
-			}),
-			0,
-		)
-		var_ys_DOT_fs_e = ns.InternWithValue(tmp0, tmp1, true)
-		var_ys_DOT_fs_e.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(111), kw_column, int(6), kw_end_DASH_line, int(111), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// empty?
-	{
-		tmp0 := sym_empty_QMARK_
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "True if file size is 0 or directory is empty"
-			var tmp3 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp4 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp5 any
-				if !tmp4 {
-					tmp5 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp6 any
-				if tmp4 {
-					tmp6 = aotDirectFn14(v2)
-				} else {
-					tmp6 = lang.Apply1(tmp5, v2)
-				}
-				var v7 any = tmp6
-				_ = v7
-				var tmp8 any
-				if lang.IsTruthy(v7) {
-					var tmp9 any
-					{ // let
-						// let binding "info"
-						var v10 any = v7
-						_ = v10
-						var tmp11 any
-						tmp12, ok := lang.FieldOrMethod(v10, "IsDir")
-						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v10, "IsDir")))
-						}
-						var tmp13 any
-						switch reflect.TypeOf(tmp12).Kind() {
-						case reflect.Func:
-							tmp13 = lang.Apply(tmp12, nil)
-						default:
-							tmp13 = tmp12
-						}
-						if lang.IsTruthy(tmp13) {
-							var tmp14 any
-							{ // let
-								// let binding "entries"
-								tmp15 := lang.Apply1(os5.ReadDir, v2)
-								var v16 any = tmp15
-								_ = v16
-								tmp17 := checkDerefVar(var_clojure_DOT_core_count)
-								tmp18 := lang.Apply1(tmp17, v16)
-								tmp19 := lang.Numbers.IsZero(tmp18)
-								tmp14 = tmp19
-							} // end let
-							tmp11 = tmp14
-						} else {
-							tmp15, ok := lang.FieldOrMethod(v10, "Size")
-							if !ok {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v10, "Size")))
-							}
-							var tmp16 any
-							switch reflect.TypeOf(tmp15).Kind() {
-							case reflect.Func:
-								tmp16 = lang.Apply(tmp15, nil)
-							default:
-								tmp16 = tmp15
-							}
-							tmp17 := lang.Numbers.IsZero(tmp16)
-							tmp11 = tmp17
-						}
-						tmp9 = tmp11
-					} // end let
-					tmp8 = tmp9
-				} else {
-					tmp8 = false
-				}
-				tmp3 = tmp8
-			} // end let
-			return tmp3
-		})
-		aotDirectFn9 = tmp1
-		var_ys_DOT_fs_empty_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion9 = var_ys_DOT_fs_empty_QMARK_.RootVersion()
-		var_ys_DOT_fs_empty_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(47), kw_column, int(7), kw_end_DASH_line, int(47), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// exec?
-	{
-		tmp0 := sym_exec_QMARK_
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "True if path is executable"
-			var tmp3 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp4 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp5 any
-				if !tmp4 {
-					tmp5 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp6 any
-				if tmp4 {
-					tmp6 = aotDirectFn14(v2)
-				} else {
-					tmp6 = lang.Apply1(tmp5, v2)
-				}
-				var v7 any = tmp6
-				_ = v7
-				var tmp8 any
-				if lang.IsTruthy(v7) {
-					var tmp9 any
-					{ // let
-						// let binding "info"
-						var v10 any = v7
-						_ = v10
-						var tmp11 any
-						{ // let
-							// let binding "mode"
-							tmp12, ok := lang.FieldOrMethod(v10, "Mode")
-							if !ok {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v10, "Mode")))
-							}
-							var tmp13 any
-							switch reflect.TypeOf(tmp12).Kind() {
-							case reflect.Func:
-								tmp13 = lang.Apply(tmp12, nil)
-							default:
-								tmp13 = tmp12
-							}
+							tmp13 := lang.Numbers.And(v12, int64(146))
 							var v14 any = tmp13
 							_ = v14
-							// let binding "exec-bits"
-							tmp15 := lang.Numbers.And(v14, int64(73))
-							var v16 any = tmp15
-							_ = v16
-							tmp17 := checkDerefVar(var_clojure_DOT_core_not)
-							tmp18 := lang.Numbers.IsZero(v16)
-							tmp19 := lang.Apply1(tmp17, tmp18)
-							tmp11 = tmp19
+							tmp15 := lang.Numbers.IsZero(v14)
+							tmp16 := aotExternalFn5(tmp15)
+							tmp9 = tmp16
 						} // end let
-						tmp9 = tmp11
+						tmp7 = tmp9
 					} // end let
-					tmp8 = tmp9
+					tmp6 = tmp7
 				} else {
-					tmp8 = false
+					tmp6 = false
 				}
-				tmp3 = tmp8
+				tmp3 = tmp6
 			} // end let
 			return tmp3
 		})
-		aotDirectFn10 = tmp1
-		var_ys_DOT_fs_exec_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion10 = var_ys_DOT_fs_exec_QMARK_.RootVersion()
-		var_ys_DOT_fs_exec_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(56), kw_column, int(7), kw_end_DASH_line, int(56), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		aotDirectFn49 = tmp1
+		var_ys_DOT_fs_write_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_write_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(102), kw_column, int(7), kw_end_DASH_line, int(102), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
 		})
 	}
-	// exists?
+	// x
 	{
-		tmp0 := sym_exists_QMARK_
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "True if path exists"
-			tmp3 := checkDerefVar(var_clojure_DOT_core_not)
-			tmp4 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-			var tmp5 any
-			if !tmp4 {
-				tmp5 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-			}
-			var tmp6 any
-			if tmp4 {
-				tmp6 = aotDirectFn14(v2)
-			} else {
-				tmp6 = lang.Apply1(tmp5, v2)
-			}
-			tmp7 := lang.Identical(tmp6, nil)
-			tmp8 := lang.Apply1(tmp3, tmp7)
-			return tmp8
-		})
-		aotDirectFn11 = tmp1
-		var_ys_DOT_fs_exists_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion11 = var_ys_DOT_fs_exists_QMARK_.RootVersion()
-		var_ys_DOT_fs_exists_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(64), kw_column, int(7), kw_end_DASH_line, int(64), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// f
-	{
-		tmp0 := sym_f
+		tmp0 := sym_x
 		var tmp1 lang.ArityFn
 		tmp1 = lang.NewArityFn(
 			nil,
@@ -1933,148 +3087,58 @@ func LoadNS() {
 				var v2 any = rest
 				_ = v2
 				var tmp3 any
-				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
-				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply1(tmp5, v2)
-				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
-				if lang.IsTruthy(tmp7) {
-					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply1(tmp8, v2)
-					tmp10 := lang.Apply1(closed2, tmp9)
-					tmp3 = tmp10
+				tmp4 := lang.Count(v2)
+				tmp5 := aotExternalFn1(int64(1), tmp4)
+				if lang.IsTruthy(tmp5) {
+					tmp6 := lang.First(v2)
+					tmp7 := lang.Apply1(closed7, tmp6)
+					tmp3 = tmp7
 				} else {
-					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply2(tmp11, closed2, v2)
-					tmp3 = tmp12
+					tmp8 := aotExternalFn4(closed7, v2)
+					tmp3 = tmp8
 				}
 				return tmp3
 			}),
 			0,
 		)
-		var_ys_DOT_fs_f = ns.InternWithValue(tmp0, tmp1, true)
-		var_ys_DOT_fs_f.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(112), kw_column, int(6), kw_end_DASH_line, int(112), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+		aotDirectFn50 = tmp1
+		var_ys_DOT_fs_x = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_x.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(118), kw_column, int(6), kw_end_DASH_line, int(118), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
 		})
 	}
-	// file?
+	// z
 	{
-		tmp0 := sym_file_QMARK_
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "True if path is a regular file"
-			var tmp3 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp4 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp5 any
-				if !tmp4 {
-					tmp5 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp6 any
-				if tmp4 {
-					tmp6 = aotDirectFn14(v2)
+		tmp0 := sym_z
+		var tmp1 lang.ArityFn
+		tmp1 = lang.NewArityFn(
+			nil,
+			nil,
+			nil,
+			nil,
+			nil,
+			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
+				var v2 any = rest
+				_ = v2
+				var tmp3 any
+				tmp4 := lang.Count(v2)
+				tmp5 := aotExternalFn1(int64(1), tmp4)
+				if lang.IsTruthy(tmp5) {
+					tmp6 := lang.First(v2)
+					tmp7 := lang.Apply1(closed8, tmp6)
+					tmp3 = tmp7
 				} else {
-					tmp6 = lang.Apply1(tmp5, v2)
+					tmp8 := aotExternalFn4(closed8, v2)
+					tmp3 = tmp8
 				}
-				var v7 any = tmp6
-				_ = v7
-				var tmp8 any
-				if lang.IsTruthy(v7) {
-					var tmp9 any
-					{ // let
-						// let binding "info"
-						var v10 any = v7
-						_ = v10
-						var tmp11 any
-						{ // let
-							// let binding "mode"
-							tmp12, ok := lang.FieldOrMethod(v10, "Mode")
-							if !ok {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v10, "Mode")))
-							}
-							var tmp13 any
-							switch reflect.TypeOf(tmp12).Kind() {
-							case reflect.Func:
-								tmp13 = lang.Apply(tmp12, nil)
-							default:
-								tmp13 = tmp12
-							}
-							var v14 any = tmp13
-							_ = v14
-							tmp15, ok := lang.FieldOrMethod(v14, "IsRegular")
-							if !ok {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v14, "IsRegular")))
-							}
-							var tmp16 any
-							switch reflect.TypeOf(tmp15).Kind() {
-							case reflect.Func:
-								tmp16 = lang.Apply(tmp15, nil)
-							default:
-								tmp16 = tmp15
-							}
-							tmp11 = tmp16
-						} // end let
-						tmp9 = tmp11
-					} // end let
-					tmp8 = tmp9
-				} else {
-					tmp8 = false
-				}
-				tmp3 = tmp8
-			} // end let
-			return tmp3
-		})
-		aotDirectFn12 = tmp1
-		var_ys_DOT_fs_file_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion12 = var_ys_DOT_fs_file_QMARK_.RootVersion()
-		var_ys_DOT_fs_file_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(68), kw_column, int(7), kw_end_DASH_line, int(68), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// filename
-	{
-		tmp0 := sym_filename
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Return filename without extension"
-			var tmp3 any
-			{ // let
-				// let binding "base"
-				tmp4 := lang.Apply1(filepath4.Base, v2)
-				var v5 any = tmp4
-				_ = v5
-				// let binding "ext"
-				tmp6 := lang.Apply1(filepath4.Ext, v5)
-				var v7 any = tmp6
-				_ = v7
-				var tmp8 any
-				tmp9 := checkDerefVar(var_clojure_DOT_string_blank_QMARK_)
-				tmp10 := lang.Apply1(tmp9, v7)
-				if lang.IsTruthy(tmp10) {
-					tmp8 = v5
-				} else {
-					tmp11 := checkDerefVar(var_clojure_DOT_core_subs)
-					tmp12 := checkDerefVar(var_clojure_DOT_core_count)
-					tmp13 := lang.Apply1(tmp12, v5)
-					tmp14 := checkDerefVar(var_clojure_DOT_core_count)
-					tmp15 := lang.Apply1(tmp14, v7)
-					tmp16 := lang.Numbers.Minus(tmp13, tmp15)
-					tmp17 := lang.Apply3(tmp11, v5, int64(0), tmp16)
-					tmp8 = tmp17
-				}
-				tmp3 = tmp8
-			} // end let
-			return tmp3
-		})
-		aotDirectFn13 = tmp1
-		var_ys_DOT_fs_filename = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion13 = var_ys_DOT_fs_filename.RootVersion()
-		var_ys_DOT_fs_filename.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(156), kw_column, int(7), kw_end_DASH_line, int(156), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+				return tmp3
+			}),
+			0,
+		)
+		aotDirectFn51 = tmp1
+		var_ys_DOT_fs_z = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_fs_z.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(119), kw_column, int(6), kw_end_DASH_line, int(119), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
 		})
 	}
 	// find
@@ -2096,1569 +3160,175 @@ func LoadNS() {
 				var tmp4 any
 				{ // let
 					// let binding "results"
-					tmp5 := checkDerefVar(var_clojure_DOT_core_atom)
-					tmp6 := lang.NewVector()
-					tmp7 := lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(166), kw_column, int(23), kw_end_DASH_line, int(166), kw_end_DASH_column, int(24))
-					tmp8, err := lang.WithMeta(tmp6, tmp7.(lang.IPersistentMap))
-					if err != nil {
-						panic(err)
-					}
-					tmp9 := lang.Apply1(tmp5, tmp8)
-					var v10 any = tmp9
-					_ = v10
-					var tmp11 lang.FnFunc3
-					tmp11 = lang.FnFunc3(func(p0, p1, p2 any) any {
-						v12 := p0
-						_ = v12
-						v13 := p1
-						_ = v13
-						v14 := p2
-						_ = v14
-						var tmp15 any
-						tmp16 := lang.Identical(v14, nil)
-						if lang.IsTruthy(tmp16) {
-							var tmp17 any
-							tmp18 := var_ys_DOT_fs_empty_QMARK_.RootVersion() == aotRootVersion9 && !var_ys_DOT_fs_empty_QMARK_.IsMacro()
-							var tmp19 any
-							if !tmp18 {
-								tmp19 = checkDerefVar(var_ys_DOT_fs_empty_QMARK_)
-							}
-							var tmp20 any
-							if tmp18 {
-								tmp20 = aotDirectFn9(v3)
+					tmp5 := lang.NewVector()
+					tmp6 := aotExternalFn8(tmp5)
+					var v7 any = tmp6
+					_ = v7
+					var tmp8 lang.FnFunc3
+					tmp8 = lang.FnFunc3(func(p0, p1, p2 any) any {
+						v9 := p0
+						_ = v9
+						v10 := p1
+						_ = v10
+						v11 := p2
+						_ = v11
+						var tmp12 any
+						tmp13 := lang.Identical(v11, nil)
+						if lang.IsTruthy(tmp13) {
+							var tmp14 any
+							tmp15 := aotDirectFn11(v3)
+							if lang.IsTruthy(tmp15) {
+								tmp16 := checkDerefVar(var_clojure_DOT_core_conj)
+								tmp17 := aotExternalFn9(v7, tmp16, v9)
+								tmp14 = tmp17
 							} else {
-								tmp20 = lang.Apply1(tmp19, v3)
-							}
-							if lang.IsTruthy(tmp20) {
-								tmp21 := checkDerefVar(var_clojure_DOT_core_swap_BANG_)
-								tmp22 := checkDerefVar(var_clojure_DOT_core_conj)
-								tmp23 := lang.Apply3(tmp21, v10, tmp22, v12)
-								tmp17 = tmp23
-							} else {
-								var tmp24 any
+								var tmp18 any
 								{ // let
 									// let binding "seq_19"
-									tmp25 := checkDerefVar(var_clojure_DOT_core_seq)
-									tmp26 := lang.Apply1(tmp25, v3)
-									var v27 any = tmp26
-									_ = v27
+									tmp19 := lang.Seq(v3)
+									var v20 any = tmp19
+									_ = v20
 									// let binding "chunk_20"
-									var v28 any = nil
-									_ = v28
+									var v21 any = nil
+									_ = v21
 									// let binding "count_21"
-									var v29 any = int64(0)
-									_ = v29
+									var v22 any = int64(0)
+									_ = v22
 									// let binding "i_22"
-									var v30 any = int64(0)
-									_ = v30
+									var v23 any = int64(0)
+									_ = v23
 									for {
-										var tmp31 any
-										tmp32 := lang.Numbers.Lt(v30, v29)
-										if lang.IsTruthy(tmp32) {
-											var tmp33 any
+										var tmp24 any
+										tmp25 := lang.Numbers.Lt(v23, v22)
+										if lang.IsTruthy(tmp25) {
+											var tmp26 any
 											{ // let
 												// let binding "pattern"
-												tmp34, _ := lang.FieldOrMethod(v28, "nth")
-												if reflect.TypeOf(tmp34).Kind() != reflect.Func {
-													panic(lang.NewIllegalArgumentError(fmt.Sprintf("nth is not a function")))
-												}
-												tmp35 := lang.Apply1(tmp34, v30)
-												var v36 any = tmp35
-												_ = v36
-												var tmp37 any
-												tmp38 := checkDerefVar(var_clojure_DOT_string_includes_QMARK_)
-												tmp39 := lang.Apply2(tmp38, v12, v36)
-												if lang.IsTruthy(tmp39) {
-													tmp40 := checkDerefVar(var_clojure_DOT_core_swap_BANG_)
-													tmp41 := checkDerefVar(var_clojure_DOT_core_conj)
-													tmp42 := lang.Apply3(tmp40, v10, tmp41, v12)
-													tmp37 = tmp42
+												tmp27 := v21.(interface{ Nth(int) any }).Nth(lang.IntCast(v23))
+												var v28 any = tmp27
+												_ = v28
+												var tmp29 any
+												tmp30 := aotExternalFn11(v9, v28)
+												if lang.IsTruthy(tmp30) {
+													tmp31 := checkDerefVar(var_clojure_DOT_core_conj)
+													tmp32 := aotExternalFn9(v7, tmp31, v9)
+													tmp29 = tmp32
 												} else {
 												}
-												_ = tmp37
-												var tmp43 any = v27
-												var tmp44 any = v28
-												var tmp45 any = v29
-												tmp47 := lang.Numbers.Unchecked_inc(v30)
-												var tmp46 any = tmp47
-												v27 = tmp43
-												v28 = tmp44
-												v29 = tmp45
-												v30 = tmp46
+												_ = tmp29
+												var tmp33 any = v20
+												var tmp34 any = v21
+												var tmp35 any = v22
+												tmp37 := lang.Numbers.Unchecked_inc(v23)
+												var tmp36 any = tmp37
+												v20 = tmp33
+												v21 = tmp34
+												v22 = tmp35
+												v23 = tmp36
 												continue
 											} // end let
-											tmp31 = tmp33
+											tmp24 = tmp26
 										} else {
-											var tmp34 any
+											var tmp27 any
 											{ // let
 												// let binding "temp__0__auto__"
-												tmp35 := checkDerefVar(var_clojure_DOT_core_seq)
-												tmp36 := lang.Apply1(tmp35, v27)
-												var v37 any = tmp36
-												_ = v37
-												var tmp38 any
-												if lang.IsTruthy(v37) {
-													var tmp39 any
+												tmp28 := lang.Seq(v20)
+												var v29 any = tmp28
+												_ = v29
+												var tmp30 any
+												if lang.IsTruthy(v29) {
+													var tmp31 any
 													{ // let
 														// let binding "seq_19"
-														var v40 any = v37
-														_ = v40
-														var tmp41 any
-														tmp42 := checkDerefVar(var_clojure_DOT_core_chunked_DASH_seq_QMARK_)
-														tmp43 := lang.Apply1(tmp42, v40)
-														if lang.IsTruthy(tmp43) {
-															var tmp44 any
+														var v32 any = v29
+														_ = v32
+														var tmp33 any
+														tmp34 := aotExternalFn12(v32)
+														if lang.IsTruthy(tmp34) {
+															var tmp35 any
 															{ // let
 																// let binding "c__0__auto__"
-																tmp45 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_first)
-																tmp46 := lang.Apply1(tmp45, v40)
-																var v47 any = tmp46
-																_ = v47
-																tmp49 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_rest)
-																tmp50 := lang.Apply1(tmp49, v40)
-																var tmp48 any = tmp50
-																var tmp51 any = v47
-																tmp53 := checkDerefVar(var_clojure_DOT_core_count)
-																tmp54 := lang.Apply1(tmp53, v47)
-																tmp55 := runtime.RT.IntCast(tmp54)
-																var tmp52 any = tmp55
-																tmp57 := runtime.RT.IntCast(int64(0))
-																var tmp56 any = tmp57
-																v27 = tmp48
-																v28 = tmp51
-																v29 = tmp52
-																v30 = tmp56
+																tmp36 := aotExternalFn13(v32)
+																var v37 any = tmp36
+																_ = v37
+																tmp39 := aotExternalFn14(v32)
+																var tmp38 any = tmp39
+																var tmp40 any = v37
+																tmp42 := lang.Count(v37)
+																tmp43 := runtime.RT.IntCast(tmp42)
+																var tmp41 any = tmp43
+																tmp45 := runtime.RT.IntCast(int64(0))
+																var tmp44 any = tmp45
+																v20 = tmp38
+																v21 = tmp40
+																v22 = tmp41
+																v23 = tmp44
 																continue
 															} // end let
-															tmp41 = tmp44
+															tmp33 = tmp35
 														} else {
-															var tmp45 any
+															var tmp36 any
 															{ // let
 																// let binding "pattern"
-																tmp46 := checkDerefVar(var_clojure_DOT_core_first)
-																tmp47 := lang.Apply1(tmp46, v40)
-																var v48 any = tmp47
-																_ = v48
-																var tmp49 any
-																tmp50 := checkDerefVar(var_clojure_DOT_string_includes_QMARK_)
-																tmp51 := lang.Apply2(tmp50, v12, v48)
-																if lang.IsTruthy(tmp51) {
-																	tmp52 := checkDerefVar(var_clojure_DOT_core_swap_BANG_)
-																	tmp53 := checkDerefVar(var_clojure_DOT_core_conj)
-																	tmp54 := lang.Apply3(tmp52, v10, tmp53, v12)
-																	tmp49 = tmp54
+																tmp37 := lang.First(v32)
+																var v38 any = tmp37
+																_ = v38
+																var tmp39 any
+																tmp40 := aotExternalFn11(v9, v38)
+																if lang.IsTruthy(tmp40) {
+																	tmp41 := checkDerefVar(var_clojure_DOT_core_conj)
+																	tmp42 := aotExternalFn9(v7, tmp41, v9)
+																	tmp39 = tmp42
 																} else {
 																}
-																_ = tmp49
-																tmp56 := checkDerefVar(var_clojure_DOT_core_next)
-																tmp57 := lang.Apply1(tmp56, v40)
-																var tmp55 any = tmp57
-																var tmp58 any = nil
-																var tmp59 any = int64(0)
-																var tmp60 any = int64(0)
-																v27 = tmp55
-																v28 = tmp58
-																v29 = tmp59
-																v30 = tmp60
+																_ = tmp39
+																tmp44 := lang.Next(v32)
+																var tmp43 any = tmp44
+																var tmp45 any = nil
+																var tmp46 any = int64(0)
+																var tmp47 any = int64(0)
+																v20 = tmp43
+																v21 = tmp45
+																v22 = tmp46
+																v23 = tmp47
 																continue
 															} // end let
-															tmp41 = tmp45
+															tmp33 = tmp36
 														}
-														tmp39 = tmp41
+														tmp31 = tmp33
 													} // end let
-													tmp38 = tmp39
+													tmp30 = tmp31
 												} else {
 												}
-												tmp34 = tmp38
+												tmp27 = tmp30
 											} // end let
-											tmp31 = tmp34
+											tmp24 = tmp27
 										}
-										tmp24 = tmp31
+										tmp18 = tmp24
 										break
 									}
 								} // end let
-								tmp17 = tmp24
+								tmp14 = tmp18
 							}
-							tmp15 = tmp17
+							tmp12 = tmp14
 						} else {
 						}
-						_ = tmp15
+						_ = tmp12
 						return nil
 					})
-					tmp12 := lang.Apply2(filepath4.Walk, v2, tmp11)
-					_ = tmp12
-					tmp13 := checkDerefVar(var_clojure_DOT_core_deref)
-					tmp14 := lang.Apply1(tmp13, v10)
-					tmp4 = tmp14
+					tmp9 := lang.Apply2(filepath4.Walk, v2, tmp8)
+					_ = tmp9
+					tmp10 := aotExternalFn16(v7)
+					tmp4 = tmp10
 				} // end let
 				return tmp4
 			}),
 			1,
 		)
+		aotDirectFn17 = tmp1
 		var_ys_DOT_fs_find = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_fs_find.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(164), kw_column, int(7), kw_end_DASH_line, int(164), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path, sym__AMP_, sym_patterns)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// get-file-info
-	{
-		tmp0 := sym_get_DASH_file_DASH_info
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Get os.FileInfo for path, returns nil on error"
-			var tmp3 any
-			func() {
-				defer func() {
-					if r := recover(); r != nil {
-						if lang.CatchMatches(r, lang.Builtins["any"]) {
-							v4 := r
-							_ = v4
-						} else {
-							panic(r)
-						}
-					}
-				}()
-				var tmp4 any
-				{ // let
-					// let binding "vec__1"
-					tmp5 := lang.Apply1(os5.Stat, v2)
-					var v6 any = tmp5
-					_ = v6
-					// let binding "info"
-					tmp7 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp8 := lang.Apply3(tmp7, v6, int64(0), nil)
-					var v9 any = tmp8
-					_ = v9
-					// let binding "err"
-					tmp10 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp11 := lang.Apply3(tmp10, v6, int64(1), nil)
-					var v12 any = tmp11
-					_ = v12
-					var tmp13 any
-					tmp14 := lang.Identical(v12, nil)
-					if lang.IsTruthy(tmp14) {
-						tmp13 = v9
-					} else {
-					}
-					tmp4 = tmp13
-				} // end let
-				tmp3 = tmp4
-			}()
-			return tmp3
-		})
-		aotDirectFn14 = tmp1
-		var_ys_DOT_fs_get_DASH_file_DASH_info = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion14 = var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion()
-		var_ys_DOT_fs_get_DASH_file_DASH_info.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(19), kw_column, int(8), kw_end_DASH_line, int(19), kw_end_DASH_column, int(20), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// mtime
-	{
-		tmp0 := sym_mtime
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Return modification time in milliseconds"
-			var tmp3 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp4 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp5 any
-				if !tmp4 {
-					tmp5 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp6 any
-				if tmp4 {
-					tmp6 = aotDirectFn14(v2)
-				} else {
-					tmp6 = lang.Apply1(tmp5, v2)
-				}
-				var v7 any = tmp6
-				_ = v7
-				var tmp8 any
-				if lang.IsTruthy(v7) {
-					var tmp9 any
-					{ // let
-						// let binding "info"
-						var v10 any = v7
-						_ = v10
-						tmp11, ok := lang.FieldOrMethod(v10, "ModTime")
-						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v10, "ModTime")))
-						}
-						var tmp12 any
-						switch reflect.TypeOf(tmp11).Kind() {
-						case reflect.Func:
-							tmp12 = lang.Apply(tmp11, nil)
-						default:
-							tmp12 = tmp11
-						}
-						tmp13, ok := lang.FieldOrMethod(tmp12, "UnixMilli")
-						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", tmp12, "UnixMilli")))
-						}
-						var tmp14 any
-						switch reflect.TypeOf(tmp13).Kind() {
-						case reflect.Func:
-							tmp14 = lang.Apply(tmp13, nil)
-						default:
-							tmp14 = tmp13
-						}
-						tmp9 = tmp14
-					} // end let
-					tmp8 = tmp9
-				} else {
-				}
-				tmp3 = tmp8
-			} // end let
-			return tmp3
-		})
-		aotDirectFn21 = tmp1
-		var_ys_DOT_fs_mtime = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion21 = var_ys_DOT_fs_mtime.RootVersion()
-		var_ys_DOT_fs_mtime.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(140), kw_column, int(7), kw_end_DASH_line, int(140), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// size?
-	{
-		tmp0 := sym_size_QMARK_
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "True if file size > 0"
-			var tmp3 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp4 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp5 any
-				if !tmp4 {
-					tmp5 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp6 any
-				if tmp4 {
-					tmp6 = aotDirectFn14(v2)
-				} else {
-					tmp6 = lang.Apply1(tmp5, v2)
-				}
-				var v7 any = tmp6
-				_ = v7
-				var tmp8 any
-				if lang.IsTruthy(v7) {
-					var tmp9 any
-					{ // let
-						// let binding "info"
-						var v10 any = v7
-						_ = v10
-						tmp11, ok := lang.FieldOrMethod(v10, "Size")
-						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v10, "Size")))
-						}
-						var tmp12 any
-						switch reflect.TypeOf(tmp11).Kind() {
-						case reflect.Func:
-							tmp12 = lang.Apply(tmp11, nil)
-						default:
-							tmp12 = tmp11
-						}
-						tmp13 := lang.Numbers.Gt(tmp12, int64(0))
-						tmp9 = tmp13
-					} // end let
-					tmp8 = tmp9
-				} else {
-					tmp8 = false
-				}
-				tmp3 = tmp8
-			} // end let
-			return tmp3
-		})
-		aotDirectFn34 = tmp1
-		var_ys_DOT_fs_size_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion34 = var_ys_DOT_fs_size_QMARK_.RootVersion()
-		var_ys_DOT_fs_size_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(95), kw_column, int(7), kw_end_DASH_line, int(95), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// get-link-info
-	{
-		tmp0 := sym_get_DASH_link_DASH_info
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Get os.FileInfo for symlink (don't follow), returns nil on error"
-			var tmp3 any
-			func() {
-				defer func() {
-					if r := recover(); r != nil {
-						if lang.CatchMatches(r, lang.Builtins["any"]) {
-							v4 := r
-							_ = v4
-						} else {
-							panic(r)
-						}
-					}
-				}()
-				var tmp4 any
-				{ // let
-					// let binding "vec__4"
-					tmp5 := lang.Apply1(os5.Lstat, v2)
-					var v6 any = tmp5
-					_ = v6
-					// let binding "info"
-					tmp7 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp8 := lang.Apply3(tmp7, v6, int64(0), nil)
-					var v9 any = tmp8
-					_ = v9
-					// let binding "err"
-					tmp10 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp11 := lang.Apply3(tmp10, v6, int64(1), nil)
-					var v12 any = tmp11
-					_ = v12
-					var tmp13 any
-					tmp14 := lang.Identical(v12, nil)
-					if lang.IsTruthy(tmp14) {
-						tmp13 = v9
-					} else {
-					}
-					tmp4 = tmp13
-				} // end let
-				tmp3 = tmp4
-			}()
-			return tmp3
-		})
-		aotDirectFn15 = tmp1
-		var_ys_DOT_fs_get_DASH_link_DASH_info = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion15 = var_ys_DOT_fs_get_DASH_link_DASH_info.RootVersion()
-		var_ys_DOT_fs_get_DASH_link_DASH_info.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(26), kw_column, int(8), kw_end_DASH_line, int(26), kw_end_DASH_column, int(20), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// glob
-	{
-		tmp0 := sym_glob
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Return paths matching glob pattern"
-			var tmp3 any
-			{ // let
-				// let binding "vec__23"
-				tmp4 := lang.Apply1(filepath4.Glob, v2)
-				var v5 any = tmp4
-				_ = v5
-				// let binding "result"
-				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
-				var v8 any = tmp7
-				_ = v8
-				// let binding "err"
-				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
-				var v11 any = tmp10
-				_ = v11
-				var tmp12 any
-				tmp13 := lang.Identical(v11, nil)
-				if lang.IsTruthy(tmp13) {
-					tmp12 = v8
-				} else {
-					tmp14 := lang.NewVector()
-					tmp15 := lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(182), kw_column, int(27), kw_end_DASH_line, int(182), kw_end_DASH_column, int(28))
-					tmp16, err := lang.WithMeta(tmp14, tmp15.(lang.IPersistentMap))
-					if err != nil {
-						panic(err)
-					}
-					tmp12 = tmp16
-				}
-				tmp3 = tmp12
-			} // end let
-			return tmp3
-		})
-		aotDirectFn16 = tmp1
-		var_ys_DOT_fs_glob = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion16 = var_ys_DOT_fs_glob.RootVersion()
-		var_ys_DOT_fs_glob.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(179), kw_column, int(7), kw_end_DASH_line, int(179), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_pattern)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// l
-	{
-		tmp0 := sym_l
-		var tmp1 lang.ArityFn
-		tmp1 = lang.NewArityFn(
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
-				var v2 any = rest
-				_ = v2
-				var tmp3 any
-				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
-				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply1(tmp5, v2)
-				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
-				if lang.IsTruthy(tmp7) {
-					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply1(tmp8, v2)
-					tmp10 := lang.Apply1(closed3, tmp9)
-					tmp3 = tmp10
-				} else {
-					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply2(tmp11, closed3, v2)
-					tmp3 = tmp12
-				}
-				return tmp3
-			}),
-			0,
-		)
-		var_ys_DOT_fs_l = ns.InternWithValue(tmp0, tmp1, true)
-		var_ys_DOT_fs_l.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(113), kw_column, int(6), kw_end_DASH_line, int(113), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// link?
-	{
-		tmp0 := sym_link_QMARK_
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "True if path is a symbolic link"
-			var tmp3 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp4 := var_ys_DOT_fs_get_DASH_link_DASH_info.RootVersion() == aotRootVersion15 && !var_ys_DOT_fs_get_DASH_link_DASH_info.IsMacro()
-				var tmp5 any
-				if !tmp4 {
-					tmp5 = checkDerefVar(var_ys_DOT_fs_get_DASH_link_DASH_info)
-				}
-				var tmp6 any
-				if tmp4 {
-					tmp6 = aotDirectFn15(v2)
-				} else {
-					tmp6 = lang.Apply1(tmp5, v2)
-				}
-				var v7 any = tmp6
-				_ = v7
-				var tmp8 any
-				if lang.IsTruthy(v7) {
-					var tmp9 any
-					{ // let
-						// let binding "info"
-						var v10 any = v7
-						_ = v10
-						var tmp11 any
-						{ // let
-							// let binding "mode"
-							tmp12, ok := lang.FieldOrMethod(v10, "Mode")
-							if !ok {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v10, "Mode")))
-							}
-							var tmp13 any
-							switch reflect.TypeOf(tmp12).Kind() {
-							case reflect.Func:
-								tmp13 = lang.Apply(tmp12, nil)
-							default:
-								tmp13 = tmp12
-							}
-							var v14 any = tmp13
-							_ = v14
-							// let binding "link-bit"
-							tmp15 := lang.Numbers.And(v14, os5.ModeSymlink)
-							var v16 any = tmp15
-							_ = v16
-							tmp17 := checkDerefVar(var_clojure_DOT_core_not)
-							tmp18 := lang.Numbers.IsZero(v16)
-							tmp19 := lang.Apply1(tmp17, tmp18)
-							tmp11 = tmp19
-						} // end let
-						tmp9 = tmp11
-					} // end let
-					tmp8 = tmp9
-				} else {
-					tmp8 = false
-				}
-				tmp3 = tmp8
-			} // end let
-			return tmp3
-		})
-		aotDirectFn17 = tmp1
-		var_ys_DOT_fs_link_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion17 = var_ys_DOT_fs_link_QMARK_.RootVersion()
-		var_ys_DOT_fs_link_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(75), kw_column, int(7), kw_end_DASH_line, int(75), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// ls
-	{
-		tmp0 := sym_ls
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "List directory contents"
-			var tmp3 any
-			{ // let
-				// let binding "vec__26"
-				tmp4 := lang.Apply1(os5.ReadDir, v2)
-				var v5 any = tmp4
-				_ = v5
-				// let binding "entries"
-				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
-				var v8 any = tmp7
-				_ = v8
-				// let binding "err"
-				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
-				var v11 any = tmp10
-				_ = v11
-				var tmp12 any
-				tmp13 := lang.Identical(v11, nil)
-				if lang.IsTruthy(tmp13) {
-					var tmp14 any
-					{ // let
-						// let binding "i"
-						var v15 any = int64(0)
-						_ = v15
-						// let binding "n"
-						tmp16 := checkDerefVar(var_clojure_DOT_core_count)
-						tmp17 := lang.Apply1(tmp16, v8)
-						var v18 any = tmp17
-						_ = v18
-						// let binding "result"
-						tmp19 := lang.NewVector()
-						tmp20 := lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(188), kw_column, int(45), kw_end_DASH_line, int(188), kw_end_DASH_column, int(46))
-						tmp21, err := lang.WithMeta(tmp19, tmp20.(lang.IPersistentMap))
-						if err != nil {
-							panic(err)
-						}
-						var v22 any = tmp21
-						_ = v22
-						for {
-							var tmp23 any
-							tmp24 := lang.Numbers.Lt(v15, v18)
-							if lang.IsTruthy(tmp24) {
-								tmp26 := lang.Numbers.Inc(v15)
-								var tmp25 any = tmp26
-								var tmp27 any = v18
-								tmp29 := checkDerefVar(var_clojure_DOT_core_conj)
-								tmp30 := runtime.RT.Nth(v8, lang.IntCast(v15))
-								tmp31, ok := lang.FieldOrMethod(tmp30, "Name")
-								if !ok {
-									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", tmp30, "Name")))
-								}
-								var tmp32 any
-								switch reflect.TypeOf(tmp31).Kind() {
-								case reflect.Func:
-									tmp32 = lang.Apply(tmp31, nil)
-								default:
-									tmp32 = tmp31
-								}
-								tmp33 := lang.Apply2(tmp29, v22, tmp32)
-								var tmp28 any = tmp33
-								v15 = tmp25
-								v18 = tmp27
-								v22 = tmp28
-								continue
-							} else {
-								tmp23 = v22
-							}
-							tmp14 = tmp23
-							break
-						}
-					} // end let
-					tmp12 = tmp14
-				} else {
-					tmp15 := lang.NewVector()
-					tmp16 := lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(192), kw_column, int(7), kw_end_DASH_line, int(192), kw_end_DASH_column, int(8))
-					tmp17, err := lang.WithMeta(tmp15, tmp16.(lang.IPersistentMap))
-					if err != nil {
-						panic(err)
-					}
-					tmp12 = tmp17
-				}
-				tmp3 = tmp12
-			} // end let
-			return tmp3
-		})
-		aotDirectFn18 = tmp1
-		var_ys_DOT_fs_ls = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion18 = var_ys_DOT_fs_ls.RootVersion()
-		var_ys_DOT_fs_ls.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(184), kw_column, int(7), kw_end_DASH_line, int(184), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// mktemp
-	{
-		tmp0 := sym_mktemp
-		var tmp1 lang.ArityFn
-		tmp1 = lang.NewArityFn(
-			lang.FnFunc0(func() any {
-				tmp2 := checkDerefVar(var_ys_DOT_fs_mktemp)
-				tmp3 := lang.Apply2(tmp2, "", "ys-")
-				return tmp3
-			}),
-			lang.FnFunc1(func(p0 any) any {
-				v2 := p0
-				_ = v2
-				tmp3 := checkDerefVar(var_ys_DOT_fs_mktemp)
-				tmp4 := lang.Apply2(tmp3, "", v2)
-				return tmp4
-			}),
-			lang.FnFunc2(func(p0, p1 any) any {
-				v2 := p0
-				_ = v2
-				v3 := p1
-				_ = v3
-				var tmp4 any
-				{ // let
-					// let binding "vec__56"
-					tmp5 := lang.Apply2(os5.CreateTemp, v2, v3)
-					var v6 any = tmp5
-					_ = v6
-					// let binding "f"
-					tmp7 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp8 := lang.Apply3(tmp7, v6, int64(0), nil)
-					var v9 any = tmp8
-					_ = v9
-					// let binding "err"
-					tmp10 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp11 := lang.Apply3(tmp10, v6, int64(1), nil)
-					var v12 any = tmp11
-					_ = v12
-					var tmp13 any
-					tmp14 := lang.Identical(v12, nil)
-					if lang.IsTruthy(tmp14) {
-						tmp15, ok := lang.FieldOrMethod(v9, "Close")
-						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v9, "Close")))
-						}
-						var tmp16 any
-						switch reflect.TypeOf(tmp15).Kind() {
-						case reflect.Func:
-							tmp16 = lang.Apply(tmp15, nil)
-						default:
-							tmp16 = tmp15
-						}
-						_ = tmp16
-						tmp17 := checkDerefVar(var_clojure_DOT_core_str)
-						tmp18, ok := lang.FieldOrMethod(v9, "Name")
-						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v9, "Name")))
-						}
-						var tmp19 any
-						switch reflect.TypeOf(tmp18).Kind() {
-						case reflect.Func:
-							tmp19 = lang.Apply(tmp18, nil)
-						default:
-							tmp19 = tmp18
-						}
-						tmp20 := lang.Apply1(tmp17, tmp19)
-						tmp13 = tmp20
-					} else {
-					}
-					tmp4 = tmp13
-				} // end let
-				return tmp4
-			}),
-			nil,
-			nil,
-			nil,
-			0,
-		)
-		var_ys_DOT_fs_mktemp = ns.InternWithValue(tmp0, tmp1, true)
-		var_ys_DOT_fs_mktemp.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(294), kw_column, int(7), kw_end_DASH_line, int(294), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_prefix), lang.NewVector(sym_dir, sym_prefix)), kw_doc, "Create temporary file and return path", kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// mktemp-d
-	{
-		tmp0 := sym_mktemp_DASH_d
-		var tmp1 lang.ArityFn
-		tmp1 = lang.NewArityFn(
-			lang.FnFunc0(func() any {
-				tmp2 := checkDerefVar(var_ys_DOT_fs_mktemp_DASH_d)
-				tmp3 := lang.Apply2(tmp2, "", "ys-")
-				return tmp3
-			}),
-			lang.FnFunc1(func(p0 any) any {
-				v2 := p0
-				_ = v2
-				tmp3 := checkDerefVar(var_ys_DOT_fs_mktemp_DASH_d)
-				tmp4 := lang.Apply2(tmp3, "", v2)
-				return tmp4
-			}),
-			lang.FnFunc2(func(p0, p1 any) any {
-				v2 := p0
-				_ = v2
-				v3 := p1
-				_ = v3
-				var tmp4 any
-				{ // let
-					// let binding "vec__59"
-					tmp5 := lang.Apply2(os5.MkdirTemp, v2, v3)
-					var v6 any = tmp5
-					_ = v6
-					// let binding "path"
-					tmp7 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp8 := lang.Apply3(tmp7, v6, int64(0), nil)
-					var v9 any = tmp8
-					_ = v9
-					// let binding "err"
-					tmp10 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp11 := lang.Apply3(tmp10, v6, int64(1), nil)
-					var v12 any = tmp11
-					_ = v12
-					var tmp13 any
-					tmp14 := lang.Identical(v12, nil)
-					if lang.IsTruthy(tmp14) {
-						tmp13 = v9
-					} else {
-					}
-					tmp4 = tmp13
-				} // end let
-				return tmp4
-			}),
-			nil,
-			nil,
-			nil,
-			0,
-		)
-		var_ys_DOT_fs_mktemp_DASH_d = ns.InternWithValue(tmp0, tmp1, true)
-		var_ys_DOT_fs_mktemp_DASH_d.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(304), kw_column, int(7), kw_end_DASH_line, int(304), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(), lang.NewVector(sym_prefix), lang.NewVector(sym_dir, sym_prefix)), kw_doc, "Create temporary directory and return path", kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// multi
-	{
-		tmp0 := sym_multi
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Wrap single-path function to support multiple paths"
-			var tmp3 lang.ArityFn
-			tmp3 = lang.NewArityFn(
-				nil,
-				nil,
-				nil,
-				nil,
-				nil,
-				lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
-					var v4 any = rest
-					_ = v4
-					var tmp5 any
-					tmp6 := checkDerefVar(var_clojure_DOT_core__EQ_)
-					tmp7 := checkDerefVar(var_clojure_DOT_core_count)
-					tmp8 := lang.Apply1(tmp7, v4)
-					tmp9 := lang.Apply2(tmp6, int64(1), tmp8)
-					if lang.IsTruthy(tmp9) {
-						tmp10 := checkDerefVar(var_clojure_DOT_core_first)
-						tmp11 := lang.Apply1(tmp10, v4)
-						tmp12 := lang.Apply1(v2, tmp11)
-						tmp5 = tmp12
-					} else {
-						tmp13 := checkDerefVar(var_clojure_DOT_core_map)
-						tmp14 := lang.Apply2(tmp13, v2, v4)
-						tmp5 = tmp14
-					}
-					return tmp5
-				}),
-				0,
-			)
-			return tmp3
-		})
-		aotDirectFn22 = tmp1
-		var_ys_DOT_fs_multi = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion22 = var_ys_DOT_fs_multi.RootVersion()
-		var_ys_DOT_fs_multi.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(12), kw_column, int(8), kw_end_DASH_line, int(12), kw_end_DASH_column, int(12), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_f)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// path
-	{
-		tmp0 := sym_path
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Return canonical path (follows symlinks)"
-			var tmp3 any
-			{ // let
-				// let binding "vec__29"
-				tmp4 := lang.Apply1(filepath4.EvalSymlinks, v2)
-				var v5 any = tmp4
-				_ = v5
-				// let binding "result"
-				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
-				var v8 any = tmp7
-				_ = v8
-				// let binding "err"
-				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
-				var v11 any = tmp10
-				_ = v11
-				var tmp12 any
-				tmp13 := lang.Identical(v11, nil)
-				if lang.IsTruthy(tmp13) {
-					tmp12 = v8
-				} else {
-					tmp12 = v2
-				}
-				tmp3 = tmp12
-			} // end let
-			return tmp3
-		})
-		aotDirectFn24 = tmp1
-		var_ys_DOT_fs_path = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion24 = var_ys_DOT_fs_path.RootVersion()
-		var_ys_DOT_fs_path.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(194), kw_column, int(7), kw_end_DASH_line, int(194), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_p)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// r
-	{
-		tmp0 := sym_r
-		var tmp1 lang.ArityFn
-		tmp1 = lang.NewArityFn(
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
-				var v2 any = rest
-				_ = v2
-				var tmp3 any
-				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
-				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply1(tmp5, v2)
-				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
-				if lang.IsTruthy(tmp7) {
-					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply1(tmp8, v2)
-					tmp10 := lang.Apply1(closed4, tmp9)
-					tmp3 = tmp10
-				} else {
-					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply2(tmp11, closed4, v2)
-					tmp3 = tmp12
-				}
-				return tmp3
-			}),
-			0,
-		)
-		var_ys_DOT_fs_r = ns.InternWithValue(tmp0, tmp1, true)
-		var_ys_DOT_fs_r.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(114), kw_column, int(6), kw_end_DASH_line, int(114), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// read
-	{
-		tmp0 := sym_read
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Read file contents as string"
-			var tmp3 any
-			{ // let
-				// let binding "vec__41"
-				tmp4 := lang.Apply1(os5.ReadFile, v2)
-				var v5 any = tmp4
-				_ = v5
-				// let binding "bytes"
-				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
-				var v8 any = tmp7
-				_ = v8
-				// let binding "err"
-				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
-				var v11 any = tmp10
-				_ = v11
-				var tmp12 any
-				tmp13 := lang.Identical(v11, nil)
-				if lang.IsTruthy(tmp13) {
-					tmp14 := lang.Apply2(fmt.Sprintf, "%s", v8)
-					tmp12 = tmp14
-				} else {
-					tmp15 := lang.Apply2(nil, "Failed to read file: ", v2)
-					tmp12 = tmp15
-				}
-				tmp3 = tmp12
-			} // end let
-			return tmp3
-		})
-		aotDirectFn25 = tmp1
-		var_ys_DOT_fs_read = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion25 = var_ys_DOT_fs_read.RootVersion()
-		var_ys_DOT_fs_read.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(215), kw_column, int(7), kw_end_DASH_line, int(215), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// read?
-	{
-		tmp0 := sym_read_QMARK_
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "True if path is readable"
-			var tmp3 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp4 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp5 any
-				if !tmp4 {
-					tmp5 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp6 any
-				if tmp4 {
-					tmp6 = aotDirectFn14(v2)
-				} else {
-					tmp6 = lang.Apply1(tmp5, v2)
-				}
-				var v7 any = tmp6
-				_ = v7
-				var tmp8 any
-				if lang.IsTruthy(v7) {
-					var tmp9 any
-					{ // let
-						// let binding "info"
-						var v10 any = v7
-						_ = v10
-						var tmp11 any
-						{ // let
-							// let binding "mode"
-							tmp12, ok := lang.FieldOrMethod(v10, "Mode")
-							if !ok {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v10, "Mode")))
-							}
-							var tmp13 any
-							switch reflect.TypeOf(tmp12).Kind() {
-							case reflect.Func:
-								tmp13 = lang.Apply(tmp12, nil)
-							default:
-								tmp13 = tmp12
-							}
-							var v14 any = tmp13
-							_ = v14
-							// let binding "read-bits"
-							tmp15 := lang.Numbers.And(v14, int64(292))
-							var v16 any = tmp15
-							_ = v16
-							tmp17 := checkDerefVar(var_clojure_DOT_core_not)
-							tmp18 := lang.Numbers.IsZero(v16)
-							tmp19 := lang.Apply1(tmp17, tmp18)
-							tmp11 = tmp19
-						} // end let
-						tmp9 = tmp11
-					} // end let
-					tmp8 = tmp9
-				} else {
-					tmp8 = false
-				}
-				tmp3 = tmp8
-			} // end let
-			return tmp3
-		})
-		aotDirectFn26 = tmp1
-		var_ys_DOT_fs_read_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion26 = var_ys_DOT_fs_read_QMARK_.RootVersion()
-		var_ys_DOT_fs_read_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(83), kw_column, int(7), kw_end_DASH_line, int(83), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// readlink
-	{
-		tmp0 := sym_readlink
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Read symbolic link target"
-			var tmp3 any
-			{ // let
-				// let binding "vec__32"
-				tmp4 := lang.Apply1(os5.Readlink, v2)
-				var v5 any = tmp4
-				_ = v5
-				// let binding "result"
-				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
-				var v8 any = tmp7
-				_ = v8
-				// let binding "err"
-				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
-				var v11 any = tmp10
-				_ = v11
-				var tmp12 any
-				tmp13 := lang.Identical(v11, nil)
-				if lang.IsTruthy(tmp13) {
-					tmp12 = v8
-				} else {
-				}
-				tmp3 = tmp12
-			} // end let
-			return tmp3
-		})
-		aotDirectFn27 = tmp1
-		var_ys_DOT_fs_readlink = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion27 = var_ys_DOT_fs_readlink.RootVersion()
-		var_ys_DOT_fs_readlink.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(199), kw_column, int(7), kw_end_DASH_line, int(199), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// rel
-	{
-		tmp0 := sym_rel
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Return path relative to current directory"
-			var tmp3 any
-			{ // let
-				// let binding "cwd-path"
-				tmp4 := var_ys_DOT_fs_cwd.RootVersion() == aotRootVersion6 && !var_ys_DOT_fs_cwd.IsMacro()
-				var tmp5 any
-				if !tmp4 {
-					tmp5 = checkDerefVar(var_ys_DOT_fs_cwd)
-				}
-				var tmp6 any
-				if tmp4 {
-					tmp6 = aotDirectFn6()
-				} else {
-					tmp6 = lang.Apply0(tmp5)
-				}
-				var v7 any = tmp6
-				_ = v7
-				// let binding "vec__35"
-				tmp8 := lang.Apply2(filepath4.Rel, v7, v2)
-				var v9 any = tmp8
-				_ = v9
-				// let binding "result"
-				tmp10 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp11 := lang.Apply3(tmp10, v9, int64(0), nil)
-				var v12 any = tmp11
-				_ = v12
-				// let binding "err"
-				tmp13 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp14 := lang.Apply3(tmp13, v9, int64(1), nil)
-				var v15 any = tmp14
-				_ = v15
-				var tmp16 any
-				tmp17 := lang.Identical(v15, nil)
-				if lang.IsTruthy(tmp17) {
-					tmp16 = v12
-				} else {
-					tmp16 = v2
-				}
-				tmp3 = tmp16
-			} // end let
-			return tmp3
-		})
-		aotDirectFn28 = tmp1
-		var_ys_DOT_fs_rel = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion28 = var_ys_DOT_fs_rel.RootVersion()
-		var_ys_DOT_fs_rel.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(204), kw_column, int(7), kw_end_DASH_line, int(204), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// rel?
-	{
-		tmp0 := sym_rel_QMARK_
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "True if path is relative"
-			tmp3 := checkDerefVar(var_clojure_DOT_core_not)
-			tmp4 := lang.Apply1(filepath4.IsAbs, v2)
-			tmp5 := lang.Apply1(tmp3, tmp4)
-			return tmp5
-		})
-		aotDirectFn29 = tmp1
-		var_ys_DOT_fs_rel_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion29 = var_ys_DOT_fs_rel_QMARK_.RootVersion()
-		var_ys_DOT_fs_rel_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(91), kw_column, int(7), kw_end_DASH_line, int(91), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// s
-	{
-		tmp0 := sym_s
-		var tmp1 lang.ArityFn
-		tmp1 = lang.NewArityFn(
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
-				var v2 any = rest
-				_ = v2
-				var tmp3 any
-				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
-				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply1(tmp5, v2)
-				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
-				if lang.IsTruthy(tmp7) {
-					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply1(tmp8, v2)
-					tmp10 := lang.Apply1(closed5, tmp9)
-					tmp3 = tmp10
-				} else {
-					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply2(tmp11, closed5, v2)
-					tmp3 = tmp12
-				}
-				return tmp3
-			}),
-			0,
-		)
-		var_ys_DOT_fs_s = ns.InternWithValue(tmp0, tmp1, true)
-		var_ys_DOT_fs_s.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(115), kw_column, int(6), kw_end_DASH_line, int(115), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// touch
-	{
-		tmp0 := sym_touch
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Update file timestamp or create if doesn't exist"
-			var tmp3 any
-			tmp4 := var_ys_DOT_fs_exists_QMARK_.RootVersion() == aotRootVersion11 && !var_ys_DOT_fs_exists_QMARK_.IsMacro()
-			var tmp5 any
-			if !tmp4 {
-				tmp5 = checkDerefVar(var_ys_DOT_fs_exists_QMARK_)
-			}
-			var tmp6 any
-			if tmp4 {
-				tmp6 = aotDirectFn11(v2)
-			} else {
-				tmp6 = lang.Apply1(tmp5, v2)
-			}
-			if lang.IsTruthy(tmp6) {
-				var tmp7 any
-				{ // let
-					// let binding "now"
-					tmp8 := time6.Now()
-					var v9 any = tmp8
-					_ = v9
-					tmp10 := lang.Apply3(os5.Chtimes, v2, v9, v9)
-					tmp7 = tmp10
-				} // end let
-				tmp3 = tmp7
-			} else {
-				var tmp8 any
-				{ // let
-					// let binding "vec__53"
-					tmp9 := lang.Apply1(os5.Create, v2)
-					var v10 any = tmp9
-					_ = v10
-					// let binding "f"
-					tmp11 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp12 := lang.Apply3(tmp11, v10, int64(0), nil)
-					var v13 any = tmp12
-					_ = v13
-					// let binding "err"
-					tmp14 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp15 := lang.Apply3(tmp14, v10, int64(1), nil)
-					var v16 any = tmp15
-					_ = v16
-					var tmp17 any
-					tmp18 := lang.Identical(v16, nil)
-					if lang.IsTruthy(tmp18) {
-						tmp19, ok := lang.FieldOrMethod(v13, "Close")
-						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v13, "Close")))
-						}
-						var tmp20 any
-						switch reflect.TypeOf(tmp19).Kind() {
-						case reflect.Func:
-							tmp20 = lang.Apply(tmp19, nil)
-						default:
-							tmp20 = tmp19
-						}
-						tmp17 = tmp20
-					} else {
-					}
-					tmp8 = tmp17
-				} // end let
-				tmp3 = tmp8
-			}
-			return tmp3
-		})
-		aotDirectFn35 = tmp1
-		var_ys_DOT_fs_touch = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion35 = var_ys_DOT_fs_touch.RootVersion()
-		var_ys_DOT_fs_touch.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(285), kw_column, int(7), kw_end_DASH_line, int(285), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// w
-	{
-		tmp0 := sym_w
-		var tmp1 lang.ArityFn
-		tmp1 = lang.NewArityFn(
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
-				var v2 any = rest
-				_ = v2
-				var tmp3 any
-				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
-				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply1(tmp5, v2)
-				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
-				if lang.IsTruthy(tmp7) {
-					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply1(tmp8, v2)
-					tmp10 := lang.Apply1(closed6, tmp9)
-					tmp3 = tmp10
-				} else {
-					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply2(tmp11, closed6, v2)
-					tmp3 = tmp12
-				}
-				return tmp3
-			}),
-			0,
-		)
-		var_ys_DOT_fs_w = ns.InternWithValue(tmp0, tmp1, true)
-		var_ys_DOT_fs_w.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(116), kw_column, int(6), kw_end_DASH_line, int(116), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// when-str
-	{
-		tmp0 := sym_when_DASH_str
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Convert to string or return nil"
-			var tmp3 any
-			if lang.IsTruthy(v2) {
-				tmp4 := checkDerefVar(var_clojure_DOT_core_str)
-				tmp5 := lang.Apply1(tmp4, v2)
-				tmp3 = tmp5
-			} else {
-			}
-			return tmp3
-		})
-		aotDirectFn36 = tmp1
-		var_ys_DOT_fs_when_DASH_str = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion36 = var_ys_DOT_fs_when_DASH_str.RootVersion()
-		var_ys_DOT_fs_when_DASH_str.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(8), kw_column, int(8), kw_end_DASH_line, int(8), kw_end_DASH_column, int(15), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// which
-	{
-		tmp0 := sym_which
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "Find executable in PATH"
-			var tmp3 any
-			{ // let
-				// let binding "vec__38"
-				tmp4 := lang.Apply1(exec7.LookPath, v2)
-				var v5 any = tmp4
-				_ = v5
-				// let binding "result"
-				tmp6 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp7 := lang.Apply3(tmp6, v5, int64(0), nil)
-				var v8 any = tmp7
-				_ = v8
-				// let binding "err"
-				tmp9 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp10 := lang.Apply3(tmp9, v5, int64(1), nil)
-				var v11 any = tmp10
-				_ = v11
-				var tmp12 any
-				tmp13 := lang.Identical(v11, nil)
-				if lang.IsTruthy(tmp13) {
-					tmp12 = v8
-				} else {
-				}
-				tmp3 = tmp12
-			} // end let
-			return tmp3
-		})
-		aotDirectFn37 = tmp1
-		var_ys_DOT_fs_which = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion37 = var_ys_DOT_fs_which.RootVersion()
-		var_ys_DOT_fs_which.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(210), kw_column, int(7), kw_end_DASH_line, int(210), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_name)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// write?
-	{
-		tmp0 := sym_write_QMARK_
-		var tmp1 lang.FnFunc1
-		tmp1 = lang.FnFunc1(func(p0 any) any {
-			v2 := p0
-			_ = v2
-			_ = "True if path is writable"
-			var tmp3 any
-			{ // let
-				// let binding "temp__0__auto__"
-				tmp4 := var_ys_DOT_fs_get_DASH_file_DASH_info.RootVersion() == aotRootVersion14 && !var_ys_DOT_fs_get_DASH_file_DASH_info.IsMacro()
-				var tmp5 any
-				if !tmp4 {
-					tmp5 = checkDerefVar(var_ys_DOT_fs_get_DASH_file_DASH_info)
-				}
-				var tmp6 any
-				if tmp4 {
-					tmp6 = aotDirectFn14(v2)
-				} else {
-					tmp6 = lang.Apply1(tmp5, v2)
-				}
-				var v7 any = tmp6
-				_ = v7
-				var tmp8 any
-				if lang.IsTruthy(v7) {
-					var tmp9 any
-					{ // let
-						// let binding "info"
-						var v10 any = v7
-						_ = v10
-						var tmp11 any
-						{ // let
-							// let binding "mode"
-							tmp12, ok := lang.FieldOrMethod(v10, "Mode")
-							if !ok {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v10, "Mode")))
-							}
-							var tmp13 any
-							switch reflect.TypeOf(tmp12).Kind() {
-							case reflect.Func:
-								tmp13 = lang.Apply(tmp12, nil)
-							default:
-								tmp13 = tmp12
-							}
-							var v14 any = tmp13
-							_ = v14
-							// let binding "write-bits"
-							tmp15 := lang.Numbers.And(v14, int64(146))
-							var v16 any = tmp15
-							_ = v16
-							tmp17 := checkDerefVar(var_clojure_DOT_core_not)
-							tmp18 := lang.Numbers.IsZero(v16)
-							tmp19 := lang.Apply1(tmp17, tmp18)
-							tmp11 = tmp19
-						} // end let
-						tmp9 = tmp11
-					} // end let
-					tmp8 = tmp9
-				} else {
-					tmp8 = false
-				}
-				tmp3 = tmp8
-			} // end let
-			return tmp3
-		})
-		aotDirectFn39 = tmp1
-		var_ys_DOT_fs_write_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion39 = var_ys_DOT_fs_write_QMARK_.RootVersion()
-		var_ys_DOT_fs_write_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(101), kw_column, int(7), kw_end_DASH_line, int(101), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_path)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// x
-	{
-		tmp0 := sym_x
-		var tmp1 lang.ArityFn
-		tmp1 = lang.NewArityFn(
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
-				var v2 any = rest
-				_ = v2
-				var tmp3 any
-				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
-				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply1(tmp5, v2)
-				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
-				if lang.IsTruthy(tmp7) {
-					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply1(tmp8, v2)
-					tmp10 := lang.Apply1(closed7, tmp9)
-					tmp3 = tmp10
-				} else {
-					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply2(tmp11, closed7, v2)
-					tmp3 = tmp12
-				}
-				return tmp3
-			}),
-			0,
-		)
-		var_ys_DOT_fs_x = ns.InternWithValue(tmp0, tmp1, true)
-		var_ys_DOT_fs_x.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(117), kw_column, int(6), kw_end_DASH_line, int(117), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
-		})
-	}
-	// z
-	{
-		tmp0 := sym_z
-		var tmp1 lang.ArityFn
-		tmp1 = lang.NewArityFn(
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
-				var v2 any = rest
-				_ = v2
-				var tmp3 any
-				tmp4 := checkDerefVar(var_clojure_DOT_core__EQ_)
-				tmp5 := checkDerefVar(var_clojure_DOT_core_count)
-				tmp6 := lang.Apply1(tmp5, v2)
-				tmp7 := lang.Apply2(tmp4, int64(1), tmp6)
-				if lang.IsTruthy(tmp7) {
-					tmp8 := checkDerefVar(var_clojure_DOT_core_first)
-					tmp9 := lang.Apply1(tmp8, v2)
-					tmp10 := lang.Apply1(closed8, tmp9)
-					tmp3 = tmp10
-				} else {
-					tmp11 := checkDerefVar(var_clojure_DOT_core_map)
-					tmp12 := lang.Apply2(tmp11, closed8, v2)
-					tmp3 = tmp12
-				}
-				return tmp3
-			}),
-			0,
-		)
-		var_ys_DOT_fs_z = ns.InternWithValue(tmp0, tmp1, true)
-		var_ys_DOT_fs_z.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(118), kw_column, int(6), kw_end_DASH_line, int(118), kw_end_DASH_column, int(6), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
+			return lang.NewMap(kw_file, "ys/fs.glj", kw_line, int(165), kw_column, int(7), kw_end_DASH_line, int(165), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_path, sym__AMP_, sym_patterns)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_fs))
 		})
 	}
 }

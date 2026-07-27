@@ -8,67 +8,66 @@ import (
 	runtime "github.com/glojurelang/glojure/pkg/runtime"
 	reflect "reflect"
 	regexp4 "regexp"
+	sync "sync"
 )
 
 var aotDirectFn0 lang.FnFunc1
-var aotRootVersion0 *lang.VarRootVersion
-var aotDirectFn1 lang.FnFunc2
-var aotRootVersion1 *lang.VarRootVersion
-var aotDirectFn2 lang.FnFunc1
-var aotRootVersion2 *lang.VarRootVersion
+var aotDirectFn1 lang.ArityFn
+var aotDirectFn1Arity1 lang.FnFunc1
+var aotDirectFn1Arity2 lang.FnFunc2
+var aotDirectFn2 lang.FnFunc2
+var aotDirectFn3 lang.FnFunc1
 
-func aotCacheFn1(vr *lang.Var) lang.FnFunc1 {
-	version := vr.RootVersion()
-	fn := checkDerefVar(vr)
-	if direct, ok := fn.(lang.FnFunc1); ok {
-		return func(p0 any) any {
-			if vr.RootVersion() == version {
-				return direct(p0)
-			}
-			return lang.Apply1(checkDerefVar(vr), p0)
-		}
+func aotLinkFn1(vr *lang.Var) lang.FnFunc1 {
+	if vr.IsBound() {
+		return aotLinkBoundFn1(vr)
 	}
-	if fixed, ok := fn.(lang.FixedArityFn1); ok {
-		return func(p0 any) any {
-			if vr.RootVersion() == version {
-				return fixed.Invoke1(p0)
-			}
-			return lang.Apply1(checkDerefVar(vr), p0)
-		}
-	}
+	var once sync.Once
+	var linked lang.FnFunc1
 	return func(p0 any) any {
-		if vr.RootVersion() == version {
-			return lang.Apply1(fn, p0)
+		if !vr.IsBound() {
+			return lang.Apply1(checkDerefVar(vr), p0)
 		}
-		return lang.Apply1(checkDerefVar(vr), p0)
+		once.Do(func() { linked = aotLinkBoundFn1(vr) })
+		return linked(p0)
 	}
 }
 
-func aotCacheFn2(vr *lang.Var) lang.FnFunc2 {
-	version := vr.RootVersion()
+func aotLinkBoundFn1(vr *lang.Var) lang.FnFunc1 {
+	fn := checkDerefVar(vr)
+	if direct, ok := fn.(lang.FnFunc1); ok {
+		return direct
+	}
+	if fixed, ok := fn.(lang.FixedArityFn1); ok {
+		return fixed.Invoke1
+	}
+	return func(p0 any) any { return lang.Apply1(fn, p0) }
+}
+
+func aotLinkFn2(vr *lang.Var) lang.FnFunc2 {
+	if vr.IsBound() {
+		return aotLinkBoundFn2(vr)
+	}
+	var once sync.Once
+	var linked lang.FnFunc2
+	return func(p0 any, p1 any) any {
+		if !vr.IsBound() {
+			return lang.Apply2(checkDerefVar(vr), p0, p1)
+		}
+		once.Do(func() { linked = aotLinkBoundFn2(vr) })
+		return linked(p0, p1)
+	}
+}
+
+func aotLinkBoundFn2(vr *lang.Var) lang.FnFunc2 {
 	fn := checkDerefVar(vr)
 	if direct, ok := fn.(lang.FnFunc2); ok {
-		return func(p0 any, p1 any) any {
-			if vr.RootVersion() == version {
-				return direct(p0, p1)
-			}
-			return lang.Apply2(checkDerefVar(vr), p0, p1)
-		}
+		return direct
 	}
 	if fixed, ok := fn.(lang.FixedArityFn2); ok {
-		return func(p0 any, p1 any) any {
-			if vr.RootVersion() == version {
-				return fixed.Invoke2(p0, p1)
-			}
-			return lang.Apply2(checkDerefVar(vr), p0, p1)
-		}
+		return fixed.Invoke2
 	}
-	return func(p0 any, p1 any) any {
-		if vr.RootVersion() == version {
-			return lang.Apply2(fn, p0, p1)
-		}
-		return lang.Apply2(checkDerefVar(vr), p0, p1)
-	}
+	return func(p0 any, p1 any) any { return lang.Apply2(fn, p0, p1) }
 }
 
 func init() {
@@ -145,13 +144,13 @@ func LoadNS() {
 	var_yamlscript_DOT_common_re_DASH_find_PLUS_ := lang.InternVarName(sym_yamlscript_DOT_common, sym_re_DASH_find_PLUS_)
 	// var yamlscript.common/regex?
 	var_yamlscript_DOT_common_regex_QMARK_ := lang.InternVarName(sym_yamlscript_DOT_common, sym_regex_QMARK_)
-	aotExternalFn0 := aotCacheFn2(var_clojure_DOT_core__EQ_)
-	aotExternalFn1 := aotCacheFn1(var_clojure_DOT_core_type)
-	aotExternalFn2 := aotCacheFn2(var_clojure_DOT_core_drop_DASH_last)
-	aotExternalFn3 := aotCacheFn1(var_clojure_DOT_core_string_QMARK_)
-	aotExternalFn4 := aotCacheFn2(var_clojure_DOT_string_join)
-	aotExternalFn5 := aotCacheFn2(var_clojure_DOT_core_re_DASH_find)
-	aotExternalFn6 := aotCacheFn1(var_clojure_DOT_core_str)
+	aotExternalFn0 := aotLinkFn2(var_clojure_DOT_core__EQ_)
+	aotExternalFn1 := aotLinkFn1(var_clojure_DOT_core_type)
+	aotExternalFn2 := aotLinkFn2(var_clojure_DOT_core_drop_DASH_last)
+	aotExternalFn3 := aotLinkFn1(var_clojure_DOT_core_string_QMARK_)
+	aotExternalFn4 := aotLinkFn2(var_clojure_DOT_string_join)
+	aotExternalFn5 := aotLinkFn2(var_clojure_DOT_core_re_DASH_find)
+	aotExternalFn6 := aotLinkFn1(var_clojure_DOT_core_str)
 	// reference fmt to avoid unused import error
 	_ = fmt.Printf
 	// reference reflect to avoid unused import error
@@ -253,7 +252,6 @@ func LoadNS() {
 		})
 		aotDirectFn0 = tmp1
 		var_yamlscript_DOT_common_atom_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion0 = var_yamlscript_DOT_common_atom_QMARK_.RootVersion()
 		var_yamlscript_DOT_common_atom_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "yamlscript/common.glj", kw_line, int(29), kw_column, int(7), kw_end_DASH_line, int(29), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_yamlscript_DOT_common))
 		})
@@ -262,43 +260,45 @@ func LoadNS() {
 	{
 		tmp0 := sym_chop
 		var tmp1 lang.ArityFn
+		aotDirectFn1Arity1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			tmp3 := aotDirectFn1Arity2(int64(1), v2)
+			return tmp3
+		})
+		aotDirectFn1Arity2 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
+			_ = v2
+			v3 := p1
+			_ = v3
+			var tmp4 any
+			{ // let
+				// let binding "lst"
+				tmp5 := aotExternalFn2(v2, v3)
+				var v6 any = tmp5
+				_ = v6
+				var tmp7 any
+				tmp8 := aotExternalFn3(v3)
+				if lang.IsTruthy(tmp8) {
+					tmp9 := aotExternalFn4("", v6)
+					tmp7 = tmp9
+				} else {
+					tmp7 = v6
+				}
+				tmp4 = tmp7
+			} // end let
+			return tmp4
+		})
 		tmp1 = lang.NewArityFn(
 			nil,
-			lang.FnFunc1(func(p0 any) any {
-				v2 := p0
-				_ = v2
-				tmp3 := checkDerefVar(var_yamlscript_DOT_common_chop)
-				tmp4 := lang.Apply2(tmp3, int64(1), v2)
-				return tmp4
-			}),
-			lang.FnFunc2(func(p0, p1 any) any {
-				v2 := p0
-				_ = v2
-				v3 := p1
-				_ = v3
-				var tmp4 any
-				{ // let
-					// let binding "lst"
-					tmp5 := aotExternalFn2(v2, v3)
-					var v6 any = tmp5
-					_ = v6
-					var tmp7 any
-					tmp8 := aotExternalFn3(v3)
-					if lang.IsTruthy(tmp8) {
-						tmp9 := aotExternalFn4("", v6)
-						tmp7 = tmp9
-					} else {
-						tmp7 = v6
-					}
-					tmp4 = tmp7
-				} // end let
-				return tmp4
-			}),
+			aotDirectFn1Arity1,
+			aotDirectFn1Arity2,
 			nil,
 			nil,
 			nil,
 			0,
 		)
+		aotDirectFn1 = tmp1
 		var_yamlscript_DOT_common_chop = ns.InternWithValue(tmp0, tmp1, true)
 		var_yamlscript_DOT_common_chop.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "yamlscript/common.glj", kw_line, int(32), kw_column, int(7), kw_end_DASH_line, int(32), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_S), lang.NewVector(sym_N, sym_S)), kw_ns, lang.FindOrCreateNamespace(sym_yamlscript_DOT_common))
@@ -317,9 +317,8 @@ func LoadNS() {
 			tmp5 := aotExternalFn5(v2, tmp4)
 			return tmp5
 		})
-		aotDirectFn1 = tmp1
+		aotDirectFn2 = tmp1
 		var_yamlscript_DOT_common_re_DASH_find_PLUS_ = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion1 = var_yamlscript_DOT_common_re_DASH_find_PLUS_.RootVersion()
 		var_yamlscript_DOT_common_re_DASH_find_PLUS_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "yamlscript/common.glj", kw_line, int(80), kw_column, int(7), kw_end_DASH_line, int(80), kw_end_DASH_column, int(14), kw_arglists, lang.NewList(lang.NewVector(sym_R, sym_S)), kw_ns, lang.FindOrCreateNamespace(sym_yamlscript_DOT_common))
 		})
@@ -336,9 +335,8 @@ func LoadNS() {
 			tmp5 := aotExternalFn0(tmp3, tmp4)
 			return tmp5
 		})
-		aotDirectFn2 = tmp1
+		aotDirectFn3 = tmp1
 		var_yamlscript_DOT_common_regex_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion2 = var_yamlscript_DOT_common_regex_QMARK_.RootVersion()
 		var_yamlscript_DOT_common_regex_QMARK_.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "yamlscript/common.glj", kw_line, int(83), kw_column, int(7), kw_end_DASH_line, int(83), kw_end_DASH_column, int(12), kw_arglists, lang.NewList(lang.NewVector(sym_x)), kw_ns, lang.FindOrCreateNamespace(sym_yamlscript_DOT_common))
 		})

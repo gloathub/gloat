@@ -10,12 +10,92 @@ import (
 	http4 "net/http"
 	reflect "reflect"
 	strings6 "strings"
+	sync "sync"
 )
 
 var aotDirectFn0 lang.FnFunc1
-var aotRootVersion0 *lang.VarRootVersion
-var aotDirectFn1 lang.FnFunc2
-var aotRootVersion1 *lang.VarRootVersion
+var aotDirectFn1 lang.ArityFn
+var aotDirectFn1Arity1 lang.FnFunc1
+var aotDirectFn1Arity2 lang.FnFunc2
+var aotDirectFn2 lang.FnFunc2
+
+func aotLinkFn1(vr *lang.Var) lang.FnFunc1 {
+	if vr.IsBound() {
+		return aotLinkBoundFn1(vr)
+	}
+	var once sync.Once
+	var linked lang.FnFunc1
+	return func(p0 any) any {
+		if !vr.IsBound() {
+			return lang.Apply1(checkDerefVar(vr), p0)
+		}
+		once.Do(func() { linked = aotLinkBoundFn1(vr) })
+		return linked(p0)
+	}
+}
+
+func aotLinkBoundFn1(vr *lang.Var) lang.FnFunc1 {
+	fn := checkDerefVar(vr)
+	if direct, ok := fn.(lang.FnFunc1); ok {
+		return direct
+	}
+	if fixed, ok := fn.(lang.FixedArityFn1); ok {
+		return fixed.Invoke1
+	}
+	return func(p0 any) any { return lang.Apply1(fn, p0) }
+}
+
+func aotLinkFn2(vr *lang.Var) lang.FnFunc2 {
+	if vr.IsBound() {
+		return aotLinkBoundFn2(vr)
+	}
+	var once sync.Once
+	var linked lang.FnFunc2
+	return func(p0 any, p1 any) any {
+		if !vr.IsBound() {
+			return lang.Apply2(checkDerefVar(vr), p0, p1)
+		}
+		once.Do(func() { linked = aotLinkBoundFn2(vr) })
+		return linked(p0, p1)
+	}
+}
+
+func aotLinkBoundFn2(vr *lang.Var) lang.FnFunc2 {
+	fn := checkDerefVar(vr)
+	if direct, ok := fn.(lang.FnFunc2); ok {
+		return direct
+	}
+	if fixed, ok := fn.(lang.FixedArityFn2); ok {
+		return fixed.Invoke2
+	}
+	return func(p0 any, p1 any) any { return lang.Apply2(fn, p0, p1) }
+}
+
+func aotLinkFn3(vr *lang.Var) lang.FnFunc3 {
+	if vr.IsBound() {
+		return aotLinkBoundFn3(vr)
+	}
+	var once sync.Once
+	var linked lang.FnFunc3
+	return func(p0 any, p1 any, p2 any) any {
+		if !vr.IsBound() {
+			return lang.Apply3(checkDerefVar(vr), p0, p1, p2)
+		}
+		once.Do(func() { linked = aotLinkBoundFn3(vr) })
+		return linked(p0, p1, p2)
+	}
+}
+
+func aotLinkBoundFn3(vr *lang.Var) lang.FnFunc3 {
+	fn := checkDerefVar(vr)
+	if direct, ok := fn.(lang.FnFunc3); ok {
+		return direct
+	}
+	if fixed, ok := fn.(lang.FixedArityFn3); ok {
+		return fixed.Invoke3
+	}
+	return func(p0 any, p1 any, p2 any) any { return lang.Apply3(fn, p0, p1, p2) }
+}
 
 func init() {
 	runtime.RegisterNSLoader("ys/http", LoadNS)
@@ -49,16 +129,11 @@ func LoadNS() {
 	sym_chunked_DASH_seq_QMARK_ := lang.NewSymbolUnchecked("chunked-seq?")
 	sym_clojure_DOT_core := lang.NewSymbolUnchecked("clojure.core")
 	sym_clojure_DOT_string := lang.NewSymbolUnchecked("clojure.string")
-	sym_count := lang.NewSymbolUnchecked("count")
-	sym_first := lang.NewSymbolUnchecked("first")
 	sym_get := lang.NewSymbolUnchecked("get")
 	sym_name := lang.NewSymbolUnchecked("name")
-	sym_next := lang.NewSymbolUnchecked("next")
 	sym_not := lang.NewSymbolUnchecked("not")
-	sym_nth := lang.NewSymbolUnchecked("nth")
 	sym_opts := lang.NewSymbolUnchecked("opts")
 	sym_post := lang.NewSymbolUnchecked("post")
-	sym_seq := lang.NewSymbolUnchecked("seq")
 	sym_str := lang.NewSymbolUnchecked("str")
 	sym_url := lang.NewSymbolUnchecked("url")
 	sym_ys_DOT_http := lang.NewSymbolUnchecked("ys.http")
@@ -80,20 +155,10 @@ func LoadNS() {
 	var_clojure_DOT_core_chunk_DASH_rest := lang.InternVarName(sym_clojure_DOT_core, sym_chunk_DASH_rest)
 	// var clojure.core/chunked-seq?
 	var_clojure_DOT_core_chunked_DASH_seq_QMARK_ := lang.InternVarName(sym_clojure_DOT_core, sym_chunked_DASH_seq_QMARK_)
-	// var clojure.core/count
-	var_clojure_DOT_core_count := lang.InternVarName(sym_clojure_DOT_core, sym_count)
-	// var clojure.core/first
-	var_clojure_DOT_core_first := lang.InternVarName(sym_clojure_DOT_core, sym_first)
 	// var clojure.core/name
 	var_clojure_DOT_core_name := lang.InternVarName(sym_clojure_DOT_core, sym_name)
-	// var clojure.core/next
-	var_clojure_DOT_core_next := lang.InternVarName(sym_clojure_DOT_core, sym_next)
 	// var clojure.core/not
 	var_clojure_DOT_core_not := lang.InternVarName(sym_clojure_DOT_core, sym_not)
-	// var clojure.core/nth
-	var_clojure_DOT_core_nth := lang.InternVarName(sym_clojure_DOT_core, sym_nth)
-	// var clojure.core/seq
-	var_clojure_DOT_core_seq := lang.InternVarName(sym_clojure_DOT_core, sym_seq)
 	// var clojure.core/str
 	var_clojure_DOT_core_str := lang.InternVarName(sym_clojure_DOT_core, sym_str)
 	// var ys.http/bytes-to-str
@@ -102,6 +167,13 @@ func LoadNS() {
 	var_ys_DOT_http_get := lang.InternVarName(sym_ys_DOT_http, sym_get)
 	// var ys.http/post
 	var_ys_DOT_http_post := lang.InternVarName(sym_ys_DOT_http, sym_post)
+	aotExternalFn1 := aotLinkFn1(var_clojure_DOT_core_not)
+	aotExternalFn11 := aotLinkFn1(var_clojure_DOT_core_name)
+	aotExternalFn2 := aotLinkFn2(var_clojure_DOT_core_str)
+	aotExternalFn4 := aotLinkFn1(var_clojure_DOT_core_str)
+	aotExternalFn5 := aotLinkFn1(var_clojure_DOT_core_chunked_DASH_seq_QMARK_)
+	aotExternalFn6 := aotLinkFn1(var_clojure_DOT_core_chunk_DASH_first)
+	aotExternalFn7 := aotLinkFn1(var_clojure_DOT_core_chunk_DASH_rest)
 	// reference fmt to avoid unused import error
 	_ = fmt.Printf
 	// reference reflect to avoid unused import error
@@ -196,406 +268,346 @@ func LoadNS() {
 		})
 		aotDirectFn0 = tmp1
 		var_ys_DOT_http_bytes_DASH_to_DASH_str = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion0 = var_ys_DOT_http_bytes_DASH_to_DASH_str.RootVersion()
 		var_ys_DOT_http_bytes_DASH_to_DASH_str.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/http.glj", kw_line, int(14), kw_column, int(8), kw_end_DASH_line, int(14), kw_end_DASH_column, int(19), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_b)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_http))
+			return lang.NewMapUniqueKeys(kw_file, "ys/http.glj", kw_line, int(15), kw_column, int(8), kw_end_DASH_line, int(15), kw_end_DASH_column, int(19), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_b)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_http))
 		})
 	}
 	// get
 	{
 		tmp0 := sym_get
 		var tmp1 lang.ArityFn
+		aotDirectFn1Arity1 = lang.FnFunc1(func(p0 any) any {
+			v2 := p0
+			_ = v2
+			tmp3 := lang.NewMap()
+			tmp4 := aotDirectFn1Arity2(v2, tmp3)
+			return tmp4
+		})
+		aotDirectFn1Arity2 = lang.FnFunc2(func(p0, p1 any) any {
+			v2 := p0
+			_ = v2
+			v3 := p1
+			_ = v3
+			var tmp4 any
+			{ // let
+				// let binding "vec__20"
+				tmp5 := lang.Apply3(http4.NewRequest, "GET", v2, nil)
+				var v6 any = tmp5
+				_ = v6
+				// let binding "req"
+				tmp7 := runtime.RT.NthDefault(v6, lang.IntCast(int64(0)), nil)
+				var v8 any = tmp7
+				_ = v8
+				// let binding "req-err"
+				tmp9 := runtime.RT.NthDefault(v6, lang.IntCast(int64(1)), nil)
+				var v10 any = tmp9
+				_ = v10
+				var tmp11 any
+				tmp12 := lang.Identical(v10, nil)
+				tmp13 := aotExternalFn1(tmp12)
+				if lang.IsTruthy(tmp13) {
+					tmp14 := aotExternalFn2("Failed to create request: ", v10)
+					tmp15 := lang.NewMap(kw_status, int64(500), kw_body, tmp14)
+					tmp11 = tmp15
+				} else {
+					var tmp16 any
+					{ // let
+						// let binding "seq_23"
+						tmp17 := kw_headers.Invoke1(v3)
+						tmp18 := lang.Seq(tmp17)
+						var v19 any = tmp18
+						_ = v19
+						// let binding "chunk_24"
+						var v20 any = nil
+						_ = v20
+						// let binding "count_25"
+						var v21 any = int64(0)
+						_ = v21
+						// let binding "i_26"
+						var v22 any = int64(0)
+						_ = v22
+						for {
+							var tmp23 any
+							tmp24 := lang.Numbers.Lt(v22, v21)
+							if lang.IsTruthy(tmp24) {
+								var tmp25 any
+								{ // let
+									// let binding "vec__27"
+									tmp26 := v20.(interface{ Nth(int) any }).Nth(lang.IntCast(v22))
+									var v27 any = tmp26
+									_ = v27
+									// let binding "k"
+									tmp28 := runtime.RT.NthDefault(v27, lang.IntCast(int64(0)), nil)
+									var v29 any = tmp28
+									_ = v29
+									// let binding "v"
+									tmp30 := runtime.RT.NthDefault(v27, lang.IntCast(int64(1)), nil)
+									var v31 any = tmp30
+									_ = v31
+									tmp32, ok := lang.FieldOrMethod(v8, "Header")
+									if !ok {
+										panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v8, "Header")))
+									}
+									var tmp33 any
+									switch reflect.TypeOf(tmp32).Kind() {
+									case reflect.Func:
+										tmp33 = lang.Apply(tmp32, nil)
+									default:
+										tmp33 = tmp32
+									}
+									tmp34 := aotExternalFn4(v29)
+									tmp35 := aotExternalFn4(v31)
+									tmp36, _ := lang.FieldOrMethod(tmp33, "Set")
+									if reflect.TypeOf(tmp36).Kind() != reflect.Func {
+										panic(lang.NewIllegalArgumentError(fmt.Sprintf("Set is not a function")))
+									}
+									tmp37 := lang.Apply2(tmp36, tmp34, tmp35)
+									_ = tmp37
+									var tmp38 any = v19
+									var tmp39 any = v20
+									var tmp40 any = v21
+									tmp42 := lang.Numbers.Unchecked_inc(v22)
+									var tmp41 any = tmp42
+									v19 = tmp38
+									v20 = tmp39
+									v21 = tmp40
+									v22 = tmp41
+									continue
+								} // end let
+								tmp23 = tmp25
+							} else {
+								var tmp26 any
+								{ // let
+									// let binding "temp__0__auto__"
+									tmp27 := lang.Seq(v19)
+									var v28 any = tmp27
+									_ = v28
+									var tmp29 any
+									if lang.IsTruthy(v28) {
+										var tmp30 any
+										{ // let
+											// let binding "seq_23"
+											var v31 any = v28
+											_ = v31
+											var tmp32 any
+											tmp33 := aotExternalFn5(v31)
+											if lang.IsTruthy(tmp33) {
+												var tmp34 any
+												{ // let
+													// let binding "c__0__auto__"
+													tmp35 := aotExternalFn6(v31)
+													var v36 any = tmp35
+													_ = v36
+													tmp38 := aotExternalFn7(v31)
+													var tmp37 any = tmp38
+													var tmp39 any = v36
+													tmp41 := lang.Count(v36)
+													tmp42 := runtime.RT.IntCast(tmp41)
+													var tmp40 any = tmp42
+													tmp44 := runtime.RT.IntCast(int64(0))
+													var tmp43 any = tmp44
+													v19 = tmp37
+													v20 = tmp39
+													v21 = tmp40
+													v22 = tmp43
+													continue
+												} // end let
+												tmp32 = tmp34
+											} else {
+												var tmp35 any
+												{ // let
+													// let binding "vec__30"
+													tmp36 := lang.First(v31)
+													var v37 any = tmp36
+													_ = v37
+													// let binding "k"
+													tmp38 := runtime.RT.NthDefault(v37, lang.IntCast(int64(0)), nil)
+													var v39 any = tmp38
+													_ = v39
+													// let binding "v"
+													tmp40 := runtime.RT.NthDefault(v37, lang.IntCast(int64(1)), nil)
+													var v41 any = tmp40
+													_ = v41
+													tmp42, ok := lang.FieldOrMethod(v8, "Header")
+													if !ok {
+														panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v8, "Header")))
+													}
+													var tmp43 any
+													switch reflect.TypeOf(tmp42).Kind() {
+													case reflect.Func:
+														tmp43 = lang.Apply(tmp42, nil)
+													default:
+														tmp43 = tmp42
+													}
+													tmp44 := aotExternalFn4(v39)
+													tmp45 := aotExternalFn4(v41)
+													tmp46, _ := lang.FieldOrMethod(tmp43, "Set")
+													if reflect.TypeOf(tmp46).Kind() != reflect.Func {
+														panic(lang.NewIllegalArgumentError(fmt.Sprintf("Set is not a function")))
+													}
+													tmp47 := lang.Apply2(tmp46, tmp44, tmp45)
+													_ = tmp47
+													tmp49 := lang.Next(v31)
+													var tmp48 any = tmp49
+													var tmp50 any = nil
+													var tmp51 any = int64(0)
+													var tmp52 any = int64(0)
+													v19 = tmp48
+													v20 = tmp50
+													v21 = tmp51
+													v22 = tmp52
+													continue
+												} // end let
+												tmp32 = tmp35
+											}
+											tmp30 = tmp32
+										} // end let
+										tmp29 = tmp30
+									} else {
+									}
+									tmp26 = tmp29
+								} // end let
+								tmp23 = tmp26
+							}
+							tmp16 = tmp23
+							break
+						}
+					} // end let
+					_ = tmp16
+					var tmp17 any
+					{ // let
+						// let binding "client"
+						var v18 any = http4.DefaultClient
+						_ = v18
+						// let binding "vec__33"
+						tmp19, _ := lang.FieldOrMethod(v18, "Do")
+						if reflect.TypeOf(tmp19).Kind() != reflect.Func {
+							panic(lang.NewIllegalArgumentError(fmt.Sprintf("Do is not a function")))
+						}
+						tmp20 := lang.Apply1(tmp19, v8)
+						var v21 any = tmp20
+						_ = v21
+						// let binding "resp"
+						tmp22 := runtime.RT.NthDefault(v21, lang.IntCast(int64(0)), nil)
+						var v23 any = tmp22
+						_ = v23
+						// let binding "resp-err"
+						tmp24 := runtime.RT.NthDefault(v21, lang.IntCast(int64(1)), nil)
+						var v25 any = tmp24
+						_ = v25
+						var tmp26 any
+						tmp27 := lang.Identical(v25, nil)
+						tmp28 := aotExternalFn1(tmp27)
+						if lang.IsTruthy(tmp28) {
+							tmp29 := aotExternalFn2("Request failed: ", v25)
+							tmp30 := lang.NewMap(kw_status, int64(500), kw_body, tmp29)
+							tmp26 = tmp30
+						} else {
+							var tmp31 any
+							{ // let
+								// let binding "vec__36"
+								tmp32, ok := lang.FieldOrMethod(v23, "Body")
+								if !ok {
+									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v23, "Body")))
+								}
+								var tmp33 any
+								switch reflect.TypeOf(tmp32).Kind() {
+								case reflect.Func:
+									tmp33 = lang.Apply(tmp32, nil)
+								default:
+									tmp33 = tmp32
+								}
+								tmp34 := lang.Apply1(io5.ReadAll, tmp33)
+								var v35 any = tmp34
+								_ = v35
+								// let binding "body-bytes"
+								tmp36 := runtime.RT.NthDefault(v35, lang.IntCast(int64(0)), nil)
+								var v37 any = tmp36
+								_ = v37
+								// let binding "body-err"
+								tmp38 := runtime.RT.NthDefault(v35, lang.IntCast(int64(1)), nil)
+								var v39 any = tmp38
+								_ = v39
+								tmp40, ok := lang.FieldOrMethod(v23, "Body")
+								if !ok {
+									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v23, "Body")))
+								}
+								var tmp41 any
+								switch reflect.TypeOf(tmp40).Kind() {
+								case reflect.Func:
+									tmp41 = lang.Apply(tmp40, nil)
+								default:
+									tmp41 = tmp40
+								}
+								tmp42, ok := lang.FieldOrMethod(tmp41, "Close")
+								if !ok {
+									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", tmp41, "Close")))
+								}
+								var tmp43 any
+								switch reflect.TypeOf(tmp42).Kind() {
+								case reflect.Func:
+									tmp43 = lang.Apply(tmp42, nil)
+								default:
+									tmp43 = tmp42
+								}
+								_ = tmp43
+								tmp44, ok := lang.FieldOrMethod(v23, "StatusCode")
+								if !ok {
+									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v23, "StatusCode")))
+								}
+								var tmp45 any
+								switch reflect.TypeOf(tmp44).Kind() {
+								case reflect.Func:
+									tmp45 = lang.Apply(tmp44, nil)
+								default:
+									tmp45 = tmp44
+								}
+								var tmp46 any
+								tmp47 := lang.Identical(v39, nil)
+								if lang.IsTruthy(tmp47) {
+									tmp48 := aotDirectFn0(v37)
+									tmp46 = tmp48
+								} else {
+									tmp49, ok := lang.FieldOrMethod(v39, "Error")
+									if !ok {
+										panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v39, "Error")))
+									}
+									var tmp50 any
+									switch reflect.TypeOf(tmp49).Kind() {
+									case reflect.Func:
+										tmp50 = lang.Apply(tmp49, nil)
+									default:
+										tmp50 = tmp49
+									}
+									tmp51 := aotExternalFn2("Failed to read response: ", tmp50)
+									tmp46 = tmp51
+								}
+								tmp52 := lang.NewMap(kw_status, tmp45, kw_body, tmp46)
+								tmp31 = tmp52
+							} // end let
+							tmp26 = tmp31
+						}
+						tmp17 = tmp26
+					} // end let
+					tmp11 = tmp17
+				}
+				tmp4 = tmp11
+			} // end let
+			return tmp4
+		})
 		tmp1 = lang.NewArityFn(
 			nil,
-			lang.FnFunc1(func(p0 any) any {
-				v2 := p0
-				_ = v2
-				tmp3 := checkDerefVar(var_ys_DOT_http_get)
-				tmp4 := lang.NewMap()
-				tmp5 := lang.NewMap(kw_file, "ys/http.glj", kw_line, int(54), kw_column, int(19), kw_end_DASH_line, int(54), kw_end_DASH_column, int(20))
-				tmp6, err := lang.WithMeta(tmp4, tmp5.(lang.IPersistentMap))
-				if err != nil {
-					panic(err)
-				}
-				tmp7 := lang.Apply2(tmp3, v2, tmp6)
-				return tmp7
-			}),
-			lang.FnFunc2(func(p0, p1 any) any {
-				v2 := p0
-				_ = v2
-				v3 := p1
-				_ = v3
-				var tmp4 any
-				{ // let
-					// let binding "vec__20"
-					tmp5 := lang.Apply3(http4.NewRequest, "GET", v2, nil)
-					var v6 any = tmp5
-					_ = v6
-					// let binding "req"
-					tmp7 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp8 := lang.Apply3(tmp7, v6, int64(0), nil)
-					var v9 any = tmp8
-					_ = v9
-					// let binding "req-err"
-					tmp10 := checkDerefVar(var_clojure_DOT_core_nth)
-					tmp11 := lang.Apply3(tmp10, v6, int64(1), nil)
-					var v12 any = tmp11
-					_ = v12
-					var tmp13 any
-					tmp14 := checkDerefVar(var_clojure_DOT_core_not)
-					tmp15 := lang.Identical(v12, nil)
-					tmp16 := lang.Apply1(tmp14, tmp15)
-					if lang.IsTruthy(tmp16) {
-						tmp17 := checkDerefVar(var_clojure_DOT_core_str)
-						tmp18 := lang.Apply2(tmp17, "Failed to create request: ", v12)
-						tmp19 := lang.NewMap(kw_status, int64(500), kw_body, tmp18)
-						tmp20 := lang.NewMap(kw_file, "ys/http.glj", kw_line, int(58), kw_column, int(8), kw_end_DASH_line, int(58), kw_end_DASH_column, int(69))
-						tmp21, err := lang.WithMeta(tmp19, tmp20.(lang.IPersistentMap))
-						if err != nil {
-							panic(err)
-						}
-						tmp13 = tmp21
-					} else {
-						var tmp22 any
-						{ // let
-							// let binding "seq_23"
-							tmp23 := checkDerefVar(var_clojure_DOT_core_seq)
-							tmp24 := lang.Apply1(kw_headers, v3)
-							tmp25 := lang.Apply1(tmp23, tmp24)
-							var v26 any = tmp25
-							_ = v26
-							// let binding "chunk_24"
-							var v27 any = nil
-							_ = v27
-							// let binding "count_25"
-							var v28 any = int64(0)
-							_ = v28
-							// let binding "i_26"
-							var v29 any = int64(0)
-							_ = v29
-							for {
-								var tmp30 any
-								tmp31 := lang.Numbers.Lt(v29, v28)
-								if lang.IsTruthy(tmp31) {
-									var tmp32 any
-									{ // let
-										// let binding "vec__27"
-										tmp33, _ := lang.FieldOrMethod(v27, "nth")
-										if reflect.TypeOf(tmp33).Kind() != reflect.Func {
-											panic(lang.NewIllegalArgumentError(fmt.Sprintf("nth is not a function")))
-										}
-										tmp34 := lang.Apply1(tmp33, v29)
-										var v35 any = tmp34
-										_ = v35
-										// let binding "k"
-										tmp36 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp37 := lang.Apply3(tmp36, v35, int64(0), nil)
-										var v38 any = tmp37
-										_ = v38
-										// let binding "v"
-										tmp39 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp40 := lang.Apply3(tmp39, v35, int64(1), nil)
-										var v41 any = tmp40
-										_ = v41
-										tmp42, ok := lang.FieldOrMethod(v9, "Header")
-										if !ok {
-											panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v9, "Header")))
-										}
-										var tmp43 any
-										switch reflect.TypeOf(tmp42).Kind() {
-										case reflect.Func:
-											tmp43 = lang.Apply(tmp42, nil)
-										default:
-											tmp43 = tmp42
-										}
-										tmp44 := checkDerefVar(var_clojure_DOT_core_str)
-										tmp45 := lang.Apply1(tmp44, v38)
-										tmp46 := checkDerefVar(var_clojure_DOT_core_str)
-										tmp47 := lang.Apply1(tmp46, v41)
-										tmp48, _ := lang.FieldOrMethod(tmp43, "Set")
-										if reflect.TypeOf(tmp48).Kind() != reflect.Func {
-											panic(lang.NewIllegalArgumentError(fmt.Sprintf("Set is not a function")))
-										}
-										tmp49 := lang.Apply2(tmp48, tmp45, tmp47)
-										_ = tmp49
-										var tmp50 any = v26
-										var tmp51 any = v27
-										var tmp52 any = v28
-										tmp54 := lang.Numbers.Unchecked_inc(v29)
-										var tmp53 any = tmp54
-										v26 = tmp50
-										v27 = tmp51
-										v28 = tmp52
-										v29 = tmp53
-										continue
-									} // end let
-									tmp30 = tmp32
-								} else {
-									var tmp33 any
-									{ // let
-										// let binding "temp__0__auto__"
-										tmp34 := checkDerefVar(var_clojure_DOT_core_seq)
-										tmp35 := lang.Apply1(tmp34, v26)
-										var v36 any = tmp35
-										_ = v36
-										var tmp37 any
-										if lang.IsTruthy(v36) {
-											var tmp38 any
-											{ // let
-												// let binding "seq_23"
-												var v39 any = v36
-												_ = v39
-												var tmp40 any
-												tmp41 := checkDerefVar(var_clojure_DOT_core_chunked_DASH_seq_QMARK_)
-												tmp42 := lang.Apply1(tmp41, v39)
-												if lang.IsTruthy(tmp42) {
-													var tmp43 any
-													{ // let
-														// let binding "c__0__auto__"
-														tmp44 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_first)
-														tmp45 := lang.Apply1(tmp44, v39)
-														var v46 any = tmp45
-														_ = v46
-														tmp48 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_rest)
-														tmp49 := lang.Apply1(tmp48, v39)
-														var tmp47 any = tmp49
-														var tmp50 any = v46
-														tmp52 := checkDerefVar(var_clojure_DOT_core_count)
-														tmp53 := lang.Apply1(tmp52, v46)
-														tmp54 := runtime.RT.IntCast(tmp53)
-														var tmp51 any = tmp54
-														tmp56 := runtime.RT.IntCast(int64(0))
-														var tmp55 any = tmp56
-														v26 = tmp47
-														v27 = tmp50
-														v28 = tmp51
-														v29 = tmp55
-														continue
-													} // end let
-													tmp40 = tmp43
-												} else {
-													var tmp44 any
-													{ // let
-														// let binding "vec__30"
-														tmp45 := checkDerefVar(var_clojure_DOT_core_first)
-														tmp46 := lang.Apply1(tmp45, v39)
-														var v47 any = tmp46
-														_ = v47
-														// let binding "k"
-														tmp48 := checkDerefVar(var_clojure_DOT_core_nth)
-														tmp49 := lang.Apply3(tmp48, v47, int64(0), nil)
-														var v50 any = tmp49
-														_ = v50
-														// let binding "v"
-														tmp51 := checkDerefVar(var_clojure_DOT_core_nth)
-														tmp52 := lang.Apply3(tmp51, v47, int64(1), nil)
-														var v53 any = tmp52
-														_ = v53
-														tmp54, ok := lang.FieldOrMethod(v9, "Header")
-														if !ok {
-															panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v9, "Header")))
-														}
-														var tmp55 any
-														switch reflect.TypeOf(tmp54).Kind() {
-														case reflect.Func:
-															tmp55 = lang.Apply(tmp54, nil)
-														default:
-															tmp55 = tmp54
-														}
-														tmp56 := checkDerefVar(var_clojure_DOT_core_str)
-														tmp57 := lang.Apply1(tmp56, v50)
-														tmp58 := checkDerefVar(var_clojure_DOT_core_str)
-														tmp59 := lang.Apply1(tmp58, v53)
-														tmp60, _ := lang.FieldOrMethod(tmp55, "Set")
-														if reflect.TypeOf(tmp60).Kind() != reflect.Func {
-															panic(lang.NewIllegalArgumentError(fmt.Sprintf("Set is not a function")))
-														}
-														tmp61 := lang.Apply2(tmp60, tmp57, tmp59)
-														_ = tmp61
-														tmp63 := checkDerefVar(var_clojure_DOT_core_next)
-														tmp64 := lang.Apply1(tmp63, v39)
-														var tmp62 any = tmp64
-														var tmp65 any = nil
-														var tmp66 any = int64(0)
-														var tmp67 any = int64(0)
-														v26 = tmp62
-														v27 = tmp65
-														v28 = tmp66
-														v29 = tmp67
-														continue
-													} // end let
-													tmp40 = tmp44
-												}
-												tmp38 = tmp40
-											} // end let
-											tmp37 = tmp38
-										} else {
-										}
-										tmp33 = tmp37
-									} // end let
-									tmp30 = tmp33
-								}
-								tmp22 = tmp30
-								break
-							}
-						} // end let
-						_ = tmp22
-						var tmp23 any
-						{ // let
-							// let binding "client"
-							var v24 any = http4.DefaultClient
-							_ = v24
-							// let binding "vec__33"
-							tmp25, _ := lang.FieldOrMethod(v24, "Do")
-							if reflect.TypeOf(tmp25).Kind() != reflect.Func {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("Do is not a function")))
-							}
-							tmp26 := lang.Apply1(tmp25, v9)
-							var v27 any = tmp26
-							_ = v27
-							// let binding "resp"
-							tmp28 := checkDerefVar(var_clojure_DOT_core_nth)
-							tmp29 := lang.Apply3(tmp28, v27, int64(0), nil)
-							var v30 any = tmp29
-							_ = v30
-							// let binding "resp-err"
-							tmp31 := checkDerefVar(var_clojure_DOT_core_nth)
-							tmp32 := lang.Apply3(tmp31, v27, int64(1), nil)
-							var v33 any = tmp32
-							_ = v33
-							var tmp34 any
-							tmp35 := checkDerefVar(var_clojure_DOT_core_not)
-							tmp36 := lang.Identical(v33, nil)
-							tmp37 := lang.Apply1(tmp35, tmp36)
-							if lang.IsTruthy(tmp37) {
-								tmp38 := checkDerefVar(var_clojure_DOT_core_str)
-								tmp39 := lang.Apply2(tmp38, "Request failed: ", v33)
-								tmp40 := lang.NewMap(kw_status, int64(500), kw_body, tmp39)
-								tmp41 := lang.NewMap(kw_file, "ys/http.glj", kw_line, int(67), kw_column, int(14), kw_end_DASH_line, int(67), kw_end_DASH_column, int(66))
-								tmp42, err := lang.WithMeta(tmp40, tmp41.(lang.IPersistentMap))
-								if err != nil {
-									panic(err)
-								}
-								tmp34 = tmp42
-							} else {
-								var tmp43 any
-								{ // let
-									// let binding "vec__36"
-									tmp44, ok := lang.FieldOrMethod(v30, "Body")
-									if !ok {
-										panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v30, "Body")))
-									}
-									var tmp45 any
-									switch reflect.TypeOf(tmp44).Kind() {
-									case reflect.Func:
-										tmp45 = lang.Apply(tmp44, nil)
-									default:
-										tmp45 = tmp44
-									}
-									tmp46 := lang.Apply1(io5.ReadAll, tmp45)
-									var v47 any = tmp46
-									_ = v47
-									// let binding "body-bytes"
-									tmp48 := checkDerefVar(var_clojure_DOT_core_nth)
-									tmp49 := lang.Apply3(tmp48, v47, int64(0), nil)
-									var v50 any = tmp49
-									_ = v50
-									// let binding "body-err"
-									tmp51 := checkDerefVar(var_clojure_DOT_core_nth)
-									tmp52 := lang.Apply3(tmp51, v47, int64(1), nil)
-									var v53 any = tmp52
-									_ = v53
-									tmp54, ok := lang.FieldOrMethod(v30, "Body")
-									if !ok {
-										panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v30, "Body")))
-									}
-									var tmp55 any
-									switch reflect.TypeOf(tmp54).Kind() {
-									case reflect.Func:
-										tmp55 = lang.Apply(tmp54, nil)
-									default:
-										tmp55 = tmp54
-									}
-									tmp56, ok := lang.FieldOrMethod(tmp55, "Close")
-									if !ok {
-										panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", tmp55, "Close")))
-									}
-									var tmp57 any
-									switch reflect.TypeOf(tmp56).Kind() {
-									case reflect.Func:
-										tmp57 = lang.Apply(tmp56, nil)
-									default:
-										tmp57 = tmp56
-									}
-									_ = tmp57
-									tmp58, ok := lang.FieldOrMethod(v30, "StatusCode")
-									if !ok {
-										panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v30, "StatusCode")))
-									}
-									var tmp59 any
-									switch reflect.TypeOf(tmp58).Kind() {
-									case reflect.Func:
-										tmp59 = lang.Apply(tmp58, nil)
-									default:
-										tmp59 = tmp58
-									}
-									var tmp60 any
-									tmp61 := lang.Identical(v53, nil)
-									if lang.IsTruthy(tmp61) {
-										tmp62 := var_ys_DOT_http_bytes_DASH_to_DASH_str.RootVersion() == aotRootVersion0 && !var_ys_DOT_http_bytes_DASH_to_DASH_str.IsMacro()
-										var tmp63 any
-										if !tmp62 {
-											tmp63 = checkDerefVar(var_ys_DOT_http_bytes_DASH_to_DASH_str)
-										}
-										var tmp64 any
-										if tmp62 {
-											tmp64 = aotDirectFn0(v50)
-										} else {
-											tmp64 = lang.Apply1(tmp63, v50)
-										}
-										tmp60 = tmp64
-									} else {
-										tmp65 := checkDerefVar(var_clojure_DOT_core_str)
-										tmp66, ok := lang.FieldOrMethod(v53, "Error")
-										if !ok {
-											panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v53, "Error")))
-										}
-										var tmp67 any
-										switch reflect.TypeOf(tmp66).Kind() {
-										case reflect.Func:
-											tmp67 = lang.Apply(tmp66, nil)
-										default:
-											tmp67 = tmp66
-										}
-										tmp68 := lang.Apply2(tmp65, "Failed to read response: ", tmp67)
-										tmp60 = tmp68
-									}
-									tmp69 := lang.NewMap(kw_status, tmp59, kw_body, tmp60)
-									tmp70 := lang.NewMap(kw_file, "ys/http.glj", kw_line, int(70), kw_column, int(16), kw_end_DASH_line, int(73), kw_end_DASH_column, int(77))
-									tmp71, err := lang.WithMeta(tmp69, tmp70.(lang.IPersistentMap))
-									if err != nil {
-										panic(err)
-									}
-									tmp43 = tmp71
-								} // end let
-								tmp34 = tmp43
-							}
-							tmp23 = tmp34
-						} // end let
-						tmp13 = tmp23
-					}
-					tmp4 = tmp13
-				} // end let
-				return tmp4
-			}),
+			aotDirectFn1Arity1,
+			aotDirectFn1Arity2,
 			nil,
 			nil,
 			nil,
 			0,
 		)
+		aotDirectFn1 = tmp1
 		var_ys_DOT_http_get = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_http_get.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/http.glj", kw_line, int(49), kw_column, int(7), kw_end_DASH_line, int(49), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_url), lang.NewVector(sym_url, sym_opts)), kw_doc, "HTTP GET request\n   url: string\n   opts (optional): {:headers {\"Key\" \"Value\"}}\n   returns: {:status N :body \"...\"}", kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_http))
+			return lang.NewMapUniqueKeys(kw_file, "ys/http.glj", kw_line, int(50), kw_column, int(7), kw_end_DASH_line, int(50), kw_end_DASH_column, int(9), kw_arglists, lang.NewList(lang.NewVector(sym_url), lang.NewVector(sym_url, sym_opts)), kw_doc, "HTTP GET request\n   url: string\n   opts (optional): {:headers {\"Key\" \"Value\"}}\n   returns: {:status N :body \"...\"}", kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_http))
 		})
 	}
 	// post
@@ -613,7 +625,7 @@ func LoadNS() {
 				var tmp5 any
 				{ // let
 					// let binding "or__0__auto__"
-					tmp6 := lang.Apply1(kw_body, v3)
+					tmp6 := kw_body.Invoke1(v3)
 					var v7 any = tmp6
 					_ = v7
 					var tmp8 any
@@ -635,280 +647,287 @@ func LoadNS() {
 				var v10 any = tmp9
 				_ = v10
 				// let binding "req"
-				tmp11 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp12 := lang.Apply3(tmp11, v10, int64(0), nil)
-				var v13 any = tmp12
-				_ = v13
+				tmp11 := runtime.RT.NthDefault(v10, lang.IntCast(int64(0)), nil)
+				var v12 any = tmp11
+				_ = v12
 				// let binding "req-err"
-				tmp14 := checkDerefVar(var_clojure_DOT_core_nth)
-				tmp15 := lang.Apply3(tmp14, v10, int64(1), nil)
-				var v16 any = tmp15
-				_ = v16
-				var tmp17 any
-				tmp18 := checkDerefVar(var_clojure_DOT_core_not)
-				tmp19 := lang.Identical(v16, nil)
-				tmp20 := lang.Apply1(tmp18, tmp19)
-				if lang.IsTruthy(tmp20) {
-					tmp21 := checkDerefVar(var_clojure_DOT_core_str)
-					tmp22, ok := lang.FieldOrMethod(v16, "Error")
+				tmp13 := runtime.RT.NthDefault(v10, lang.IntCast(int64(1)), nil)
+				var v14 any = tmp13
+				_ = v14
+				var tmp15 any
+				tmp16 := lang.Identical(v14, nil)
+				tmp17 := aotExternalFn1(tmp16)
+				if lang.IsTruthy(tmp17) {
+					tmp18, ok := lang.FieldOrMethod(v14, "Error")
 					if !ok {
-						panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v16, "Error")))
+						panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v14, "Error")))
 					}
-					var tmp23 any
-					switch reflect.TypeOf(tmp22).Kind() {
+					var tmp19 any
+					switch reflect.TypeOf(tmp18).Kind() {
 					case reflect.Func:
-						tmp23 = lang.Apply(tmp22, nil)
+						tmp19 = lang.Apply(tmp18, nil)
 					default:
-						tmp23 = tmp22
+						tmp19 = tmp18
 					}
-					tmp24 := lang.Apply2(tmp21, "Failed to create request: ", tmp23)
-					tmp25 := lang.NewMap(kw_status, int64(500), kw_body, tmp24)
-					tmp26 := lang.NewMap(kw_file, "ys/http.glj", kw_line, int(32), kw_column, int(7), kw_end_DASH_line, int(32), kw_end_DASH_column, int(77))
-					tmp27, err := lang.WithMeta(tmp25, tmp26.(lang.IPersistentMap))
-					if err != nil {
-						panic(err)
-					}
-					tmp17 = tmp27
+					tmp20 := aotExternalFn2("Failed to create request: ", tmp19)
+					tmp21 := lang.NewMap(kw_status, int64(500), kw_body, tmp20)
+					tmp15 = tmp21
 				} else {
-					var tmp28 any
+					var tmp22 any
 					{ // let
 						// let binding "seq_4"
-						tmp29 := checkDerefVar(var_clojure_DOT_core_seq)
-						tmp30 := lang.Apply1(kw_headers, v3)
-						tmp31 := lang.Apply1(tmp29, tmp30)
-						var v32 any = tmp31
-						_ = v32
+						tmp23 := kw_headers.Invoke1(v3)
+						tmp24 := lang.Seq(tmp23)
+						var v25 any = tmp24
+						_ = v25
 						// let binding "chunk_5"
-						var v33 any = nil
-						_ = v33
+						var v26 any = nil
+						_ = v26
 						// let binding "count_6"
-						var v34 any = int64(0)
-						_ = v34
+						var v27 any = int64(0)
+						_ = v27
 						// let binding "i_7"
-						var v35 any = int64(0)
-						_ = v35
+						var v28 any = int64(0)
+						_ = v28
 						for {
-							var tmp36 any
-							tmp37 := lang.Numbers.Lt(v35, v34)
-							if lang.IsTruthy(tmp37) {
-								var tmp38 any
+							var tmp29 any
+							tmp30 := lang.Numbers.Lt(v28, v27)
+							if lang.IsTruthy(tmp30) {
+								var tmp31 any
 								{ // let
 									// let binding "vec__8"
-									tmp39, _ := lang.FieldOrMethod(v33, "nth")
-									if reflect.TypeOf(tmp39).Kind() != reflect.Func {
-										panic(lang.NewIllegalArgumentError(fmt.Sprintf("nth is not a function")))
-									}
-									tmp40 := lang.Apply1(tmp39, v35)
-									var v41 any = tmp40
-									_ = v41
+									tmp32 := v26.(interface{ Nth(int) any }).Nth(lang.IntCast(v28))
+									var v33 any = tmp32
+									_ = v33
 									// let binding "k"
-									tmp42 := checkDerefVar(var_clojure_DOT_core_nth)
-									tmp43 := lang.Apply3(tmp42, v41, int64(0), nil)
-									var v44 any = tmp43
-									_ = v44
+									tmp34 := runtime.RT.NthDefault(v33, lang.IntCast(int64(0)), nil)
+									var v35 any = tmp34
+									_ = v35
 									// let binding "v"
-									tmp45 := checkDerefVar(var_clojure_DOT_core_nth)
-									tmp46 := lang.Apply3(tmp45, v41, int64(1), nil)
-									var v47 any = tmp46
-									_ = v47
-									tmp48, ok := lang.FieldOrMethod(v13, "Header")
+									tmp36 := runtime.RT.NthDefault(v33, lang.IntCast(int64(1)), nil)
+									var v37 any = tmp36
+									_ = v37
+									tmp38, ok := lang.FieldOrMethod(v12, "Header")
 									if !ok {
-										panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v13, "Header")))
+										panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v12, "Header")))
 									}
-									var tmp49 any
-									switch reflect.TypeOf(tmp48).Kind() {
+									var tmp39 any
+									switch reflect.TypeOf(tmp38).Kind() {
 									case reflect.Func:
-										tmp49 = lang.Apply(tmp48, nil)
+										tmp39 = lang.Apply(tmp38, nil)
 									default:
-										tmp49 = tmp48
+										tmp39 = tmp38
 									}
-									tmp50 := checkDerefVar(var_clojure_DOT_core_name)
-									tmp51 := lang.Apply1(tmp50, v44)
-									tmp52 := checkDerefVar(var_clojure_DOT_core_str)
-									tmp53 := lang.Apply1(tmp52, v47)
-									tmp54, _ := lang.FieldOrMethod(tmp49, "Set")
-									if reflect.TypeOf(tmp54).Kind() != reflect.Func {
+									tmp40 := aotExternalFn11(v35)
+									tmp41 := aotExternalFn4(v37)
+									tmp42, _ := lang.FieldOrMethod(tmp39, "Set")
+									if reflect.TypeOf(tmp42).Kind() != reflect.Func {
 										panic(lang.NewIllegalArgumentError(fmt.Sprintf("Set is not a function")))
 									}
-									tmp55 := lang.Apply2(tmp54, tmp51, tmp53)
-									_ = tmp55
-									var tmp56 any = v32
-									var tmp57 any = v33
-									var tmp58 any = v34
-									tmp60 := lang.Numbers.Unchecked_inc(v35)
-									var tmp59 any = tmp60
-									v32 = tmp56
-									v33 = tmp57
-									v34 = tmp58
-									v35 = tmp59
+									tmp43 := lang.Apply2(tmp42, tmp40, tmp41)
+									_ = tmp43
+									var tmp44 any = v25
+									var tmp45 any = v26
+									var tmp46 any = v27
+									tmp48 := lang.Numbers.Unchecked_inc(v28)
+									var tmp47 any = tmp48
+									v25 = tmp44
+									v26 = tmp45
+									v27 = tmp46
+									v28 = tmp47
 									continue
 								} // end let
-								tmp36 = tmp38
+								tmp29 = tmp31
 							} else {
-								var tmp39 any
+								var tmp32 any
 								{ // let
 									// let binding "temp__0__auto__"
-									tmp40 := checkDerefVar(var_clojure_DOT_core_seq)
-									tmp41 := lang.Apply1(tmp40, v32)
-									var v42 any = tmp41
-									_ = v42
-									var tmp43 any
-									if lang.IsTruthy(v42) {
-										var tmp44 any
+									tmp33 := lang.Seq(v25)
+									var v34 any = tmp33
+									_ = v34
+									var tmp35 any
+									if lang.IsTruthy(v34) {
+										var tmp36 any
 										{ // let
 											// let binding "seq_4"
-											var v45 any = v42
-											_ = v45
-											var tmp46 any
-											tmp47 := checkDerefVar(var_clojure_DOT_core_chunked_DASH_seq_QMARK_)
-											tmp48 := lang.Apply1(tmp47, v45)
-											if lang.IsTruthy(tmp48) {
-												var tmp49 any
+											var v37 any = v34
+											_ = v37
+											var tmp38 any
+											tmp39 := aotExternalFn5(v37)
+											if lang.IsTruthy(tmp39) {
+												var tmp40 any
 												{ // let
 													// let binding "c__0__auto__"
-													tmp50 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_first)
-													tmp51 := lang.Apply1(tmp50, v45)
-													var v52 any = tmp51
-													_ = v52
-													tmp54 := checkDerefVar(var_clojure_DOT_core_chunk_DASH_rest)
-													tmp55 := lang.Apply1(tmp54, v45)
-													var tmp53 any = tmp55
-													var tmp56 any = v52
-													tmp58 := checkDerefVar(var_clojure_DOT_core_count)
-													tmp59 := lang.Apply1(tmp58, v52)
-													tmp60 := runtime.RT.IntCast(tmp59)
-													var tmp57 any = tmp60
-													tmp62 := runtime.RT.IntCast(int64(0))
-													var tmp61 any = tmp62
-													v32 = tmp53
-													v33 = tmp56
-													v34 = tmp57
-													v35 = tmp61
+													tmp41 := aotExternalFn6(v37)
+													var v42 any = tmp41
+													_ = v42
+													tmp44 := aotExternalFn7(v37)
+													var tmp43 any = tmp44
+													var tmp45 any = v42
+													tmp47 := lang.Count(v42)
+													tmp48 := runtime.RT.IntCast(tmp47)
+													var tmp46 any = tmp48
+													tmp50 := runtime.RT.IntCast(int64(0))
+													var tmp49 any = tmp50
+													v25 = tmp43
+													v26 = tmp45
+													v27 = tmp46
+													v28 = tmp49
 													continue
 												} // end let
-												tmp46 = tmp49
+												tmp38 = tmp40
 											} else {
-												var tmp50 any
+												var tmp41 any
 												{ // let
 													// let binding "vec__11"
-													tmp51 := checkDerefVar(var_clojure_DOT_core_first)
-													tmp52 := lang.Apply1(tmp51, v45)
-													var v53 any = tmp52
-													_ = v53
+													tmp42 := lang.First(v37)
+													var v43 any = tmp42
+													_ = v43
 													// let binding "k"
-													tmp54 := checkDerefVar(var_clojure_DOT_core_nth)
-													tmp55 := lang.Apply3(tmp54, v53, int64(0), nil)
-													var v56 any = tmp55
-													_ = v56
+													tmp44 := runtime.RT.NthDefault(v43, lang.IntCast(int64(0)), nil)
+													var v45 any = tmp44
+													_ = v45
 													// let binding "v"
-													tmp57 := checkDerefVar(var_clojure_DOT_core_nth)
-													tmp58 := lang.Apply3(tmp57, v53, int64(1), nil)
-													var v59 any = tmp58
-													_ = v59
-													tmp60, ok := lang.FieldOrMethod(v13, "Header")
+													tmp46 := runtime.RT.NthDefault(v43, lang.IntCast(int64(1)), nil)
+													var v47 any = tmp46
+													_ = v47
+													tmp48, ok := lang.FieldOrMethod(v12, "Header")
 													if !ok {
-														panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v13, "Header")))
+														panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v12, "Header")))
 													}
-													var tmp61 any
-													switch reflect.TypeOf(tmp60).Kind() {
+													var tmp49 any
+													switch reflect.TypeOf(tmp48).Kind() {
 													case reflect.Func:
-														tmp61 = lang.Apply(tmp60, nil)
+														tmp49 = lang.Apply(tmp48, nil)
 													default:
-														tmp61 = tmp60
+														tmp49 = tmp48
 													}
-													tmp62 := checkDerefVar(var_clojure_DOT_core_name)
-													tmp63 := lang.Apply1(tmp62, v56)
-													tmp64 := checkDerefVar(var_clojure_DOT_core_str)
-													tmp65 := lang.Apply1(tmp64, v59)
-													tmp66, _ := lang.FieldOrMethod(tmp61, "Set")
-													if reflect.TypeOf(tmp66).Kind() != reflect.Func {
+													tmp50 := aotExternalFn11(v45)
+													tmp51 := aotExternalFn4(v47)
+													tmp52, _ := lang.FieldOrMethod(tmp49, "Set")
+													if reflect.TypeOf(tmp52).Kind() != reflect.Func {
 														panic(lang.NewIllegalArgumentError(fmt.Sprintf("Set is not a function")))
 													}
-													tmp67 := lang.Apply2(tmp66, tmp63, tmp65)
-													_ = tmp67
-													tmp69 := checkDerefVar(var_clojure_DOT_core_next)
-													tmp70 := lang.Apply1(tmp69, v45)
-													var tmp68 any = tmp70
-													var tmp71 any = nil
-													var tmp72 any = int64(0)
-													var tmp73 any = int64(0)
-													v32 = tmp68
-													v33 = tmp71
-													v34 = tmp72
-													v35 = tmp73
+													tmp53 := lang.Apply2(tmp52, tmp50, tmp51)
+													_ = tmp53
+													tmp55 := lang.Next(v37)
+													var tmp54 any = tmp55
+													var tmp56 any = nil
+													var tmp57 any = int64(0)
+													var tmp58 any = int64(0)
+													v25 = tmp54
+													v26 = tmp56
+													v27 = tmp57
+													v28 = tmp58
 													continue
 												} // end let
-												tmp46 = tmp50
+												tmp38 = tmp41
 											}
-											tmp44 = tmp46
+											tmp36 = tmp38
 										} // end let
-										tmp43 = tmp44
+										tmp35 = tmp36
 									} else {
 									}
-									tmp39 = tmp43
+									tmp32 = tmp35
 								} // end let
-								tmp36 = tmp39
+								tmp29 = tmp32
 							}
-							tmp28 = tmp36
+							tmp22 = tmp29
 							break
 						}
 					} // end let
-					_ = tmp28
-					var tmp29 any
+					_ = tmp22
+					var tmp23 any
 					{ // let
 						// let binding "client"
-						var v30 any = http4.DefaultClient
-						_ = v30
+						var v24 any = http4.DefaultClient
+						_ = v24
 						// let binding "vec__14"
-						tmp31, _ := lang.FieldOrMethod(v30, "Do")
-						if reflect.TypeOf(tmp31).Kind() != reflect.Func {
+						tmp25, _ := lang.FieldOrMethod(v24, "Do")
+						if reflect.TypeOf(tmp25).Kind() != reflect.Func {
 							panic(lang.NewIllegalArgumentError(fmt.Sprintf("Do is not a function")))
 						}
-						tmp32 := lang.Apply1(tmp31, v13)
-						var v33 any = tmp32
-						_ = v33
+						tmp26 := lang.Apply1(tmp25, v12)
+						var v27 any = tmp26
+						_ = v27
 						// let binding "resp"
-						tmp34 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp35 := lang.Apply3(tmp34, v33, int64(0), nil)
-						var v36 any = tmp35
-						_ = v36
+						tmp28 := runtime.RT.NthDefault(v27, lang.IntCast(int64(0)), nil)
+						var v29 any = tmp28
+						_ = v29
 						// let binding "resp-err"
-						tmp37 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp38 := lang.Apply3(tmp37, v33, int64(1), nil)
-						var v39 any = tmp38
-						_ = v39
-						var tmp40 any
-						tmp41 := checkDerefVar(var_clojure_DOT_core_not)
-						tmp42 := lang.Identical(v39, nil)
-						tmp43 := lang.Apply1(tmp41, tmp42)
-						if lang.IsTruthy(tmp43) {
-							tmp44 := checkDerefVar(var_clojure_DOT_core_str)
-							tmp45, ok := lang.FieldOrMethod(v39, "Error")
+						tmp30 := runtime.RT.NthDefault(v27, lang.IntCast(int64(1)), nil)
+						var v31 any = tmp30
+						_ = v31
+						var tmp32 any
+						tmp33 := lang.Identical(v31, nil)
+						tmp34 := aotExternalFn1(tmp33)
+						if lang.IsTruthy(tmp34) {
+							tmp35, ok := lang.FieldOrMethod(v31, "Error")
 							if !ok {
-								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v39, "Error")))
+								panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v31, "Error")))
 							}
-							var tmp46 any
-							switch reflect.TypeOf(tmp45).Kind() {
+							var tmp36 any
+							switch reflect.TypeOf(tmp35).Kind() {
 							case reflect.Func:
-								tmp46 = lang.Apply(tmp45, nil)
+								tmp36 = lang.Apply(tmp35, nil)
 							default:
-								tmp46 = tmp45
+								tmp36 = tmp35
 							}
-							tmp47 := lang.Apply2(tmp44, "Request failed: ", tmp46)
-							tmp48 := lang.NewMap(kw_status, int64(500), kw_body, tmp47)
-							tmp49 := lang.NewMap(kw_file, "ys/http.glj", kw_line, int(41), kw_column, int(13), kw_end_DASH_line, int(41), kw_end_DASH_column, int(74))
-							tmp50, err := lang.WithMeta(tmp48, tmp49.(lang.IPersistentMap))
-							if err != nil {
-								panic(err)
-							}
-							tmp40 = tmp50
+							tmp37 := aotExternalFn2("Request failed: ", tmp36)
+							tmp38 := lang.NewMap(kw_status, int64(500), kw_body, tmp37)
+							tmp32 = tmp38
 						} else {
-							var tmp51 any
+							var tmp39 any
 							{ // let
 								// let binding "vec__17"
-								tmp52, ok := lang.FieldOrMethod(v36, "Body")
+								tmp40, ok := lang.FieldOrMethod(v29, "Body")
 								if !ok {
-									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v36, "Body")))
+									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v29, "Body")))
+								}
+								var tmp41 any
+								switch reflect.TypeOf(tmp40).Kind() {
+								case reflect.Func:
+									tmp41 = lang.Apply(tmp40, nil)
+								default:
+									tmp41 = tmp40
+								}
+								tmp42 := lang.Apply1(io5.ReadAll, tmp41)
+								var v43 any = tmp42
+								_ = v43
+								// let binding "body-bytes"
+								tmp44 := runtime.RT.NthDefault(v43, lang.IntCast(int64(0)), nil)
+								var v45 any = tmp44
+								_ = v45
+								// let binding "body-err"
+								tmp46 := runtime.RT.NthDefault(v43, lang.IntCast(int64(1)), nil)
+								var v47 any = tmp46
+								_ = v47
+								tmp48, ok := lang.FieldOrMethod(v29, "Body")
+								if !ok {
+									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v29, "Body")))
+								}
+								var tmp49 any
+								switch reflect.TypeOf(tmp48).Kind() {
+								case reflect.Func:
+									tmp49 = lang.Apply(tmp48, nil)
+								default:
+									tmp49 = tmp48
+								}
+								tmp50, ok := lang.FieldOrMethod(tmp49, "Close")
+								if !ok {
+									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", tmp49, "Close")))
+								}
+								var tmp51 any
+								switch reflect.TypeOf(tmp50).Kind() {
+								case reflect.Func:
+									tmp51 = lang.Apply(tmp50, nil)
+								default:
+									tmp51 = tmp50
+								}
+								_ = tmp51
+								tmp52, ok := lang.FieldOrMethod(v29, "StatusCode")
+								if !ok {
+									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v29, "StatusCode")))
 								}
 								var tmp53 any
 								switch reflect.TypeOf(tmp52).Kind() {
@@ -917,107 +936,43 @@ func LoadNS() {
 								default:
 									tmp53 = tmp52
 								}
-								tmp54 := lang.Apply1(io5.ReadAll, tmp53)
-								var v55 any = tmp54
-								_ = v55
-								// let binding "body-bytes"
-								tmp56 := checkDerefVar(var_clojure_DOT_core_nth)
-								tmp57 := lang.Apply3(tmp56, v55, int64(0), nil)
-								var v58 any = tmp57
-								_ = v58
-								// let binding "body-err"
-								tmp59 := checkDerefVar(var_clojure_DOT_core_nth)
-								tmp60 := lang.Apply3(tmp59, v55, int64(1), nil)
-								var v61 any = tmp60
-								_ = v61
-								tmp62, ok := lang.FieldOrMethod(v36, "Body")
-								if !ok {
-									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v36, "Body")))
-								}
-								var tmp63 any
-								switch reflect.TypeOf(tmp62).Kind() {
-								case reflect.Func:
-									tmp63 = lang.Apply(tmp62, nil)
-								default:
-									tmp63 = tmp62
-								}
-								tmp64, ok := lang.FieldOrMethod(tmp63, "Close")
-								if !ok {
-									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", tmp63, "Close")))
-								}
-								var tmp65 any
-								switch reflect.TypeOf(tmp64).Kind() {
-								case reflect.Func:
-									tmp65 = lang.Apply(tmp64, nil)
-								default:
-									tmp65 = tmp64
-								}
-								_ = tmp65
-								tmp66, ok := lang.FieldOrMethod(v36, "StatusCode")
-								if !ok {
-									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v36, "StatusCode")))
-								}
-								var tmp67 any
-								switch reflect.TypeOf(tmp66).Kind() {
-								case reflect.Func:
-									tmp67 = lang.Apply(tmp66, nil)
-								default:
-									tmp67 = tmp66
-								}
-								var tmp68 any
-								tmp69 := lang.Identical(v61, nil)
-								if lang.IsTruthy(tmp69) {
-									tmp70 := var_ys_DOT_http_bytes_DASH_to_DASH_str.RootVersion() == aotRootVersion0 && !var_ys_DOT_http_bytes_DASH_to_DASH_str.IsMacro()
-									var tmp71 any
-									if !tmp70 {
-										tmp71 = checkDerefVar(var_ys_DOT_http_bytes_DASH_to_DASH_str)
-									}
-									var tmp72 any
-									if tmp70 {
-										tmp72 = aotDirectFn0(v58)
-									} else {
-										tmp72 = lang.Apply1(tmp71, v58)
-									}
-									tmp68 = tmp72
+								var tmp54 any
+								tmp55 := lang.Identical(v47, nil)
+								if lang.IsTruthy(tmp55) {
+									tmp56 := aotDirectFn0(v45)
+									tmp54 = tmp56
 								} else {
-									tmp73 := checkDerefVar(var_clojure_DOT_core_str)
-									tmp74, ok := lang.FieldOrMethod(v61, "Error")
+									tmp57, ok := lang.FieldOrMethod(v47, "Error")
 									if !ok {
-										panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v61, "Error")))
+										panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v47, "Error")))
 									}
-									var tmp75 any
-									switch reflect.TypeOf(tmp74).Kind() {
+									var tmp58 any
+									switch reflect.TypeOf(tmp57).Kind() {
 									case reflect.Func:
-										tmp75 = lang.Apply(tmp74, nil)
+										tmp58 = lang.Apply(tmp57, nil)
 									default:
-										tmp75 = tmp74
+										tmp58 = tmp57
 									}
-									tmp76 := lang.Apply2(tmp73, "Failed to read response: ", tmp75)
-									tmp68 = tmp76
+									tmp59 := aotExternalFn2("Failed to read response: ", tmp58)
+									tmp54 = tmp59
 								}
-								tmp77 := lang.NewMap(kw_status, tmp67, kw_body, tmp68)
-								tmp78 := lang.NewMap(kw_file, "ys/http.glj", kw_line, int(44), kw_column, int(15), kw_end_DASH_line, int(47), kw_end_DASH_column, int(76))
-								tmp79, err := lang.WithMeta(tmp77, tmp78.(lang.IPersistentMap))
-								if err != nil {
-									panic(err)
-								}
-								tmp51 = tmp79
+								tmp60 := lang.NewMap(kw_status, tmp53, kw_body, tmp54)
+								tmp39 = tmp60
 							} // end let
-							tmp40 = tmp51
+							tmp32 = tmp39
 						}
-						tmp29 = tmp40
+						tmp23 = tmp32
 					} // end let
-					tmp17 = tmp29
+					tmp15 = tmp23
 				}
-				tmp4 = tmp17
+				tmp4 = tmp15
 			} // end let
 			return tmp4
 		})
-		aotDirectFn1 = tmp1
+		aotDirectFn2 = tmp1
 		var_ys_DOT_http_post = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion1 = var_ys_DOT_http_post.RootVersion()
 		var_ys_DOT_http_post.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/http.glj", kw_line, int(22), kw_column, int(7), kw_end_DASH_line, int(22), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_url, sym_opts)), kw_doc, "HTTP POST request\n   url: string\n   opts: {:headers {\"Key\" \"Value\"} :body \"...\"}\n   returns: {:status N :body \"...\"}", kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_http))
+			return lang.NewMapUniqueKeys(kw_file, "ys/http.glj", kw_line, int(23), kw_column, int(7), kw_end_DASH_line, int(23), kw_end_DASH_column, int(10), kw_arglists, lang.NewList(lang.NewVector(sym_url, sym_opts)), kw_doc, "HTTP POST request\n   url: string\n   opts: {:headers {\"Key\" \"Value\"} :body \"...\"}\n   returns: {:status N :body \"...\"}", kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_http))
 		})
 	}
 }

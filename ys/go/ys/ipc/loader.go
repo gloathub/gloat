@@ -9,10 +9,91 @@ import (
 	io5 "io"
 	exec4 "os/exec"
 	reflect "reflect"
+	sync "sync"
 )
 
 var aotDirectFn0 lang.FnFunc1
-var aotRootVersion0 *lang.VarRootVersion
+var aotDirectFn1 lang.ArityFn
+var aotDirectFn2 lang.ArityFn
+var aotDirectFn3 lang.ArityFn
+
+func aotLinkFn1(vr *lang.Var) lang.FnFunc1 {
+	if vr.IsBound() {
+		return aotLinkBoundFn1(vr)
+	}
+	var once sync.Once
+	var linked lang.FnFunc1
+	return func(p0 any) any {
+		if !vr.IsBound() {
+			return lang.Apply1(checkDerefVar(vr), p0)
+		}
+		once.Do(func() { linked = aotLinkBoundFn1(vr) })
+		return linked(p0)
+	}
+}
+
+func aotLinkBoundFn1(vr *lang.Var) lang.FnFunc1 {
+	fn := checkDerefVar(vr)
+	if direct, ok := fn.(lang.FnFunc1); ok {
+		return direct
+	}
+	if fixed, ok := fn.(lang.FixedArityFn1); ok {
+		return fixed.Invoke1
+	}
+	return func(p0 any) any { return lang.Apply1(fn, p0) }
+}
+
+func aotLinkFn2(vr *lang.Var) lang.FnFunc2 {
+	if vr.IsBound() {
+		return aotLinkBoundFn2(vr)
+	}
+	var once sync.Once
+	var linked lang.FnFunc2
+	return func(p0 any, p1 any) any {
+		if !vr.IsBound() {
+			return lang.Apply2(checkDerefVar(vr), p0, p1)
+		}
+		once.Do(func() { linked = aotLinkBoundFn2(vr) })
+		return linked(p0, p1)
+	}
+}
+
+func aotLinkBoundFn2(vr *lang.Var) lang.FnFunc2 {
+	fn := checkDerefVar(vr)
+	if direct, ok := fn.(lang.FnFunc2); ok {
+		return direct
+	}
+	if fixed, ok := fn.(lang.FixedArityFn2); ok {
+		return fixed.Invoke2
+	}
+	return func(p0 any, p1 any) any { return lang.Apply2(fn, p0, p1) }
+}
+
+func aotLinkFn3(vr *lang.Var) lang.FnFunc3 {
+	if vr.IsBound() {
+		return aotLinkBoundFn3(vr)
+	}
+	var once sync.Once
+	var linked lang.FnFunc3
+	return func(p0 any, p1 any, p2 any) any {
+		if !vr.IsBound() {
+			return lang.Apply3(checkDerefVar(vr), p0, p1, p2)
+		}
+		once.Do(func() { linked = aotLinkBoundFn3(vr) })
+		return linked(p0, p1, p2)
+	}
+}
+
+func aotLinkBoundFn3(vr *lang.Var) lang.FnFunc3 {
+	fn := checkDerefVar(vr)
+	if direct, ok := fn.(lang.FnFunc3); ok {
+		return direct
+	}
+	if fixed, ok := fn.(lang.FixedArityFn3); ok {
+		return fixed.Invoke3
+	}
+	return func(p0 any, p1 any, p2 any) any { return lang.Apply3(fn, p0, p1, p2) }
+}
 
 func init() {
 	runtime.RegisterNSLoader("ys/ipc", LoadNS)
@@ -46,14 +127,9 @@ func LoadNS() {
 	sym_bytes_DASH_to_DASH_str := lang.NewSymbolUnchecked("bytes-to-str")
 	sym_clojure_DOT_core := lang.NewSymbolUnchecked("clojure.core")
 	sym_clojure_DOT_string := lang.NewSymbolUnchecked("clojure.string")
-	sym_empty_QMARK_ := lang.NewSymbolUnchecked("empty?")
-	sym_first := lang.NewSymbolUnchecked("first")
 	sym_join := lang.NewSymbolUnchecked("join")
-	sym_next := lang.NewSymbolUnchecked("next")
 	sym_not := lang.NewSymbolUnchecked("not")
-	sym_nth := lang.NewSymbolUnchecked("nth")
 	sym_process := lang.NewSymbolUnchecked("process")
-	sym_seq := lang.NewSymbolUnchecked("seq")
 	sym_sh := lang.NewSymbolUnchecked("sh")
 	sym_shell := lang.NewSymbolUnchecked("shell")
 	sym_str := lang.NewSymbolUnchecked("str")
@@ -72,18 +148,8 @@ func LoadNS() {
 	kw_private := lang.NewKeyword("private")
 	// var clojure.core/apply
 	var_clojure_DOT_core_apply := lang.InternVarName(sym_clojure_DOT_core, sym_apply)
-	// var clojure.core/empty?
-	var_clojure_DOT_core_empty_QMARK_ := lang.InternVarName(sym_clojure_DOT_core, sym_empty_QMARK_)
-	// var clojure.core/first
-	var_clojure_DOT_core_first := lang.InternVarName(sym_clojure_DOT_core, sym_first)
-	// var clojure.core/next
-	var_clojure_DOT_core_next := lang.InternVarName(sym_clojure_DOT_core, sym_next)
 	// var clojure.core/not
 	var_clojure_DOT_core_not := lang.InternVarName(sym_clojure_DOT_core, sym_not)
-	// var clojure.core/nth
-	var_clojure_DOT_core_nth := lang.InternVarName(sym_clojure_DOT_core, sym_nth)
-	// var clojure.core/seq
-	var_clojure_DOT_core_seq := lang.InternVarName(sym_clojure_DOT_core, sym_seq)
 	// var clojure.core/str
 	var_clojure_DOT_core_str := lang.InternVarName(sym_clojure_DOT_core, sym_str)
 	// var clojure.core/vec
@@ -98,6 +164,13 @@ func LoadNS() {
 	var_ys_DOT_ipc_sh := lang.InternVarName(sym_ys_DOT_ipc, sym_sh)
 	// var ys.ipc/shell
 	var_ys_DOT_ipc_shell := lang.InternVarName(sym_ys_DOT_ipc, sym_shell)
+	aotExternalFn0 := aotLinkFn2(var_clojure_DOT_core_apply)
+	aotExternalFn10 := aotLinkFn2(var_clojure_DOT_core_str)
+	aotExternalFn11 := aotLinkFn2(var_clojure_DOT_string_join)
+	aotExternalFn5 := aotLinkFn3(var_clojure_DOT_core_apply)
+	aotExternalFn6 := aotLinkFn1(var_clojure_DOT_core_vec)
+	aotExternalFn8 := aotLinkFn1(var_clojure_DOT_core_not)
+	aotExternalFn9 := aotLinkFn1(var_clojure_DOT_core_str)
 	// reference fmt to avoid unused import error
 	_ = fmt.Printf
 	// reference reflect to avoid unused import error
@@ -191,35 +264,8 @@ func LoadNS() {
 		})
 		aotDirectFn0 = tmp1
 		var_ys_DOT_ipc_bytes_DASH_to_DASH_str = ns.InternWithValue(tmp0, tmp1, true)
-		aotRootVersion0 = var_ys_DOT_ipc_bytes_DASH_to_DASH_str.RootVersion()
 		var_ys_DOT_ipc_bytes_DASH_to_DASH_str.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/ipc.glj", kw_line, int(14), kw_column, int(8), kw_end_DASH_line, int(14), kw_end_DASH_column, int(19), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_b)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_ipc))
-		})
-	}
-	// process
-	{
-		tmp0 := sym_process
-		var tmp1 lang.ArityFn
-		tmp1 = lang.NewArityFn(
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
-				var v2 any = rest
-				_ = v2
-				_ = "Execute command via /bin/sh -c (joins args into single command string)"
-				tmp3 := checkDerefVar(var_clojure_DOT_core_apply)
-				tmp4 := checkDerefVar(var_ys_DOT_ipc_shell)
-				tmp5 := lang.Apply2(tmp3, tmp4, v2)
-				return tmp5
-			}),
-			0,
-		)
-		var_ys_DOT_ipc_process = ns.InternWithValue(tmp0, tmp1, true)
-		var_ys_DOT_ipc_process.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_file, "ys/ipc.glj", kw_line, int(54), kw_column, int(7), kw_end_DASH_line, int(54), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_args)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_ipc))
+			return lang.NewMapUniqueKeys(kw_file, "ys/ipc.glj", kw_line, int(14), kw_column, int(8), kw_end_DASH_line, int(14), kw_end_DASH_column, int(19), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_b)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_ipc))
 		})
 	}
 	// sh
@@ -237,294 +283,236 @@ func LoadNS() {
 				_ = v2
 				_ = "Execute command directly (first arg is command, rest are arguments)"
 				var tmp3 any
-				tmp4 := checkDerefVar(var_clojure_DOT_core_empty_QMARK_)
-				tmp5 := lang.Apply1(tmp4, v2)
-				if lang.IsTruthy(tmp5) {
-					tmp6 := lang.NewMap(kw_exit, int64(1), kw_out, "", kw_err, "No command specified")
-					tmp7 := lang.NewMap(kw_file, "ys/ipc.glj", kw_line, int(25), kw_column, int(5), kw_end_DASH_line, int(25), kw_end_DASH_column, int(49))
-					tmp8, err := lang.WithMeta(tmp6, tmp7.(lang.IPersistentMap))
-					if err != nil {
-						panic(err)
-					}
-					tmp3 = tmp8
+				tmp4 := lang.IsEmpty(v2)
+				if lang.IsTruthy(tmp4) {
+					tmp5 := lang.NewMap(kw_exit, int64(1), kw_out, "", kw_err, "No command specified")
+					tmp3 = tmp5
 				} else {
-					var tmp9 any
+					var tmp6 any
 					{ // let
 						// let binding "vec__1"
-						var v10 any = v2
-						_ = v10
+						var v7 any = v2
+						_ = v7
 						// let binding "seq__2"
-						tmp11 := checkDerefVar(var_clojure_DOT_core_seq)
-						tmp12 := lang.Apply1(tmp11, v10)
+						tmp8 := lang.Seq(v7)
+						var v9 any = tmp8
+						_ = v9
+						// let binding "first__3"
+						tmp10 := lang.First(v9)
+						var v11 any = tmp10
+						_ = v11
+						// let binding "seq__2"
+						tmp12 := lang.Next(v9)
 						var v13 any = tmp12
 						_ = v13
-						// let binding "first__3"
-						tmp14 := checkDerefVar(var_clojure_DOT_core_first)
-						tmp15 := lang.Apply1(tmp14, v13)
-						var v16 any = tmp15
-						_ = v16
-						// let binding "seq__2"
-						tmp17 := checkDerefVar(var_clojure_DOT_core_next)
-						tmp18 := lang.Apply1(tmp17, v13)
-						var v19 any = tmp18
-						_ = v19
 						// let binding "cmd-name"
-						var v20 any = v16
-						_ = v20
+						var v14 any = v11
+						_ = v14
 						// let binding "cmd-args"
-						var v21 any = v19
-						_ = v21
+						var v15 any = v13
+						_ = v15
 						// let binding "cmd"
-						tmp22 := checkDerefVar(var_clojure_DOT_core_apply)
-						tmp23 := checkDerefVar(var_clojure_DOT_core_vec)
-						tmp24 := lang.Apply1(tmp23, v21)
-						tmp25 := lang.Apply3(tmp22, exec4.Command, v20, tmp24)
-						var v26 any = tmp25
-						_ = v26
+						tmp16 := aotExternalFn6(v15)
+						tmp17 := aotExternalFn5(exec4.Command, v14, tmp16)
+						var v18 any = tmp17
+						_ = v18
 						// let binding "vec__4"
-						tmp27, ok := lang.FieldOrMethod(v26, "StdoutPipe")
+						tmp19, ok := lang.FieldOrMethod(v18, "StdoutPipe")
 						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v26, "StdoutPipe")))
+							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v18, "StdoutPipe")))
 						}
-						var tmp28 any
-						switch reflect.TypeOf(tmp27).Kind() {
+						var tmp20 any
+						switch reflect.TypeOf(tmp19).Kind() {
 						case reflect.Func:
-							tmp28 = lang.Apply(tmp27, nil)
+							tmp20 = lang.Apply(tmp19, nil)
 						default:
-							tmp28 = tmp27
+							tmp20 = tmp19
 						}
-						var v29 any = tmp28
-						_ = v29
+						var v21 any = tmp20
+						_ = v21
 						// let binding "stdout-pipe"
-						tmp30 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp31 := lang.Apply3(tmp30, v29, int64(0), nil)
+						tmp22 := runtime.RT.NthDefault(v21, lang.IntCast(int64(0)), nil)
+						var v23 any = tmp22
+						_ = v23
+						// let binding "stdout-err"
+						tmp24 := runtime.RT.NthDefault(v21, lang.IntCast(int64(1)), nil)
+						var v25 any = tmp24
+						_ = v25
+						// let binding "vec__7"
+						tmp26, ok := lang.FieldOrMethod(v18, "StderrPipe")
+						if !ok {
+							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v18, "StderrPipe")))
+						}
+						var tmp27 any
+						switch reflect.TypeOf(tmp26).Kind() {
+						case reflect.Func:
+							tmp27 = lang.Apply(tmp26, nil)
+						default:
+							tmp27 = tmp26
+						}
+						var v28 any = tmp27
+						_ = v28
+						// let binding "stderr-pipe"
+						tmp29 := runtime.RT.NthDefault(v28, lang.IntCast(int64(0)), nil)
+						var v30 any = tmp29
+						_ = v30
+						// let binding "stderr-err"
+						tmp31 := runtime.RT.NthDefault(v28, lang.IntCast(int64(1)), nil)
 						var v32 any = tmp31
 						_ = v32
-						// let binding "stdout-err"
-						tmp33 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp34 := lang.Apply3(tmp33, v29, int64(1), nil)
-						var v35 any = tmp34
-						_ = v35
-						// let binding "vec__7"
-						tmp36, ok := lang.FieldOrMethod(v26, "StderrPipe")
-						if !ok {
-							panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v26, "StderrPipe")))
-						}
-						var tmp37 any
-						switch reflect.TypeOf(tmp36).Kind() {
-						case reflect.Func:
-							tmp37 = lang.Apply(tmp36, nil)
-						default:
-							tmp37 = tmp36
-						}
-						var v38 any = tmp37
-						_ = v38
-						// let binding "stderr-pipe"
-						tmp39 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp40 := lang.Apply3(tmp39, v38, int64(0), nil)
-						var v41 any = tmp40
-						_ = v41
-						// let binding "stderr-err"
-						tmp42 := checkDerefVar(var_clojure_DOT_core_nth)
-						tmp43 := lang.Apply3(tmp42, v38, int64(1), nil)
-						var v44 any = tmp43
-						_ = v44
-						var tmp45 any
-						var tmp46 any
+						var tmp33 any
+						var tmp34 any
 						{ // let
 							// let binding "or__0__auto__"
-							tmp47 := checkDerefVar(var_clojure_DOT_core_not)
-							tmp48 := lang.Identical(v35, nil)
-							tmp49 := lang.Apply1(tmp47, tmp48)
-							var v50 any = tmp49
-							_ = v50
-							var tmp51 any
-							if lang.IsTruthy(v50) {
-								tmp51 = v50
+							tmp35 := lang.Identical(v25, nil)
+							tmp36 := aotExternalFn8(tmp35)
+							var v37 any = tmp36
+							_ = v37
+							var tmp38 any
+							if lang.IsTruthy(v37) {
+								tmp38 = v37
 							} else {
-								tmp52 := checkDerefVar(var_clojure_DOT_core_not)
-								tmp53 := lang.Identical(v44, nil)
-								tmp54 := lang.Apply1(tmp52, tmp53)
-								tmp51 = tmp54
+								tmp39 := lang.Identical(v32, nil)
+								tmp40 := aotExternalFn8(tmp39)
+								tmp38 = tmp40
 							}
-							tmp46 = tmp51
+							tmp34 = tmp38
 						} // end let
-						if lang.IsTruthy(tmp46) {
-							tmp47 := checkDerefVar(var_clojure_DOT_core_str)
-							tmp48 := lang.Apply1(tmp47, "Failed to create pipes")
-							tmp49 := lang.NewMap(kw_exit, int64(1), kw_out, "", kw_err, tmp48)
-							tmp50 := lang.NewMap(kw_file, "ys/ipc.glj", kw_line, int(31), kw_column, int(9), kw_end_DASH_line, int(31), kw_end_DASH_column, int(61))
-							tmp51, err := lang.WithMeta(tmp49, tmp50.(lang.IPersistentMap))
-							if err != nil {
-								panic(err)
-							}
-							tmp45 = tmp51
+						if lang.IsTruthy(tmp34) {
+							tmp35 := aotExternalFn9("Failed to create pipes")
+							tmp36 := lang.NewMap(kw_exit, int64(1), kw_out, "", kw_err, tmp35)
+							tmp33 = tmp36
 						} else {
-							var tmp52 any
+							var tmp37 any
 							{ // let
 								// let binding "start-err"
-								tmp53, ok := lang.FieldOrMethod(v26, "Start")
+								tmp38, ok := lang.FieldOrMethod(v18, "Start")
 								if !ok {
-									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v26, "Start")))
+									panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v18, "Start")))
 								}
-								var tmp54 any
-								switch reflect.TypeOf(tmp53).Kind() {
+								var tmp39 any
+								switch reflect.TypeOf(tmp38).Kind() {
 								case reflect.Func:
-									tmp54 = lang.Apply(tmp53, nil)
+									tmp39 = lang.Apply(tmp38, nil)
 								default:
-									tmp54 = tmp53
+									tmp39 = tmp38
 								}
-								var v55 any = tmp54
-								_ = v55
-								var tmp56 any
-								tmp57 := checkDerefVar(var_clojure_DOT_core_not)
-								tmp58 := lang.Identical(v55, nil)
-								tmp59 := lang.Apply1(tmp57, tmp58)
-								if lang.IsTruthy(tmp59) {
-									tmp60 := checkDerefVar(var_clojure_DOT_core_str)
-									tmp61 := lang.Apply2(tmp60, "Failed to start: ", v55)
-									tmp62 := lang.NewMap(kw_exit, int64(1), kw_out, "", kw_err, tmp61)
-									tmp63 := lang.NewMap(kw_file, "ys/ipc.glj", kw_line, int(34), kw_column, int(13), kw_end_DASH_line, int(34), kw_end_DASH_column, int(70))
-									tmp64, err := lang.WithMeta(tmp62, tmp63.(lang.IPersistentMap))
-									if err != nil {
-										panic(err)
-									}
-									tmp56 = tmp64
+								var v40 any = tmp39
+								_ = v40
+								var tmp41 any
+								tmp42 := lang.Identical(v40, nil)
+								tmp43 := aotExternalFn8(tmp42)
+								if lang.IsTruthy(tmp43) {
+									tmp44 := aotExternalFn10("Failed to start: ", v40)
+									tmp45 := lang.NewMap(kw_exit, int64(1), kw_out, "", kw_err, tmp44)
+									tmp41 = tmp45
 								} else {
-									var tmp65 any
+									var tmp46 any
 									{ // let
 										// let binding "vec__10"
-										tmp66 := lang.Apply1(io5.ReadAll, v32)
-										var v67 any = tmp66
-										_ = v67
+										tmp47 := lang.Apply1(io5.ReadAll, v23)
+										var v48 any = tmp47
+										_ = v48
 										// let binding "stdout-bytes"
-										tmp68 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp69 := lang.Apply3(tmp68, v67, int64(0), nil)
-										var v70 any = tmp69
-										_ = v70
+										tmp49 := runtime.RT.NthDefault(v48, lang.IntCast(int64(0)), nil)
+										var v50 any = tmp49
+										_ = v50
 										// let binding "stdout-read-err"
-										tmp71 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp72 := lang.Apply3(tmp71, v67, int64(1), nil)
-										var v73 any = tmp72
-										_ = v73
+										tmp51 := runtime.RT.NthDefault(v48, lang.IntCast(int64(1)), nil)
+										var v52 any = tmp51
+										_ = v52
 										// let binding "vec__13"
-										tmp74 := lang.Apply1(io5.ReadAll, v41)
-										var v75 any = tmp74
-										_ = v75
+										tmp53 := lang.Apply1(io5.ReadAll, v30)
+										var v54 any = tmp53
+										_ = v54
 										// let binding "stderr-bytes"
-										tmp76 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp77 := lang.Apply3(tmp76, v75, int64(0), nil)
-										var v78 any = tmp77
-										_ = v78
+										tmp55 := runtime.RT.NthDefault(v54, lang.IntCast(int64(0)), nil)
+										var v56 any = tmp55
+										_ = v56
 										// let binding "stderr-read-err"
-										tmp79 := checkDerefVar(var_clojure_DOT_core_nth)
-										tmp80 := lang.Apply3(tmp79, v75, int64(1), nil)
-										var v81 any = tmp80
-										_ = v81
+										tmp57 := runtime.RT.NthDefault(v54, lang.IntCast(int64(1)), nil)
+										var v58 any = tmp57
+										_ = v58
 										// let binding "wait-err"
-										tmp82, ok := lang.FieldOrMethod(v26, "Wait")
+										tmp59, ok := lang.FieldOrMethod(v18, "Wait")
 										if !ok {
-											panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v26, "Wait")))
+											panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v18, "Wait")))
 										}
-										var tmp83 any
-										switch reflect.TypeOf(tmp82).Kind() {
+										var tmp60 any
+										switch reflect.TypeOf(tmp59).Kind() {
 										case reflect.Func:
-											tmp83 = lang.Apply(tmp82, nil)
+											tmp60 = lang.Apply(tmp59, nil)
 										default:
-											tmp83 = tmp82
+											tmp60 = tmp59
 										}
-										var v84 any = tmp83
-										_ = v84
+										var v61 any = tmp60
+										_ = v61
 										// let binding "exit-code"
-										var tmp85 any
-										tmp86 := lang.Identical(v84, nil)
-										if lang.IsTruthy(tmp86) {
-											tmp85 = int64(0)
+										var tmp62 any
+										tmp63 := lang.Identical(v61, nil)
+										if lang.IsTruthy(tmp63) {
+											tmp62 = int64(0)
 										} else {
-											tmp87, ok := lang.FieldOrMethod(v26, "ProcessState")
+											tmp64, ok := lang.FieldOrMethod(v18, "ProcessState")
 											if !ok {
-												panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v26, "ProcessState")))
+												panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", v18, "ProcessState")))
 											}
-											var tmp88 any
-											switch reflect.TypeOf(tmp87).Kind() {
+											var tmp65 any
+											switch reflect.TypeOf(tmp64).Kind() {
 											case reflect.Func:
-												tmp88 = lang.Apply(tmp87, nil)
+												tmp65 = lang.Apply(tmp64, nil)
 											default:
-												tmp88 = tmp87
+												tmp65 = tmp64
 											}
-											tmp89, ok := lang.FieldOrMethod(tmp88, "ExitCode")
+											tmp66, ok := lang.FieldOrMethod(tmp65, "ExitCode")
 											if !ok {
-												panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", tmp88, "ExitCode")))
+												panic(lang.NewIllegalArgumentError(fmt.Sprintf("no such field or method on %T: %s", tmp65, "ExitCode")))
 											}
-											var tmp90 any
-											switch reflect.TypeOf(tmp89).Kind() {
+											var tmp67 any
+											switch reflect.TypeOf(tmp66).Kind() {
 											case reflect.Func:
-												tmp90 = lang.Apply(tmp89, nil)
+												tmp67 = lang.Apply(tmp66, nil)
 											default:
-												tmp90 = tmp89
+												tmp67 = tmp66
 											}
-											tmp85 = tmp90
+											tmp62 = tmp67
 										}
-										var v91 any = tmp85
-										_ = v91
-										var tmp92 any
-										tmp93 := lang.Identical(v73, nil)
-										if lang.IsTruthy(tmp93) {
-											tmp94 := var_ys_DOT_ipc_bytes_DASH_to_DASH_str.RootVersion() == aotRootVersion0 && !var_ys_DOT_ipc_bytes_DASH_to_DASH_str.IsMacro()
-											var tmp95 any
-											if !tmp94 {
-												tmp95 = checkDerefVar(var_ys_DOT_ipc_bytes_DASH_to_DASH_str)
-											}
-											var tmp96 any
-											if tmp94 {
-												tmp96 = aotDirectFn0(v70)
-											} else {
-												tmp96 = lang.Apply1(tmp95, v70)
-											}
-											tmp92 = tmp96
+										var v68 any = tmp62
+										_ = v68
+										var tmp69 any
+										tmp70 := lang.Identical(v52, nil)
+										if lang.IsTruthy(tmp70) {
+											tmp71 := aotDirectFn0(v50)
+											tmp69 = tmp71
 										} else {
-											tmp92 = ""
+											tmp69 = ""
 										}
-										var tmp97 any
-										tmp98 := lang.Identical(v81, nil)
-										if lang.IsTruthy(tmp98) {
-											tmp99 := var_ys_DOT_ipc_bytes_DASH_to_DASH_str.RootVersion() == aotRootVersion0 && !var_ys_DOT_ipc_bytes_DASH_to_DASH_str.IsMacro()
-											var tmp100 any
-											if !tmp99 {
-												tmp100 = checkDerefVar(var_ys_DOT_ipc_bytes_DASH_to_DASH_str)
-											}
-											var tmp101 any
-											if tmp99 {
-												tmp101 = aotDirectFn0(v78)
-											} else {
-												tmp101 = lang.Apply1(tmp100, v78)
-											}
-											tmp97 = tmp101
+										var tmp72 any
+										tmp73 := lang.Identical(v58, nil)
+										if lang.IsTruthy(tmp73) {
+											tmp74 := aotDirectFn0(v56)
+											tmp72 = tmp74
 										} else {
-											tmp97 = ""
+											tmp72 = ""
 										}
-										tmp102 := lang.NewMap(kw_exit, v91, kw_out, tmp92, kw_err, tmp97)
-										tmp103 := lang.NewMap(kw_file, "ys/ipc.glj", kw_line, int(41), kw_column, int(15), kw_end_DASH_line, int(47), kw_end_DASH_column, int(26))
-										tmp104, err := lang.WithMeta(tmp102, tmp103.(lang.IPersistentMap))
-										if err != nil {
-											panic(err)
-										}
-										tmp65 = tmp104
+										tmp75 := lang.NewMap(kw_exit, v68, kw_out, tmp69, kw_err, tmp72)
+										tmp46 = tmp75
 									} // end let
-									tmp56 = tmp65
+									tmp41 = tmp46
 								}
-								tmp52 = tmp56
+								tmp37 = tmp41
 							} // end let
-							tmp45 = tmp52
+							tmp33 = tmp37
 						}
-						tmp9 = tmp45
+						tmp6 = tmp33
 					} // end let
-					tmp3 = tmp9
+					tmp3 = tmp6
 				}
 				return tmp3
 			}),
 			0,
 		)
+		aotDirectFn2 = tmp1
 		var_ys_DOT_ipc_sh = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_ipc_sh.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/ipc.glj", kw_line, int(22), kw_column, int(7), kw_end_DASH_line, int(22), kw_end_DASH_column, int(8), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_args)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_ipc))
@@ -547,21 +535,46 @@ func LoadNS() {
 				var tmp3 any
 				{ // let
 					// let binding "cmd-str"
-					tmp4 := checkDerefVar(var_clojure_DOT_string_join)
-					tmp5 := lang.Apply2(tmp4, " ", v2)
-					var v6 any = tmp5
-					_ = v6
-					tmp7 := checkDerefVar(var_ys_DOT_ipc_sh)
-					tmp8 := lang.Apply3(tmp7, "/bin/sh", "-c", v6)
-					tmp3 = tmp8
+					tmp4 := aotExternalFn11(" ", v2)
+					var v5 any = tmp4
+					_ = v5
+					tmp6 := aotDirectFn2.Invoke3("/bin/sh", "-c", v5)
+					tmp3 = tmp6
 				} // end let
 				return tmp3
 			}),
 			0,
 		)
+		aotDirectFn3 = tmp1
 		var_ys_DOT_ipc_shell = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_ipc_shell.SetMetaLazy(func() lang.IPersistentMap {
 			return lang.NewMap(kw_file, "ys/ipc.glj", kw_line, int(49), kw_column, int(7), kw_end_DASH_line, int(49), kw_end_DASH_column, int(11), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_args)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_ipc))
+		})
+	}
+	// process
+	{
+		tmp0 := sym_process
+		var tmp1 lang.ArityFn
+		tmp1 = lang.NewArityFn(
+			nil,
+			nil,
+			nil,
+			nil,
+			nil,
+			lang.NewVariadicFn(0, func(args []any, rest lang.ISeq) any {
+				var v2 any = rest
+				_ = v2
+				_ = "Execute command via /bin/sh -c (joins args into single command string)"
+				tmp3 := checkDerefVar(var_ys_DOT_ipc_shell)
+				tmp4 := aotExternalFn0(tmp3, v2)
+				return tmp4
+			}),
+			0,
+		)
+		aotDirectFn1 = tmp1
+		var_ys_DOT_ipc_process = ns.InternWithValue(tmp0, tmp1, true)
+		var_ys_DOT_ipc_process.SetMetaLazy(func() lang.IPersistentMap {
+			return lang.NewMap(kw_file, "ys/ipc.glj", kw_line, int(54), kw_column, int(7), kw_end_DASH_line, int(54), kw_end_DASH_column, int(13), kw_arglists, lang.NewList(lang.NewVector(sym__AMP_, sym_args)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_ipc))
 		})
 	}
 }

@@ -1,3 +1,9 @@
+- version: 0.1.64
+  date:    Mon Jul 27 08:37:24 AM EDT 2026
+  changes:
+  - Fix -Xprune for glojure v0.7.2
+  - Silence remaining YS namespace warnings
+
 - version: 0.1.63
   date:    Sun Jul 26 03:07:35 PM EDT 2026
   changes:

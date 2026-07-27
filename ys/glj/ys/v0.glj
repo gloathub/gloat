@@ -12,8 +12,9 @@
     [ys.http]
     [ys.ipc]
     [ys.json]
-    [ys.std :refer :all]
-    [ys.dwim :refer :all]))
+    [ys.std]
+    [ys.dwim])
+  (:refer-clojure :exclude [atom die print read replace reverse set]))
 
 (def ^:dynamic ARGV [])
 (def ^:dynamic ARGS [])

@@ -5,7 +5,8 @@
 ;; Pure Clojure implementation (avoids Go type conversion issues)
 
 (ns ys.json
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str])
+  (:refer-clojure :exclude [load]))
 
 ;;------------------------------------------------------------------------------
 ;; JSON encoding (dump)

@@ -1,3 +1,9 @@
+- version: 0.1.66
+  date:    Mon Jul 27 09:42:23 PM EDT 2026
+  changes:
+  - Focus GloatHub front page on Clojure
+  - Install optional compilers on demand
+
 - version: 0.1.65
   date:    Mon Jul 27 01:58:54 PM EDT 2026
   changes:

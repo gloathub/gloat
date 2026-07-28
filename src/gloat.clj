@@ -805,8 +805,30 @@ Less common:
 ;; Forward declarations
 (declare convert-directory convert-files)
 
-(defn ys-to-clj [input output namespace]
+(defn find-ys
+  "Path to the YAMLScript compiler, installing it only when compiling
+  YAMLScript source."
+  []
   (let [ys (:YS make-vars)]
+    (if (and ys (fs/executable? ys))
+      ys
+      (let [result (process/shell {:out :string :err :string
+                                   :continue true
+                                   :dir GLOAT-ROOT
+                                   :extra-env go-env}
+                                  "make" "--quiet" "--no-print-directory"
+                                  "path-ys")
+            path (->> (str/split-lines (str (:out result)))
+                      (remove str/blank?)
+                      last)]
+        (when-not (and (zero? (:exit result))
+                       path (fs/executable? path))
+          (die (str "Failed to install ys:\n"
+                    (:out result) (:err result))))
+        path))))
+
+(defn ys-to-clj [input output namespace]
+  (let [ys (find-ys)]
     (timer-start)
 
     ;; Compile YS to Clojure

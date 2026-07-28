@@ -223,6 +223,11 @@ fi
 # Test stdout modes
 cd "$FIXTURES_DIR" || bail-out "Cannot cd to fixtures"
 
+try "env MAKEFLAGS='YAMLSCRIPT-VERSION=999.999.999' \
+  '$GLOAT_BIN' -q boolean.clj -t clj"
+is "$rc" 0 "Clojure input does not install the YAMLScript compiler"
+has "$got" "(ns boolean" "Clojure input compiles without a ys executable"
+
 try "$GLOAT_BIN hello.ys -t clj"
 is "$rc" 0 "'gloat hello.ys -t clj' exits 0"
 has "$got" "(ns " "'gloat hello.ys -t clj' outputs Clojure"

@@ -94,8 +94,9 @@ Standalone Babashka (Clojure) files
 
 .PP
 The tool has \fBzero external dependencies\fP\&.
-All required tools (bb, glj, go, ys) are installed the first time you run
-\fBgloat\fR via the Makes build system.
+The core tools (bb, glj, and go) are installed the first time you run \fBgloat\fR
+via the Makes build system. The \fBys\fR
+compiler is installed on demand when compiling YAMLScript source.
 
 .PP
 All of these tools will be installed local to the gloat repository under
@@ -281,7 +282,7 @@ $ git clone https://github.com/gloathub/gloat
 $ source gloat/.rc
 
 $ gloat --help
-==> Installing gloat dependencies (bb, glj, go, ys) locally into:
+==> Installing gloat dependencies locally into:
 
     /home/ingy/src/gloat/worktree/clojure-rewrite/.cache/.local/
 
@@ -292,8 +293,9 @@ $ man gloat
 .EE
 
 .PP
-The first time you run the \fBgloat\fR command, all its dependencies will be
-installed under the \fB/path/to/gloat/.cache/.local/\fR directory.
+The first time you run the \fBgloat\fR command, its core dependencies will be
+installed under the \fB/path/to/gloat/.cache/.local/\fR directory. The YAMLScript
+compiler is added there the first time you compile a \fB\&.ys\fR file.
 
 .PP
 Sourcing the rc file adds \fBgloat\fR to your PATH and automatically loads shell
@@ -694,12 +696,12 @@ Sometimes you want to run these commands like \fBgo\fR, \fBglj\fR, \fBys\fR and 
 directly in your shell.
 Gloat provides two shell variants:
 .IP \(bu 2
-\fBgloat --shell\fR — Starts a subshell with the core tools (bb, glj, go, ys)
+\fBgloat --shell\fR — Starts a subshell with the core tools (bb, glj, go)
 plus \fBwasmtime\fR on PATH.
 This is the everyday variant for compiling and running programs.
 .IP \(bu 2
 \fBgloat --shell-all\fR — Like \fB--shell\fR but also installs all developer tools
-(gh, go-md2man, shellcheck, brotli, etc.).
+(ys, gh, go-md2man, shellcheck, brotli, etc.).
 Use this when you need the full development environment.
 
 .PP

@@ -192,7 +192,7 @@ main() (
       die "Error: GLOJURE_DIR is not set to a glojure source directory"
     [[ -x $GLOJURE_DIR/scripts/build-glj.sh ]] ||
       die "Error: $GLOJURE_DIR/scripts/build-glj.sh not found"
-    install-deps
+    install-deps without-glj
     os=$(go env GOOS)
     arch=$(go env GOARCH)
     out=$GLOJURE_DIR/bin/${os}_${arch}/glj
@@ -784,18 +784,16 @@ install-managed-command() {
 }
 
 install-deps() {
+  local mode=${1:-}
   # If deps are already installed locally, make them visible and stay quiet.
-  local bb go glj ys
+  local bb go glj
   bb=$(find-local-exe "$root/.cache/local" '*/bin/bb')
   go=$(find-local-exe "$root/.cache/local" '*/bin/go')
   glj=$(find-local-glj)
-  ys=$(find-local-exe "$root/.cache/local/bin" 'ys')
-  [[ $ys ]] || ys=$(find-local-exe "$root/.cache/local/bin" 'ys-[0-9]*')
-  if [[ $bb && $go && $glj && $ys ]]; then
+  if [[ $bb && $go && ($mode == without-glj || $glj) ]]; then
     path-prepend "$(dirname "$bb")"
     path-prepend "$(dirname "$go")"
-    path-prepend "$(dirname "$glj")"
-    path-prepend "$(dirname "$ys")"
+    [[ $glj ]] && path-prepend "$(dirname "$glj")"
     return
   fi
 
@@ -805,20 +803,21 @@ install-deps() {
   install-one bb       path-bb
   install-one go       path-go
   install-one glojure  path-glojure
-  if [[ -n ${GLOJURE_DIR:-} ]]; then
-    local local_glj
-    local_glj=$(find-local-glojure-glj)
-    if [[ -n $local_glj ]]; then
-      PATH=$(dirname "$local_glj"):$PATH
-      printf '==> Installing glj... done\n' >&2
+  if [[ $mode != without-glj ]]; then
+    if [[ -n ${GLOJURE_DIR:-} ]]; then
+      local local_glj
+      local_glj=$(find-local-glojure-glj)
+      if [[ -n $local_glj ]]; then
+        PATH=$(dirname "$local_glj"):$PATH
+        printf '==> Installing glj... done\n' >&2
+      else
+        install-one glj path-glj
+      fi
     else
       install-one glj path-glj
     fi
-  else
-    install-one glj path-glj
   fi
-  install-one ys       path-ys
-  >&2 echo "All gloat dependencies installed."
+  >&2 echo "All gloat core dependencies installed."
 }
 
 path-prepend() {

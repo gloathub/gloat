@@ -106,7 +106,6 @@ PATH-DEPS := \
   $(GLJ) \
   $(GLOJURE-DIR) \
   $(GO) \
-  $(YS) \
 
 # Must be included after PATH-DEPS is defined; make expands the
 # 'gloat-vars: $(PATH-DEPS)' prerequisites at parse time.

@@ -142,8 +142,9 @@ In both cases, gloat will:
 
 1. Switch the local checkout to the target tag.
 2. Remove `.cache/`.
-3. Install all dependencies that pair with that gloat release, including
-   the matching GLJ version.
+3. Install the core dependencies that pair with that gloat release, including
+   the matching GLJ version. The YAMLScript compiler is installed later if a
+   `.ys` file is compiled.
 
 If your clone has uncommitted changes, `--upgrade` will refuse and ask you
 to stash or commit them first.

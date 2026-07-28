@@ -82,8 +82,9 @@ Gloat compiles Clojure or YAMLScript source files to any of these forms:
 ```
 
 The tool has **zero external dependencies**.
-All required tools (bb, glj, go, ys) are installed the first time you run
-`gloat` via the [Makes](https://github.com/makeplus/makes) build system.
+The core tools (bb, glj, and go) are installed the first time you run `gloat`
+via the [Makes](https://github.com/makeplus/makes) build system. The `ys`
+compiler is installed on demand when compiling YAMLScript source.
 
 All of these tools will be installed local to the gloat repository under
 `/path/to/gloat/.cache/.local/` and you will be prompted about it first.
@@ -270,7 +271,7 @@ $ git clone https://github.com/gloathub/gloat
 $ source gloat/.rc
 
 $ gloat --help
-==> Installing gloat dependencies (bb, glj, go, ys) locally into:
+==> Installing gloat dependencies locally into:
 
     /home/ingy/src/gloat/worktree/clojure-rewrite/.cache/.local/
 
@@ -280,8 +281,9 @@ Press Enter to continue (or Ctrl-C to cancel)...
 $ man gloat
 ```
 
-The first time you run the `gloat` command, all its dependencies will be
-installed under the `/path/to/gloat/.cache/.local/` directory.
+The first time you run the `gloat` command, its core dependencies will be
+installed under the `/path/to/gloat/.cache/.local/` directory. The YAMLScript
+compiler is added there the first time you compile a `.ys` file.
 
 Sourcing the rc file adds `gloat` to your PATH and automatically loads shell
 completions for your shell.
@@ -656,12 +658,12 @@ Sometimes you want to run these commands like `go`, `glj`, `ys` and `bb`
 directly in your shell.
 Gloat provides two shell variants:
 
-* `gloat --shell` — Starts a subshell with the core tools (bb, glj, go, ys)
+* `gloat --shell` — Starts a subshell with the core tools (bb, glj, go)
   plus `wasmtime` on PATH.
   This is the everyday variant for compiling and running programs.
 
 * `gloat --shell-all` — Like `--shell` but also installs all developer tools
-  (gh, go-md2man, shellcheck, brotli, etc.).
+  (ys, gh, go-md2man, shellcheck, brotli, etc.).
   Use this when you need the full development environment.
 
 Your shell prompt will be prefixed with `(gloat) ` so that you know you are in

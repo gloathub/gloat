@@ -4,6 +4,9 @@ path-bb: $(BB)
 path-brotli: $(BROTLI)
 	@echo "$(abspath $<)"
 
+path-cljfmt: $(CLJFMT)
+	@echo "$(abspath $<)"
+
 path-gh: $(GH)
 	@echo "$(abspath $<)"
 

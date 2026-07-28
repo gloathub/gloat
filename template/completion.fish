@@ -28,7 +28,7 @@ complete -c gloat -l reset -d 'Remove all cached dependencies'
 complete -c gloat -l upgrade -d 'Upgrade gloat (use --upgrade=v1.2.3 to pin a version)'
 complete -c gloat -l glj-build -d 'Build the associated glj binary'
 
-complete -c gloat -s F -l fmt -d 'Format Clojure code with zprint'
+complete -c gloat -s F -l fmt -d 'Format Clojure code (GLOAT_FMT; default: zprint)'
 complete -c gloat -s C -l color -d 'Syntax highlight Clojure code'
 complete -c gloat -s w -l width -d 'Width for --fmt formatting' -x
 complete -c gloat -s r -l run -d 'Compile and run'

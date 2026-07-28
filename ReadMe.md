@@ -561,7 +561,7 @@ With `-Xserve,html`, the HTML is generated alongside the output.
 --classpath ...  Classpath for REPL load paths (e.g. . or src:test)
 
 -C, --color      Syntax highlight Clojure code
--F, --fmt        Format Clojure code w/ zprint
+-F, --fmt        Format Clojure code (GLOAT_FMT; default: zprint)
 -w, --width ...  Width for --fmt formatting
 
 --shell          Start a sub-shell or run a command (-- cmd...)
@@ -582,8 +582,9 @@ With `-Xserve,html`, the HTML is generated alongside the output.
 
 ## Formatting and Coloring Clojure Code
 
-`-F` / `--fmt` formats one Clojure input path with zprint and writes plain text
-to standard output. It reads standard input when the path is `-` or omitted:
+`-F` / `--fmt` formats one Clojure input path with zprint by default and writes
+plain text to standard output. It reads standard input when the path is `-` or
+omitted:
 
 ```bash
 gloat -F foo.clj
@@ -592,7 +593,27 @@ curl -s https://example.com/code.clj | gloat -F
 gloat -F - <(curl -s https://example.com/code.clj)
 ```
 
-Use `-w` / `--width` to set zprint's formatting width. It requires `--fmt`:
+When standard output is an interactive terminal and `less` is available,
+formatted output is displayed with `less -rFRX`. Redirected and piped output is
+written directly without invoking a pager. Set `GLOAT_CLJ_PAGER` to a complete
+pager command, or to `none` or `0` to disable automatic paging.
+
+Set `GLOAT_FMT` to use a different complete stdin-to-stdout formatter command.
+Commands beginning with `cljfmt` or `zprint` are installed automatically;
+other commands must already be on `PATH`:
+
+```bash
+GLOAT_FMT='cljfmt fix -' gloat -F foo.clj
+GLOAT_FMT='cljfmt --function-arguments-indentation zprint fix -' \
+  gloat -F foo.clj
+```
+
+cljfmt also loads `.cljfmt.edn` or `cljfmt.edn` from the current directory or
+its parents.
+
+Use `-w` / `--width` to set the default zprint formatter's width. It requires
+`--fmt` and cannot be combined with `GLOAT_FMT`; put formatter-specific options
+directly in the `GLOAT_FMT` command:
 
 ```bash
 gloat -F -w 40 foo.clj
@@ -606,8 +627,10 @@ when output is redirected or piped:
 ```bash
 gloat -C foo.clj
 gloat --color - < foo.clj
-gloat -C foo.clj | less -R
 ```
+
+Interactive color output is also displayed with `less -rFRX` when available.
+Explicit pipes and redirects bypass the automatic pager.
 
 The options can be combined in either order. Formatting always happens before
 coloring:
@@ -850,8 +873,10 @@ make repl
 |----------|-------------|
 | `GLOJURE_DIR` | Path to a local glojure checkout for development. |
 | `GLOAT_GLJDEPS` | Path to a `gljdeps.edn` file for `--repl`. Equivalent to `--deps=`. |
+| `GLOAT_FMT` | Complete stdin-to-stdout command used by `--fmt` (default: `zprint`). |
 | `GLOAT_MODULE` | Go module name for compiled output. Equivalent to `--module`. |
 | `GLOAT_NAMESPACE` | Namespace override for compiled output. Equivalent to `--ns`. |
+| `GLOAT_CLJ_PAGER` | Pager command for interactive `--fmt` and `--color` output (default: `less -rFRX`; `none` or `0` disables). |
 | `GLOAT_REPL` | Default build directory for `--repl`. Overridden by `--repl=dir`. |
 | `GLOAT_SHELL` | Preferred shell for `--shell` when the parent shell cannot be detected (default: `bash`). |
 | `GLOAT_X_PRUNE` | Set to any non-empty value to enable the `prune` extension without `-Xprune`. |

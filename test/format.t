@@ -8,12 +8,23 @@ GLOAT_BIN=$PROJECT_ROOT/bin/gloat
 SOURCE=$TMP/format.clj
 OTHER=$TMP/format.txt
 WIDE_SOURCE=$TMP/wide.clj
+CLJFMT_SOURCE=$TMP/cljfmt.clj
 
 printf '%s\n' '(defn greet[name](println "Hello,"name))' > "$SOURCE"
 cp "$SOURCE" "$OTHER"
 printf '%s\n' \
   '(defn wide-function [alpha beta gamma delta epsilon zeta eta theta] (+ alpha beta gamma delta epsilon zeta eta theta))' \
   > "$WIDE_SOURCE"
+printf '(foo\nbar)\n' > "$CLJFMT_SOURCE"
+
+LESS_BIN=$TMP/less-bin
+mkdir -p "$LESS_BIN"
+printf '%s\n' \
+  '#!/usr/bin/env bash' \
+  'printf "LESS_ARGS=<%s>\n" "$*" >&2' \
+  'cat' \
+  > "$LESS_BIN/less"
+chmod +x "$LESS_BIN/less"
 
 try "set -o pipefail; '$GLOAT_BIN' -F '$SOURCE' | cat"
 is "$rc" 0 "'gloat -F file.clj' exits 0"
@@ -25,6 +36,63 @@ short_output=$got
 try "set -o pipefail; '$GLOAT_BIN' --fmt '$SOURCE' | cat"
 is "$rc" 0 "'gloat --fmt file.clj' exits 0"
 is "$got" "$short_output" "'--fmt' matches '-F'"
+
+try "set -o pipefail; GLOAT_FMT='cljfmt fix -' \
+  '$GLOAT_BIN' -F '$CLJFMT_SOURCE' | cat"
+is "$rc" 0 "'GLOAT_FMT=cljfmt gloat -F file.clj' exits 0"
+is "$got" $'(foo\n bar)' "GLOAT_FMT selects cljfmt"
+hasnt "$got" "Reformatted STDIN" \
+  "Gloat suppresses cljfmt's routine success notice"
+
+try "set -o pipefail; \
+  GLOAT_FMT='cljfmt --function-arguments-indentation zprint fix -' \
+  '$GLOAT_BIN' -F '$CLJFMT_SOURCE' | cat"
+is "$rc" 0 "GLOAT_FMT accepts formatter-specific options"
+is "$got" $'(foo\n  bar)' "cljfmt receives options from GLOAT_FMT"
+
+printf '%s\n' '{:function-arguments-indentation :zprint}' > "$TMP/.cljfmt.edn"
+try "set -o pipefail; cd '$TMP' && GLOAT_FMT='cljfmt fix -' \
+  '$GLOAT_BIN' -F '$CLJFMT_SOURCE' | cat"
+is "$rc" 0 "cljfmt formatting with a project config exits 0"
+is "$got" $'(foo\n  bar)' "cljfmt discovers configuration from the cwd"
+
+try "set -o pipefail; printf '%s\n' '(foo)' |
+  GLOAT_FMT='tr a-z A-Z' '$GLOAT_BIN' -F | cat"
+is "$rc" 0 "GLOAT_FMT accepts an arbitrary stdin-to-stdout command"
+is "$got" "(FOO)" "Gloat runs the complete GLOAT_FMT command"
+
+try "set -o pipefail; PATH='$LESS_BIN':\$PATH \
+  '$GLOAT_BIN' -F '$SOURCE' | cat"
+is "$rc" 0 "redirected formatter output exits 0 when less is available"
+hasnt "$got" "LESS_ARGS=" "redirected formatter output does not invoke less"
+
+if script --version 2>&1 | grep -q util-linux &&
+  script -qec true /dev/null >/dev/null 2>&1
+then
+  for option in -F -C; do
+    try "PATH='$LESS_BIN':\$PATH script -qec \
+      \"'$GLOAT_BIN' $option '$SOURCE'\" /dev/null"
+    is "$rc" 0 "'gloat $option' exits 0 on an interactive terminal"
+    has "$got" "LESS_ARGS=<-rFRX>" \
+      "'gloat $option' pages interactive output with less -rFRX"
+  done
+
+  for pager in none 0; do
+    try "PATH='$LESS_BIN':\$PATH GLOAT_CLJ_PAGER=$pager script -qec \
+      \"'$GLOAT_BIN' -F '$SOURCE'\" /dev/null"
+    is "$rc" 0 "'GLOAT_CLJ_PAGER=$pager gloat -F' exits 0"
+    hasnt "$got" "LESS_ARGS=" \
+      "GLOAT_CLJ_PAGER=$pager disables paging on an interactive terminal"
+  done
+
+  try "PATH='$LESS_BIN':\$PATH GLOAT_CLJ_PAGER='less --custom' \
+    script -qec \"'$GLOAT_BIN' -F '$SOURCE'\" /dev/null"
+  is "$rc" 0 "a custom GLOAT_CLJ_PAGER command exits 0"
+  has "$got" "LESS_ARGS=<--custom>" \
+    "GLOAT_CLJ_PAGER accepts a complete pager command"
+else
+  pass "interactive less test requires an available util-linux pseudo-terminal"
+fi
 
 try "set -o pipefail; '$GLOAT_BIN' -F -w 40 '$WIDE_SOURCE' | cat"
 is "$rc" 0 "'gloat -F -w 40 file.clj' exits 0"
@@ -55,6 +123,11 @@ try "$GLOAT_BIN -C -w 40 '$SOURCE'"
 is "$rc" 1 "'gloat -C -w 40' exits 1"
 has "$got" "--width requires --fmt" \
   "'gloat -C -w 40' requires formatting"
+
+try "GLOAT_FMT='cljfmt fix -' '$GLOAT_BIN' -F -w 40 '$SOURCE'"
+is "$rc" 1 "'GLOAT_FMT=cljfmt gloat -F -w 40' exits 1"
+has "$got" "--width cannot be combined with GLOAT_FMT" \
+  "GLOAT_FMT owns formatter-specific width options"
 
 try "printf '%s\n' '(def widthless 1)' | '$GLOAT_BIN' -w40 -t clj"
 is "$rc" 1 "'gloat -w40 -t clj' exits 1"
@@ -99,6 +172,26 @@ has "$got" "(def from-stream (+ 20 22))" \
 try "set -o pipefail; printf '%s\n' '(' | '$GLOAT_BIN' -F - | cat"
 is "$rc" 1 "'gloat -F -' propagates zprint failure"
 has "$got" "Unexpected EOF" "'gloat -F -' reports malformed Clojure input"
+
+try "set -o pipefail; printf '%s\n' '(' |
+  GLOAT_FMT='cljfmt fix -' '$GLOAT_BIN' -F - | cat"
+is "$rc" 2 "'GLOAT_FMT=cljfmt gloat -F -' propagates cljfmt failure"
+has "$got" "Failed to format file: STDIN" \
+  "'GLOAT_FMT=cljfmt' preserves cljfmt diagnostics"
+
+try "set -o pipefail; GLOAT_FMT='cljfmt fix -' \
+  '$GLOAT_BIN' -FC '$SOURCE' | cat"
+is "$rc" 0 "'GLOAT_FMT=cljfmt gloat -FC file.clj' exits 0"
+has "$got" $'\033[' "'GLOAT_FMT=cljfmt gloat -FC' emits ANSI highlighting"
+plain=$(printf '%s\n' "$got" | perl -pe 's/\e\[[0-9;]*m//g')
+is "$plain" '(defn greet [name] (println "Hello," name))' \
+  "Gloat colors cljfmt output"
+
+try "set -o pipefail; printf '%s\n' '(foo)' |
+  GLOAT_FMT='definitely-not-a-formatter --flag' '$GLOAT_BIN' -F | cat"
+is "$rc" 127 "a missing GLOAT_FMT command exits 127"
+has "$got" "definitely-not-a-formatter: not found" \
+  "the shell reports a missing GLOAT_FMT command"
 
 try "set -o pipefail; '$GLOAT_BIN' -C '$SOURCE' | cat"
 is "$rc" 0 "'gloat -C file.clj | cat' exits 0"
@@ -187,6 +280,7 @@ is "$got" "-FC" "short-option clusters after -- are preserved"
 try "$GLOAT_BIN -h"
 is "$rc" 129 "'gloat -h' exits 129"
 has "$got" "-F, --fmt" "'gloat -h' lists the fmt option"
+has "$got" "GLOAT_FMT" "'gloat -h' describes the formatter override"
 has "$got" "-C, --color" "'gloat -h' lists the color option"
 has "$got" "-w, --width" "'gloat -h' lists the width option"
 has "$got" "--engines" "'gloat -h' lists the engines option"

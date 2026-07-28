@@ -85,7 +85,7 @@ deps=         Path to gljdeps.edn (Go module deps; AOT or REPL)
 classpath=    Classpath for REPL load paths (e.g. . or src:test)
 
 C,color       Syntax highlight Clojure code
-F,fmt         Format Clojure code w/ zprint
+F,fmt         Format Clojure code (GLOAT_FMT; default: zprint)
 w,width=num   Width for --fmt formatting
 
 shell         Start a sub-shell or run a command (-- cmd...)
@@ -290,10 +290,10 @@ normalize-short-args() {
 
 # Handle --fmt / --color
 do-code-filter() {
-  local arg input zprint filter_name width=
+  local arg input formatter_cmd formatter_kind='' filter_name width=
+  local formatter_path=
   local -a args=("$@")
   local -a inputs=()
-  local -a zprint_args=()
   local past_dashdash=
   local i
 
@@ -342,7 +342,9 @@ do-code-filter() {
       die "Error: --width requires --fmt"
     [[ $width =~ ^[1-9][0-9]*$ ]] ||
       die "Error: --width must be a positive integer"
-    zprint_args=("{:width $width}")
+    [[ -z ${GLOAT_FMT-} ]] ||
+      die "Error: --width cannot be combined with GLOAT_FMT;" \
+          "set the formatter's width in GLOAT_FMT instead"
   fi
 
   if [[ $input != - ]]; then
@@ -355,36 +357,95 @@ do-code-filter() {
   fi
 
   if [[ $opt_fmt ]]; then
-    zprint=$(find-local-exe "$root/.cache/local/bin" zprint)
-    if [[ -z $zprint ]]; then
-      zprint=$(install-managed-command zprint)
+    formatter_cmd=${GLOAT_FMT:-zprint}
+    case $formatter_cmd in
+      cljfmt|cljfmt[[:space:]]*) formatter_kind=cljfmt ;;
+      zprint|zprint[[:space:]]*) formatter_kind=zprint ;;
+    esac
+
+    if [[ $formatter_kind ]]; then
+      case $formatter_kind in
+        cljfmt)
+          formatter_path=$(
+            find-local-exe "$root/.cache/local" 'cljfmt-*/bin/cljfmt')
+          ;;
+        zprint)
+          formatter_path=$(
+            find-local-exe "$root/.cache/local/bin" zprint)
+          ;;
+      esac
+      if [[ -z $formatter_path ]]; then
+        formatter_path=$(install-managed-command "$formatter_kind")
+      fi
+      [[ -x $formatter_path ]] ||
+        die "Error: could not install $formatter_kind"
+      path-prepend "$(dirname "$formatter_path")"
+      export PATH
     fi
-    [[ -x $zprint ]] ||
-      die "Error: could not install zprint"
+
+    if [[ $width ]]; then
+      formatter_cmd+=" '{:width $width}'"
+    fi
   fi
 
   if [[ $opt_fmt && $opt_color ]]; then
     if [[ $input == - ]]; then
-      "$zprint" "${zprint_args[@]}" | glj --color
+      run-formatter "$formatter_kind" "$formatter_cmd" |
+        glj --color |
+        page-code-output
     else
-      "$zprint" "${zprint_args[@]}" < "$input" | glj --color
+      run-formatter "$formatter_kind" "$formatter_cmd" < "$input" |
+        glj --color |
+        page-code-output
     fi
     exit
   fi
 
   if [[ $opt_color ]]; then
     if [[ $input == - ]]; then
-      exec glj --color
+      glj --color | page-code-output
     else
-      exec glj --color < "$input"
+      glj --color < "$input" | page-code-output
     fi
+    exit
   fi
 
   if [[ $input == - ]]; then
-    exec "$zprint" "${zprint_args[@]}"
+    run-formatter "$formatter_kind" "$formatter_cmd" |
+      page-code-output
   else
-    exec "$zprint" "${zprint_args[@]}" < "$input"
+    run-formatter "$formatter_kind" "$formatter_cmd" < "$input" |
+      page-code-output
   fi
+  exit
+}
+
+run-formatter() {
+  local formatter_kind=$1 formatter_cmd=$2
+  if [[ $formatter_kind == cljfmt ]]; then
+    sh -c "$formatter_cmd" \
+      2> >(sed '/^Reformatted STDIN$/d' >&2)
+  else
+    sh -c "$formatter_cmd"
+  fi
+}
+
+page-code-output() {
+  local pager=${GLOAT_CLJ_PAGER:-less -rFRX}
+
+  if [[ ! -t 1 || $pager == none || $pager == 0 ]]; then
+    cat
+    return
+  fi
+
+  if [[ $pager == 'less -rFRX' ]] &&
+    ! command -v less >/dev/null 2>&1
+  then
+    cat
+    return
+  fi
+
+  sh -c "$pager"
 }
 
 # Handle --shell-all / --shell

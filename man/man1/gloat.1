@@ -597,7 +597,7 @@ With \fB-Xserve,html\fR, the HTML is generated alongside the output.
 --classpath ...  Classpath for REPL load paths (e.g. . or src:test)
 
 -C, --color      Syntax highlight Clojure code
--F, --fmt        Format Clojure code w/ zprint
+-F, --fmt        Format Clojure code (GLOAT_FMT; default: zprint)
 -w, --width ...  Width for --fmt formatting
 
 --shell          Start a sub-shell or run a command (-- cmd...)
@@ -617,8 +617,9 @@ With \fB-Xserve,html\fR, the HTML is generated alongside the output.
 .EE
 
 .SH Formatting and Coloring Clojure Code
-\fB-F\fR / \fB--fmt\fR formats one Clojure input path with zprint and writes plain text
-to standard output. It reads standard input when the path is \fB-\fR or omitted:
+\fB-F\fR / \fB--fmt\fR formats one Clojure input path with zprint by default and writes
+plain text to standard output. It reads standard input when the path is \fB-\fR or
+omitted:
 
 .EX
 gloat -F foo.clj
@@ -628,7 +629,30 @@ gloat -F - <(curl -s https://example.com/code.clj)
 .EE
 
 .PP
-Use \fB-w\fR / \fB--width\fR to set zprint's formatting width. It requires \fB--fmt\fR:
+When standard output is an interactive terminal and \fBless\fR is available,
+formatted output is displayed with \fBless -rFRX\fR\&. Redirected and piped output is
+written directly without invoking a pager. Set \fBGLOAT_CLJ_PAGER\fR to a complete
+pager command, or to \fBnone\fR or \fB0\fR to disable automatic paging.
+
+.PP
+Set \fBGLOAT_FMT\fR to use a different complete stdin-to-stdout formatter command.
+Commands beginning with \fBcljfmt\fR or \fBzprint\fR are installed automatically;
+other commands must already be on \fBPATH\fR:
+
+.EX
+GLOAT_FMT='cljfmt fix -' gloat -F foo.clj
+GLOAT_FMT='cljfmt --function-arguments-indentation zprint fix -' \\
+  gloat -F foo.clj
+.EE
+
+.PP
+cljfmt also loads \fB\&.cljfmt.edn\fR or \fBcljfmt.edn\fR from the current directory or
+its parents.
+
+.PP
+Use \fB-w\fR / \fB--width\fR to set the default zprint formatter's width. It requires
+\fB--fmt\fR and cannot be combined with \fBGLOAT_FMT\fR; put formatter-specific options
+directly in the \fBGLOAT_FMT\fR command:
 
 .EX
 gloat -F -w 40 foo.clj
@@ -643,8 +667,11 @@ when output is redirected or piped:
 .EX
 gloat -C foo.clj
 gloat --color - < foo.clj
-gloat -C foo.clj | less -R
 .EE
+
+.PP
+Interactive color output is also displayed with \fBless -rFRX\fR when available.
+Explicit pipes and redirects bypass the automatic pager.
 
 .PP
 The options can be combined in either order. Formatting always happens before
@@ -895,12 +922,16 @@ l l .
 Path to a local glojure checkout for development.
 T}
 \fBGLOAT_GLJDEPS\fR	Path to a \fBgljdeps.edn\fR file for \fB--repl\fR\&. Equivalent to \fB--deps=\fR\&.
+\fBGLOAT_FMT\fR	T{
+Complete stdin-to-stdout command used by \fB--fmt\fR (default: \fBzprint\fR).
+T}
 \fBGLOAT_MODULE\fR	T{
 Go module name for compiled output. Equivalent to \fB--module\fR\&.
 T}
 \fBGLOAT_NAMESPACE\fR	T{
 Namespace override for compiled output. Equivalent to \fB--ns\fR\&.
 T}
+\fBGLOAT_CLJ_PAGER\fR	Pager command for interactive \fB--fmt\fR and \fB--color\fR output (default: \fBless -rFRX\fR; \fBnone\fR or \fB0\fR disables).
 \fBGLOAT_REPL\fR	Default build directory for \fB--repl\fR\&. Overridden by \fB--repl=dir\fR\&.
 \fBGLOAT_SHELL\fR	Preferred shell for \fB--shell\fR when the parent shell cannot be detected (default: \fBbash\fR).
 \fBGLOAT_X_PRUNE\fR	T{

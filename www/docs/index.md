@@ -103,12 +103,13 @@ gloat code.clj -t glj  # See generated Glojure
 gloat code.clj -t go   # See generated Go
 
 # Format and syntax highlight Clojure
-gloat -F code.clj              # Format with zprint
-gloat -C code.clj | less -R    # Syntax highlight with ANSI colors
-gloat -FCw40 code.clj | less -R # Format at width 40, then highlight
+gloat -F code.clj              # Format with zprint (default)
+GLOAT_FMT='cljfmt fix -' gloat -F code.clj
+gloat -C code.clj              # Syntax highlight with ANSI colors
+gloat -FCw40 code.clj          # Format at width 40, then highlight
 
 # Source input defaults to stdin when omitted
-cat code.clj | gloat -FC | less -R
+cat code.clj | gloat -FC
 
 # Create a Go build directory
 gloat code.clj -o code/

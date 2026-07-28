@@ -63,7 +63,7 @@ _gloat() {
         '(- *)--reset[Remove all cached dependencies]' \
         '(- *)--upgrade[Upgrade gloat (use --upgrade=v1.2.3 to pin a version)]' \
         '(- *)--glj-build[Build the associated glj binary]' \
-        '(-F --fmt)'{-F,--fmt}'[Format Clojure code with zprint]' \
+        '(-F --fmt)'{-F,--fmt}'[Format Clojure code (GLOAT_FMT; default: zprint)]' \
         '(-C --color)'{-C,--color}'[Syntax highlight Clojure code]' \
         '(-w --width)'{-w,--width}'[Width for --fmt formatting]:width:' \
         '(-r --run)'{-r,--run}'[Compile and run]' \

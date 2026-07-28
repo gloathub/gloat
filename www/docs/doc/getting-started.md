@@ -92,19 +92,39 @@ gloat code.ys -t go
 
 ### Format and Syntax Highlight Clojure
 
-Use `-F` / `--fmt` to format Clojure with zprint. Formatting writes plain text
-to standard output:
+Use `-F` / `--fmt` to format Clojure with zprint by default. Formatting writes
+plain text to standard output:
 
 ```bash
 gloat -F code.clj
 cat code.clj | gloat --fmt
 ```
 
-Use `-w` / `--width` to set zprint's formatting width. It requires `--fmt`:
+When standard output is an interactive terminal and `less` is available,
+formatted output is displayed with `less -rFRX`. Redirected and piped output is
+written directly without invoking a pager. Set `GLOAT_CLJ_PAGER` to a complete
+pager command, or to `none` or `0` to disable automatic paging.
+
+Set `GLOAT_FMT` to use a different complete stdin-to-stdout formatter command.
+Commands beginning with `cljfmt` or `zprint` are installed automatically;
+other commands must already be on `PATH`:
+
+```bash
+GLOAT_FMT='cljfmt fix -' gloat -F code.clj
+GLOAT_FMT='cljfmt --function-arguments-indentation zprint fix -' \
+  gloat -F code.clj
+```
+
+cljfmt also loads `.cljfmt.edn` or `cljfmt.edn` from the current directory or
+its parents.
+
+Use `-w` / `--width` to set the default zprint formatter's width. It requires
+`--fmt` and cannot be combined with `GLOAT_FMT`; put formatter-specific options
+directly in the `GLOAT_FMT` command:
 
 ```bash
 gloat -F -w 40 code.clj
-gloat -FCw40 code.clj | less -R
+gloat -FCw40 code.clj
 ```
 
 Use `-C` / `--color` for the Glojure REPL's ANSI syntax colors and rainbow
@@ -113,14 +133,17 @@ redirected:
 
 ```bash
 gloat -C code.clj
-gloat --color code.clj | less -R
+gloat --color code.clj
 ```
+
+Interactive color output is also displayed with `less -rFRX` when available.
+Explicit pipes and redirects bypass the automatic pager.
 
 Combine the options in either order to format first and then color:
 
 ```bash
-gloat -FC code.clj | less -R
-cat code.clj | gloat --color --fmt | less -R
+gloat -FC code.clj
+cat code.clj | gloat --color --fmt
 ```
 
 
@@ -369,7 +392,7 @@ Press Ctrl-D or type `exit` to return to your normal shell.
 --classpath ...  Classpath for REPL load paths (e.g. . or src:test)
 
 -C, --color      Syntax highlight Clojure code
--F, --fmt        Format Clojure code w/ zprint
+-F, --fmt        Format Clojure code (GLOAT_FMT; default: zprint)
 -w, --width ...  Width for --fmt formatting
 
 --shell          Start a sub-shell or run a command (-- cmd...)

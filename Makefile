@@ -8,6 +8,7 @@ include common/common.mk
 
 include $M/graalvm.mk
 include $M/babashka.mk
+include $M/cljfmt.mk
 include $M/gh.mk
 include $M/git.mk
 include $M/glojure.mk
@@ -151,7 +152,7 @@ ifneq (,$(filter test/shellcheck.t,$(tests)))
 TEST-DEPS += $(SHELLCHECK)
 endif
 ifneq (,$(filter test/format.t,$(tests)))
-TEST-DEPS += $(PATH-DEPS) $(WASMTIME) $(ZPRINT)
+TEST-DEPS += $(PATH-DEPS) $(WASMTIME) $(CLJFMT) $(ZPRINT)
 endif
 ifneq (,$(filter %-bb.t %-bin.t,$(tests)))
 TEST-DEPS += $(TEST-CALL)

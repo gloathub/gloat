@@ -5,7 +5,8 @@
        class="mascot-caption">Read all about me!</a>
   </div>
   <p class="hero-subtitle">
-    Gloat compiles Clojure & YAMLScript to Go code, native binaries and Wasm
+    Gloat (cross-)compiles Clojure code to Go code, native binaries and shared
+    libraries for 25 platforms including WebAssembly
   </p>
 </div>
 
@@ -13,16 +14,14 @@
 ## The Compilation Pipeline
 
 <div class="pipeline">
-  <code>.ys</code> <span class="arrow">→</span>
-  <code>.clj</code> <span class="arrow">→</span>
-  <code>.glj</code> <span class="arrow">→</span>
-  <code>.go</code> <span class="arrow">→</span>
-  <code>binary/wasm</code>
+  <code>foo.clj</code> <span class="arrow">→</span>
+  <code>foo.go</code> <span class="arrow">→</span>
+  <code>foo / foo.so / foo.wasm</code>
 </div>
 
-Gloat takes your **Clojure** or **YAMLScript** source code and compiles it
-through multiple stages to produce standalone executables, WebAssembly modules,
-or shared libraries; for 20+ OS/Architecture combinations.
+Gloat takes your **Clojure** source code and compiles it through multiple stages
+to produce standalone executables, WebAssembly modules, or shared libraries;
+for 20+ OS/Architecture combinations.
 
 Each intermediate format can be output for inspection or further processing.
 
@@ -34,8 +33,7 @@ Each intermediate format can be output for inspection or further processing.
     <span class="feature-icon">🚀</span>
     <h3 class="feature-title">Zero Dependencies</h3>
     <p class="feature-desc">
-      All tools (Go, Glojure, YAMLScript, Babashka, etc) auto-install on first
-      use.
+      All tools (Go, Glojure, Babashka, etc) auto-install on first use.
       No manual setup required.
     </p>
   </div>
@@ -92,18 +90,17 @@ Each intermediate format can be output for inspection or further processing.
 
 ```bash
 # Compile to native binary
-gloat hello.ys
+gloat hello.clj
 
 # Cross-compile for Windows
 gloat app.clj -o app.exe -p windows/amd64
 
 # Create WebAssembly module
-gloat program.ys -o program.wasm
+gloat program.clj -o program.wasm
 
 # Output intermediate formats
-gloat code.ys -t clj   # See generated Clojure
-gloat code.ys -t glj   # See generated Glojure
-gloat code.ys -t go    # See generated Go
+gloat code.clj -t glj  # See generated Glojure
+gloat code.clj -t go   # See generated Go
 
 # Format and syntax highlight Clojure
 gloat -F code.clj              # Format with zprint
@@ -114,14 +111,14 @@ gloat -FCw40 code.clj | less -R # Format at width 40, then highlight
 cat code.clj | gloat -FC | less -R
 
 # Create a Go build directory
-gloat code.ys -o code/
+gloat code.clj -o code/
 make -C code/ build     # Compile to binary
 ```
 
 
 ## Get Started
 
-Ready to compile your Clojure or YAMLScript code?
+Ready to compile your Clojure code?
 
 <div class="hero-cta">
   <a href="demo/" class="cta-button cta-primary">Try the Demo</a>

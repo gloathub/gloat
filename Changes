@@ -1,3 +1,9 @@
+- version: 0.1.67
+  date:    Tue Jul 28 03:08:55 PM EDT 2026
+  changes:
+  - Add configurable Clojure formatting and paging
+  - Add GraalVM binary engine
+
 - version: 0.1.66
   date:    Mon Jul 27 09:42:23 PM EDT 2026
   changes:

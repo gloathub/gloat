@@ -66,7 +66,7 @@ formats       List available output formats
 ns=           Override namespace
 module=       Go module name (e.g., github.com/user/project)
 
-E,engine=     Compilation engine: glj, lgvm, lglvm, or lgl (default: glj)
+E,engine=     Compilation engine: glj, graalvm, lgvm, lglvm, or lgl (default: glj)
 engines       List available compilation engines
 
 platform=     Cross-compile (e.g., linux/amd64; see --platforms)

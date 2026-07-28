@@ -76,6 +76,8 @@ has "$got" "Available compilation engines" \
   "'gloat --engines' prints its heading"
 has "$got" "glj     Glojure (default)" \
   "'gloat --engines' lists glj"
+has "$got" "graalvm GraalVM Native Image (binaries only)" \
+  "'gloat --engines' lists graalvm"
 has "$got" "lgvm    let-go bytecode VM" \
   "'gloat --engines' lists lgvm"
 has "$got" "lglvm   let-go native lowering with VM fallback" \
@@ -86,7 +88,7 @@ has "$got" "lgl     let-go native lowering (not yet implemented)" \
 try "$GLOAT_BIN -Efoo x.clj"
 is "$rc" 1 "'gloat -Efoo' exits 1"
 has "$got" "Unknown engine 'foo'" "'gloat -Efoo' reports unknown engine"
-has "$got" "glojure (glj), let-go-lower (lgl), let-go-lower-vm (lglvm), let-go-vm (lgvm)" "'gloat -Efoo' lists known engines"
+has "$got" "glojure (glj), graalvm, let-go-lower (lgl), let-go-lower-vm (lglvm), let-go-vm (lgvm)" "'gloat -Efoo' lists known engines"
 
 try "GLOAT_ENGINE=foo $GLOAT_BIN -t clj x.clj"
 is "$rc" 1 "'GLOAT_ENGINE=foo gloat' exits 1"
@@ -106,6 +108,45 @@ try "GLOAT_ENGINE=lgvm $GLOAT_BIN -o x.so x.clj"
 is "$rc" 1 "'GLOAT_ENGINE=lgvm gloat -o x.so' validates input"
 has "$got" "Input file/directory does not exist: x.clj" \
   "'GLOAT_ENGINE=lgvm' accepts lib inferred from -o"
+
+# GraalVM engine validation (binary-only, self-contained Clojure)
+try "$GLOAT_BIN -Egraalvm -t lib x.clj"
+is "$rc" 1 "'gloat -Egraalvm -t lib' exits 1"
+has "$got" "does not support format 'lib' (supported: bin)" \
+  "'gloat -Egraalvm' reports its supported format"
+
+try "$GLOAT_BIN -Egraalvm --platform=linux/amd64 x.clj"
+is "$rc" 1 "'gloat -Egraalvm --platform' exits 1"
+has "$got" "does not support --platform" \
+  "'gloat -Egraalvm' rejects cross-compilation"
+
+try "$GLOAT_BIN -Egraalvm --module=example.com/app x.clj"
+is "$rc" 1 "'gloat -Egraalvm --module' exits 1"
+has "$got" "does not support --module" \
+  "'gloat -Egraalvm' rejects Go module configuration"
+
+try "$GLOAT_BIN -Egraalvm -Xprune x.clj"
+is "$rc" 1 "'gloat -Egraalvm -Xprune' exits 1"
+has "$got" "does not support -X/--ext" \
+  "'gloat -Egraalvm' rejects Go processing extensions"
+
+printf '{:deps {}}\n' > "$TMP/gljdeps.edn"
+try "$GLOAT_BIN -Egraalvm --deps=$TMP/gljdeps.edn x.clj"
+is "$rc" 1 "'gloat -Egraalvm --deps' exits 1"
+has "$got" "does not support gljdeps.edn" \
+  "'gloat -Egraalvm' rejects Go dependency configuration"
+
+try "$GLOAT_BIN -Egraalvm -o $TMP/graal-ys $FIXTURES_DIR/hello.ys"
+is "$rc" 1 "'gloat -Egraalvm hello.ys' exits 1"
+has "$got" "only supports Clojure (.clj) input" \
+  "'gloat -Egraalvm' rejects YAMLScript input"
+
+printf '(defn -main [] (println \"missing namespace\"))\n' \
+  > "$TMP/graal-no-ns.clj"
+try "$GLOAT_BIN -Egraalvm -o $TMP/graal-no-ns $TMP/graal-no-ns.clj"
+is "$rc" 1 "'gloat -Egraalvm' rejects namespace-free files"
+has "$got" "requires every source file to declare an (ns ...) form" \
+  "'gloat -Egraalvm' explains its namespace requirement"
 
 # lg output format (-t lg implies the lg engine)
 lg_bin=$("$GLOAT_BIN" --which=lg | tail -1)

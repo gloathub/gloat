@@ -16,6 +16,12 @@ path-glojure: $(GLOJURE-DIR)
 path-go: $(GO)
 	@echo "$(abspath $<)"
 
+path-graalvm: $(GRAALVM)
+	@echo "$(abspath $<)"
+
+path-lein: $(LEIN)
+	@echo "$(abspath $<)"
+
 path-lg: lg-ensure
 	@echo "$(abspath $(LG))"
 

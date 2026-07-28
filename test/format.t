@@ -201,6 +201,7 @@ for shell in bash zsh fish; do
     has "$got" "-l engines" "$shell completion includes --engines"
     has "$got" "-l engine" "$shell completion includes --engine"
     has "$got" "-l time" "$shell completion includes --time"
+    has "$got" "graalvm" "$shell completion includes graalvm"
   else
     has "$got" "--fmt" "$shell completion includes --fmt"
     has "$got" "--color" "$shell completion includes --color"
@@ -208,6 +209,7 @@ for shell in bash zsh fish; do
     has "$got" "--engines" "$shell completion includes --engines"
     has "$got" "--engine" "$shell completion includes --engine"
     has "$got" "--time" "$shell completion includes --time"
+    has "$got" "graalvm" "$shell completion includes graalvm"
   fi
 done
 

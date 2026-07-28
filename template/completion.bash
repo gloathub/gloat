@@ -14,7 +14,7 @@ _gloat() {
           --glj-build"
 
     formats="clj bb lg glj go dir bin lib wasm js"
-    engines="glj lgvm lglvm lgl"
+    engines="glj graalvm lgvm lglvm lgl"
     platforms="linux/amd64 linux/arm64 linux/386 linux/arm
                 linux/ppc64le linux/s390x linux/riscv64 linux/mips64le
                 darwin/amd64 darwin/arm64

@@ -321,6 +321,20 @@ set with `-t`.
 Use `-E` / `--engine` to select a compilation engine. Run `gloat --engines`
 to list the available engines and implementation status.
 
+The `graalvm` engine compiles self-contained, namespaced Clojure programs to
+host-native executables with GraalVM Native Image:
+
+```bash
+gloat --engine=graalvm app.clj
+gloat -Egraalvm app.clj -o app
+gloat -Egraalvm --run app.clj -- arg1 arg2
+```
+
+GraalVM and Leiningen are installed in Gloat's local cache the first time this
+engine is used. This initial implementation supports Clojure binary output
+only. It does not support YAMLScript, shared libraries, cross-compilation,
+`gljdeps.edn`, Go modules, or `-X` processing extensions.
+
 
 ## Directory Output
 
@@ -528,7 +542,7 @@ With `-Xserve,html`, the HTML is generated alongside the output.
 --ns ...         Override namespace
 --module ...     Go module name (e.g., github.com/user/project)
 
--E, --engine ... Compilation engine: glj, lgvm, lglvm, or lgl (default: glj)
+-E, --engine ... Compilation engine: glj, graalvm, lgvm, lglvm, or lgl (default: glj)
 --engines        List available compilation engines
 
 --platform ...   Cross-compile (e.g., linux/amd64; see --platforms)

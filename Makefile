@@ -6,6 +6,7 @@ include $M/init.mk
 
 include common/common.mk
 
+include $M/graalvm.mk
 include $M/babashka.mk
 include $M/gh.mk
 include $M/git.mk

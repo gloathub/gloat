@@ -266,7 +266,7 @@
       (edn/read-string (:out result)))))
 
 (def known-engines
-  #{"glojure" "let-go-vm" "let-go-lower-vm" "let-go-lower"})
+  #{"glojure" "graalvm" "let-go-vm" "let-go-lower-vm" "let-go-lower"})
 
 (def engine-aliases {"glj"   "glojure"
                      "lgvm"  "let-go-vm"
@@ -282,6 +282,9 @@
 ;; format emits the lowered Go source. let-go-lower (planned) will
 ;; prune the VM out entirely: pure lowered Go, no trampoline.
 (def LG-engine-formats #{"LG" "bin" "lib"})
+
+;; GraalVM Native Image currently builds host-native Clojure executables.
+(def graal-engine-formats #{"bin"})
 
 (defn resolve-engine [opts]
   (let [engine (or (:engine opts)
@@ -684,9 +687,12 @@ Format can usually be inferred from -o extension:
     (println "Available compilation engines (use with -E/--engine):
 
   glj     Glojure (default)
+
   lgvm    let-go bytecode VM
   lglvm   let-go native lowering with VM fallback
-  lgl     let-go native lowering (not yet implemented)")
+  lgl     let-go native lowering (not yet implemented)
+
+  graalvm GraalVM Native Image (binaries only)")
     (System/exit 0)))
 
 (defn do-extensions []
@@ -1732,6 +1738,158 @@ Less common:
         (fs/delete-tree tmpdir)))))
 
 ;;------------------------------------------------------------------------------
+;; GraalVM Engine
+;;------------------------------------------------------------------------------
+
+(defn find-managed-tool
+  "Return a managed executable, installing it through a focused Make target
+  when it is not present yet."
+  [tool-key make-target label]
+  (let [tool (get make-vars tool-key)]
+    (if (and tool (fs/executable? tool))
+      tool
+      (let [result (process/shell {:out :string :err :string
+                                   :continue true
+                                   :dir GLOAT-ROOT}
+                                  "make" "--quiet" "--no-print-directory"
+                                  make-target)
+            path (->> (str/split-lines (str (:out result)))
+                      (remove str/blank?)
+                      last)]
+        (when-not (and (zero? (:exit result))
+                       path (fs/executable? path))
+          (die (str "Failed to install " label ":\n"
+                    (:out result) (:err result))))
+        path))))
+
+(defn graal-main-function
+  "Return the CLI entry function defined by a Clojure source string."
+  [content]
+  (cond
+    (re-find #"\(defn\s+-main\b" content) "-main"
+    (re-find #"\(defn\s+main\b" content) "main"
+    :else nil))
+
+(defn graal-ns-path [namespace]
+  (-> namespace
+      (str/replace "." "/")
+      (str/replace "-" "_")))
+
+(defn convert-files-graal-bin
+  "AOT compile namespaced Clojure sources to an uberjar, then build a
+  host-native executable with GraalVM Native Image."
+  [input-files output namespace]
+  (let [tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))
+        src-dir (str tmpdir "/src")
+        wrapper-dir (str src-dir "/gloat/graal")
+        seen-nses (atom #{})
+        entries (atom [])]
+    (try
+      (fs/create-dirs wrapper-dir)
+
+      (doseq [input input-files]
+        (let [input (str input)
+              input-type (get-file-type input)]
+          (when-not (= "clj" input-type)
+            (die "Engine 'graalvm' only supports Clojure (.clj) input"
+                 " (got " input ")"))
+          (let [content (slurp input)
+                source-ns (parse-namespace input)]
+            (when-not source-ns
+              (die "Engine 'graalvm' requires every source file to declare"
+                   " an (ns ...) form: " input))
+            (when (contains? @seen-nses source-ns)
+              (die "Engine 'graalvm' received duplicate namespace: "
+                   source-ns))
+            (swap! seen-nses conj source-ns)
+            (when-let [main-fn (graal-main-function content)]
+              (swap! entries conj {:namespace source-ns
+                                   :function main-fn
+                                   :input input}))
+            (let [target (str src-dir "/" (graal-ns-path source-ns) ".clj")]
+              (fs/create-dirs (fs/parent target))
+              (fs/copy input target {:replace-existing true})))))
+
+      (when (empty? @entries)
+        (die "Engine 'graalvm' requires a (defn -main ...) or"
+             " (defn main ...) entry point"))
+
+      (let [{entry-ns :namespace entry-fn :function} (first @entries)]
+        (when (and namespace (not= namespace entry-ns))
+          (die "--ns=" namespace " does not match GraalVM entry namespace "
+               entry-ns))
+
+        (spit (str wrapper-dir "/main.clj")
+              (-> (slurp (str TEMPLATE "/graal-main.clj"))
+                  (str/replace "ENTRY-NAMESPACE" entry-ns)
+                  (str/replace "ENTRY-FUNCTION" entry-fn)))
+        (spit (str tmpdir "/project.clj")
+              (-> (slurp (str TEMPLATE "/graal-project.clj"))
+                  (str/replace "CLOJURE-VERSION"
+                               (:GRAAL-CLOJURE-VERSION make-vars))))
+
+        (let [native-image (find-managed-tool
+                            :GRAALVM "path-graalvm" "GraalVM")
+              lein (find-managed-tool :LEIN "path-lein" "Leiningen")
+              graal-home (str (fs/parent (fs/parent native-image)))
+              local-home (:LOCAL-HOME make-vars)
+              build-env {"JAVA_HOME" graal-home
+                         "LEIN_HOME" local-home
+                         "LEIN_JVM_OPTS"
+                         (str "-Duser.home=" local-home
+                              " -Dclojure.compiler.direct-linking=true"
+                              " -Dclojure.spec.skip-macros=true")}
+              io-opts (if (:quiet *opts*)
+                        {:out :string :err :string}
+                        {:out :inherit :err :inherit})]
+          (msg "Compiling Clojure classes with Leiningen...")
+          (timer-start)
+          (let [result (process/shell
+                        (merge {:continue true :dir tmpdir
+                                :extra-env build-env}
+                               io-opts)
+                        lein "uberjar")]
+            (when-not (zero? (:exit result))
+              (die (str "lein uberjar failed"
+                        (when (:quiet *opts*)
+                          (str ":\n" (:out result) (:err result)))))))
+          (timer-end "CLJ→JAR")
+
+          (let [jar (str tmpdir "/target/gloat-graal.jar")
+                out (str (fs/absolutize output))]
+            (when-not (fs/exists? jar)
+              (die "lein uberjar did not produce " jar))
+            (msg "Building native binary with GraalVM...")
+            (timer-start)
+            (let [result
+                  (apply process/shell
+                         (merge {:continue true :dir tmpdir
+                                 :extra-env build-env}
+                                io-opts)
+                         [native-image
+                          "-O1"
+                          "--no-fallback"
+                          "--initialize-at-build-time"
+                          "--initialize-at-run-time=clojure.lang.Compiler"
+                          "-march=compatibility"
+                          "-H:+ReportExceptionStackTraces"
+                          "-J-Dclojure.spec.skip-macros=true"
+                          "-J-Dclojure.compiler.direct-linking=true"
+                          "-J-Xmx3g"
+                          "-jar" jar
+                          "-o" out])]
+              (when-not (zero? (:exit result))
+                (die (str "native-image failed"
+                          (when (:quiet *opts*)
+                            (str ":\n" (:out result) (:err result)))))))
+            (timer-end "JAR→BIN")
+            (when-not (fs/exists? out)
+              (die "native-image did not produce " out))
+            (msg "Generated:" output))))
+      (finally
+        (fs/delete-tree tmpdir)))))
+
+;;------------------------------------------------------------------------------
 ;; High-Level Orchestrators
 ;;------------------------------------------------------------------------------
 
@@ -2549,6 +2707,25 @@ Less common:
       (die "Engine 'let-go-lower-vm' does not yet support format '" format-guess "'"
            " (supported: " (str/join ", " (sort LG-engine-formats)) ")"))
 
+    (when (and (= "graalvm" engine)
+               (not (contains? graal-engine-formats format-guess)))
+      (die "Engine 'graalvm' does not support format '" format-guess "'"
+           " (supported: bin)"))
+
+    (when (= "graalvm" engine)
+      (when platform
+        (die "Engine 'graalvm' does not support --platform;"
+             " native-image builds for the host platform"))
+      (when module
+        (die "Engine 'graalvm' does not support --module"
+             " (it is a Go module option)"))
+      (when (seq (:ext opts))
+        (die "Engine 'graalvm' does not support -X/--ext processing"
+             " extensions"))
+      (when (resolve-deps-file)
+        (die "Engine 'graalvm' does not support gljdeps.edn;"
+             " only self-contained Clojure sources are supported")))
+
     (when (and (:time opts) (not run))
       (die "--time requires --run"))
 
@@ -2583,13 +2760,19 @@ Less common:
               (die "Output already exists: " output
                    " (use --force to overwrite)")))
           (binding [*opts* (assoc opts :engine engine)]
-            (if (and (= format "lib")
-                     (contains? #{"let-go-vm" "let-go-lower-vm"} engine))
+            (cond
+              (= engine "graalvm")
+              (convert-files-graal-bin files output namespace)
+
+              (and (= format "lib")
+                   (contains? #{"let-go-vm" "let-go-lower-vm"} engine))
               (convert-files-lg-lib
-               files output namespace module platform
-               (= engine "let-go-lower-vm"))
+                files output namespace module platform
+                (= engine "let-go-lower-vm"))
+
+              :else
               (convert-files
-               files output format namespace module platform)))
+                files output format namespace module platform)))
           (System/exit 0)))
 
       ;; Validate input
@@ -2739,42 +2922,60 @@ Less common:
               (die "Format '" format "' requires -o output"))
 
             (fs/regular-file? (:input opts))
-            (if (and (= format "lib")
-                     (contains? #{"let-go-vm" "let-go-lower-vm"}
-                                (:engine opts)))
+            (cond
+              (= (:engine opts) "graalvm")
+              (convert-files-graal-bin
+                [(:input opts)]
+                (:output opts)
+                (:namespace opts))
+
+              (and (= format "lib")
+                   (contains? #{"let-go-vm" "let-go-lower-vm"}
+                              (:engine opts)))
               (convert-files-lg-lib
-               [(:input opts)]
-               (:output opts)
-               (:namespace opts)
-               (:module opts)
-               (:platform opts)
-               (= (:engine opts) "let-go-lower-vm"))
+                [(:input opts)]
+                (:output opts)
+                (:namespace opts)
+                (:module opts)
+                (:platform opts)
+                (= (:engine opts) "let-go-lower-vm"))
+
+              :else
               (convert-file
-               (:input opts)
-               (:output opts)
-               format
-               (:namespace opts)
-               (:module opts)
-               (:platform opts)))
+                (:input opts)
+                (:output opts)
+                format
+                (:namespace opts)
+                (:module opts)
+                (:platform opts)))
 
             (fs/directory? (:input opts))
-            (if (and (= format "lib")
-                     (contains? #{"let-go-vm" "let-go-lower-vm"}
-                                (:engine opts)))
+            (cond
+              (= (:engine opts) "graalvm")
+              (convert-files-graal-bin
+                (expand-dir-args [(:input opts)])
+                (:output opts)
+                (:namespace opts))
+
+              (and (= format "lib")
+                   (contains? #{"let-go-vm" "let-go-lower-vm"}
+                              (:engine opts)))
               (convert-files-lg-lib
-               (expand-dir-args [(:input opts)])
-               (:output opts)
-               (:namespace opts)
-               (:module opts)
-               (:platform opts)
-               (= (:engine opts) "let-go-lower-vm"))
+                (expand-dir-args [(:input opts)])
+                (:output opts)
+                (:namespace opts)
+                (:module opts)
+                (:platform opts)
+                (= (:engine opts) "let-go-lower-vm"))
+
+              :else
               (convert-directory
-               (:input opts)
-               (:output opts)
-               format
-               (:namespace opts)
-               (:module opts)
-               (:platform opts)))
+                (:input opts)
+                (:output opts)
+                format
+                (:namespace opts)
+                (:module opts)
+                (:platform opts)))
 
             (= (:input opts) "-")
             (let [content (slurp *in*)
@@ -2785,23 +2986,32 @@ Less common:
                             content)
                   tmpfile (str (fs/create-temp-file {:dir GLOAT-TMP :suffix suffix}))]
               (spit tmpfile content)
-              (if (and (= format "lib")
-                       (contains? #{"let-go-vm" "let-go-lower-vm"}
-                                  (:engine opts)))
+              (cond
+                (= (:engine opts) "graalvm")
+                (convert-files-graal-bin
+                  [tmpfile]
+                  (:output opts)
+                  (:namespace opts))
+
+                (and (= format "lib")
+                     (contains? #{"let-go-vm" "let-go-lower-vm"}
+                                (:engine opts)))
                 (convert-files-lg-lib
-                 [tmpfile]
-                 (:output opts)
-                 (:namespace opts)
-                 (:module opts)
-                 (:platform opts)
-                 (= (:engine opts) "let-go-lower-vm"))
+                  [tmpfile]
+                  (:output opts)
+                  (:namespace opts)
+                  (:module opts)
+                  (:platform opts)
+                  (= (:engine opts) "let-go-lower-vm"))
+
+                :else
                 (convert-file
-                 tmpfile
-                 (:output opts)
-                 format
-                 (:namespace opts)
-                 (:module opts)
-                 (:platform opts)))
+                  tmpfile
+                  (:output opts)
+                  format
+                  (:namespace opts)
+                  (:module opts)
+                  (:platform opts)))
               (fs/delete tmpfile))
 
             :else

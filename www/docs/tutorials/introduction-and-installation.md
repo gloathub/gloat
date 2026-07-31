@@ -7,10 +7,11 @@ working on your machine.
 
 By the end you'll have a working `gloat` command and know where it put
 everything.
+The next tutorial puts it to work.
 
-**Time**: about 10 minutes, most of it waiting on the first dependency install.
+**Time**: about 10 minutes
 
-**You'll need**: a Unix-like shell (Linux, macOS, WSL), `git`, and `curl`.
+**You'll need**: a Unix-like shell (Linux, macOS, WSL)
 
 
 ## What Gloat Is
@@ -123,8 +124,3 @@ See [the installation page](../doc/gloat-install.md) for full details.
 
 You have a working toolchain.
 Time to compile something.
-
-- [Getting Started](../doc/getting-started.md) - the condensed reference for
-  every command-line option.
-- [Examples](../examples.md) - 50+ working programs in Clojure and YAMLScript.
-- [Demo](../demo.md) - compile and run programs in your browser.

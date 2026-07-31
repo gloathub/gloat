@@ -11,6 +11,8 @@ If you just want the reference material instead, see the
 
 ## Start Here
 
+Work through these in order.
+
 <div class="features">
   <a href="introduction-and-installation/" class="feature-card tutorial-card">
     <span class="feature-icon">🐐</span>
@@ -21,6 +23,28 @@ If you just want the reference material instead, see the
       to keep it current.
     </p>
   </a>
+
+  <div class="feature-card tutorial-card tutorial-card--planned">
+    <span class="feature-icon">🚀</span>
+    <h3 class="feature-title">2. Compiling Your First Clojure Binary</h3>
+    <p class="feature-desc">
+      Write a Clojure program and take it all the way to a self-contained
+      native executable - then to another platform, and into the browser.
+    </p>
+  </div>
+  <!-- When compiling-your-first-clojure-binary.md lands, replace the div
+       above with this and delete the commented block:
+
+  <a href="compiling-your-first-clojure-binary/"
+     class="feature-card tutorial-card">
+    <span class="feature-icon">🚀</span>
+    <h3 class="feature-title">2. Compiling Your First Clojure Binary</h3>
+    <p class="feature-desc">
+      Write a Clojure program and take it all the way to a self-contained
+      native executable - then to another platform, and into the browser.
+    </p>
+  </a>
+  -->
 </div>
 
 
@@ -32,15 +56,6 @@ If one of these is what you need next, say so in an
 sooner.
 
 <div class="features">
-  <div class="feature-card tutorial-card tutorial-card--planned">
-    <span class="feature-icon">🚀</span>
-    <h3 class="feature-title">Your First Gloat Program</h3>
-    <p class="feature-desc">
-      Write a Clojure program, run it, compile it to a native binary,
-      cross-compile it, and ship it to the browser as WebAssembly.
-    </p>
-  </div>
-
   <div class="feature-card tutorial-card tutorial-card--planned">
     <span class="feature-icon">🔌</span>
     <h3 class="feature-title">Calling Go Libraries</h3>

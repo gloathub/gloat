@@ -658,3 +658,45 @@ body:has(#demo-intro) .md-tabs {
     justify-content: flex-start;
   }
 }
+
+
+/* Tutorials index cards */
+.tutorial-card {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.tutorial-card:hover {
+  color: inherit;
+}
+
+.tutorial-card .feature-title {
+  margin-top: 0;
+}
+
+/* Planned tutorials: visible but clearly not yet clickable */
+.tutorial-card--planned {
+  opacity: 0.6;
+  border-style: dashed;
+}
+
+.tutorial-card--planned:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-color: var(--gl-code-border);
+}
+
+.tutorial-card--planned .feature-title::after {
+  content: "planned";
+  font-size: 0.65em;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  vertical-align: middle;
+  margin-left: 0.6em;
+  padding: 0.15em 0.5em;
+  border-radius: 999px;
+  border: 1px solid var(--gl-code-border);
+  color: var(--gl-green);
+}

@@ -19,3 +19,5 @@ same content as the web page.
 
 New to Gloat?
 The [home page](../index.md) and the [Demo](../demo.md) are the best starting points.
+For a step-by-step walkthrough instead of reference material, start with
+[Introduction and Installation](../tutorials/introduction-and-installation.md).

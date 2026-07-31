@@ -65,6 +65,9 @@ nav:
     - Go Interop: doc/gloat-go-interop.md
     - Java Interop: doc/gloat-java-interop.md
     - Tutorial: doc/gloat-tutorial.md
+  - Tutorials:
+    - tutorials/index.md
+    - Introduction and Installation: tutorials/introduction-and-installation.md
   - Examples: examples.md
   - Blog: blog/index.md
   - Projects:

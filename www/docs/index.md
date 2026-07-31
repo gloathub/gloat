@@ -123,6 +123,7 @@ Ready to compile your Clojure code?
 
 <div class="hero-cta">
   <a href="demo/" class="cta-button cta-primary">Try the Demo</a>
+  <a href="tutorials/introduction-and-installation/" class="cta-button cta-secondary">Start the Tutorial</a>
   <a href="doc/getting-started/" class="cta-button cta-secondary">Installation Guide</a>
   <a href="examples/" class="cta-button cta-secondary">See Examples</a>
 </div>

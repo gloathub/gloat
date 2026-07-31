@@ -414,6 +414,8 @@ Press Ctrl-D or type `exit` to return to your normal shell.
 
 ## Next Steps
 
+- [Tutorials](../tutorials/index.md) - Step-by-step walkthroughs, starting with
+  [Introduction and Installation](../tutorials/introduction-and-installation.md)
 - [Try the Demo](../demo.md) - Interactive browser-based demo
 - [Browse Examples](../examples.md) - See what you can build
 - [GitHub Repository](https://github.com/gloathub/gloat) - Source and

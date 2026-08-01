@@ -1484,6 +1484,7 @@ Less common:
                                       :continue true :dir build-dir
                                       :extra-env build-env}
                                      go-bin "build"
+                                     "-trimpath"
                                      "-ldflags" "-s -w"
                                      "-o" out "."))))]
             (spit (str build-dir "/go.mod") go-mod)
@@ -1702,7 +1703,7 @@ Less common:
                      {:out :string :err :string
                       :continue true :dir build-dir
                       :extra-env build-env}
-                     go-bin "build" "-ldflags" "-s -w"
+                     go-bin "build" "-trimpath" "-ldflags" "-s -w"
                      "-buildmode=c-shared" "-o" out "main.go"))))]
           (spit (str build-dir "/go.mod") go-mod)
           (msg "Building lib...")
@@ -2516,6 +2517,7 @@ Less common:
                         (str/join "," (aot-build-tags))
                         build-args
                         (concat [go-bin "build"
+                                 "-trimpath"
                                  "-ldflags" "-s -w"
                                  "-o" binary-name]
                                 (when (seq build-tags)
@@ -2587,6 +2589,7 @@ Less common:
                               (str/join "," (aot-build-tags))
                               unstripped-args
                               (concat [go-bin "build"
+                                       "-trimpath"
                                        "-o" unstripped-name]
                                       (when (seq a-build-tags)
                                         ["-tags" a-build-tags])

@@ -8,6 +8,7 @@ gloat-vars: $(PATH-DEPS)
 	@echo '  :GO "$(abspath $(GO))"'
 	@echo '  :GRAALVM "$(abspath $(GRAALVM))"'
 	@echo '  :GRAAL-CLOJURE-VERSION "$(GRAAL-CLOJURE-VERSION)"'
+	@echo '  :JOLT "$(abspath $(JOLT))"'
 	@echo '  :LG "$(abspath $(LG))"'
 	@echo '  :LEIN "$(abspath $(LEIN))"'
 	@echo '  :LET-GO-SRC "$(if $(wildcard $(LET-GO-SRC)),$(abspath $(LET-GO-SRC)),)"'

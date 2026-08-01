@@ -337,6 +337,30 @@ Use \fB-E\fR / \fB--engine\fR to select a compilation engine. Run \fBgloat --eng
 to list the available engines and implementation status.
 
 .PP
+The \fBjolt\fR engine compiles namespaced Clojure programs to host-native
+executables with Jolt:
+
+.EX
+gloat --engine=jolt app.clj
+gloat -Ejolt app.clj -o app
+gloat -Ejolt --run app.clj -- arg1 arg2
+gloat -Ejolt -Xprune project/ -o app
+.EE
+
+.PP
+Jolt is installed in Gloat's local cache the first time this engine is used.
+For directory input, Jolt resolves the directory's \fBdeps.edn\fR; file and stdin
+input use the current directory as the project root. Explicit input sources
+take precedence over the project's normal source paths. Sources must contain
+exactly one \fB-main\fR namespace, or \fB--ns\fR must select one when there are several.
+\fB-Xprune\fR enables Jolt's whole-program tree shaking.
+
+.PP
+This initial implementation supports Clojure binary output only. It does not
+support YAMLScript, shared libraries, cross-compilation, \fBgljdeps.edn\fR, Go
+modules, or other \fB-X\fR processing extensions.
+
+.PP
 The \fBgraalvm\fR engine compiles self-contained, namespaced Clojure programs to
 host-native executables with GraalVM Native Image:
 
@@ -578,7 +602,7 @@ With \fB-Xserve,html\fR, the HTML is generated alongside the output.
 --ns ...         Override namespace
 --module ...     Go module name (e.g., github.com/user/project)
 
--E, --engine ... Compilation engine: glj, graalvm, lgvm, lglvm, or lgl (default: glj)
+-E, --engine ... Compilation engine: glj, graalvm, jolt, lgvm, lglvm, or lgl (default: glj)
 --engines        List available compilation engines
 
 --platform ...   Cross-compile (e.g., linux/amd64; see --platforms)

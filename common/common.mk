@@ -12,6 +12,12 @@ LIBYS-VERSION := $(YAMLSCRIPT-VERSION)
 
 GRAAL-CLOJURE-VERSION := 1.12.0
 
+JOLT-VERSION := 0.5.14
+
+# Jolt v0.5.14 publishes an Intel macOS binary, but the current Makes
+# platform table predates that asset.
+OA-macos-int64 := x86_64-macos
+
 # GLJ currently requires Go 1.24.0
 GO-VERSION := 1.24.0
 

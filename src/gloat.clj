@@ -266,7 +266,8 @@
       (edn/read-string (:out result)))))
 
 (def known-engines
-  #{"glojure" "graalvm" "let-go-vm" "let-go-lower-vm" "let-go-lower"})
+  #{"glojure" "graalvm" "jolt"
+    "let-go-vm" "let-go-lower-vm" "let-go-lower"})
 
 (def engine-aliases {"glj"   "glojure"
                      "lgvm"  "let-go-vm"
@@ -285,6 +286,9 @@
 
 ;; GraalVM Native Image currently builds host-native Clojure executables.
 (def graal-engine-formats #{"bin"})
+
+;; Jolt currently builds host-native Clojure executables.
+(def jolt-engine-formats #{"bin"})
 
 (defn resolve-engine [opts]
   (let [engine (or (:engine opts)
@@ -687,6 +691,8 @@ Format can usually be inferred from -o extension:
     (println "Available compilation engines (use with -E/--engine):
 
   glj     Glojure (default)
+
+  jolt    Jolt (binaries only)
 
   lgvm    let-go bytecode VM
   lglvm   let-go native lowering with VM fallback
@@ -1891,6 +1897,105 @@ Less common:
         (fs/delete-tree tmpdir)))))
 
 ;;------------------------------------------------------------------------------
+;; Jolt Engine
+;;------------------------------------------------------------------------------
+
+(defn jolt-main? [content]
+  (boolean (re-find #"\(defn\s+-main\b" content)))
+
+(defn convert-files-jolt-bin
+  "Build namespaced Clojure sources as a host-native executable with Jolt.
+  PROJECT-ROOT supplies deps.edn; staged command-line sources take precedence
+  over the project's ordinary source roots."
+  [input-files output namespace project-root]
+  (let [tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))
+        src-dir (str tmpdir "/src")
+        build-dir (str tmpdir "/build")
+        build-out (str build-dir "/" (fs/file-name output))
+        seen-nses (atom #{})
+        entries (atom [])]
+    (try
+      (fs/create-dirs src-dir)
+      (fs/create-dirs build-dir)
+
+      (doseq [input input-files]
+        (let [input (str input)
+              input-type (get-file-type input)]
+          (when-not (= "clj" input-type)
+            (die "Engine 'jolt' only supports Clojure (.clj) input"
+                 " (got " input ")"))
+          (let [content (slurp input)
+                source-ns (parse-namespace input)]
+            (when-not source-ns
+              (die "Engine 'jolt' requires every source file to declare"
+                   " an (ns ...) form: " input))
+            (when (contains? @seen-nses source-ns)
+              (die "Engine 'jolt' received duplicate namespace: " source-ns))
+            (swap! seen-nses conj source-ns)
+            (when (jolt-main? content)
+              (swap! entries conj {:namespace source-ns :input input}))
+            (let [target (str src-dir "/" (graal-ns-path source-ns) ".clj")]
+              (fs/create-dirs (fs/parent target))
+              (fs/copy input target {:replace-existing true})))))
+
+      (let [entry
+            (if namespace
+              (or (some #(when (= namespace (:namespace %)) %) @entries)
+                  (if (contains? @seen-nses namespace)
+                    (die "Engine 'jolt' entry namespace " namespace
+                         " does not define -main")
+                    (die "--ns=" namespace
+                         " does not match a Jolt input namespace")))
+              (case (count @entries)
+                0 (die "Engine 'jolt' requires a (defn -main ...) entry point")
+                1 (first @entries)
+                (die "Engine 'jolt' received multiple -main namespaces: "
+                     (str/join ", " (map :namespace @entries))
+                     " (select one with --ns)")))
+            entry-ns (:namespace entry)
+            project-root (str (fs/canonicalize project-root))
+            source-alias (pr-str
+                           {:aliases
+                            {:gloat/jolt-engine
+                             {:extra-paths [src-dir]}}})
+            jolt (find-managed-tool :JOLT "path-jolt" "Jolt")
+            local-home (:LOCAL-HOME make-vars)
+            jolt-cache (str local-home "/jolt/aot-cache")
+            jolt-runtime-cache (str local-home "/jolt/runtime-cache")
+            out (str (fs/absolutize output))
+            args (cond-> [jolt
+                          "-Sdeps" source-alias
+                          "-A:gloat/jolt-engine"
+                          "build" "-m" entry-ns "-o" build-out]
+                   (prune?) (conj "--tree-shake"))
+            io-opts (if (:quiet *opts*)
+                      {:out :string :err :string}
+                      {:out :inherit :err :inherit})]
+        (msg "Building native binary with Jolt...")
+        (timer-start)
+        (let [result (apply process/shell
+                            (merge {:continue true
+                                    :extra-env
+                                    {"JOLT_PWD" project-root
+                                     "JOLT_CACHE_DIR" jolt-cache
+                                     "JOLT_RUNTIME_CACHE_DIR"
+                                     jolt-runtime-cache}}
+                                   io-opts)
+                            args)]
+          (when-not (zero? (:exit result))
+            (die (str "jolt build failed"
+                      (when (:quiet *opts*)
+                        (str ":\n" (:out result) (:err result)))))))
+        (timer-end "CLJ→BIN")
+        (when-not (fs/exists? build-out)
+          (die "jolt build did not produce " build-out))
+        (fs/copy build-out out
+                 {:replace-existing true :copy-attributes true})
+        (msg "Generated:" output))
+      (finally
+        (fs/delete-tree tmpdir)))))
+
+;;------------------------------------------------------------------------------
 ;; High-Level Orchestrators
 ;;------------------------------------------------------------------------------
 
@@ -2715,6 +2820,11 @@ Less common:
       (die "Engine 'graalvm' does not support format '" format-guess "'"
            " (supported: bin)"))
 
+    (when (and (= "jolt" engine)
+               (not (contains? jolt-engine-formats format-guess)))
+      (die "Engine 'jolt' does not support format '" format-guess "'"
+           " (supported: bin)"))
+
     (when (= "graalvm" engine)
       (when platform
         (die "Engine 'graalvm' does not support --platform;"
@@ -2728,6 +2838,23 @@ Less common:
       (when (resolve-deps-file)
         (die "Engine 'graalvm' does not support gljdeps.edn;"
              " only self-contained Clojure sources are supported")))
+
+    (when (= "jolt" engine)
+      (when platform
+        (die "Engine 'jolt' does not support --platform;"
+             " jolt builds for the host platform"))
+      (when module
+        (die "Engine 'jolt' does not support --module"
+             " (Jolt projects use deps.edn)"))
+      (let [unsupported (remove #{"prune"}
+                                (keys (parse-extensions
+                                       (or (:ext opts) []))))]
+        (when (seq unsupported)
+          (die "Engine 'jolt' only supports -Xprune"
+               " (unsupported: " (str/join ", " (sort unsupported)) ")")))
+      (when (resolve-deps-file)
+        (die "Engine 'jolt' does not support gljdeps.edn;"
+             " use deps.edn for Jolt dependencies")))
 
     (when (and (:time opts) (not run))
       (die "--time requires --run"))
@@ -2766,6 +2893,10 @@ Less common:
             (cond
               (= engine "graalvm")
               (convert-files-graal-bin files output namespace)
+
+              (= engine "jolt")
+              (convert-files-jolt-bin
+                files output namespace (fs/cwd))
 
               (and (= format "lib")
                    (contains? #{"let-go-vm" "let-go-lower-vm"} engine))
@@ -2932,6 +3063,13 @@ Less common:
                 (:output opts)
                 (:namespace opts))
 
+              (= (:engine opts) "jolt")
+              (convert-files-jolt-bin
+                [(:input opts)]
+                (:output opts)
+                (:namespace opts)
+                (fs/cwd))
+
               (and (= format "lib")
                    (contains? #{"let-go-vm" "let-go-lower-vm"}
                               (:engine opts)))
@@ -2959,6 +3097,13 @@ Less common:
                 (expand-dir-args [(:input opts)])
                 (:output opts)
                 (:namespace opts))
+
+              (= (:engine opts) "jolt")
+              (convert-files-jolt-bin
+                (expand-dir-args [(:input opts)])
+                (:output opts)
+                (:namespace opts)
+                (:input opts))
 
               (and (= format "lib")
                    (contains? #{"let-go-vm" "let-go-lower-vm"}
@@ -2995,6 +3140,13 @@ Less common:
                   [tmpfile]
                   (:output opts)
                   (:namespace opts))
+
+                (= (:engine opts) "jolt")
+                (convert-files-jolt-bin
+                  [tmpfile]
+                  (:output opts)
+                  (:namespace opts)
+                  (fs/cwd))
 
                 (and (= format "lib")
                      (contains? #{"let-go-vm" "let-go-lower-vm"}

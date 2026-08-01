@@ -321,6 +321,27 @@ set with `-t`.
 Use `-E` / `--engine` to select a compilation engine. Run `gloat --engines`
 to list the available engines and implementation status.
 
+The `jolt` engine compiles namespaced Clojure programs to host-native
+executables with Jolt:
+
+```bash
+gloat --engine=jolt app.clj
+gloat -Ejolt app.clj -o app
+gloat -Ejolt --run app.clj -- arg1 arg2
+gloat -Ejolt -Xprune project/ -o app
+```
+
+Jolt is installed in Gloat's local cache the first time this engine is used.
+For directory input, Jolt resolves the directory's `deps.edn`; file and stdin
+input use the current directory as the project root. Explicit input sources
+take precedence over the project's normal source paths. Sources must contain
+exactly one `-main` namespace, or `--ns` must select one when there are several.
+`-Xprune` enables Jolt's whole-program tree shaking.
+
+This initial implementation supports Clojure binary output only. It does not
+support YAMLScript, shared libraries, cross-compilation, `gljdeps.edn`, Go
+modules, or other `-X` processing extensions.
+
 The `graalvm` engine compiles self-contained, namespaced Clojure programs to
 host-native executables with GraalVM Native Image:
 
@@ -542,7 +563,7 @@ With `-Xserve,html`, the HTML is generated alongside the output.
 --ns ...         Override namespace
 --module ...     Go module name (e.g., github.com/user/project)
 
--E, --engine ... Compilation engine: glj, graalvm, lgvm, lglvm, or lgl (default: glj)
+-E, --engine ... Compilation engine: glj, graalvm, jolt, lgvm, lglvm, or lgl (default: glj)
 --engines        List available compilation engines
 
 --platform ...   Cross-compile (e.g., linux/amd64; see --platforms)

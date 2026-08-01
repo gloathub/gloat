@@ -18,7 +18,7 @@ if [[ -d $GLOAT_ROOT/.cache/local ]]; then
   source <(gloat --complete bash)
 fi
 
-# Dev support in Bash for local glojure, go-readline, gojava, and jolt
+# Dev support in Bash for local glojure, go-readline, and gojava
 if [[ -d $GLOAT_GIT_DIR/../glojure ]]; then
   GLOJURE_DIR=$(cd "$GLOAT_GIT_DIR/../glojure" && pwd -P)
   export GLOJURE_DIR
@@ -30,11 +30,6 @@ fi
 if [[ -d $GLOAT_GIT_DIR/../gojava ]]; then
   GOJAVA_DIR=$(cd "$GLOAT_GIT_DIR/../gojava" && pwd -P)
   export GOJAVA_DIR
-fi
-if [[ -x $GLOAT_GIT_DIR/../jolt/bin/joltc ]]; then
-  GLOAT_JOLT=$(cd "$GLOAT_GIT_DIR/../jolt/bin" && pwd -P)/joltc
-  PATH=$(dirname "$GLOAT_JOLT"):$PATH
-  export GLOAT_JOLT PATH
 fi
 if [[ $(basename "$(dirname "$GLOAT_ROOT")") == worktree && \
       $(basename "$(dirname "$(dirname "$GLOAT_ROOT")")") == gloat ]]; then

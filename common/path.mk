@@ -25,6 +25,9 @@ path-graalvm: $(GRAALVM)
 path-lein: $(LEIN)
 	@echo "$(abspath $<)"
 
+path-jolt: $(JOLT)
+	@echo "$(abspath $<)"
+
 path-lg: lg-ensure
 	@echo "$(abspath $(LG))"
 

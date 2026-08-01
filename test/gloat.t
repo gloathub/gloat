@@ -78,6 +78,8 @@ has "$got" "glj     Glojure (default)" \
   "'gloat --engines' lists glj"
 has "$got" "graalvm GraalVM Native Image (binaries only)" \
   "'gloat --engines' lists graalvm"
+has "$got" "jolt    Jolt (binaries only)" \
+  "'gloat --engines' lists jolt"
 has "$got" "lgvm    let-go bytecode VM" \
   "'gloat --engines' lists lgvm"
 has "$got" "lglvm   let-go native lowering with VM fallback" \
@@ -88,7 +90,7 @@ has "$got" "lgl     let-go native lowering (not yet implemented)" \
 try "$GLOAT_BIN -Efoo x.clj"
 is "$rc" 1 "'gloat -Efoo' exits 1"
 has "$got" "Unknown engine 'foo'" "'gloat -Efoo' reports unknown engine"
-has "$got" "glojure (glj), graalvm, let-go-lower (lgl), let-go-lower-vm (lglvm), let-go-vm (lgvm)" "'gloat -Efoo' lists known engines"
+has "$got" "glojure (glj), graalvm, jolt, let-go-lower (lgl), let-go-lower-vm (lglvm), let-go-vm (lgvm)" "'gloat -Efoo' lists known engines"
 
 try "GLOAT_ENGINE=foo $GLOAT_BIN -t clj x.clj"
 is "$rc" 1 "'GLOAT_ENGINE=foo gloat' exits 1"
@@ -147,6 +149,109 @@ try "$GLOAT_BIN -Egraalvm -o $TMP/graal-no-ns $TMP/graal-no-ns.clj"
 is "$rc" 1 "'gloat -Egraalvm' rejects namespace-free files"
 has "$got" "requires every source file to declare an (ns ...) form" \
   "'gloat -Egraalvm' explains its namespace requirement"
+
+# Jolt engine validation (binary-only, project-aware Clojure)
+try "$GLOAT_BIN -Ejolt -t lib x.clj"
+is "$rc" 1 "'gloat -Ejolt -t lib' exits 1"
+has "$got" "does not support format 'lib' (supported: bin)" \
+  "'gloat -Ejolt' reports its supported format"
+
+try "$GLOAT_BIN -Ejolt --platform=linux/amd64 x.clj"
+is "$rc" 1 "'gloat -Ejolt --platform' exits 1"
+has "$got" "does not support --platform" \
+  "'gloat -Ejolt' rejects cross-compilation"
+
+try "$GLOAT_BIN -Ejolt --module=example.com/app x.clj"
+is "$rc" 1 "'gloat -Ejolt --module' exits 1"
+has "$got" "does not support --module" \
+  "'gloat -Ejolt' rejects Go module configuration"
+
+try "$GLOAT_BIN -Ejolt -Xgzip x.clj"
+is "$rc" 1 "'gloat -Ejolt -Xgzip' exits 1"
+has "$got" "only supports -Xprune" \
+  "'gloat -Ejolt' rejects non-prune extensions"
+
+try "$GLOAT_BIN -Ejolt --deps=$TMP/gljdeps.edn x.clj"
+is "$rc" 1 "'gloat -Ejolt --deps' exits 1"
+has "$got" "use deps.edn for Jolt dependencies" \
+  "'gloat -Ejolt' rejects Glojure dependency configuration"
+
+try "$GLOAT_BIN -Ejolt -o $TMP/jolt-ys $FIXTURES_DIR/hello.ys"
+is "$rc" 1 "'gloat -Ejolt hello.ys' exits 1"
+has "$got" "only supports Clojure (.clj) input" \
+  "'gloat -Ejolt' rejects YAMLScript input"
+
+printf '(defn -main [] (println "missing namespace"))\n' \
+  > "$TMP/jolt-no-ns.clj"
+try "$GLOAT_BIN -Ejolt -o $TMP/jolt-no-ns $TMP/jolt-no-ns.clj"
+is "$rc" 1 "'gloat -Ejolt' rejects namespace-free files"
+has "$got" "requires every source file to declare an (ns ...) form" \
+  "'gloat -Ejolt' explains its namespace requirement"
+
+printf '%s\n' '(ns jolt.no-main)' '(def answer 42)' \
+  > "$TMP/jolt-no-main.clj"
+try "$GLOAT_BIN -Ejolt -o $TMP/jolt-no-main $TMP/jolt-no-main.clj"
+is "$rc" 1 "'gloat -Ejolt' rejects a source without -main"
+has "$got" "requires a (defn -main ...) entry point" \
+  "'gloat -Ejolt' explains its entry-point requirement"
+
+JOLT_MOCK=$TMP/jolt-mock
+JOLT_LOG=$TMP/jolt.log
+cat > "$JOLT_MOCK" <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+printf 'JOLT_PWD=%s\n' "${JOLT_PWD-}" > "$JOLT_LOG"
+printf 'JOLT_CACHE_DIR=%s\n' "${JOLT_CACHE_DIR-}" >> "$JOLT_LOG"
+printf 'JOLT_RUNTIME_CACHE_DIR=%s\n' "${JOLT_RUNTIME_CACHE_DIR-}" >> "$JOLT_LOG"
+printf 'ARG=%s\n' "$@" >> "$JOLT_LOG"
+out=
+while (($#)); do
+  if [[ $1 == -o ]]; then
+    out=$2
+    break
+  fi
+  shift
+done
+[[ $out ]]
+printf '#!/usr/bin/env bash\nprintf "mock jolt\\n"\n' > "$out"
+chmod +x "$out"
+EOF
+chmod +x "$JOLT_MOCK"
+export JOLT_LOG
+
+JOLT_PROJECT=$TMP/jolt-project
+mkdir -p "$JOLT_PROJECT/src/multi"
+cp "$FIXTURES_DIR/multi-main.clj" "$JOLT_PROJECT/src/multi/app.clj"
+cp "$FIXTURES_DIR/multi-helper.clj" "$JOLT_PROJECT/src/multi/helper.clj"
+printf '{:paths ["src"]}\n' > "$JOLT_PROJECT/deps.edn"
+
+cat > "$JOLT_PROJECT/src/multi/other.clj" <<'EOF'
+(ns multi.other)
+
+(defn -main [& _]
+  (println "other"))
+EOF
+
+try "GLOAT_JOLT=$JOLT_MOCK $GLOAT_BIN -q -Ejolt -o $TMP/jolt-many $JOLT_PROJECT"
+is "$rc" 1 "'gloat -Ejolt' rejects ambiguous -main namespaces"
+has "$got" "received multiple -main namespaces" \
+  "'gloat -Ejolt' asks the user to select an entry namespace"
+
+try "GLOAT_JOLT=$JOLT_MOCK $GLOAT_BIN -q -Ejolt --ns=multi.app -Xprune -o $TMP/jolt-app $JOLT_PROJECT"
+is "$rc" 0 "'gloat -Ejolt' accepts a deps.edn project directory"
+ok "$([[ -x $TMP/jolt-app ]])" \
+  "'gloat -Ejolt' preserves executable output permissions"
+has "$(< "$JOLT_LOG")" "JOLT_PWD=$JOLT_PROJECT" \
+  "'gloat -Ejolt' uses the input directory as Jolt's project root"
+has "$(< "$JOLT_LOG")" \
+  "JOLT_CACHE_DIR=$PROJECT_ROOT/.cache/local/home/jolt/aot-cache" \
+  "'gloat -Ejolt' keeps Jolt's compiler cache under Gloat's cache"
+has "$(< "$JOLT_LOG")" "ARG=-A:gloat/jolt-engine" \
+  "'gloat -Ejolt' adds its staged source alias"
+has "$(< "$JOLT_LOG")" "ARG=multi.app" \
+  "'gloat -Ejolt' selects the -main namespace"
+has "$(< "$JOLT_LOG")" "ARG=--tree-shake" \
+  "'gloat -Ejolt -Xprune' enables Jolt tree shaking"
 
 # lg output format (-t lg implies the lg engine)
 lg_bin=$("$GLOAT_BIN" --which=lg | tail -1)

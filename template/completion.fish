@@ -9,7 +9,7 @@ complete -c gloat -l platforms -d 'List available cross-compilation platforms'
 
 complete -c gloat -s t -l to -d 'Output format' -x -a 'clj bb lg glj go dir bin lib wasm js'
 complete -c gloat -s o -l out -d 'Output file or directory' -r
-complete -c gloat -s E -l engine -d 'Compilation engine' -x -a 'glj graalvm lgvm lglvm lgl'
+complete -c gloat -s E -l engine -d 'Compilation engine' -x -a 'glj graalvm jolt lgvm lglvm lgl'
 complete -c gloat -l platform -d 'Cross-compile' -x -a 'linux/amd64 linux/arm64 linux/386 linux/arm linux/ppc64le linux/s390x linux/riscv64 linux/mips64le darwin/amd64 darwin/arm64 windows/amd64 windows/arm64 windows/arm windows/386 freebsd/amd64 freebsd/arm64 freebsd/386 openbsd/amd64 openbsd/arm64 netbsd/amd64 netbsd/arm64 dragonfly/amd64 plan9/amd64 plan9/386 plan9/arm wasip1/wasm js/wasm'
 complete -c gloat -s X -l ext -d 'Enable processing extension' -x -a 'brotli deps goimports gzip html open prune report serve'
 complete -c gloat -l ns -d 'Override namespace' -x

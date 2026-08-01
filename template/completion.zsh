@@ -17,6 +17,7 @@ _gloat() {
     engines=(
         'glj:Glojure'
         'graalvm:GraalVM Native Image'
+        'jolt:Jolt native compiler'
         'lgvm:let-go VM'
         'lglvm:let-go lower VM'
         'lgl:let-go lower'

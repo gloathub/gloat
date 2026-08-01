@@ -24,17 +24,6 @@ Work through these in order.
     </p>
   </a>
 
-  <div class="feature-card tutorial-card tutorial-card--planned">
-    <span class="feature-icon">🚀</span>
-    <h3 class="feature-title">2. Compiling Your First Clojure Binary</h3>
-    <p class="feature-desc">
-      Write a Clojure program and take it all the way to a self-contained
-      native executable - then to another platform, and into the browser.
-    </p>
-  </div>
-  <!-- When compiling-your-first-clojure-binary.md lands, replace the div
-       above with this and delete the commented block:
-
   <a href="compiling-your-first-clojure-binary/"
      class="feature-card tutorial-card">
     <span class="feature-icon">🚀</span>
@@ -44,7 +33,6 @@ Work through these in order.
       native executable - then to another platform, and into the browser.
     </p>
   </a>
-  -->
 </div>
 
 

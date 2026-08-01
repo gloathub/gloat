@@ -68,8 +68,7 @@ nav:
   - Tutorials:
     - tutorials/index.md
     - Introduction and Installation: tutorials/introduction-and-installation.md
-    # Uncomment when the file lands:
-    # - Compiling Your First Clojure Binary: tutorials/compiling-your-first-clojure-binary.md
+    - Compiling Your First Clojure Binary: tutorials/compiling-your-first-clojure-binary.md
   - Examples: examples.md
   - Blog: blog/index.md
   - Projects:

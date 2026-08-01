@@ -1,3 +1,8 @@
+- version: 0.1.69
+  date:    Sat Aug  1 03:10:26 PM EDT 2026
+  changes:
+  - Add Jolt binary engine
+
 - version: 0.1.68
   date:    Sat Aug  1 11:23:11 AM EDT 2026
   changes:

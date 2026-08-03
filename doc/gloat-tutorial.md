@@ -346,7 +346,7 @@ compiled binaries.
 M := .cache/makes
 $(shell [ -d $M ] || git clone -q https://github.com/makeplus/makes $M)
 
-VERSION := 0.1.69
+VERSION := 0.1.70
 FILE := gist
 GLOAT-RELEASE-WITH-GO-DIRECTORY := 1
 

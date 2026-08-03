@@ -247,8 +247,10 @@ func LoadNS() {
 			v2 := p0
 			_ = v2
 			tmp3 := aotExternalFn1(v2)
-			tmp4 := aotExternalFn0(tmp3, nil)
-			return tmp4
+			tmp4 := reflect.TypeOf((*lang.Atom)(nil))
+			tmp5 := lang.NewClass(tmp4, "clojure.lang.Atom")
+			tmp6 := aotExternalFn0(tmp3, tmp5)
+			return tmp6
 		})
 		aotDirectFn0 = tmp1
 		var_yamlscript_DOT_common_atom_QMARK_ = ns.InternWithValue(tmp0, tmp1, true)

@@ -568,6 +568,9 @@ func LoadNS() {
 	{ // refer vars from clojure.core
 		srcNS := lang.FindOrCreateNamespace(sym_clojure_DOT_core)
 		ns.ReferAllSnapshot(srcNS, []string{
+			"*loaded-libs*",
+			"*loading-verbosely*",
+			"*pending-paths*",
 			"-protocols",
 			">0?",
 			">1?",
@@ -2345,7 +2348,7 @@ func LoadNS() {
 		})
 		var_ys_DOT_dwim_dwim = ns.InternWithValue(tmp0, tmp1, true)
 		var_ys_DOT_dwim_dwim.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMapUniqueKeys(kw_private, true, kw_file, "ys/dwim.glj", kw_line, int(45), kw_column, int(11), kw_end_DASH_line, int(45), kw_end_DASH_column, int(24), kw_arglists, lang.NewList(lang.NewVector(sym_type, sym_idfn, sym_name)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_dwim), kw_macro, true)
+			return lang.NewMapUniqueKeys(kw_file, "ys/dwim.glj", kw_line, int(45), kw_column, int(11), kw_end_DASH_line, int(45), kw_end_DASH_column, int(24), kw_private, true, kw_arglists, lang.NewList(lang.NewVector(sym_type, sym_idfn, sym_name)), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_dwim), kw_macro, true)
 		})
 	}
 }

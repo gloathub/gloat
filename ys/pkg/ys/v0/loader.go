@@ -995,6 +995,9 @@ func LoadNS() {
 	{ // refer vars from clojure.core
 		srcNS := lang.FindOrCreateNamespace(sym_clojure_DOT_core)
 		ns.ReferAllSnapshot(srcNS, []string{
+			"*loaded-libs*",
+			"*loading-verbosely*",
+			"*pending-paths*",
 			"-protocols",
 			">0?",
 			">1?",
@@ -1909,7 +1912,7 @@ func LoadNS() {
 		tmp0 := sym_ARGS
 		var_ys_DOT_v0_ARGS = ns.InternWithValue(tmp0, lang.NewVector(), true)
 		var_ys_DOT_v0_ARGS.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(20), kw_column, int(6), kw_end_DASH_line, int(20), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+			return lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(20), kw_column, int(6), kw_end_DASH_line, int(20), kw_end_DASH_column, int(19), kw_dynamic, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
 		})
 		var_ys_DOT_v0_ARGS.SetDynamic()
 	}
@@ -1918,7 +1921,7 @@ func LoadNS() {
 		tmp0 := sym_ARGV
 		var_ys_DOT_v0_ARGV = ns.InternWithValue(tmp0, lang.NewVector(), true)
 		var_ys_DOT_v0_ARGV.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(19), kw_column, int(6), kw_end_DASH_line, int(19), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+			return lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(19), kw_column, int(6), kw_end_DASH_line, int(19), kw_end_DASH_column, int(19), kw_dynamic, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
 		})
 		var_ys_DOT_v0_ARGV.SetDynamic()
 	}
@@ -1977,7 +1980,7 @@ func LoadNS() {
 		tmp0 := sym_CWD
 		var_ys_DOT_v0_CWD = ns.InternWithValue(tmp0, "", true)
 		var_ys_DOT_v0_CWD.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(26), kw_column, int(6), kw_end_DASH_line, int(26), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+			return lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(26), kw_column, int(6), kw_end_DASH_line, int(26), kw_end_DASH_column, int(18), kw_dynamic, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
 		})
 		var_ys_DOT_v0_CWD.SetDynamic()
 	}
@@ -1986,7 +1989,7 @@ func LoadNS() {
 		tmp0 := sym_DIR
 		var_ys_DOT_v0_DIR = ns.InternWithValue(tmp0, "", true)
 		var_ys_DOT_v0_DIR.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(25), kw_column, int(6), kw_end_DASH_line, int(25), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+			return lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(25), kw_column, int(6), kw_end_DASH_line, int(25), kw_end_DASH_column, int(18), kw_dynamic, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
 		})
 		var_ys_DOT_v0_DIR.SetDynamic()
 	}
@@ -1995,7 +1998,7 @@ func LoadNS() {
 		tmp0 := sym_ENV
 		var_ys_DOT_v0_ENV = ns.InternWithValue(tmp0, lang.NewMap(), true)
 		var_ys_DOT_v0_ENV.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(21), kw_column, int(6), kw_end_DASH_line, int(21), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+			return lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(21), kw_column, int(6), kw_end_DASH_line, int(21), kw_end_DASH_column, int(18), kw_dynamic, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
 		})
 		var_ys_DOT_v0_ENV.SetDynamic()
 	}
@@ -2029,7 +2032,7 @@ func LoadNS() {
 		tmp0 := sym_FILE
 		var_ys_DOT_v0_FILE = ns.InternWithValue(tmp0, "", true)
 		var_ys_DOT_v0_FILE.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(24), kw_column, int(6), kw_end_DASH_line, int(24), kw_end_DASH_column, int(19), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+			return lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(24), kw_column, int(6), kw_end_DASH_line, int(24), kw_end_DASH_column, int(19), kw_dynamic, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
 		})
 		var_ys_DOT_v0_FILE.SetDynamic()
 	}
@@ -2237,7 +2240,7 @@ func LoadNS() {
 		tmp0 := sym_NS
 		var_ys_DOT_v0_NS = ns.InternWithValue(tmp0, nil, true)
 		var_ys_DOT_v0_NS.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(22), kw_column, int(6), kw_end_DASH_line, int(22), kw_end_DASH_column, int(17), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+			return lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(22), kw_column, int(6), kw_end_DASH_line, int(22), kw_end_DASH_column, int(17), kw_dynamic, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
 		})
 		var_ys_DOT_v0_NS.SetDynamic()
 	}
@@ -2296,7 +2299,7 @@ func LoadNS() {
 		tmp0 := sym_RUN
 		var_ys_DOT_v0_RUN = ns.InternWithValue(tmp0, lang.NewMap(), true)
 		var_ys_DOT_v0_RUN.SetMetaLazy(func() lang.IPersistentMap {
-			return lang.NewMap(kw_dynamic, true, kw_file, "ys/v0.glj", kw_line, int(23), kw_column, int(6), kw_end_DASH_line, int(23), kw_end_DASH_column, int(18), kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
+			return lang.NewMap(kw_file, "ys/v0.glj", kw_line, int(23), kw_column, int(6), kw_end_DASH_line, int(23), kw_end_DASH_column, int(18), kw_dynamic, true, kw_ns, lang.FindOrCreateNamespace(sym_ys_DOT_v0))
 		})
 		var_ys_DOT_v0_RUN.SetDynamic()
 	}

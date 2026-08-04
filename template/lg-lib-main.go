@@ -26,9 +26,22 @@ func init() {
 	if err != nil {
 		panic(vm.FormatError(err))
 	}
-	// Replays every ns chunk and drains each one's Go-native overrides.
-	if err := rt.LoadProgramNamespaces(unit); err != nil {
-		panic(vm.FormatError(err))
+	// Same skip+drain loop as lg-main.go. rt.LoadProgramNamespaces would
+	// replay MainChunk (wrong if the driver calls -main) and is not in the
+	// pinned let-go v1.12.2 release; keep the explicit loop so the pin and
+	// the semantics stay aligned.
+	for _, name := range unit.NSOrder {
+		chunk := unit.NSChunks[name]
+		if chunk == nil || chunk == unit.MainChunk {
+			continue
+		}
+		f := vm.NewFrame(chunk, nil)
+		_, err := f.RunProtected()
+		vm.ReleaseFrame(f)
+		if err != nil {
+			panic(vm.FormatError(fmt.Errorf("loading namespace %s: %w", name, err)))
+		}
+		rt.ApplyGoOverrides(rt.LookupNS(name))
 	}
 }
 

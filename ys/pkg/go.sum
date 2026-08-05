@@ -6,8 +6,8 @@ github.com/gloathub/go-readline v0.1.2 h1:xpBQfW3BSoLCY5ck5CsLVYtvd3EOpp3xlZ9/yE
 github.com/gloathub/go-readline v0.1.2/go.mod h1:AuU225TTeDXCtn8hQaQZTfSYe65j/IpFdwvO/AfFHI4=
 github.com/gloathub/gojava v0.1.0 h1:lNxzOURH+dWzBxgIsiEwggMKpzo+s9U6/uyC7jMwaF8=
 github.com/gloathub/gojava v0.1.0/go.mod h1:5BolUlfQEVhISDwoCnchpGwFTE5upbi2965/m3WRQH8=
-github.com/glojurelang/glojure v0.7.7 h1:iQ3kX/iwoopgxMFZqqowE2hrkikrXVwmUlOOAs6YlnI=
-github.com/glojurelang/glojure v0.7.7/go.mod h1:ZYtJSMN1AB1hkDRS7zerNzDWVufuCGxKsHrQkn5l1Mc=
+github.com/glojurelang/glojure v0.7.8 h1:TcjqYj+oOLPQ7gOLFKMdMpFdjGLsWIdrHRtyBi7lJQ4=
+github.com/glojurelang/glojure v0.7.8/go.mod h1:ZYtJSMN1AB1hkDRS7zerNzDWVufuCGxKsHrQkn5l1Mc=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/kylelemons/godebug v1.1.0 h1:RPNrshWIDI6G2gRW9EHilWtl7Z6Sb1BR0xunSBf0SNc=

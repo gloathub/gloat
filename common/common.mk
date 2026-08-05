@@ -1,6 +1,6 @@
-GLOAT-VERSION := 0.1.71
+GLOAT-VERSION := 0.1.72
 
-GLOJURE-VERSION := 0.7.7
+GLOJURE-VERSION := 0.7.8
 GLOJURE-REPO := https://github.com/glojurelang/glojure
 
 LET-GO-VERSION := 1.12.2

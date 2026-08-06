@@ -1356,7 +1356,7 @@ Less common:
 
 (defn LG-entry-code [entry-fn]
   (if entry-fn
-    (str "\tif _, err := prog." entry-fn "(vm.RootExecContext, argv...);"
+    (str "\tif _, err := prog." entry-fn "(ec, argv...);"
          " err != nil {\n\t\tfail(err)\n\t}")
     (str "\tf := vm.NewFrame(unit.MainChunk, nil)\n"
          "\t_, err = f.RunProtected()\n"

@@ -70,6 +70,20 @@
                         isSocket: function() { return false; } });
     };
 
+    // The browser has no project filesystem. Glojure checks for deps.edn at
+    // startup, so report that specific file as absent instead of returning the
+    // wasm_exec ENOSYS error, which makes the CLI exit before showing a prompt.
+    var originalOpen = globalThis.fs.open;
+    globalThis.fs.open = function(path, flags, mode, callback) {
+      if (path === 'deps.edn' || path === './deps.edn') {
+        var err = new Error("no such file or directory, open '" + path + "'");
+        err.code = 'ENOENT';
+        callback(err);
+        return;
+      }
+      originalOpen.call(globalThis.fs, path, flags, mode, callback);
+    };
+
     // Suppress whitespace-only WASM output during multi-line input
     var suppressContinuation = false;
 

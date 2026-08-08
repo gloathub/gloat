@@ -1,3 +1,8 @@
+- version: 0.1.75
+  date:    Sat Aug  8 10:43:42 AM EDT 2026
+  changes:
+  - Fix browser REPL startup
+
 - version: 0.1.74
   date:    Thu Aug  6 12:41:35 PM EDT 2026
   changes:

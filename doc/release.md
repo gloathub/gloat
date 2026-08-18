@@ -2,115 +2,94 @@
 
 ## Dependency Flow
 
-```
+```text
 glojurelang/glojure
-    ↓
-gloathub/gloat     (this repo, includes ys/pkg stdlib)
-    ↓
-makeplus/makes     (gloat.mk for downstream projects)
-    ↓
-ingydotnet/gist    (downstream project, etc.)
+    |
+gloathub/ys-v0-go
+    |
+gloathub/gloat
+    |
+makeplus/makes and downstream projects
 ```
 
-Release order: glojure first (if needed), then gloat, then downstream.
+Release changed dependencies before Gloat. The `ys-v0-go` runtime is an
+independent Go module; Gloat does not tag or publish it.
+
+## Releasing the Runtime
+
+When the portable YAMLScript sources, AOT patches, native backends, or
+generated loaders change, work in the `ys-v0-go` repository:
+
+```bash
+make generate
+make test
+make check-generated
+```
+
+Commit the source and generated output together, tag the module, publish the
+tag, and wait for the Go proxy before updating Gloat:
+
+```bash
+GOPROXY=https://proxy.golang.org \
+  go list -m github.com/gloathub/ys-v0-go@vX.Y.Z
+```
 
 ## Releasing Gloat
 
-The normal case — `make release` handles everything automatically:
+Pin the published runtime in `common/common.mk`:
+
+```makefile
+YS-V0-GO-VERSION := vX.Y.Z
+```
+
+Then use the normal release target:
 
 ```bash
 make release VERSION=0.1.14
 ```
 
-If also bumping the Glojure version:
+If Glojure also changes:
 
 ```bash
-make release VERSION=0.1.14 GLJ-VERSION=0.6.5-rc7
+make release VERSION=0.1.14 GLJ-VERSION=0.7.11
 ```
 
-`make release` automatically:
+The release helper verifies that the pinned `ys-v0-go` version resolves from
+the public Go proxy, rebuilds generated documentation, runs normal and pruned
+test suites, commits the Gloat release files, tags `vX.Y.Z`, pushes, creates
+the GitHub release, and publishes the website.
 
-- Updates version in `Makefile`, `bin/gloat`, `Changes`, and docs
-- Updates Glojure version in `common/common.mk` and `ys/pkg/go.mod`
-  (only when `GLJ-VERSION` is given)
-- Runs `make update ys-pkg` and the full test suite
-- Commits, tags `ys/pkg/vX.Y.Z`, and pushes
-- Waits for Go proxy to index `ys/pkg`
-- Tags `vX.Y.Z`, pushes, and creates a GitHub release
-- Publishes the website
+## Releasing Glojure
 
-**Prerequisite**: `~/.github-api-token` present, or `gh` already
-authenticated.
-
-## Releasing Glojure (when needed)
-
-Do this **before** a gloat release when `glojurelang/glojure` needs
-changes.
-Work in the glojure repo:
+When Glojure changes, release it before the runtime and Gloat:
 
 ```bash
 cd /path/to/glojure
 make clean && make all && make test
-make release VERSION=0.6.5-rc7
+make release VERSION=0.7.11
 ```
 
-`make release` builds binaries for `linux_amd64` and `darwin_arm64`,
-tags `v0.6.5-rc7`, pushes to the configured remote, and creates a GitHub
-release.
-
-Verify on Go proxy before proceeding:
+Verify the tag on the Go proxy before using it in `ys-v0-go`:
 
 ```bash
-GOPROXY=proxy.golang.org go list -m github.com/glojurelang/glojure@v0.6.5-rc7
+GOPROXY=https://proxy.golang.org \
+  go list -m github.com/glojurelang/glojure@v0.7.11
 ```
 
-Then run the gloat release passing `GLJ-VERSION=0.6.5-rc7`.
+## Downstream Projects
 
-## Releasing Downstream Projects (e.g. gist)
-
-For projects using `gloat.mk` from makeplus/makes:
+For projects using `gloat.mk` from Makes:
 
 ```bash
-cd /path/to/gist
 make gloat-github-release VERSION=0.1.5
 ```
 
-This updates versions, regenerates `go/`, commits, tags `vX.Y.Z` and
-`go/vX.Y.Z`, pushes, builds cross-platform binaries, and creates a GitHub
-release.
-
-**Prerequisites**:
-
-- Gloat's `ys/pkg` must already be published on the Go proxy
-- Update the Makes cache if `gloat.mk` changed:
-  `cd .cache/makes && git pull && cd ../..`
-- Pin the gloat version in the project's `Makefile`:
-  `GLOAT-VERSION := v0.1.14`
+Before releasing, update the project to the new Gloat version, regenerate its
+Go directory, remove local `replace` directives, and verify that Glojure and
+`ys-v0-go` resolve from the Go proxy.
 
 ## Rollback
 
-**Gloat**:
-
-```bash
-git tag -d vX.Y.Z && git tag -d ys/pkg/vX.Y.Z
-git push origin :vX.Y.Z && git push origin :ys/pkg/vX.Y.Z
-gh release delete vX.Y.Z
-```
-
-**Glojure**:
-
-```bash
-git tag -d vX.Y.Z && git push gloathub :vX.Y.Z
-```
-
-**Downstream**:
-
-```bash
-git tag -d vX.Y.Z && git tag -d go/vX.Y.Z
-git push origin :vX.Y.Z && git push origin :go/vX.Y.Z
-gh release delete vX.Y.Z
-```
-
-> **Note**: Go proxy caches are immutable — you cannot un-publish a module
-> version.
-> Publish a new version with fixes instead.
+Delete an unpublished or incorrect local tag in the repository that owns it.
+If a tag has reached the Go proxy, its contents are immutable: publish a new
+version with the correction instead of reusing the version.

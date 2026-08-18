@@ -35,7 +35,7 @@ ALL-NS-REQUIRES
 			envPairs = append(envPairs, e[:idx], e[idx+1:])
 		}
 	}
-	envVar := glj.Var("ys.v0", "ENV")
+	envVar := glj.Var("ys.v0.global", "ENV")
 	alterVarRoot.Invoke(envVar, constantly.Invoke(lang.NewMap(envPairs...)))
 
 	// NS: the user's namespace object
@@ -51,14 +51,14 @@ ALL-NS-REQUIRES
 
 	// CWD: current working directory
 	cwd, _ := os.Getwd()
-	cwdVar := glj.Var("ys.v0", "CWD")
+	cwdVar := glj.Var("ys.v0.global", "CWD")
 	alterVarRoot.Invoke(cwdVar, constantly.Invoke(cwd))
 
 	// RUN: runtime metadata map (no args for libraries, just pid)
 	runMap := lang.NewMap(
 		lang.NewKeyword("pid"), int64(os.Getpid()),
 	)
-	runVar := glj.Var("ys.v0", "RUN")
+	runVar := glj.Var("ys.v0.global", "RUN")
 	alterVarRoot.Invoke(runVar, constantly.Invoke(runMap))
 }
 

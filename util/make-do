@@ -4,37 +4,6 @@
 
 set -euo pipefail
 
-save-patch() (
-  repo_url=$1
-  shift
-  gloat_only=$1
-  shift
-  clj_files=("$@")
-
-  for f in "${clj_files[@]}"; do
-    # Skip gloat-only files
-    skip=false
-    for gloat_file in $gloat_only; do
-      if [[ $f == "$gloat_file" ]]; then
-        skip=true
-        break
-      fi
-    done
-    $skip && continue
-
-    clj=${f#ys/src/}
-    name=$(echo "$clj" | tr '/' '-' | perl -pe 's/\.clj$//')
-    diff -u <(curl -sL "$repo_url/$clj") "$f" 2>/dev/null \
-      | perl -pe 's/\t.*// if 1..2' > "ys/patch/$name.patch" || true
-    if [ ! -s "ys/patch/$name.patch" ]; then
-      rm -f "ys/patch/$name.patch"
-    else
-      echo "Saved ys/patch/$name.patch"
-    fi
-  done
-  echo "Patches saved to ys/patch/"
-)
-
 test-docker() (
   if compgen -G '.cache/local/babashka-*/bin/bb' >/dev/null; then
     echo 'Run first: make distclean'
@@ -52,52 +21,6 @@ test-docker() (
       export PERL_BADLANG=0 &&
       make test &&
       chown -R '"$(id -u):$(id -g) .cache"
-)
-
-update-clj() (
-  repo_url=$1
-  stem=$2
-  target=$3
-
-  curl -sL "$repo_url/$stem.clj" -o "$target"
-  patch_file=ys/patch/$(echo "$stem" | tr '/' '-').patch
-  if [ -f "$patch_file" ]; then
-    echo "Applying $patch_file"
-    patch --no-backup-if-mismatch -p0 < "$patch_file"
-  fi
-)
-
-compile-glj() (
-  stem=$1
-  target=$2
-
-  mkdir -p "$(dirname "$target")"
-  tmpdir=$(mktemp -d)
-  cp -r ys/glj/* "$tmpdir/"
-  cd "$tmpdir"
-  ns=$(echo "$stem" | tr '/' '.')
-  echo "(compile (quote $ns))" |
-    GLJ_CLASSPATH="$tmpdir${GLJ_CLASSPATH:+:$GLJ_CLASSPATH}" glj >/dev/null
-  cd - >/dev/null
-  cp "$tmpdir/$stem/loader.go" "$target"
-  rm -rf "$tmpdir"
-)
-
-compile-glj-patched() (
-  target=$1
-
-  mkdir -p "$(dirname "$target")"
-  tmpdir=$(mktemp -d)
-  cp -r ys/glj/* "$tmpdir/"
-  cd "$tmpdir"
-  ns=$(echo "yamlscript/util" | tr '/' '.')
-  echo "(compile (quote $ns))" |
-    GLJ_CLASSPATH="$tmpdir${GLJ_CLASSPATH:+:$GLJ_CLASSPATH}" glj >/dev/null
-  cd - >/dev/null
-  cp "$tmpdir/yamlscript/util/loader.go" "$target"
-  rm -rf "$tmpdir"
-
-  patch --no-backup-if-mismatch -p1 < ys/patch/yamlscript-util-seqable.patch
 )
 
 release() (
@@ -123,24 +46,20 @@ release() (
   fi
 
   # --- Update Glojure version if specified ---
-  # common/common.mk is the single source of truth; ys/pkg/go.mod is
-  # re-pinned automatically by the Makefile's ys-pkg target.
+  # common/common.mk is the single source of truth.
   if [[ -n $glj_version ]]; then
     perl -i -pe "s/^GLOJURE-VERSION := .*/GLOJURE-VERSION := $glj_version/" \
       common/common.mk
   fi
 
   # --- Update version in all files ---
-  # Single source of truth: common/common.mk. bin/gloat, .rc, and the
-  # Makefile's YS-PKG-VERSION all derive from GLOAT-VERSION here.
+  # Single source of truth: common/common.mk. bin/gloat and .rc derive
+  # GLOAT_VERSION from it.
   perl -i -pe "s/^GLOAT-VERSION := .*/GLOAT-VERSION := $version/" \
     common/common.mk
   perl -i -pe \
     "s/VERSION=v[0-9]+\\.[0-9]+\\.[0-9]+/VERSION=v$version/" \
     www/docs/doc/getting-started.md
-  perl -i -pe \
-    "s/^VERSION := [0-9]+\\.[0-9]+\\.[0-9]+/VERSION := $version/" \
-    doc/gloat-tutorial.md
 
   # Collect commit subjects since last release tag
   prev_tag=$(git tag -l 'v[0-9]*' --sort=-v:refname | head -1)
@@ -172,14 +91,21 @@ release() (
   echo
   read -rp $'\e[33mContinue release of v'"$version"$'? Enter to continue, ctrl-C to cancel. \e[0m'
 
+  # The runtime is released independently. Refuse to release Gloat until its
+  # pinned module version is available from the public Go proxy.
+  ys_v0_go_version=$(perl -ne \
+    'print "$1\n" if /^YS-V0-GO-VERSION := (\S+)/' common/common.mk)
+  GOPROXY=https://proxy.golang.org go list -m \
+    "github.com/gloathub/ys-v0-go@$ys_v0_go_version" >/dev/null
+
   # --- Rebuild and test ---
-  make update ys-pkg
+  make update
   make test
   make -C demo/so-bindings/ada/ test
   make clean
   GLOAT_X_PRUNE=1 make test
 
-  # --- Commit and tag ys/pkg ---
+  # --- Commit and tag Gloat ---
   git add \
     common/common.mk \
     Changes \
@@ -190,27 +116,10 @@ release() (
     man/man1/gloat-go-interop.1 \
     man/man1/gloat-java-interop.1 \
     www/docs/doc/getting-started.md \
-    doc/gloat-tutorial.md \
-    ys/
-  git diff --cached --quiet || git commit -m "Version $version"
-  git tag -f -a "ys/pkg/v$version" -m "Release ys/pkg v$version"
-  git push origin main
-  git push origin "ys/pkg/v$version"
+    doc/gloat-tutorial.md
+  git diff --cached --quiet || git commit -m "$message"
+  git push origin "$release_branch"
 
-  # --- Wait for Go proxy ---
-  echo "Waiting for Go proxy to index ys/pkg v$version..."
-  for i in $(seq 1 30); do
-    if go list -m \
-      "github.com/gloathub/gloat/ys/pkg@v$version" \
-      2>/dev/null; then
-      echo "  ys/pkg v$version is live on Go proxy"
-      break
-    fi
-    echo "  Attempt $i/30, retrying in 10s..."
-    sleep 10
-  done
-
-  # --- Tag and release gloat ---
   git tag -f -a "v$version" -m "Release v$version"
   git push origin "v$version"
 

@@ -3,7 +3,7 @@
 
 ;; YAMLScript v0 runtime for the lg (let-go) engine.
 ;; A flattened port of the pure-Clojure surface of ys.std and ys.dwim
-;; (see ys/src/ys/), originally seeded from let-go's
+;; (now maintained in ys-v0-go), originally seeded from let-go's
 ;; examples/aot/ys-on-let-go/ys-runtime.lg shim
 ;; (Copyright (c) 2026 Marcin Gasperowicz, MIT).
 ;; Not yet ported: ys.fs, ys.ipc, ys.http, ys.json (Go-interop

@@ -360,25 +360,30 @@
    Config keys:
      :build-dir   - the build output directory
      :gloat-root  - gloat project root
+     :ys-v0-go-dir - ys-v0-go module checkout
      :stdlib-dir  - glojure stdlib directory"
-  [ns-name {:keys [build-dir gloat-root stdlib-dir]}]
+  [ns-name {:keys [build-dir ys-v0-go-dir stdlib-dir]}]
   (cond
     ;; User code
     (not (or (str/starts-with? ns-name "ys.")
              (str/starts-with? ns-name "yamlscript.")
+             (str/starts-with? ns-name "babashka.")
+             (= ns-name "clojure.data.json")
+             (= ns-name "clojure.walk")
              (str/starts-with? ns-name "clojure.")))
     (let [ns-path (str/replace ns-name "." "/")]
       (str build-dir "/pkg/" ns-path "/loader.go"))
 
-    ;; ys.* namespaces
-    (str/starts-with? ns-name "ys.")
-    (let [sub (subs ns-name 3)]
-      (str gloat-root "/ys/pkg/ys/" sub "/loader.go"))
-
-    ;; yamlscript.* namespaces
-    (str/starts-with? ns-name "yamlscript.")
-    (let [sub (subs ns-name 11)]
-      (str gloat-root "/ys/pkg/yamlscript/" sub "/loader.go"))
+    ;; YAMLScript runtime namespaces supplied by ys-v0-go
+    (or (str/starts-with? ns-name "ys.")
+        (str/starts-with? ns-name "yamlscript.")
+        (str/starts-with? ns-name "babashka.")
+        (= ns-name "clojure.data.json")
+        (= ns-name "clojure.walk"))
+    (let [ns-path (-> ns-name
+                      (str/replace "." "/")
+                      (str/replace "-" "_"))]
+      (str ys-v0-go-dir "/" ns-path "/loader.go"))
 
     ;; clojure.core and other clojure.* namespaces
     (str/starts-with? ns-name "clojure.")
@@ -506,7 +511,10 @@
           (when-let [src-nses (seq (:source-required-nses config))]
             (doseq [req-ns src-nses]
               (when (and (or (str/starts-with? req-ns "ys.")
-                            (str/starts-with? req-ns "yamlscript."))
+                            (str/starts-with? req-ns "yamlscript.")
+                            (str/starts-with? req-ns "babashka.")
+                            (= req-ns "clojure.data.json")
+                            (= req-ns "clojure.walk"))
                         (not (contains? aliased-nses req-ns)))
                 (when-let [parsed-ns (get-parsed req-ns)]
                   (doseq [[block-name _] (:blocks parsed-ns)]
@@ -851,13 +859,14 @@
       :used-namespaces - set of ys/yamlscript namespaces that are needed
       :stats         - map of ns -> {:kept N :total N}}"
   [config]
-  (let [{:keys [build-dir gloat-root stdlib-dir
+  (let [{:keys [build-dir gloat-root ys-v0-go-dir stdlib-dir
                 runtime-keeps deps-mode quiet verbose]} config
 
         ;; Build the full dependency graph (now scans clojure.core
         ;; loader.go blocks directly instead of using clojure-core.yaml)
         graph-config {:build-dir build-dir
                       :gloat-root gloat-root
+                      :ys-v0-go-dir ys-v0-go-dir
                       :stdlib-dir stdlib-dir
                       :source-required-nses
                       (:source-required-nses config)}
@@ -977,8 +986,10 @@
                          (for [[ns-name fns] (:keeps graph-result)
                                :when (and (seq fns)
                                           (or (str/starts-with? ns-name "ys.")
-                                              (str/starts-with?
-                                               ns-name "yamlscript.")))]
+                                              (str/starts-with? ns-name "yamlscript.")
+                                              (str/starts-with? ns-name "babashka.")
+                                              (= ns-name "clojure.data.json")
+                                              (= ns-name "clojure.walk")))]
                            ns-name))
 
         ;; Prune clojure.core
@@ -1009,13 +1020,9 @@
                 (let [parsed (parse-loader loader-path)
                       result (generate-pruned-loader parsed ns-keeps)
                       ;; Build internal path
-                      ns-path (cond
-                                (str/starts-with? ns-name "ys.")
-                                (str "ys/" (subs ns-name 3))
-                                (str/starts-with? ns-name "yamlscript.")
-                                (str "yamlscript/" (subs ns-name 11))
-                                :else
-                                (str/replace ns-name "." "/"))
+                      ns-path (-> ns-name
+                                  (str/replace "." "/")
+                                  (str/replace "-" "_"))
                       output-path (str build-dir "/internal/"
                                        ns-path "/loader.go")]
                   (fs/create-dirs (fs/parent output-path))

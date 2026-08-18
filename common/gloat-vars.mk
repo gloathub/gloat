@@ -14,5 +14,6 @@ gloat-vars: $(PATH-DEPS)
 	@echo '  :LET-GO-SRC "$(if $(wildcard $(LET-GO-SRC)),$(abspath $(LET-GO-SRC)),)"'
 	@echo '  :LOCAL-HOME "$(abspath $(LOCAL-HOME))"'
 	@echo '  :YS "$(abspath $(YS))"'
-	@echo '  :YS-PKG-VERSION "$(YS-PKG-VERSION)"'
+	@echo '  :YS-V0-GO-DIR "$(abspath $(YS-V0-GO-DIR))"'
+	@echo '  :YS-V0-GO-VERSION "$(YS-V0-GO-VERSION)"'
 	@echo '}'

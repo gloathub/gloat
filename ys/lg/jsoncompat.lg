@@ -4,7 +4,7 @@
 ;; ys json compatibility for the lg engine. lg pre-registers a json
 ;; namespace (read-json/write-json), so intern the ys names into it:
 ;; json/load uses lg's reader (string keys, matching ys.json), and
-;; json/dump is the pure-Clojure encoder from ys/src/ys/json.clj
+;; json/dump is the pure-Clojure encoder used by the let-go runtime.
 ;; (lg's write-json double-quotes string keys).
 
 (ns jsoncompat

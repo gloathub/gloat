@@ -5,22 +5,14 @@ import (
 	"strings"
 	"github.com/glojurelang/glojure/pkg/glj"
 	"github.com/glojurelang/glojure/pkg/lang"
+	ysv0 "github.com/gloathub/ys-v0-go/runtime"
 	_ "GO-MODULE/pkg/PACKAGE-PATH"
-	_ "github.com/gloathub/gloat/ys/pkg/all"
 ALL-NS-IMPORTS
 )
 
 func main() {
+	ysv0.Load()
 	require := glj.Var("clojure.core", "require")
-	require.Invoke(lang.NewSymbol("yamlscript.common"))
-	require.Invoke(lang.NewSymbol("yamlscript.util"))
-	require.Invoke(lang.NewSymbol("ys.fs"))
-	require.Invoke(lang.NewSymbol("ys.http"))
-	require.Invoke(lang.NewSymbol("ys.ipc"))
-	require.Invoke(lang.NewSymbol("ys.json"))
-	require.Invoke(lang.NewSymbol("ys.std"))
-	require.Invoke(lang.NewSymbol("ys.dwim"))
-	require.Invoke(lang.NewSymbol("ys.v0"))
 ALL-NS-REQUIRES
 	require.Invoke(lang.NewSymbol("NAMESPACE"))
 
@@ -36,7 +28,7 @@ ALL-NS-REQUIRES
 			envPairs = append(envPairs, e[:idx], e[idx+1:])
 		}
 	}
-	envVar := glj.Var("ys.v0", "ENV")
+	envVar := glj.Var("ys.v0.global", "ENV")
 	alterVarRoot.Invoke(envVar, constantly.Invoke(lang.NewMap(envPairs...)))
 
 	// NS: the user's namespace object
@@ -52,7 +44,7 @@ ALL-NS-REQUIRES
 
 	// CWD: current working directory
 	cwd, _ := os.Getwd()
-	cwdVar := glj.Var("ys.v0", "CWD")
+	cwdVar := glj.Var("ys.v0.global", "CWD")
 	alterVarRoot.Invoke(cwdVar, constantly.Invoke(cwd))
 
 	// RUN: runtime metadata map (includes args and pid)
@@ -66,7 +58,7 @@ ALL-NS-REQUIRES
 		lang.NewKeyword("args"), argsVec,
 		lang.NewKeyword("pid"), int64(os.Getpid()),
 	)
-	runVar := glj.Var("ys.v0", "RUN")
+	runVar := glj.Var("ys.v0.global", "RUN")
 	alterVarRoot.Invoke(runVar, constantly.Invoke(runMap))
 
 	// ARGV and ARGS are set in -main function itself

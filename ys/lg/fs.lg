@@ -2,7 +2,7 @@
 ;; This code is licensed under MIT license (See License for details)
 
 ;; Filesystem namespace for the lg engine: the ys fs/ surface (see
-;; ys/src/ys/fs.clj) backed by lg's core io fns and os namespace.
+;; ys.v0.fs API backed by lg's core io fns and os namespace.
 
 (ns fs
   (:require [clojure.string :as str]))

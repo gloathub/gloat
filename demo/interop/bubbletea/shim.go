@@ -14,13 +14,13 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
+	ysv0 "github.com/gloathub/ys-v0-go/runtime"
 	"github.com/glojurelang/glojure/pkg/glj"
 	"github.com/glojurelang/glojure/pkg/lang"
 	// Blank-import the gloat-compiled picker.core package so its init()
 	// runs and registers the namespace loader. The path matches gloat's
 	// --module value plus the namespace path under pkg/.
 	_ "gloat-demo/picker/pkg/picker/core"
-	_ "github.com/gloathub/gloat/ys/pkg/all"
 )
 
 var (
@@ -63,10 +63,8 @@ func (m model) View() string {
 }
 
 func main() {
+	ysv0.Load()
 	require := glj.Var("clojure.core", "require")
-	require.Invoke(lang.NewSymbol("ys.std"))
-	require.Invoke(lang.NewSymbol("ys.dwim"))
-	require.Invoke(lang.NewSymbol("ys.v0"))
 	require.Invoke(lang.NewSymbol("picker.core"))
 
 	initModelFn = glj.Var("picker.core", "init-model")

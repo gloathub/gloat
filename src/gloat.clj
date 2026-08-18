@@ -29,7 +29,6 @@
 (load-file (str GLOAT-ROOT "/src/report.clj"))
 
 (def TEMPLATE (str GLOAT-ROOT "/template"))
-(def SRC (str GLOAT-ROOT "/ys/src"))
 (def GLOAT-TMP (str GLOAT-ROOT "/.cache/local/tmp"))
 (fs/create-dirs GLOAT-TMP)
 
@@ -100,6 +99,9 @@
   (alter-var-root #'*timer-start* (constantly nil)))
 
 (def make-vars nil)
+
+(defn ys-v0-source-dir []
+  (str (:YS-V0-GO-DIR make-vars) "/source"))
 
 (defn setup []
   (let [result (process/shell
@@ -851,6 +853,12 @@ Less common:
           body (-> (->> (:out result)
                         str/split-lines
                         (remove #(= % "(apply main ARGS)"))
+                        ;; ys.v0/init installs the standard namespace aliases.
+                        ;; Drop compiler-emitted legacy requires that would
+                        ;; try to replace those aliases with ys.* bridge names.
+                        (remove #(re-matches
+                                   #"\(require '\[ys\.(?:fs|http|ipc|json|std|dwim)\b.*\]\)"
+                                   %))
                         (str/join "\n"))
                    ;; Apply perl-like transformations
                    (str/replace #"\(defn\n (\S+)" "(defn $1")
@@ -869,7 +877,13 @@ Less common:
             main-fn (if (has-main-fn? body)
                       "
 (defn -main [& argv]
-  (let [args (map-parse argv)]
+  (let [args (mapv
+               (fn [s]
+                 (if (re-matches
+                       #\"^[+-]?[0-9]+\\.?[0-9]*([eE][+-]?[0-9]+)?$\" s)
+                   (read-string s)
+                   s))
+               argv)]
     (alter-var-root #'ARGV (constantly argv))
     (alter-var-root #'ARGS (constantly args))
     (alter-var-root #'FILE (constantly \"SOURCE-FILE\"))
@@ -921,11 +935,13 @@ Less common:
     ;; Copy input to namespace structure
     (fs/copy input (str output-dir "/" ns-path ".glj") {:replace-existing true})
 
-    ;; Copy pre-compiled ys runtime and dependencies
-    (let [ys-glj-dir (str GLOAT-ROOT "/ys/glj")]
-      (doseq [file (fs/glob ys-glj-dir "**/*")]
+    ;; Copy the patched portable ys.v0 source tree into the writable compile
+    ;; workspace. Glojure analyzes these sources while the final program links
+    ;; their precompiled loaders from github.com/gloathub/ys-v0-go.
+    (let [ys-source-dir (ys-v0-source-dir)]
+      (doseq [file (fs/glob ys-source-dir "**/*")]
         (when (fs/regular-file? file)
-          (let [rel-path (str (fs/relativize ys-glj-dir file))
+          (let [rel-path (str (fs/relativize ys-source-dir file))
                 target (str output-dir "/" rel-path)]
             (fs/create-dirs (fs/parent target))
             (fs/copy file target {:replace-existing true})))))
@@ -1029,28 +1045,23 @@ Less common:
    ;; via glj.Var, invisible to loader block scanning)
    "global-hierarchy" "parents" "isa?"])
 
-;; Namespace require order for ys runtime
-(def YS-NS-ORDER
-  ["yamlscript.common" "yamlscript.util"
-   "ys.fs" "ys.http" "ys.ipc" "ys.json"
-   "ys.std" "ys.dwim" "ys.v0"])
+(defn ys-ns-order []
+  (->> (slurp (str (:YS-V0-GO-DIR make-vars) "/runtime/namespaces.edn"))
+       edn/read-string
+       (mapv str)))
 
 (defn ns-to-import-path
   "Convert a dotted namespace to its Go import path for internal/."
   [ns-name go-module]
-  (let [pkg-path (cond
-                   (str/starts-with? ns-name "ys.")
-                   (str "ys/" (subs ns-name 3))
-                   (str/starts-with? ns-name "yamlscript.")
-                   (str "yamlscript/" (subs ns-name 11))
-                   :else
-                   (str/replace ns-name "." "/"))]
+  (let [pkg-path (-> ns-name
+                     (str/replace "." "/")
+                     (str/replace "-" "_"))]
     (str go-module "/internal/" pkg-path)))
 
 (defn generate-ys-imports
   "Generate Go import lines for used ys namespaces."
   [used-namespaces go-module]
-  (let [ordered (filter #(contains? used-namespaces %) YS-NS-ORDER)]
+  (let [ordered (filter #(contains? used-namespaces %) (ys-ns-order))]
     (str/join "\n"
               (map #(str "\t_ \"" (ns-to-import-path % go-module) "\"")
                    ordered))))
@@ -1058,7 +1069,7 @@ Less common:
 (defn generate-ys-requires
   "Generate Go require.Invoke lines for used ys namespaces."
   [used-namespaces]
-  (let [ordered (filter #(contains? used-namespaces %) YS-NS-ORDER)]
+  (let [ordered (filter #(contains? used-namespaces %) (ys-ns-order))]
     (str/join "\n"
               (map #(str "\trequire.Invoke(lang.NewSymbol(\"" % "\"))")
                    ordered))))
@@ -1076,6 +1087,7 @@ Less common:
                         :list)))
         config {:build-dir output-dir
                 :gloat-root GLOAT-ROOT
+                :ys-v0-go-dir (:YS-V0-GO-DIR make-vars)
                 :stdlib-dir stdlib-dir
                 :runtime-keeps PRUNE-RUNTIME-KEEPS
                 :deps-mode deps-mode
@@ -1094,48 +1106,11 @@ Less common:
           (System/exit 0)))
       (:used-namespaces result))))
 
-(defn cat-bb [name]
-  (let [src (str GLOAT-ROOT "/ys/src/ys/" name ".clj")
-        patch (str GLOAT-ROOT "/ys/patch/ys-" name "-bb.patch")
-        tmpfile (str (fs/create-temp-file {:dir GLOAT-TMP}))
-        patch-content (slurp patch)]
-
-    (process/shell
-     {:in patch-content
-      :out :string
-      :err :string}
-     "patch" "--no-backup-if-mismatch" "-p0" "-o" tmpfile src)
-
-    ;; Special handling for fs and std
-    (when (= name "fs")
-      (process/shell "bash" (str GLOAT-ROOT "/ys/patch/fix-fs-bb.sh") tmpfile))
-    (when (= name "std")
-      (process/shell "bash" (str GLOAT-ROOT "/ys/patch/fix-std-bb.sh") tmpfile))
-
-    (let [content (slurp tmpfile)]
-      (fs/delete tmpfile)
-      content)))
-
 (defn generate-bb [clj-file]
-  (let [parts [(slurp (str GLOAT-ROOT "/ys/src/yamlscript/util.clj")) "\n"
-               (slurp (str GLOAT-ROOT "/ys/src/yamlscript/common.clj")) "\n"
-               (cat-bb "fs") "\n"
-               (cat-bb "ipc") "\n"
-               (cat-bb "std") "\n"
-               (slurp (str GLOAT-ROOT "/ys/src/ys/dwim.clj")) "\n"
-               ;; Filter v0.clj
-               (-> (slurp (str GLOAT-ROOT "/ys/src/ys/v0.clj"))
-                   (str/replace #"(?m)^\s*\[yamlscript\.common\]\n" "")
-                   (str/replace #"(?m)^\s*\[ys\.http\]\n" "")
-                   (str/replace #"(?m)^\s*\[ys\.json\]\n" "")) "\n"
-               ;; Filter generated CLJ
-               (-> (slurp clj-file)
-                   (str/replace #"\[ys\.http :as http\]" "")
-                   (str/replace #"\[ys\.json :as json\]" "")
-                   (str/replace #"(?m)^\s*\[ys\.http\]\n" "")
-                   (str/replace #"(?m)^\s*\[ys\.json\]\n" ""))
-               "\n(apply -main *command-line-args*)\n"]]
-    (apply str parts)))
+  (str (slurp (str (:YS-V0-GO-DIR make-vars) "/bb/runtime.clj"))
+         "\n"
+         (slurp clj-file)
+         "\n(apply -main *command-line-args*)\n"))
 
 (defn find-lg
   "Path to the lg binary, installing it on demand (lg is a managed
@@ -1185,10 +1160,11 @@ Less common:
   ;; (lg -b embeds the resolved namespaces in the bundle).
   ;; The str alias comes for free on ys/bb (sci default aliases) but
   ;; lg needs it required explicitly.
-  (str/replace-first
-   (slurp clj-file)
-   "[ys.v0 :refer :all]"
-   "[ys.v0 :refer :all]\n   [clojure.string :as str]"))
+  (-> (slurp clj-file)
+      (str/replace-first
+       "(:require ys.v0)"
+       "(:require [ys.v0 :refer :all]\n   [clojure.string :as str])")
+      (str/replace #"(?m)^\(ys\.v0/init\)\n+" "")))
 
 (defn generate-lg [clj-file]
   ;; The *compiling-aot* guard keeps `lg -c/-b/-w` from running the
@@ -2278,7 +2254,7 @@ Less common:
             main-namespace (atom nil)
             export-map (atom nil)
             has-main (atom false)
-            required-nses (atom #{})]
+            required-nses (atom (set (ys-ns-order)))]
 
         (try
           ;; Convert each file
@@ -2345,11 +2321,13 @@ Less common:
                 (when (or (nil? @main-namespace) (= name "main"))
                   (reset! main-namespace ns)))))
 
-          ;; Copy pre-compiled ys runtime and dependencies (GLJ files)
-          (let [ys-glj-dir (str GLOAT-ROOT "/ys/glj")]
-            (doseq [file (fs/glob ys-glj-dir "**/*")]
+          ;; Copy the patched portable runtime into the writable compiler
+          ;; workspace. Generated runtime loaders are excluded below because
+          ;; the final module links github.com/gloathub/ys-v0-go.
+          (let [ys-source-dir (ys-v0-source-dir)]
+            (doseq [file (fs/glob ys-source-dir "**/*")]
               (when (fs/regular-file? file)
-                (let [rel-path (str (fs/relativize ys-glj-dir file))
+                (let [rel-path (str (fs/relativize ys-source-dir file))
                       target (str shared-tmpdir "/" rel-path)]
                   (fs/create-dirs (fs/parent target))
                   (fs/copy file target {:replace-existing true})))))
@@ -2411,15 +2389,16 @@ Less common:
                     (die "glj compile failed for " ns ":\n"
                          (.getMessage e)))))))
 
-          ;; Copy generated Go files to output directory under pkg/
-          ;; Exclude YS stdlib files (they come from ys/pkg module)
+          ;; Copy generated user Go files to output directory under pkg/.
+          ;; Runtime loaders come from the external ys-v0-go module.
           (fs/create-dirs (str output-dir "/pkg"))
           (doseq [gofile (fs/glob shared-tmpdir "**/*.go")]
             (let [rel-path (str (fs/relativize shared-tmpdir gofile))
-                  ;; Skip YS stdlib files - they're provided by ys/pkg module
-                  stdlib-paths ["yamlscript/" "ys/"]
-                  is-stdlib? (some #(str/starts-with? rel-path %) stdlib-paths)]
-              (when-not is-stdlib?
+                  runtime-paths ["ys/" "babashka/" "clojure/data/"
+                                 "clojure/walk/"]
+                  is-runtime? (some #(str/starts-with? rel-path %)
+                                    runtime-paths)]
+              (when-not is-runtime?
                 (let [target (str output-dir "/pkg/" rel-path)]
                   (fs/create-dirs (fs/parent target))
                   (fs/copy gofile target {:replace-existing true})))))
@@ -2448,24 +2427,24 @@ Less common:
             ;; Generate go.mod
             (let [glojure-version (:GLOJURE-VERSION make-vars)
                   glojure-dir (:GLOJURE-DIR make-vars)
-                  ys-pkg-version (:YS-PKG-VERSION make-vars)
+                  ys-v0-go-version (:YS-V0-GO-VERSION make-vars)
+                  ys-v0-go-dir (:YS-V0-GO-DIR make-vars)
                   template-content (slurp (str TEMPLATE "/go.mod"))
                   result (render-template
                           template-content
                           [["GO-MODULE" go-module]
                            ["GLOJURE-VERSION" (go-mod-version glojure-version)]
-                           ["YS-PKG-VERSION" ys-pkg-version]
+                           ["YS-V0-GO-VERSION" ys-v0-go-version]
                            ["GLOAT-ROOT" GLOAT-ROOT]
                            ["EXTRA-DEPS" (render-extra-deps extra-deps)]])
-                  ;; Mirror ys/pkg/go.mod replaces (e.g. local gojava clone)
-                  ;; because Go does not inherit replaces from required modules.
-                  ys-pkg-mod (str GLOAT-ROOT "/ys/pkg/go.mod")
-                  extra-replaces (when (fs/exists? ys-pkg-mod)
-                                   (extract-replaces (slurp ys-pkg-mod)))
                   local-glojure-replace
                   (when (and (seq glojure-dir) (fs/exists? glojure-dir))
                     [["github.com/glojurelang/glojure" glojure-dir]])
-                  replaces (concat local-glojure-replace extra-replaces)
+                  local-ys-v0-go-replace
+                  (when (and (seq ys-v0-go-dir) (fs/exists? ys-v0-go-dir))
+                    [["github.com/gloathub/ys-v0-go" ys-v0-go-dir]])
+                  replaces (concat local-glojure-replace
+                                   local-ys-v0-go-replace)
                   replace-block (when (seq replaces)
                                   (str "\n"
                                        (str/join "\n"

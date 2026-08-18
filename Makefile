@@ -71,29 +71,19 @@ $(LET-GO-SRC):
 	  --config advice.detachedHead=false \
 	  https://github.com/$(LET-GO-REPO) '$@'
 
+# A sibling checkout is the development override. Installed copies use a
+# shallow checkout of the pinned Go runtime module under Gloat's cache.
+YS-V0-GO-DEV-SRC := $(ROOT)/repos/ys-v0-go
+YS-V0-GO-CACHE-SRC := $(ROOT)/.cache/ys-v0-go
+YS-V0-GO-DIR ?= $(if $(wildcard $(YS-V0-GO-DEV-SRC)),$(YS-V0-GO-DEV-SRC),$(YS-V0-GO-CACHE-SRC))
+
+$(YS-V0-GO-DIR):
+	@echo "* Cloning ys-v0-go $(YS-V0-GO-VERSION) locally" >&2
+	git clone -q --depth 1 -b $(YS-V0-GO-VERSION) \
+	  --config advice.detachedHead=false \
+	  https://github.com/gloathub/ys-v0-go '$@'
+
 include common/path.mk
-
-# Auto-discover YS standard library source files
-YS-CLJ-FILES := $(wildcard ys/src/*/*.clj ys/src/*/*/*.clj)
-YS-NAMESPACES := $(patsubst ys/src/%.clj,%,$(YS-CLJ-FILES))
-YS-GLJ-FILES := $(YS-NAMESPACES:%=ys/glj/%.glj)
-YS-GO-FILES  := $(YS-NAMESPACES:%=ys/go/%/loader.go)
-
-# Gloat-only files with no upstream equivalents
-YS-GLOAT-ONLY := \
-  ys/src/ys/v0.clj \
-  ys/src/ys/fs.clj \
-  ys/src/ys/ipc.clj \
-  ys/src/ys/json.clj \
-  ys/src/ys/http.clj
-
-YS-REPO-URL := \
-  https://raw.githubusercontent.com/yaml/yamlscript/v0/core/src
-
-YS-PKG-VERSION ?= v$(GLOAT-VERSION)
-
-# Mark GLJ files as precious (don't auto-delete intermediate files)
-.PRECIOUS: $(YS-CLJ-FILES) $(YS-GLJ-FILES)
 
 MAN-PAGES := \
   man/man1/gloat.1 \
@@ -108,6 +98,7 @@ PATH-DEPS := \
   $(GLJ) \
   $(GLOJURE-DIR) \
   $(GO) \
+  $(YS-V0-GO-DIR) \
 
 # Must be included after PATH-DEPS is defined; make expands the
 # 'gloat-vars: $(PATH-DEPS)' prerequisites at parse time.
@@ -193,7 +184,7 @@ work-init work-pull work-save work-status work-log work-remove:
 
 man: $(MAN-PAGES)
 
-update: $(YS-GO-FILES) $(MAN-PAGES)
+update: $(MAN-PAGES)
 
 bb: $(BB)
 	$@
@@ -296,32 +287,6 @@ which-jolt: $(JOLT)
 which-lg: lg-ensure
 	@echo '$(abspath $(LG))'
 
-ys-pkg: $(YS-GO-FILES) $(GO) $(PERL)
-	@echo "Syncing ys/go/ to ys/pkg/"
-	@mkdir -p ys/pkg
-	rsync -a --delete --exclude='all/' --exclude='go.mod' --exclude='go.sum' ys/go/ ys/pkg/
-	@echo "Pinning glojure v$(GLOJURE-VERSION) in ys/pkg/go.mod"
-	@$(PERL) -i -pe \
-	  's{^require github\.com/(gloathub|glojurelang)/glojure .*}{require github.com/glojurelang/glojure v$(GLOJURE-VERSION)}' \
-	  ys/pkg/go.mod
-	@echo "Running go mod tidy in ys/pkg/"
-	cd ys/pkg && go mod tidy
-
-tag-ys-pkg:
-	$(eval YS-PKG-VER := $(patsubst v%,%,$(YS-PKG-VERSION)))
-	@echo "Tagging ys/pkg/v$(YS-PKG-VER)"
-	git tag -a ys/pkg/v$(YS-PKG-VER) -m "Release ys/pkg v$(YS-PKG-VER)"
-
-save-patch: $(PERL)
-	make-do $@ $(YS-REPO-URL) "$(YS-GLOAT-ONLY)" $(YS-CLJ-FILES)
-
-diff:
-ifndef FILE
-	@echo 'Needs FILE=...'
-	exit 1
-endif
-	@diff -u <(curl -sl $(YS-REPO-URL)/$(FILE:ys/src/%=%)) $(FILE)
-
 test: $(TEST-DEPS)
 	prove$(if $v, -v) $(test)
 
@@ -373,26 +338,6 @@ test/call: $(TEST-CALL-DEPS)
 test/call.clj: $(TEST-CALL-DEPS)
 	</dev/null gloat -qf $< -o $@ -t bb
 
-# v0.clj is gloat-only, don't patch from upstream
-ys/src/ys/v0.clj:
-	@true
-
-# fs.clj is gloat-only (Go interop, not babashka.fs)
-ys/src/ys/fs.clj:
-	@true
-
-# ipc.clj is gloat-only (Go interop, not babashka.process)
-ys/src/ys/ipc.clj:
-	@true
-
-# json.clj is gloat-only (pure Clojure impl, not clojure.data.json)
-ys/src/ys/json.clj:
-	@true
-
-# http.clj is gloat-only (Go net/http, not babashka.http-client)
-ys/src/ys/http.clj:
-	@true
-
 SERVE-DIR ?= .
 
 python-local-server: $(PYTHON)
@@ -429,29 +374,6 @@ build-glj-from-source: $(GO) $(GLOJURE-DIR)
 	  GOBIN=$(LOCAL-BIN) go install .
 	@echo "Built $(GLJ) from source"
 
-force:
-
-ys/src/%.clj: force
-	@echo "Updating $@ from upstream"
-	make-do update-clj $(YS-REPO-URL) $* $@
-
-# Pattern rule: CLJ → GLJ conversion
-ys/glj/%.glj: ys/src/%.clj $(GLOJURE-DIR) $(BB)
-	@mkdir -p $(dir $@)
-	@echo "Converting $< to $@"
-	bb $(GLOJURE-DIR)/scripts/rewrite-core/rewrite.clj $< > $@
-
-# Special rule for yamlscript/util: apply seqable? patch after compilation
-ys/go/yamlscript/util/loader.go: ys/glj/yamlscript/util.glj $(GLJ)
-	@echo "Compiling $< to $@"
-	make-do compile-glj-patched $@
-	@echo "Applying seqable? patch to $@"
-
-# Pattern rule: GLJ → GO compilation
-ys/go/%/loader.go: ys/glj/%.glj $(GLJ)
-	@echo "Compiling $< to $@"
-	make-do compile-glj $* $@
-
 man/man1/gloat.1: ReadMe.md $(MD2MAN) $(PERL)
 	@mkdir -p man/man1
 	$(PERL) -0777 -pe \
@@ -466,6 +388,3 @@ man/man1/%.1: doc/%.md $(MD2MAN) $(PERL)
 	    's/\[([^\]]+)\]\([^)]+\)/$$1/g' \
 	    $< | \
 	  $(MD2MAN) > $@
-
-# std depends on fs and ipc being compiled first
-ys/go/ys/std/loader.go: ys/glj/ys/fs.glj ys/glj/ys/ipc.glj

@@ -13,7 +13,7 @@ The normal YAMLScript pipeline is:
 
 .PP
 The YAMLScript compiler produces portable Clojure that requires \fBys.v0\fR and
-calls \fBys.v0/init\fR\&. Gloat uses the source tree shipped by \fBys-v0-go\fR while
+calls \fBys.v0/init\fR\&. Gloat uses the source tree shipped by \fBys-v0-glj\fR while
 Glojure analyzes the application, then links the precompiled runtime loaders
 from that module into the generated Go program.
 
@@ -22,7 +22,7 @@ The main repositories in the build are:
 .IP \(bu 2
 \fBgloathub/gloat\fR — the compiler orchestration and output templates.
 .IP \(bu 2
-\fBgloathub/ys-v0-go\fR — patched portable \fBys.v0\fR sources, Glojure-native
+\fBgloathub/ys-v0-glj\fR — patched portable \fBys.v0\fR sources, Glojure-native
 backends, and generated Go loaders.
 .IP \(bu 2
 \fBglojurelang/glojure\fR — the Clojure-to-Go compiler and runtime.
@@ -33,7 +33,7 @@ backends, and generated Go loaders.
 
 .PP
 The runtime has its own release lifecycle. Gloat pins it with
-\fBYS-V0-GO-VERSION\fR in \fBcommon/common.mk\fR; a Gloat release does not publish or
+\fBYS-V0-GLJ-VERSION\fR in \fBcommon/common.mk\fR; a Gloat release does not publish or
 tag the runtime module.
 
 .SH Repository Layout
@@ -48,20 +48,20 @@ gloat/
 |-- common/common.mk      Pinned dependency versions
 |-- util/make-do          Build and release helpers
 |-- ys/lg/                let-go runtime sources
-`-- repos/ys-v0-go/       Optional development checkout
+`-- repos/ys-v0-glj/       Optional development checkout
 .EE
 
 .PP
 Gloat no longer keeps copies of the YAMLScript Clojure, Glojure, or generated
-Go runtime trees. Installed copies clone the pinned \fBys-v0-go\fR tag into
-\fB\&.cache/ys-v0-go\fR; a checkout at \fBrepos/ys-v0-go\fR takes precedence for local
+Go runtime trees. Installed copies clone the pinned \fBys-v0-glj\fR tag into
+\fB\&.cache/ys-v0-glj\fR; a checkout at \fBrepos/ys-v0-glj\fR takes precedence for local
 development.
 
 .PP
 The standalone runtime repository contains:
 
 .EX
-ys-v0-go/
+ys-v0-glj/
 |-- source/               Exact patched analysis sources
 |-- ys/                   Generated ys namespace loaders
 |-- yamlscript/           Generated compatibility loaders
@@ -79,7 +79,7 @@ For a directory, binary, library, or WebAssembly output, Gloat:
 .IP "  1." 5
 Compiles YAMLScript to portable Clojure.
 .IP "  2." 5
-Copies \fBys-v0-go/source\fR into a temporary compiler workspace.
+Copies \fBys-v0-glj/source\fR into a temporary compiler workspace.
 .IP "  3." 5
 Rewrites and compiles the application namespace with Glojure.
 .IP "  4." 5
@@ -87,7 +87,7 @@ Copies only application loaders into the generated module.
 .IP "  5." 5
 Renders \fBgo.mod\fR and the appropriate Go entry point.
 .IP "  6." 5
-Links \fBgithub.com/gloathub/ys-v0-go/runtime\fR and calls \fBruntime.Load()\fR
+Links \fBgithub.com/gloathub/ys-v0-glj/runtime\fR and calls \fBruntime.Load()\fR
 before requiring the application namespace.
 
 .PP
@@ -96,23 +96,23 @@ The generated \fBgo.mod\fR has this dependency shape:
 .EX
 require (
     github.com/glojurelang/glojure GLOJURE-VERSION
-    github.com/gloathub/ys-v0-go YS-V0-GO-VERSION
+    github.com/gloathub/ys-v0-glj YS-V0-GLJ-VERSION
 )
 .EE
 
 .PP
-During development Gloat adds a local \fBreplace\fR pointing at
-\fBYS-V0-GO-DIR\fR\&. Published generated modules must omit local \fBreplace\fR
-directives so the Go proxy can resolve the tagged module.
+When \fBrepos/ys-v0-glj\fR exists, Gloat adds a local \fBreplace\fR pointing at that
+development checkout. Cached runtime clones never produce a \fBreplace\fR, so
+generated modules otherwise resolve the pinned tag through the Go proxy.
 
 .SH Runtime Loading and Pruning
 The normal templates blank-import the generated application package and call
-\fBys-v0-go/runtime.Load()\fR\&. The loader registers and requires the runtime
+\fBys-v0-glj/runtime.Load()\fR\&. The loader registers and requires the runtime
 namespaces in the order recorded by \fBruntime/namespaces.edn\fR\&.
 
 .PP
 With pruning enabled, Gloat analyzes references from the user loaders and the
-runtime loaders in \fBys-v0-go\fR\&. It copies the retained runtime packages into
+runtime loaders in \fBys-v0-glj\fR\&. It copies the retained runtime packages into
 the generated module's internal tree and emits ordered imports and requires.
 This keeps pruned programs independent of internal Gloat runtime copies while
 allowing unused loader blocks to be removed.
@@ -122,7 +122,7 @@ Gloat can also stop before building Go:
 .IP \(bu 2
 \fB-t clj\fR emits the portable Clojure produced by YAMLScript.
 .IP \(bu 2
-\fB-t bb\fR prepends \fBys-v0-go/bb/runtime.clj\fR, producing a self-contained
+\fB-t bb\fR prepends \fBys-v0-glj/bb/runtime.clj\fR, producing a self-contained
 Babashka program with no run-time Java or Maven requirement.
 .IP \(bu 2
 \fB-t glj\fR emits rewritten Glojure source.
@@ -159,9 +159,9 @@ make test slow=1
 To work on the runtime module beside Gloat:
 
 .EX
-git clone https://github.com/gloathub/ys-v0-go repos/ys-v0-go
-make -C repos/ys-v0-go generate
-make -C repos/ys-v0-go test
+git clone https://github.com/gloathub/ys-v0-glj repos/ys-v0-glj
+make -C repos/ys-v0-glj generate
+make -C repos/ys-v0-glj test
 make test
 .EE
 
@@ -172,11 +172,11 @@ sources, point it at the portable source tree:
 
 .EX
 YS_V0_SOURCE=/path/to/yamlscript/core/src \\
-  make -C repos/ys-v0-go generate
+  make -C repos/ys-v0-glj generate
 .EE
 
 .PP
-Temporary AOT compatibility changes live in \fBys-v0-go/patches\fR and are
+Temporary AOT compatibility changes live in \fBys-v0-glj/patches\fR and are
 applied with zero fuzz before the Go-native backend sources are overlaid.
 After changing the runtime, run \fBmake check-generated\fR in that repository and
 commit the source changes and generated loaders together.
@@ -187,7 +187,7 @@ The dependency pins used in generated modules come from
 
 .EX
 GLOJURE-VERSION := 0.7.11
-YS-V0-GO-VERSION := v0.1.0
+YS-V0-GLJ-VERSION := v0.1.2
 .EE
 
 .PP
@@ -196,7 +196,7 @@ to \fBsrc/gloat.clj\fR\&. Gloat renders those values into generated \fBgo.mod\fR
 
 .PP
 Release the runtime module first when its code or generated loaders change.
-After its tag is visible on the Go proxy, update \fBYS-V0-GO-VERSION\fR, validate
+After its tag is visible on the Go proxy, update \fBYS-V0-GLJ-VERSION\fR, validate
 Gloat, and release Gloat separately.
 
 .SH Downstream Projects
@@ -212,4 +212,4 @@ make -C build
 .PP
 For local integration, keep the \fBreplace\fR generated by Gloat. Before
 publishing a downstream Go module, remove local replacements and verify that
-both Glojure and \fBys-v0-go\fR resolve from the Go proxy.
+both Glojure and \fBys-v0-glj\fR resolve from the Go proxy.

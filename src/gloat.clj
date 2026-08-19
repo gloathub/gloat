@@ -101,7 +101,7 @@
 (def make-vars nil)
 
 (defn ys-v0-source-dir []
-  (str (:YS-V0-GO-DIR make-vars) "/source"))
+  (str (:YS-V0-GLJ-DIR make-vars) "/source"))
 
 (defn setup []
   (let [result (process/shell
@@ -937,7 +937,7 @@ Less common:
 
     ;; Copy the patched portable ys.v0 source tree into the writable compile
     ;; workspace. Glojure analyzes these sources while the final program links
-    ;; their precompiled loaders from github.com/gloathub/ys-v0-go.
+    ;; their precompiled loaders from github.com/gloathub/ys-v0-glj.
     (let [ys-source-dir (ys-v0-source-dir)]
       (doseq [file (fs/glob ys-source-dir "**/*")]
         (when (fs/regular-file? file)
@@ -1046,7 +1046,7 @@ Less common:
    "global-hierarchy" "parents" "isa?"])
 
 (defn ys-ns-order []
-  (->> (slurp (str (:YS-V0-GO-DIR make-vars) "/runtime/namespaces.edn"))
+  (->> (slurp (str (:YS-V0-GLJ-DIR make-vars) "/runtime/namespaces.edn"))
        edn/read-string
        (mapv str)))
 
@@ -1087,7 +1087,7 @@ Less common:
                         :list)))
         config {:build-dir output-dir
                 :gloat-root GLOAT-ROOT
-                :ys-v0-go-dir (:YS-V0-GO-DIR make-vars)
+                :ys-v0-glj-dir (:YS-V0-GLJ-DIR make-vars)
                 :stdlib-dir stdlib-dir
                 :runtime-keeps PRUNE-RUNTIME-KEEPS
                 :deps-mode deps-mode
@@ -1107,7 +1107,7 @@ Less common:
       (:used-namespaces result))))
 
 (defn generate-bb [clj-file]
-  (str (slurp (str (:YS-V0-GO-DIR make-vars) "/bb/runtime.clj"))
+  (str (slurp (str (:YS-V0-GLJ-DIR make-vars) "/bb/runtime.clj"))
          "\n"
          (slurp clj-file)
          "\n(apply -main *command-line-args*)\n"))
@@ -2323,7 +2323,7 @@ Less common:
 
           ;; Copy the patched portable runtime into the writable compiler
           ;; workspace. Generated runtime loaders are excluded below because
-          ;; the final module links github.com/gloathub/ys-v0-go.
+          ;; the final module links github.com/gloathub/ys-v0-glj.
           (let [ys-source-dir (ys-v0-source-dir)]
             (doseq [file (fs/glob ys-source-dir "**/*")]
               (when (fs/regular-file? file)
@@ -2390,7 +2390,7 @@ Less common:
                          (.getMessage e)))))))
 
           ;; Copy generated user Go files to output directory under pkg/.
-          ;; Runtime loaders come from the external ys-v0-go module.
+          ;; Runtime loaders come from the external ys-v0-glj module.
           (fs/create-dirs (str output-dir "/pkg"))
           (doseq [gofile (fs/glob shared-tmpdir "**/*.go")]
             (let [rel-path (str (fs/relativize shared-tmpdir gofile))
@@ -2427,24 +2427,27 @@ Less common:
             ;; Generate go.mod
             (let [glojure-version (:GLOJURE-VERSION make-vars)
                   glojure-dir (:GLOJURE-DIR make-vars)
-                  ys-v0-go-version (:YS-V0-GO-VERSION make-vars)
-                  ys-v0-go-dir (:YS-V0-GO-DIR make-vars)
+                  ys-v0-glj-version (:YS-V0-GLJ-VERSION make-vars)
+                  ys-v0-glj-dir (:YS-V0-GLJ-DIR make-vars)
+                  ys-v0-glj-dev-dir (:YS-V0-GLJ-DEV-DIR make-vars)
                   template-content (slurp (str TEMPLATE "/go.mod"))
                   result (render-template
                           template-content
                           [["GO-MODULE" go-module]
                            ["GLOJURE-VERSION" (go-mod-version glojure-version)]
-                           ["YS-V0-GO-VERSION" ys-v0-go-version]
+                           ["YS-V0-GLJ-VERSION" ys-v0-glj-version]
                            ["GLOAT-ROOT" GLOAT-ROOT]
                            ["EXTRA-DEPS" (render-extra-deps extra-deps)]])
                   local-glojure-replace
                   (when (and (seq glojure-dir) (fs/exists? glojure-dir))
                     [["github.com/glojurelang/glojure" glojure-dir]])
-                  local-ys-v0-go-replace
-                  (when (and (seq ys-v0-go-dir) (fs/exists? ys-v0-go-dir))
-                    [["github.com/gloathub/ys-v0-go" ys-v0-go-dir]])
+                  local-ys-v0-glj-replace
+                  (when (and (seq ys-v0-glj-dev-dir)
+                             (fs/exists? ys-v0-glj-dev-dir))
+                    [["github.com/gloathub/ys-v0-glj"
+                      ys-v0-glj-dev-dir]])
                   replaces (concat local-glojure-replace
-                                   local-ys-v0-go-replace)
+                                   local-ys-v0-glj-replace)
                   replace-block (when (seq replaces)
                                   (str "\n"
                                        (str/join "\n"

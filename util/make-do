@@ -93,10 +93,10 @@ release() (
 
   # The runtime is released independently. Refuse to release Gloat until its
   # pinned module version is available from the public Go proxy.
-  ys_v0_go_version=$(perl -ne \
-    'print "$1\n" if /^YS-V0-GO-VERSION := (\S+)/' common/common.mk)
+  ys_v0_glj_version=$(perl -ne \
+    'print "$1\n" if /^YS-V0-GLJ-VERSION := (\S+)/' common/common.mk)
   GOPROXY=https://proxy.golang.org go list -m \
-    "github.com/gloathub/ys-v0-go@$ys_v0_go_version" >/dev/null
+    "github.com/gloathub/ys-v0-glj@$ys_v0_glj_version" >/dev/null
 
   # --- Rebuild and test ---
   make update

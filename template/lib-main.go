@@ -7,7 +7,7 @@ import (
 	"strings"
 	"github.com/glojurelang/glojure/pkg/glj"
 	"github.com/glojurelang/glojure/pkg/lang"
-	ysv0 "github.com/gloathub/ys-v0-go/runtime"
+	ysv0 "github.com/gloathub/ys-v0-glj/runtime"
 	_ "GO-MODULE/pkg/PACKAGE-PATH"
 ALL-NS-IMPORTS
 )

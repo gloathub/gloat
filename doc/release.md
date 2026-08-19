@@ -5,20 +5,20 @@
 ```text
 glojurelang/glojure
     |
-gloathub/ys-v0-go
+gloathub/ys-v0-glj
     |
 gloathub/gloat
     |
 makeplus/makes and downstream projects
 ```
 
-Release changed dependencies before Gloat. The `ys-v0-go` runtime is an
+Release changed dependencies before Gloat. The `ys-v0-glj` runtime is an
 independent Go module; Gloat does not tag or publish it.
 
 ## Releasing the Runtime
 
 When the portable YAMLScript sources, AOT patches, native backends, or
-generated loaders change, work in the `ys-v0-go` repository:
+generated loaders change, work in the `ys-v0-glj` repository:
 
 ```bash
 make generate
@@ -31,7 +31,7 @@ tag, and wait for the Go proxy before updating Gloat:
 
 ```bash
 GOPROXY=https://proxy.golang.org \
-  go list -m github.com/gloathub/ys-v0-go@vX.Y.Z
+  go list -m github.com/gloathub/ys-v0-glj@vX.Y.Z
 ```
 
 ## Releasing Gloat
@@ -39,7 +39,7 @@ GOPROXY=https://proxy.golang.org \
 Pin the published runtime in `common/common.mk`:
 
 ```makefile
-YS-V0-GO-VERSION := vX.Y.Z
+YS-V0-GLJ-VERSION := vX.Y.Z
 ```
 
 Then use the normal release target:
@@ -54,7 +54,7 @@ If Glojure also changes:
 make release VERSION=0.1.14 GLJ-VERSION=0.7.11
 ```
 
-The release helper verifies that the pinned `ys-v0-go` version resolves from
+The release helper verifies that the pinned `ys-v0-glj` version resolves from
 the public Go proxy, rebuilds generated documentation, runs normal and pruned
 test suites, commits the Gloat release files, tags `vX.Y.Z`, pushes, creates
 the GitHub release, and publishes the website.
@@ -69,7 +69,7 @@ make clean && make all && make test
 make release VERSION=0.7.11
 ```
 
-Verify the tag on the Go proxy before using it in `ys-v0-go`:
+Verify the tag on the Go proxy before using it in `ys-v0-glj`:
 
 ```bash
 GOPROXY=https://proxy.golang.org \
@@ -86,7 +86,7 @@ make gloat-github-release VERSION=0.1.5
 
 Before releasing, update the project to the new Gloat version, regenerate its
 Go directory, remove local `replace` directives, and verify that Glojure and
-`ys-v0-go` resolve from the Go proxy.
+`ys-v0-glj` resolve from the Go proxy.
 
 ## Rollback
 

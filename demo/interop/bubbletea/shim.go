@@ -14,7 +14,7 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	ysv0 "github.com/gloathub/ys-v0-go/runtime"
+	ysv0 "github.com/gloathub/ys-v0-glj/runtime"
 	"github.com/glojurelang/glojure/pkg/glj"
 	"github.com/glojurelang/glojure/pkg/lang"
 	// Blank-import the gloat-compiled picker.core package so its init()

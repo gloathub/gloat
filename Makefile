@@ -73,15 +73,16 @@ $(LET-GO-SRC):
 
 # A sibling checkout is the development override. Installed copies use a
 # shallow checkout of the pinned Go runtime module under Gloat's cache.
-YS-V0-GO-DEV-SRC := $(ROOT)/repos/ys-v0-go
-YS-V0-GO-CACHE-SRC := $(ROOT)/.cache/ys-v0-go
-YS-V0-GO-DIR ?= $(if $(wildcard $(YS-V0-GO-DEV-SRC)),$(YS-V0-GO-DEV-SRC),$(YS-V0-GO-CACHE-SRC))
+YS-V0-GLJ-DEV-SRC := $(ROOT)/repos/ys-v0-glj
+YS-V0-GLJ-CACHE-SRC := $(ROOT)/.cache/ys-v0-glj
+YS-V0-GLJ-DEV-DIR := $(if $(wildcard $(YS-V0-GLJ-DEV-SRC)),$(YS-V0-GLJ-DEV-SRC))
+YS-V0-GLJ-DIR ?= $(or $(YS-V0-GLJ-DEV-DIR),$(YS-V0-GLJ-CACHE-SRC))
 
-$(YS-V0-GO-DIR):
-	@echo "* Cloning ys-v0-go $(YS-V0-GO-VERSION) locally" >&2
-	git clone -q --depth 1 -b $(YS-V0-GO-VERSION) \
+$(YS-V0-GLJ-DIR):
+	@echo "* Cloning ys-v0-glj $(YS-V0-GLJ-VERSION) locally" >&2
+	git clone -q --depth 1 -b $(YS-V0-GLJ-VERSION) \
 	  --config advice.detachedHead=false \
-	  https://github.com/gloathub/ys-v0-go '$@'
+	  https://github.com/gloathub/ys-v0-glj '$@'
 
 include common/path.mk
 
@@ -98,7 +99,7 @@ PATH-DEPS := \
   $(GLJ) \
   $(GLOJURE-DIR) \
   $(GO) \
-  $(YS-V0-GO-DIR) \
+  $(YS-V0-GLJ-DIR) \
 
 # Must be included after PATH-DEPS is defined; make expands the
 # 'gloat-vars: $(PATH-DEPS)' prerequisites at parse time.

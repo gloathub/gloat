@@ -61,6 +61,8 @@
 ;;------------------------------------------------------------------------------
 
 (def ^:dynamic *opts* {})
+(def portable-use-found (atom false))
+(def portable-use-namespaces (atom #{}))
 (def ^:dynamic *source-file* nil)
 (def ^:dynamic *compile-start* nil)
 (def ^:dynamic *timer-start* nil)
@@ -580,6 +582,23 @@
                       (name fn-name) type-spec namespace))
                    export-map))))
 
+(defn generate-js-export-registrations [export-map]
+  "Generate browser export registrations from an EXPORT map."
+  (str/join
+    "\n"
+    (map
+      (fn [[fn-name type-spec]]
+        (let [types (if (vector? type-spec) type-spec [type-spec])
+              return-type (name (last types))
+              arg-types (butlast types)
+              go-types (str "[]string{"
+                         (str/join ", "
+                           (map #(str "\"" (name %1) "\"") arg-types))
+                         "}")]
+          (str "\tregisterExport(exportObject, \"" (name fn-name) "\", "
+            go-types ", \"" return-type "\")")))
+      export-map)))
+
 (def lg-type-mappings
   "Map EXPORT type keywords to cgo and let-go VM conversions."
   {:int    {:go-type "C.longlong"
@@ -848,18 +867,46 @@ Less common:
     ;; Compile YS to Clojure
     (let [result (process/shell
                   {:out :string
+                   :err :string
+                   :continue true
                    :extra-env go-env}
-                  ys "-c" input)
-          body (-> (->> (:out result)
-                        str/split-lines
-                        (remove #(= % "(apply main ARGS)"))
-                        ;; ys.v0/init installs the standard namespace aliases.
-                        ;; Drop compiler-emitted legacy requires that would
-                        ;; try to replace those aliases with ys.* bridge names.
-                        (remove #(re-matches
-                                   #"\(require '\[ys\.(?:fs|http|ipc|json|std|dwim)\b.*\]\)"
-                                   %))
-                        (str/join "\n"))
+                  ys "--to=star" input)
+          _ (when-not (zero? (:exit result))
+              (die "ys --to=star failed:\n"
+                   (or (not-empty (:err result)) (:out result))))
+          output-text (:out result)
+          forms
+          (with-open [reader
+                      (java.io.PushbackReader.
+                        (java.io.StringReader. output-text))]
+            (let [eof (Object.)]
+              (loop [forms []]
+                (let [form (read {:eof eof} reader)]
+                  (if (identical? eof form)
+                    forms
+                    (recur (conj forms form)))))))
+          expected-heads ['require 'deps/add-deps 'ns 'ys.v0/init]
+          actual-heads (mapv #(when (seq? %1) (first %1)) (take 4 forms))
+          _ (when-not (= expected-heads actual-heads)
+              (die "Unexpected ys --to=star preamble"))
+          body-forms (->> (drop 4 forms)
+                          (remove #(= %1 '(apply main ARGS))))
+          use-forms (filter #(and (seq? %1) (= 'use (first %1)))
+                      body-forms)
+          use-call #(str "(ys.v0.ys/+use *ns* '"
+                      (pr-str (list (rest %1))) ")")
+          use-calls (mapv use-call use-forms)
+          body (->> body-forms
+                    (map #(if (and (seq? %1) (= 'use (first %1)))
+                            (use-call %1)
+                            (pr-str %1)))
+                    (concat
+                      (when (seq use-calls)
+                        [(str "(defn __gloat_load_deps [] "
+                           (str/join " " use-calls) ")")]))
+                    (str/join "\n"))
+          body (-> body
+                   str/triml
                    ;; Apply perl-like transformations
                    (str/replace #"\(defn\n (\S+)" "(defn $1")
                    (str/replace #"\(defn (\S+)\n (\[)" "(defn $1 $2")
@@ -1003,8 +1050,10 @@ Less common:
 
 (defn aot-build-tags []
   (concat
-   ["glj_aot_runtime"]
-   (when (and (not (goimports?)) (not (prune?)))
+   (when-not @portable-use-found ["glj_aot_runtime"])
+   (when (and (not @portable-use-found)
+              (not (goimports?))
+              (not (prune?)))
      ["glj_no_goimports"])
    (when (prune?) ["glj_no_aot_stdlib"])))
 
@@ -2211,6 +2260,8 @@ Less common:
         (fs/delete-tree tmpdir)))))
 
 (defn convert-directory [input-dir output format namespace module platform]
+  (reset! portable-use-found false)
+  (reset! portable-use-namespaces #{})
   (let [deps-file (resolve-deps-file)
         extra-deps (when deps-file (parse-gljdeps deps-file))
         is-dir-output (= format "dir")
@@ -2284,6 +2335,11 @@ Less common:
                     (reset! export-map exports))
                   (when (has-main-fn? clj-content)
                     (reset! has-main true))
+                  (when (re-find
+                          #"\((?:[\w.-]+/)?(?:\+use|use)(?:\s|\[)"
+                          clj-content)
+                    (reset! portable-use-found true)
+                    (swap! portable-use-namespaces conj ns))
                   ;; Collect ys/yamlscript namespaces from bare require forms
                   ;; Matches: 'ys.fs and '[ys.http :as http] but NOT
                   ;; (:require [ys.v0 ...]) which is handled by loader scanning
@@ -2332,6 +2388,9 @@ Less common:
                   (fs/create-dirs (fs/parent target))
                   (fs/copy file target {:replace-existing true})))))
 
+          (when (and @portable-use-found (prune?))
+            (die "Portable use forms are not compatible with -Xprune"))
+
           ;; Make gljdeps.edn visible to glj compile in its CWD so it can
           ;; resolve third-party Go package call sites. glj invokes
           ;; `go get` for declared deps and compiles a small wrapper
@@ -2357,6 +2416,17 @@ Less common:
                               (seq extra-deps)
                               (assoc "GOARCH" host-goarch
                                      "GOFLAGS" "-mod=mod"))
+                compile-env
+                (cond-> compile-env
+                  (and @portable-use-found
+                    (System/getenv "YS_MAVEN_REPOSITORY"))
+                  (assoc "GLOJURE_MAVEN_REPOSITORY"
+                    (System/getenv "YS_MAVEN_REPOSITORY"))
+
+                  (and @portable-use-found
+                    (System/getenv "YS_GITLIBS_DIR"))
+                  (assoc "GLOJURE_GITLIBS_DIR"
+                    (System/getenv "YS_GITLIBS_DIR")))
                 compile-env (prepend-glj-classpath compile-env shared-tmpdir)]
             ;; When deps are present the workspace go.mod we wrote needs
             ;; a tidy pass so the user's deps appear before glj compiles.
@@ -2373,7 +2443,11 @@ Less common:
             ;; Compile all user namespaces
             (doseq [ns @all-namespaces]
               (msg "  Compiling" ns "...")
-              (let [compile-cmd (str "(compile (quote " ns "))")
+              (let [compile-cmd
+                    (if @portable-use-found
+                      (str "(require (quote clojurestar.deps)) "
+                        "(compile (quote " ns "))")
+                      (str "(compile (quote " ns "))"))
                     opts {:in compile-cmd
                           :dir shared-tmpdir
                           :extra-env compile-env
@@ -2480,16 +2554,23 @@ Less common:
                                (str TEMPLATE "/lib-main-prune.go")
                                (= format "lib")
                                (str TEMPLATE "/lib-main.go")
+                               (and (= format "js") @export-map)
+                               (str TEMPLATE "/js-main.go")
                                (prune?)
                                (str TEMPLATE "/main-prune.go")
                                :else
                                (str TEMPLATE "/main.go"))
                     template-content (slurp template)
                     ;; Generate export functions for lib format
-                    export-functions (if (= format "lib")
-                                       (generate-export-functions
-                                        @export-map @main-namespace)
-                                       "")
+                    export-functions
+                    (cond
+                      (= format "lib")
+                      (generate-export-functions @export-map @main-namespace)
+
+                      (and (= format "js") @export-map)
+                      (generate-js-export-registrations @export-map)
+
+                      :else "")
                     ;; Generate dynamic imports/requires for prune mode
                     ys-imports (if used-ys-ns
                                  (generate-ys-imports used-ys-ns go-module)
@@ -2533,6 +2614,13 @@ Less common:
                                         (some #(str/starts-with? ns %)
                                               stdlib-prefixes))
                                       other-nses))))
+                    portable-use-loads
+                    (str/join
+                      "\n"
+                      (map
+                        #(str "\tglj.Var(\"" %1
+                           "\", \"__gloat_load_deps\").Invoke()")
+                        (sort @portable-use-namespaces)))
                     result (render-template
                             template-content
                             [["GO-MODULE" go-module]
@@ -2542,7 +2630,8 @@ Less common:
                              ["YS-IMPORTS" ys-imports]
                              ["YS-REQUIRES" ys-requires]
                              ["ALL-NS-IMPORTS" all-ns-imports]
-                             ["ALL-NS-REQUIRES" all-ns-requires]])]
+                             ["ALL-NS-REQUIRES" all-ns-requires]
+                             ["PORTABLE-USE-LOADS" portable-use-loads]])]
                 (spit (str output-dir "/main.go") result)
                 (msg "Generated:" (str output-dir "/main.go")))
 
@@ -2550,8 +2639,12 @@ Less common:
             (when is-dir-output
               (let [bin-name (or binary-name (fs/file-name output-dir))
                     template-content (slurp (str TEMPLATE "/Makefile"))
-                    result (render-template template-content
-                                            [["BINARY-NAME" bin-name]])]
+                    build-tags (str/join " " (aot-build-tags))
+                    result
+                    (render-template
+                      template-content
+                      [["BINARY-NAME" bin-name]
+                       ["GLOAT-BUILD-TAGS" build-tags]])]
                 (spit (str output-dir "/Makefile") result)
                 (msg "Generated:" (str output-dir "/Makefile"))))
 

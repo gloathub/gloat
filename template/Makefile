@@ -17,13 +17,10 @@ MAKES-CLEAN := \
   $(GO-SUM) \
 
 BUILD-OPTS := -ldflags '-s -w'
-BUILD-TAGS := glj_aot_runtime
-ifneq (,$(wildcard internal))
-BUILD-TAGS += glj_no_aot_stdlib
-else
-BUILD-TAGS += glj_no_goimports
-endif
+BUILD-TAGS := GLOAT-BUILD-TAGS
+ifneq ($(strip $(BUILD-TAGS)),)
 BUILD-OPTS += -tags '$(BUILD-TAGS)'
+endif
 
 
 default:: build

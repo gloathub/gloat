@@ -27,6 +27,11 @@ include $M/wasmtime.mk
 include $M/yamlscript.mk
 include $M/zprint.mk
 
+ifneq ($(GLOAT_YS),)
+YS := $(GLOAT_YS)
+override PATH := $(dir $(YS)):$(PATH)
+endif
+
 ifneq ($(GLOAT_JOLT),)
 JOLT := $(GLOAT_JOLT)
 override PATH := $(dir $(JOLT)):$(PATH)

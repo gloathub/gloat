@@ -29,6 +29,9 @@ WASM-EXEC-JS
 
     const go = new Go();
     go.argv = ['TITLE'].concat(PROGRAM-ARGS);
+    globalThis.addEventListener('gloat-ready', () => {
+      statusEl.textContent = 'Ready.';
+    });
 
     fetch('WASM-FILE')
       .then(r => r.arrayBuffer())

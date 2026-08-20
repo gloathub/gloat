@@ -1,4 +1,4 @@
-GLOAT-VERSION := 0.1.77
+GLOAT-VERSION := 0.1.78
 
 GLOJURE-VERSION := 0.7.14
 GLOJURE-REPO := https://github.com/glojurelang/glojure
@@ -6,7 +6,7 @@ GLOJURE-REPO := https://github.com/glojurelang/glojure
 LET-GO-VERSION := 1.12.2
 LET-GO-REPO := nooga/let-go
 
-YAMLSCRIPT-VERSION := 0.2.30
+YAMLSCRIPT-VERSION := 0.2.31
 YS-VERSION := $(YAMLSCRIPT-VERSION)
 LIBYS-VERSION := $(YAMLSCRIPT-VERSION)
 

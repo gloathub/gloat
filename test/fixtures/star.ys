@@ -1,0 +1,9 @@
+#!/usr/bin/env ys-0
+
+use medley::core:
+  :deps 'mvn:dev.weavejester/medley@1.10.0/medley.core'
+  :get index-by
+
+defn main():
+  say: index-by(first [[1 2] [2 1]])
+  say: 42

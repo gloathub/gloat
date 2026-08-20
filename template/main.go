@@ -61,6 +61,9 @@ ALL-NS-REQUIRES
 	runVar := glj.Var("ys.v0.global", "RUN")
 	alterVarRoot.Invoke(runVar, constantly.Invoke(runMap))
 
+	// Load dependencies requested by portable use forms.
+PORTABLE-USE-LOADS
+
 	// ARGV and ARGS are set in -main function itself
 	// Call -main with args
 	myMain := glj.Var("NAMESPACE", "-main")

@@ -176,10 +176,11 @@ is "$rc" 1 "'gloat -Ejolt --deps' exits 1"
 has "$got" "use deps.edn for Jolt dependencies" \
   "'gloat -Ejolt' rejects Glojure dependency configuration"
 
-try "$GLOAT_BIN -Ejolt -o $TMP/jolt-ys $FIXTURES_DIR/hello.ys"
-is "$rc" 1 "'gloat -Ejolt hello.ys' exits 1"
-has "$got" "only supports Clojure (.clj) input" \
-  "'gloat -Ejolt' rejects YAMLScript input"
+printf '(ns unsupported)\n' > "$TMP/jolt.glj"
+try "$GLOAT_BIN -Ejolt -o $TMP/jolt-glj $TMP/jolt.glj"
+is "$rc" 1 "'gloat -Ejolt input.glj' exits 1"
+has "$got" "only supports Clojure (.clj) and YAMLScript (.ys) input" \
+  "'gloat -Ejolt' rejects Glojure input"
 
 printf '(defn -main [] (println "missing namespace"))\n' \
   > "$TMP/jolt-no-ns.clj"
@@ -218,6 +219,26 @@ chmod +x "$out"
 EOF
 chmod +x "$JOLT_MOCK"
 export JOLT_LOG
+
+YS_MOCK=$TMP/ys-mock
+cat > "$YS_MOCK" <<'EOF'
+#!/usr/bin/env bash
+cat <<'STAR'
+(require '[clojurestar.deps :as deps])
+(deps/add-deps '{:deps {org.yamlscript/ys.v0 {:mvn/version "0.2.31"}}})
+(ns main (:require ys.v0))
+(ys.v0/init)
+(defn main [] (say "Hello"))
+(apply main ARGS)
+STAR
+EOF
+chmod +x "$YS_MOCK"
+
+try "GLOAT_YS=$YS_MOCK GLOAT_JOLT=$JOLT_MOCK $GLOAT_BIN -q -Ejolt \
+  -o $TMP/jolt-ys $FIXTURES_DIR/hello.ys"
+is "$rc" 0 "'gloat -Ejolt' accepts YAMLScript input"
+has "$(< "$JOLT_LOG")" "ARG=hello.core" \
+  "'gloat -Ejolt' stages YAMLScript as portable Clojure"
 
 JOLT_PROJECT=$TMP/jolt-project
 mkdir -p "$JOLT_PROJECT/src/multi"
@@ -397,6 +418,27 @@ if [[ ${RUN_SLOW_TESTS:-} ]]; then
   is "$rc" 0 "portable use dependency loads at runtime"
   is "$got" $'{1 [1 2], 2 [2 1]}\n42' \
     "portable use binary prints dependency-backed output"
+
+  try "YS_MAVEN_REPOSITORY='$star_m2' \
+    YS_GITLIBS_DIR='$star_gitlibs' \
+    '$GLOAT_BIN' -q <(ys --to=star '$star_fixture') \
+    -o '$TMP/star-stream-bin'"
+  is "$rc" 0 "portable star stream builds a native binary"
+
+  try "YS_MAVEN_REPOSITORY='$star_m2' \
+    YS_GITLIBS_DIR='$star_gitlibs' '$TMP/star-stream-bin'"
+  is "$rc" 0 "portable star stream loads dependencies at runtime"
+  is "$got" $'{1 [1 2], 2 [2 1]}\n42' \
+    "portable star stream prints dependency-backed output"
+
+  printf '%s\n' '!ys-0' 'say: 40 + 2' > "$TMP/star-script.ys"
+  try "'$GLOAT_BIN' -q <(ys --to=star '$TMP/star-script.ys') \
+    -o '$TMP/star-script-bin'"
+  is "$rc" 0 "top-level portable star stream builds a native binary"
+
+  try "'$TMP/star-script-bin'"
+  is "$rc" 0 "top-level portable star stream runs"
+  is "$got" 42 "top-level portable star stream prints its result"
 
   try "YS_MAVEN_REPOSITORY='$star_m2' \
     YS_GITLIBS_DIR='$star_gitlibs' \

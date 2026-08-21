@@ -30,4 +30,13 @@ ok "$([[ -f $OUTPUT ]])" "-o output.clj (implicit stdin) creates output"
 has "$(cat "$OUTPUT")" "defn -main" \
   "-o output.clj (implicit stdin) compiles stdin"
 
+# Test 4: process substitution is accepted as a source stream
+PROCESS_OUTPUT=$TMP/process-substitution.clj
+try "$GLOAT_BIN -q <(printf '%s\n' '$INPUT') -o '$PROCESS_OUTPUT'"
+is "$rc" 0 "process-substitution input exits 0"
+ok "$([[ -f $PROCESS_OUTPUT ]])" \
+  "process-substitution input creates output"
+has "$(cat "$PROCESS_OUTPUT")" "defn -main" \
+  "process-substitution input compiles the stream"
+
 done-testing

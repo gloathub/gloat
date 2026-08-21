@@ -391,13 +391,15 @@
                name)]
     (str name ".core")))
 
+(defn parse-namespace-content [content]
+  (when-let [match (re-find #"(?m)^\(ns\s+([^\s)]+)" content)]
+    (second match)))
+
 (defn parse-namespace [file]
   (when (fs/exists? file)
     (try
       (with-open [rdr (io/reader (str file))]
-        (let [content (slurp rdr)
-              match (re-find #"(?m)^\(ns\s+([^\s)]+)" content)]
-          (when match (second match))))
+        (parse-namespace-content (slurp rdr)))
       (catch Exception _ nil))))
 
 (defn resolve-namespace [file ns-override]
@@ -860,69 +862,54 @@ Less common:
                     (:out result) (:err result))))
         path))))
 
-(defn ys-to-clj [input output namespace]
-  (let [ys (find-ys)]
-    (timer-start)
+(def star-preamble-heads ['require 'deps/add-deps 'ns 'ys.v0/init])
 
-    ;; Compile YS to Clojure
-    (let [result (process/shell
-                  {:out :string
-                   :err :string
-                   :continue true
-                   :extra-env go-env}
-                  ys "--to=star" input)
-          _ (when-not (zero? (:exit result))
-              (die "ys --to=star failed:\n"
-                   (or (not-empty (:err result)) (:out result))))
-          output-text (:out result)
-          forms
-          (with-open [reader
-                      (java.io.PushbackReader.
-                        (java.io.StringReader. output-text))]
-            (let [eof (Object.)]
-              (loop [forms []]
-                (let [form (read {:eof eof} reader)]
-                  (if (identical? eof form)
-                    forms
-                    (recur (conj forms form)))))))
-          expected-heads ['require 'deps/add-deps 'ns 'ys.v0/init]
-          actual-heads (mapv #(when (seq? %1) (first %1)) (take 4 forms))
-          _ (when-not (= expected-heads actual-heads)
-              (die "Unexpected ys --to=star preamble"))
-          body-forms (->> (drop 4 forms)
-                          (remove #(= %1 '(apply main ARGS))))
-          use-forms (filter #(and (seq? %1) (= 'use (first %1)))
-                      body-forms)
-          use-call #(str "(ys.v0.ys/+use *ns* '"
-                      (pr-str (list (rest %1))) ")")
-          use-calls (mapv use-call use-forms)
-          body (->> body-forms
-                    (map #(if (and (seq? %1) (= 'use (first %1)))
-                            (use-call %1)
-                            (pr-str %1)))
-                    (concat
-                      (when (seq use-calls)
-                        [(str "(defn __gloat_load_deps [] "
-                           (str/join " " use-calls) ")")]))
-                    (str/join "\n"))
-          body (-> body
-                   str/triml
-                   ;; Apply perl-like transformations
-                   (str/replace #"\(defn\n (\S+)" "(defn $1")
-                   (str/replace #"\(defn (\S+)\n (\[)" "(defn $1 $2")
-                   (str/replace #"\)\n\(defn" ")\n\n(defn")
-                   (str/replace #"\)\n\(declare" ")\n\n(declare"))]
+(defn read-clojure-forms
+  ([text] (read-clojure-forms text nil))
+  ([text limit]
+   (with-open [reader
+               (java.io.PushbackReader. (java.io.StringReader. text))]
+     (let [eof (Object.)]
+       (loop [forms []]
+         (if (= (count forms) limit)
+           forms
+           (let [form (read {:eof eof} reader)]
+             (if (identical? eof form)
+               forms
+               (recur (conj forms form))))))))))
 
-      (timer-end "YS→CLJ")
+(defn star-forms? [forms]
+  (= star-preamble-heads
+     (mapv #(when (seq? %1) (first %1)) (take 4 forms))))
 
-      ;; Get source file paths
-      (let [source-abs (if *source-file*
-                         *source-file*
-                         (str (fs/canonicalize input)))
-            source-dir (str (fs/parent source-abs))
-            ;; Check if body has main function
-            main-fn (if (has-main-fn? body)
-                      "
+(defn star-namespace [forms]
+  (let [ns-form (nth forms 2 nil)]
+    (when (and (seq? ns-form) (= 'ns (first ns-form)))
+      (str (second ns-form)))))
+
+(def star-top-level-heads
+  #{'alias 'comment 'extend 'extend-protocol 'extend-type 'import 'in-ns
+    'refer 'require 'set!})
+
+(defn star-use-form? [form]
+  (and (seq? form) (= 'use (first form))))
+
+(defn star-definition-form? [form]
+  (when (seq? form)
+    (let [head (first form)]
+      (and (symbol? head)
+           (or (str/starts-with? (name head) "def")
+               (contains? star-top-level-heads head))))))
+
+(defn star-function-defined? [forms function-name]
+  (boolean
+    (some #(and (seq? %1)
+                (contains? #{'defn 'defn-} (first %1))
+                (= function-name (second %1)))
+      forms)))
+
+(defn star-main-wrapper [expression]
+  (str "
 (defn -main [& argv]
   (let [args (mapv
                (fn [s]
@@ -935,17 +922,94 @@ Less common:
     (alter-var-root #'ARGS (constantly args))
     (alter-var-root #'FILE (constantly \"SOURCE-FILE\"))
     (alter-var-root #'DIR (constantly \"SOURCE-DIR\"))
-    (apply main args)))
-"
-                      "")
-            template-content (slurp (str TEMPLATE "/clojure.clj"))
-            result-content (render-template template-content
-                                            [["NAMESPACE" namespace]
-                                             ["BODY\n" (str body "\n")]
-                                             ["MAIN-FN" main-fn]
-                                             ["SOURCE-FILE" source-abs]
-                                             ["SOURCE-DIR" source-dir]])]
-        (spit output result-content)))))
+    " expression "))
+"))
+
+(defn write-star-clj [forms output namespace input]
+  (when-not (star-forms? forms)
+    (die "Unexpected ys --to=star preamble"))
+  (let [body-forms (->> (drop 4 forms)
+                        (remove #(= %1 '(apply main ARGS))))
+        main? (star-function-defined? body-forms 'main)
+        dash-main? (star-function-defined? body-forms '-main)
+        script? (not (or main? dash-main?))
+        script-forms (when script?
+                       (remove #(or (star-use-form? %1)
+                                    (star-definition-form? %1))
+                         body-forms))
+        namespace-forms (if script?
+                          (filter #(or (star-use-form? %1)
+                                       (star-definition-form? %1))
+                            body-forms)
+                          body-forms)
+        use-forms (filter star-use-form? body-forms)
+        use-call #(str "(ys.v0.ys/+use *ns* '"
+                    (pr-str (rest %1)) ")")
+        use-calls (mapv use-call use-forms)
+        body (->> namespace-forms
+                  (map #(if (star-use-form? %1)
+                          (use-call %1)
+                          (pr-str %1)))
+                  (concat
+                    (when (seq use-calls)
+                      [(str "(defn __gloat_load_deps [] "
+                         (str/join " " use-calls) ")")]))
+                  (str/join "\n"))
+        body (-> body
+                 str/triml
+                 ;; Apply perl-like transformations
+                 (str/replace #"\(defn\n (\S+)" "(defn $1")
+                 (str/replace #"\(defn (\S+)\n (\[)" "(defn $1 $2")
+                 (str/replace #"\)\n\(defn" ")\n\n(defn")
+                 (str/replace #"\)\n\(declare" ")\n\n(declare"))
+        source-abs (if *source-file*
+                     *source-file*
+                     (str (fs/canonicalize input)))
+        source-dir (str (fs/parent source-abs))
+        main-fn (cond
+                  main? (star-main-wrapper "(apply main args)")
+                  dash-main? ""
+                  :else (star-main-wrapper
+                          (if (seq script-forms)
+                            (str/join "\n    " (map pr-str script-forms))
+                            "nil")))
+        template-content (slurp (str TEMPLATE "/clojure.clj"))
+        result-content (render-template template-content
+                         [["NAMESPACE" namespace]
+                          ["BODY\n" (str body "\n")]
+                          ["MAIN-FN" main-fn]
+                          ["SOURCE-FILE" source-abs]
+                          ["SOURCE-DIR" source-dir]])]
+    (spit output result-content)))
+
+(defn clj-to-clj [input output namespace]
+  (let [input (str input)
+        text (slurp input)
+        star? (try
+                (star-forms? (read-clojure-forms text 4))
+                (catch Exception _ false))]
+    (if star?
+      (let [forms (read-clojure-forms text)
+            target-ns (or namespace (star-namespace forms) "main.core")
+            target-ns (if (= target-ns "main") "main.core" target-ns)]
+        (write-star-clj forms output target-ns input))
+      (fs/copy input output {:replace-existing true}))))
+
+(defn ys-to-clj [input output namespace]
+  (let [ys (find-ys)]
+    (timer-start)
+    (let [result (process/shell
+                  {:out :string
+                   :err :string
+                   :continue true
+                   :extra-env go-env}
+                  ys "--to=star" input)]
+      (when-not (zero? (:exit result))
+        (die "ys --to=star failed:\n"
+             (or (not-empty (:err result)) (:out result))))
+      (write-star-clj
+        (read-clojure-forms (:out result)) output namespace input))
+    (timer-end "YS→CLJ")))
 
 (defn clj-to-glj [input output]
   (let [bb (:BB make-vars)
@@ -1106,6 +1170,14 @@ Less common:
                      (str/replace "." "/")
                      (str/replace "-" "_"))]
     (str go-module "/internal/" pkg-path)))
+
+(defn ns-to-loader-path
+  "Convert a dotted namespace to its generated Go loader path."
+  [ns-name]
+  (str (-> ns-name
+           (str/replace "." "/")
+           (str/replace "-" "_"))
+       "/loader.go"))
 
 (defn generate-ys-imports
   "Generate Go import lines for used ys namespaces."
@@ -1410,7 +1482,7 @@ Less common:
         "ys" (do
                (msg "Converting" input "(.ys) to Clojure...")
                (ys-to-clj input clj-file ns))
-        "clj" (fs/copy input clj-file {:replace-existing true})
+        "clj" (clj-to-clj input clj-file namespace)
         (die "Engine 'let-go-lower-vm' can't compile input type: " input-type))
 
       (let [body (LG-rewrite-main (generate-lg-body clj-file))
@@ -1568,7 +1640,7 @@ Less common:
     (try
       (case input-type
         "ys" (ys-to-clj input clj-file ns)
-        "clj" (fs/copy input clj-file {:replace-existing true})
+        "clj" (clj-to-clj input clj-file namespace)
         (die "Engine 'let-go-lower-vm' can't compile input type: " input-type))
       (let [body (LG-rewrite-main (generate-lg-body clj-file))
             prog-ns (LG-program-ns body)
@@ -1616,7 +1688,7 @@ Less common:
             "ys" (do
                    (msg "Converting" input "(.ys) to Clojure...")
                    (ys-to-clj input clj-file ns))
-            "clj" (fs/copy input clj-file {:replace-existing true})
+            "clj" (clj-to-clj input clj-file namespace)
             (die "let-go engines can't compile input type: " input-type))
 
           (let [clj-content (slurp clj-file)
@@ -1929,7 +2001,7 @@ Less common:
   (boolean (re-find #"\(defn\s+-main\b" content)))
 
 (defn convert-files-jolt-bin
-  "Build namespaced Clojure sources as a host-native executable with Jolt.
+  "Build Clojure or YAMLScript sources as a host-native executable with Jolt.
   PROJECT-ROOT supplies deps.edn; staged command-line sources take precedence
   over the project's ordinary source roots."
   [input-files output namespace project-root]
@@ -1938,19 +2010,27 @@ Less common:
         build-dir (str tmpdir "/build")
         build-out (str build-dir "/" (fs/file-name output))
         seen-nses (atom #{})
-        entries (atom [])]
+        entries (atom [])
+        yaml-script? (atom false)]
     (try
       (fs/create-dirs src-dir)
       (fs/create-dirs build-dir)
 
-      (doseq [input input-files]
+      (doseq [[idx input] (map-indexed vector input-files)]
         (let [input (str input)
-              input-type (get-file-type input)]
-          (when-not (= "clj" input-type)
-            (die "Engine 'jolt' only supports Clojure (.clj) input"
-                 " (got " input ")"))
-          (let [content (slurp input)
-                source-ns (parse-namespace input)]
+              input-type (get-file-type input)
+              converted (str tmpdir "/input-" idx ".clj")
+              content
+              (case input-type
+                "clj" (slurp input)
+                "ys" (do
+                       (reset! yaml-script? true)
+                       (ys-to-clj input converted
+                                  (or namespace (derive-namespace input)))
+                       (slurp converted))
+                (die "Engine 'jolt' only supports Clojure (.clj) and"
+                     " YAMLScript (.ys) input (got " input ")"))
+              source-ns (parse-namespace-content content)]
             (when-not source-ns
               (die "Engine 'jolt' requires every source file to declare"
                    " an (ns ...) form: " input))
@@ -1961,7 +2041,7 @@ Less common:
               (swap! entries conj {:namespace source-ns :input input}))
             (let [target (str src-dir "/" (graal-ns-path source-ns) ".clj")]
               (fs/create-dirs (fs/parent target))
-              (fs/copy input target {:replace-existing true})))))
+              (spit target content))))
 
       (let [entry
             (if namespace
@@ -1979,10 +2059,12 @@ Less common:
                      " (select one with --ns)")))
             entry-ns (:namespace entry)
             project-root (str (fs/canonicalize project-root))
+            source-paths (cond-> [src-dir]
+                           @yaml-script? (conj (ys-v0-source-dir)))
             source-alias (pr-str
                            {:aliases
                             {:gloat/jolt-engine
-                             {:extra-paths [src-dir]}}})
+                             {:extra-paths source-paths}}})
             jolt (find-managed-tool :JOLT "path-jolt" "Jolt")
             local-home (:LOCAL-HOME make-vars)
             jolt-cache (str local-home "/jolt/aot-cache")
@@ -2024,11 +2106,17 @@ Less common:
 ;; High-Level Orchestrators
 ;;------------------------------------------------------------------------------
 
+(defn stream-input? [input]
+  (and (not= input "-")
+       (fs/exists? input)
+       (not (fs/regular-file? input))
+       (not (fs/directory? input))))
+
 (defn convert-to-stdout [input format namespace]
-  (let [;; Materialize stdin into a temp file when input is "-"
+  (let [;; Materialize stdin or a special input stream into a temp file.
         [input stdin?]
-        (if (= input "-")
-          (let [content (slurp *in*)
+        (if (or (= input "-") (stream-input? input))
+          (let [content (if (= input "-") (slurp *in*) (slurp input))
                 clj? (re-find #"^\s*\(" content)
                 suffix (if clj? ".clj" ".ys")
                 content (if (and clj? (not (re-find #"(?m)^\s*\(ns\s" content)))
@@ -2048,7 +2136,7 @@ Less common:
       ;; Convert to Clojure if needed
       (case input-type
         "ys" (ys-to-clj input clj-file namespace)
-        "clj" (fs/copy input clj-file {:replace-existing true})
+        "clj" (clj-to-clj input clj-file namespace)
         "glj" (fs/copy input glj-file {:replace-existing true})
         (die "Unknown input file type: " input))
 
@@ -2101,7 +2189,7 @@ Less common:
         "ys" (do
                (msg "Converting" input "(.ys) to Clojure...")
                (ys-to-clj input clj-file ns))
-        "clj" (fs/copy input clj-file {:replace-existing true})
+        "clj" (clj-to-clj input clj-file namespace)
         (die "Engine 'let-go-vm' can't compile input type: " input-type))
       (spit lg-file (generate-lg clj-file))
       (msg "Bundling binary with lg...")
@@ -2165,7 +2253,7 @@ Less common:
             "ys" (do
                    (msg "Converting" input "(.ys) to Clojure...")
                    (ys-to-clj input clj-file ns))
-            "clj" (fs/copy input clj-file {:replace-existing true})
+            "clj" (clj-to-clj input clj-file namespace)
             "glj" (fs/copy input glj-file {:replace-existing true})
             (die "Unknown input file type: " input))
 
@@ -2323,7 +2411,7 @@ Less common:
               ;; Convert through pipeline
               (case input-type
                 "ys" (ys-to-clj (str source-file) clj-file ns)
-                "clj" (fs/copy source-file clj-file {:replace-existing true})
+                "clj" (clj-to-clj source-file clj-file namespace)
                 "glj" (fs/copy source-file glj-file {:replace-existing true})
                 (die "Unknown file type: " basename))
 
@@ -2339,7 +2427,8 @@ Less common:
                           #"\((?:[\w.-]+/)?(?:\+use|use)(?:\s|\[)"
                           clj-content)
                     (reset! portable-use-found true)
-                    (swap! portable-use-namespaces conj ns))
+                    (swap! portable-use-namespaces conj
+                      (or ns (parse-namespace clj-file))))
                   ;; Collect ys/yamlscript namespaces from bare require forms
                   ;; Matches: 'ys.fs and '[ys.http :as http] but NOT
                   ;; (:require [ys.v0 ...]) which is handled by loader scanning
@@ -2466,16 +2555,14 @@ Less common:
           ;; Copy generated user Go files to output directory under pkg/.
           ;; Runtime loaders come from the external ys-v0-glj module.
           (fs/create-dirs (str output-dir "/pkg"))
-          (doseq [gofile (fs/glob shared-tmpdir "**/*.go")]
-            (let [rel-path (str (fs/relativize shared-tmpdir gofile))
-                  runtime-paths ["ys/" "babashka/" "clojure/data/"
-                                 "clojure/walk/"]
-                  is-runtime? (some #(str/starts-with? rel-path %)
-                                    runtime-paths)]
-              (when-not is-runtime?
-                (let [target (str output-dir "/pkg/" rel-path)]
-                  (fs/create-dirs (fs/parent target))
-                  (fs/copy gofile target {:replace-existing true})))))
+          (let [runtime-loaders (into #{} (map ns-to-loader-path)
+                                  (ys-ns-order))]
+            (doseq [gofile (fs/glob shared-tmpdir "**/*.go")]
+              (let [rel-path (str (fs/relativize shared-tmpdir gofile))]
+                (when-not (contains? runtime-loaders rel-path)
+                  (let [target (str output-dir "/pkg/" rel-path)]
+                    (fs/create-dirs (fs/parent target))
+                    (fs/copy gofile target {:replace-existing true}))))))
 
           (when-not @main-namespace
             (die "Could not determine main namespace"))
@@ -2578,42 +2665,32 @@ Less common:
                     ys-requires (if used-ys-ns
                                   (generate-ys-requires used-ys-ns)
                                   "")
+                    application-nses
+                    (let [runtime-nses (set (ys-ns-order))]
+                      (remove #(or (= % @main-namespace)
+                                   (contains? runtime-nses %))
+                              @all-namespaces))
                     ;; Generate blank imports for all compiled namespaces
                     ;; (excluding main) so their init() fns register loaders
                     all-ns-imports
-                    (let [main-ns-path package-path
-                          other-nses (remove #(= % @main-namespace)
-                                             @all-namespaces)
-                          stdlib-prefixes ["yamlscript." "ys."]]
-                      (str/join "\n"
-                                (map (fn [ns]
-                                       (let [np (-> ns
-                                                    (str/replace #"\." "/")
-                                                    (str/replace #"-" "_"))]
-                                         (str "\t_ \"" go-module "/pkg/" np "\"")))
-                                     (remove
-                                      (fn [ns]
-                                        (some #(str/starts-with? ns %)
-                                              stdlib-prefixes))
-                                      other-nses))))
+                    (str/join "\n"
+                              (map (fn [ns]
+                                     (let [np (-> ns
+                                                  (str/replace #"\." "/")
+                                                  (str/replace #"-" "_"))]
+                                       (str "\t_ \"" go-module "/pkg/" np "\"")))
+                                   application-nses))
                     ;; Generate require.Invoke calls for all compiled namespaces
                     ;; (excluding main and stdlib) so their vars are bound
                     ;; before any user code runs. Glojure AOT does not generate
                     ;; NSRequire calls for :require forms, so we must do this
                     ;; explicitly.
                     all-ns-requires
-                    (let [other-nses (remove #(= % @main-namespace)
-                                             @all-namespaces)
-                          stdlib-prefixes ["yamlscript." "ys."]]
-                      (str/join "\n"
-                                (map (fn [ns]
-                                       (str "\trequire.Invoke(lang.NewSymbol(\""
-                                            ns "\"))"))
-                                     (remove
-                                      (fn [ns]
-                                        (some #(str/starts-with? ns %)
-                                              stdlib-prefixes))
-                                      other-nses))))
+                    (str/join "\n"
+                              (map (fn [ns]
+                                     (str "\trequire.Invoke(lang.NewSymbol(\""
+                                          ns "\"))"))
+                                   application-nses))
                     portable-use-loads
                     (str/join
                       "\n"
@@ -3200,8 +3277,11 @@ Less common:
                 (:module opts)
                 (:platform opts)))
 
-            (= (:input opts) "-")
-            (let [content (slurp *in*)
+            (or (= (:input opts) "-")
+                (stream-input? (:input opts)))
+            (let [content (if (= (:input opts) "-")
+                            (slurp *in*)
+                            (slurp (:input opts)))
                   clj? (re-find #"^\s*\(" content)
                   suffix (if clj? ".clj" ".ys")
                   content (if (and clj? (not (re-find #"(?m)^\s*\(ns\s" content)))

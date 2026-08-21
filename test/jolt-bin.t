@@ -69,4 +69,14 @@ try "printf '%s\n' \
 is "$rc" 0 "gloat -Ejolt --run builds and runs stdin"
 is "$got" "stdin-run" "Jolt stdin receives program arguments"
 
+ys_bin=$TMP/jolt-ys
+try "gloat -q -Ejolt -o $ys_bin $TEST_ROOT/fixtures/hello.ys 2>&1"
+is "$rc" 0 "gloat -Ejolt builds YAMLScript"
+if [[ -x $ys_bin ]]; then
+  try "$ys_bin Jolt"
+  is "$rc" 0 "the Jolt YAMLScript binary exits 0"
+  is "$got" "Hello, Jolt!" \
+    "the Jolt YAMLScript binary receives arguments"
+fi
+
 done-testing

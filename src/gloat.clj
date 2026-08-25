@@ -932,7 +932,11 @@ Less common:
                         (remove #(= %1 '(apply main ARGS))))
         main? (star-function-defined? body-forms 'main)
         dash-main? (star-function-defined? body-forms '-main)
-        script? (not (or main? dash-main?))
+        export? (some #(and (seq? %1)
+                            (= 'def (first %1))
+                            (= 'EXPORT (second %1)))
+                  body-forms)
+        script? (not (or main? dash-main? export?))
         script-forms (when script?
                        (remove #(or (star-use-form? %1)
                                     (star-definition-form? %1))
@@ -968,7 +972,7 @@ Less common:
         source-dir (str (fs/parent source-abs))
         main-fn (cond
                   main? (star-main-wrapper "(apply main args)")
-                  dash-main? ""
+                  (or dash-main? export?) ""
                   :else (star-main-wrapper
                           (if (seq script-forms)
                             (str/join "\n    " (map pr-str script-forms))

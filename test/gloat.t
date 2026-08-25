@@ -240,6 +240,26 @@ is "$rc" 0 "'gloat -Ejolt' accepts YAMLScript input"
 has "$(< "$JOLT_LOG")" "ARG=hello.core" \
   "'gloat -Ejolt' stages YAMLScript as portable Clojure"
 
+YS_LIB_MOCK=$TMP/ys-lib-mock
+cat > "$YS_LIB_MOCK" <<'EOF'
+#!/usr/bin/env bash
+cat <<'STAR'
+(require '[clojurestar.deps :as deps])
+(deps/add-deps '{:deps {org.yamlscript/ys.v0 {:mvn/version "0.2.32"}}})
+(ns main (:require ys.v0))
+(ys.v0/init)
+(def EXPORT {"twice" ["int" "int"]})
+(defn twice [x] (* x 2))
+STAR
+EOF
+chmod +x "$YS_LIB_MOCK"
+printf '%s\n' '!ys-0' > "$TMP/export.ys"
+
+try "GLOAT_YS=$YS_LIB_MOCK $GLOAT_BIN -q -t clj $TMP/export.ys"
+is "$rc" 0 "portable EXPORT source converts to Clojure"
+has "$got" "(def EXPORT" "portable EXPORT declaration is retained"
+hasnt "$got" "(defn -main" "portable EXPORT source gets no main wrapper"
+
 JOLT_PROJECT=$TMP/jolt-project
 mkdir -p "$JOLT_PROJECT/src/multi"
 cp "$FIXTURES_DIR/multi-main.clj" "$JOLT_PROJECT/src/multi/app.clj"

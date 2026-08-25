@@ -1,7 +1,7 @@
 !ys-0
 
 require:
-  ys::json: => json
+  ys::json: :as ysjson
 
 EXPORT =::
   factorial: [int, int]
@@ -29,11 +29,11 @@ defn maybe():
   rand-nth:: [true, false]
 
 defn sort-json-array(json-str):
-  json-dump: sort(json/load(json-str))
+  json-dump: sort(ysjson/load(json-str))
 
 # Non-EXPORTed helper functions:
 defn json-load(s):
-  json/load: s
+  ysjson/load: s
 
 defn json-dump(o):
-  json/dump: o
+  ysjson/dump: o

@@ -352,7 +352,7 @@ python-local-server: $(PYTHON)
 annoucement:
 	@make-do $@ $(GLOJURE-VERSION)
 
-release: $(GH) $(PERL)
+release: $(GH) $(PERL) $(GO)
 	@$(if $(filter command line,$(origin VERSION)),,\
 	  $(error VERSION is required on the command line))
 	@$(if $(filter command line,$(origin GLJ-VERSION)),,\

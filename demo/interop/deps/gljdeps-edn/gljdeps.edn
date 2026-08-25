@@ -1,0 +1,1 @@
+{:deps {github.com:oklog:ulid:v2 {:mvn/version "v2.1.0"}}}

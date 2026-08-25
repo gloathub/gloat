@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/clojure.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+<title>Binary Size Analysis</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; max-width: 960px; margin: 2em auto; padding: 0 1em; color: #24292f; }
+h1 { border-bottom: 1px solid #d0d7de; padding-bottom: 0.3em; }
+h2 { margin-top: 1.5em; }
+table { border-collapse: collapse; width: 100%; margin: 0.5em 0; }
+table.summary { width: auto; }
+th, td { border: 1px solid #d0d7de; padding: 6px 12px; text-align: left; }
+th { background: #f6f8fa; cursor: pointer; user-select: none; white-space: nowrap; }
+th:hover { background: #eaeef2; }
+tr:nth-child(even) { background: #f6f8fa; }
+tfoot td { font-weight: bold; }
+code { background: #f0f3f6; padding: 0.2em 0.4em; border-radius: 3px; font-size: 0.9em; }
+pre { background: #f6f8fa; padding: 1em; overflow-x: auto; border-radius: 6px; }
+pre code.hljs { background: inherit; padding: 0; }
+details { margin: 0.5em 0; }
+summary { cursor: pointer; font-weight: 600; }
+</style>
+</head>
+<body>
+<h1>Binary Size Analysis</h1>
+<table class="summary">
+<tr><td><code>gloat-hello</code></td><td>14.9 MB</td></tr>
+<tr><td><code>gloat-hello-unstripped</code></td><td>21.2 MB</td></tr>
+<tr><td><code>-Xprune</code></td><td>true</td></tr>
+<tr><td>Gloat</td><td>v0.1.78</td></tr>
+<tr><td>Glojure</td><td>v0.7.14</td></tr>
+<tr><td>Go</td><td>go1.24.0</td></tr>
+<tr><td>OS</td><td>linux/amd64</td></tr>
+</table>
+<h2>Source Files</h2>
+<details>
+<summary>hello-world.clj</summary>
+<pre><code class="language-clojure">(ns hello-world)
+
+(defn -main []
+  (println &quot;Hello, world!&quot;))
+</code></pre>
+</details>
+<h2>On-Disk Section Breakdown</h2>
+<table id="sections">
+<thead><tr><th onclick="sortTable('sections',0)">Section ⇅</th><th onclick="sortTable('sections',1)">Size ⇅</th><th onclick="sortTable('sections',2)">% ⇅</th><th onclick="sortTable('sections',3)">Bytes ⇅</th></tr></thead>
+<tbody>
+<tr><td><code>.text</code></td><td data-sort="7510673">7.2 MB</td><td>48.2</td><td>7510673</td></tr>
+<tr><td><code>.rodata</code></td><td data-sort="3545249">3.4 MB</td><td>22.7</td><td>3545249</td></tr>
+<tr><td><code>.gopclntab</code></td><td data-sort="4121768">3.9 MB</td><td>26.4</td><td>4121768</td></tr>
+<tr><td><code>.noptrdata</code></td><td data-sort="296929">290.0 KB</td><td>1.9</td><td>296929</td></tr>
+<tr><td><code>.data</code></td><td data-sort="91634">89.5 KB</td><td>0.6</td><td>91634</td></tr>
+<tr><td>ELF overhead</td><td data-sort="12547">12.3 KB</td><td>0.1</td><td>12547</td></tr>
+</tbody>
+<tfoot>
+<tr><td><strong>TOTAL</strong></td><td data-sort="15597752"><strong>14.9 MB</strong></td><td></td><td>15597752</td></tr>
+</tfoot>
+</table>
+<p>.bss: 191.3 KB in RAM, 0 bytes on disk<br>.noptrbss: 56.5 KB in RAM, 0 bytes on disk<br></p>
+<h2>Code + Data by Category</h2>
+<table id="categories">
+<thead><tr><th onclick="sortTable('categories',0)">Category ⇅</th><th onclick="sortTable('categories',1)">Size ⇅</th><th onclick="sortTable('categories',2)">% ⇅</th><th onclick="sortTable('categories',3)">Bytes ⇅</th></tr></thead>
+<tbody>
+<tr><td>user/code</td><td data-sort="1490594">1.4 MB</td><td>18.9</td><td>1490594</td></tr>
+<tr><td>go-stdlib/other</td><td data-sort="1260012">1.2 MB</td><td>16.0</td><td>1260012</td></tr>
+<tr><td>glojure/runtime</td><td data-sort="1056154">1.0 MB</td><td>13.4</td><td>1056154</td></tr>
+<tr><td>go-stdlib/crypto</td><td data-sort="1008324">984.7 KB</td><td>12.8</td><td>1008324</td></tr>
+<tr><td>user/clojure.core</td><td data-sort="946276">924.1 KB</td><td>12.0</td><td>946276</td></tr>
+<tr><td>go-runtime</td><td data-sort="643929">628.8 KB</td><td>8.2</td><td>643929</td></tr>
+<tr><td>go-stdlib/net+http</td><td data-sort="544893">532.1 KB</td><td>6.9</td><td>544893</td></tr>
+<tr><td>glojure/stdlib</td><td data-sort="305657">298.5 KB</td><td>3.9</td><td>305657</td></tr>
+<tr><td>go-stdlib/vendor</td><td data-sort="258209">252.2 KB</td><td>3.3</td><td>258209</td></tr>
+<tr><td>go-stdlib/go-tools</td><td data-sort="116292">113.6 KB</td><td>1.5</td><td>116292</td></tr>
+<tr><td>go-stdlib/encoding</td><td data-sort="107692">105.2 KB</td><td>1.4</td><td>107692</td></tr>
+<tr><td>go-stdlib/slices</td><td data-sort="105310">102.8 KB</td><td>1.3</td><td>105310</td></tr>
+<tr><td>go:type-table</td><td data-sort="45614">44.5 KB</td><td>0.6</td><td>45614</td></tr>
+<tr><td>go-stdlib/database</td><td data-sort="113">113 B</td><td>0.0</td><td>113</td></tr>
+</tbody>
+<tfoot>
+<tr><td><strong>TOTAL</strong></td><td data-sort="7889069"><strong>7.5 MB</strong></td><td></td><td>7889069</td></tr>
+</tfoot>
+</table>
+<h2>Top 30 Packages by Size</h2>
+<table id="packages">
+<thead><tr><th onclick="sortTable('packages',0)">Package ⇅</th><th onclick="sortTable('packages',1)">Size ⇅</th><th onclick="sortTable('packages',2)">% ⇅</th><th onclick="sortTable('packages',3)">Bytes ⇅</th></tr></thead>
+<tbody>
+<tr><td><code>github.com/gloathub/build/internal/stdlib/clojure/core</code></td><td data-sort="946276">924.1 KB</td><td>12.0</td><td>946276</td></tr>
+<tr><td><code>runtime</code></td><td data-sort="638223">623.3 KB</td><td>8.1</td><td>638223</td></tr>
+<tr><td><code>github.com/glojurelang/glojure/pkg/lang</code></td><td data-sort="589260">575.4 KB</td><td>7.5</td><td>589260</td></tr>
+<tr><td><code>github.com/gloathub/build/internal/ys/v0/std</code></td><td data-sort="506897">495.0 KB</td><td>6.4</td><td>506897</td></tr>
+<tr><td><code>net/http</code></td><td data-sort="306141">299.0 KB</td><td>3.9</td><td>306141</td></tr>
+<tr><td><code>crypto/tls</code></td><td data-sort="267219">261.0 KB</td><td>3.4</td><td>267219</td></tr>
+<tr><td><code>net</code></td><td data-sort="168139">164.2 KB</td><td>2.1</td><td>168139</td></tr>
+<tr><td><code>github.com/glojurelang/glojure/pkg/runtime</code></td><td data-sort="162784">159.0 KB</td><td>2.1</td><td>162784</td></tr>
+<tr><td><code>reflect</code></td><td data-sort="158691">155.0 KB</td><td>2.0</td><td>158691</td></tr>
+<tr><td><code>crypto/internal/fips140/nistec</code></td><td data-sort="157959">154.3 KB</td><td>2.0</td><td>157959</td></tr>
+<tr><td><code>math/big</code></td><td data-sort="153201">149.6 KB</td><td>1.9</td><td>153201</td></tr>
+<tr><td><code>github.com/gloathub/build/internal/ys/v0/fs</code></td><td data-sort="119961">117.1 KB</td><td>1.5</td><td>119961</td></tr>
+<tr><td><code>github.com/gloathub/build/internal/ys/v0/ys</code></td><td data-sort="105995">103.5 KB</td><td>1.3</td><td>105995</td></tr>
+<tr><td><code>crypto/x509</code></td><td data-sort="98870">96.6 KB</td><td>1.3</td><td>98870</td></tr>
+<tr><td><code>github.com/gloathub/build/internal/ys/v0/dwim</code></td><td data-sort="92875">90.7 KB</td><td>1.2</td><td>92875</td></tr>
+<tr><td><code>slices</code></td><td data-sort="88282">86.2 KB</td><td>1.1</td><td>88282</td></tr>
+<tr><td><code>github.com/glojurelang/glojure/pkg/stdlib/clojure/core/async</code></td><td data-sort="87938">85.9 KB</td><td>1.1</td><td>87938</td></tr>
+<tr><td><code>time</code></td><td data-sort="85332">83.3 KB</td><td>1.1</td><td>85332</td></tr>
+<tr><td><code>github.com/glojurelang/glojure/pkg/stdlib/clojure/string</code></td><td data-sort="83135">81.2 KB</td><td>1.1</td><td>83135</td></tr>
+<tr><td><code>go/parser</code></td><td data-sort="81367">79.5 KB</td><td>1.0</td><td>81367</td></tr>
+<tr><td><code>github.com/glojurelang/glojure/pkg/compiler</code></td><td data-sort="80907">79.0 KB</td><td>1.0</td><td>80907</td></tr>
+<tr><td><code>vendor/golang.org/x/text/unicode/norm</code></td><td data-sort="77176">75.4 KB</td><td>1.0</td><td>77176</td></tr>
+<tr><td><code>github.com/gloathub/build/internal/ys/v0/debug</code></td><td data-sort="76694">74.9 KB</td><td>1.0</td><td>76694</td></tr>
+<tr><td><code>github.com/glojurelang/glojure/pkg/stdlib/glojure/go/io</code></td><td data-sort="74921">73.2 KB</td><td>0.9</td><td>74921</td></tr>
+<tr><td><code>github.com/gloathub/build/internal/ys/v0/taptest</code></td><td data-sort="71467">69.8 KB</td><td>0.9</td><td>71467</td></tr>
+<tr><td><code>regexp/syntax</code></td><td data-sort="63251">61.8 KB</td><td>0.8</td><td>63251</td></tr>
+<tr><td><code>github.com/gloathub/build/internal/ys/v0/util</code></td><td data-sort="61404">60.0 KB</td><td>0.8</td><td>61404</td></tr>
+<tr><td><code>github.com/glojurelang/glojure/pkg/stdlib/clojure/core/protocols</code></td><td data-sort="59655">58.3 KB</td><td>0.8</td><td>59655</td></tr>
+<tr><td><code>crypto/internal/fips140/edwards25519</code></td><td data-sort="58134">56.8 KB</td><td>0.7</td><td>58134</td></tr>
+<tr><td><code>encoding/json</code></td><td data-sort="57039">55.7 KB</td><td>0.7</td><td>57039</td></tr>
+</tbody>
+</table>
+<h2>Top 30 Individual Symbols</h2>
+<table id="symbols">
+<thead><tr><th onclick="sortTable('symbols',0)">Size ⇅</th><th onclick="sortTable('symbols',1)">Bytes ⇅</th><th onclick="sortTable('symbols',2)">Type ⇅</th><th onclick="sortTable('symbols',3)">Symbol ⇅</th></tr></thead>
+<tbody>
+<tr><td data-sort="227854">222.5 KB</td><td>227854</td><td>T</td><td><code>github.com/gloathub/build/internal/stdlib/clojure/core.LoadNS</code></td></tr>
+<tr><td data-sort="165054">161.2 KB</td><td>165054</td><td>T</td><td><code>github.com/gloathub/build/internal/ys/v0/std.LoadNS</code></td></tr>
+<tr><td data-sort="93008">90.8 KB</td><td>93008</td><td>D</td><td><code>runtime.mheap_</code></td></tr>
+<tr><td data-sort="88064">86.0 KB</td><td>88064</td><td>D</td><td><code>crypto/internal/fips140/nistec.p256PrecomputedEmbed</code></td></tr>
+<tr><td data-sort="36675">35.8 KB</td><td>36675</td><td>r</td><td><code>runtime.findfunctab</code></td></tr>
+<tr><td data-sort="35813">35.0 KB</td><td>35813</td><td>T</td><td><code>github.com/glojurelang/glojure/pkg/stdlib/glojure/go/io.LoadNS</code></td></tr>
+<tr><td data-sort="31887">31.1 KB</td><td>31887</td><td>T</td><td><code>github.com/glojurelang/glojure/pkg/stdlib/clojure/core/protocols.LoadNS</code></td></tr>
+<tr><td data-sort="31781">31.0 KB</td><td>31781</td><td>T</td><td><code>github.com/gloathub/build/internal/ys/v0/fs.LoadNS</code></td></tr>
+<tr><td data-sort="31312">30.6 KB</td><td>31312</td><td>T</td><td><code>github.com/gloathub/build/internal/ys/v0/ys.LoadNS</code></td></tr>
+<tr><td data-sort="30736">30.0 KB</td><td>30736</td><td>D</td><td><code>crypto/internal/fips140/edwards25519.basepointTablePrecomp</code></td></tr>
+<tr><td data-sort="26762">26.1 KB</td><td>26762</td><td>T</td><td><code>github.com/gloathub/build/internal/ys/v0/dwim.LoadNS</code></td></tr>
+<tr><td data-sort="24522">23.9 KB</td><td>24522</td><td>T</td><td><code>github.com/gloathub/build/internal/ys/v0/debug.LoadNS</code></td></tr>
+<tr><td data-sort="21782">21.3 KB</td><td>21782</td><td>T</td><td><code>vendor/golang.org/x/crypto/chacha20poly1305.chacha20Poly1305Seal.abi0</code></td></tr>
+<tr><td data-sort="20699">20.2 KB</td><td>20699</td><td>T</td><td><code>github.com/glojurelang/glojure/pkg/stdlib/clojure/core/async.LoadNS</code></td></tr>
+<tr><td data-sort="20379">19.9 KB</td><td>20379</td><td>T</td><td><code>github.com/glojurelang/glojure/pkg/stdlib/clojure/string.LoadNS</code></td></tr>
+<tr><td data-sort="19592">19.1 KB</td><td>19592</td><td>T</td><td><code>crypto/internal/fips140/sha3.keccakF1600.abi0</code></td></tr>
+<tr><td data-sort="19426">19.0 KB</td><td>19426</td><td>T</td><td><code>vendor/golang.org/x/crypto/chacha20poly1305.chacha20Poly1305Open.abi0</code></td></tr>
+<tr><td data-sort="19426">19.0 KB</td><td>19426</td><td>D</td><td><code>vendor/golang.org/x/text/unicode/norm.decomps</code></td></tr>
+<tr><td data-sort="18954">18.5 KB</td><td>18954</td><td>T</td><td><code>github.com/gloathub/build/internal/ys/v0/util.LoadNS</code></td></tr>
+<tr><td data-sort="17280">16.9 KB</td><td>17280</td><td>D</td><td><code>vendor/golang.org/x/net/idna.idnaValues</code></td></tr>
+<tr><td data-sort="16576">16.2 KB</td><td>16576</td><td>D</td><td><code>vendor/golang.org/x/text/unicode/bidi.bidiValues</code></td></tr>
+<tr><td data-sort="16234">15.9 KB</td><td>16234</td><td>T</td><td><code>github.com/gloathub/build/internal/ys/v0/taptest.LoadNS</code></td></tr>
+<tr><td data-sort="16133">15.8 KB</td><td>16133</td><td>T</td><td><code>crypto/internal/fips140/sha512.blockAMD64.abi0</code></td></tr>
+<tr><td data-sort="16064">15.7 KB</td><td>16064</td><td>D</td><td><code>runtime.semtable</code></td></tr>
+<tr><td data-sort="16005">15.6 KB</td><td>16005</td><td>T</td><td><code>github.com/glojurelang/glojure/pkg/lang.init</code></td></tr>
+<tr><td data-sort="14962">14.6 KB</td><td>14962</td><td>T</td><td><code>github.com/gloathub/build/internal/ys/v0.LoadNS</code></td></tr>
+<tr><td data-sort="13608">13.3 KB</td><td>13608</td><td>r</td><td><code>runtime.typelink</code></td></tr>
+<tr><td data-sort="12965">12.7 KB</td><td>12965</td><td>T</td><td><code>github.com/gloathub/build/internal/ys/v0/global.LoadNS</code></td></tr>
+<tr><td data-sort="12668">12.4 KB</td><td>12668</td><td>T</td><td><code>crypto/tls.(*clientHelloMsg).marshalMsg</code></td></tr>
+<tr><td data-sort="12485">12.2 KB</td><td>12485</td><td>T</td><td><code>github.com/gloathub/build/internal/ys/v0/manifest.LoadNS</code></td></tr>
+</tbody>
+</table>
+<script>
+function sortTable(id, col) {
+  var table = document.getElementById(id);
+  var tbody = table.tBodies[0];
+  var rows = Array.from(tbody.rows);
+  var nums = 0, total = 0;
+  rows.forEach(function(r) {
+    var c = r.cells[col];
+    var v = (c.dataset.sort || c.textContent).trim();
+    if (v !== '') { total++; if (/^[0-9.]+$/.test(v)) nums++; }
+  });
+  var isNum = total > 0 && nums > total / 2;
+  function val(r) {
+    var c = r.cells[col];
+    return c.dataset.sort || c.textContent.trim();
+  }
+  var sameCol = table.dataset.sortCol == col;
+  var asc;
+  if (sameCol) {
+    asc = table.dataset.sortAsc != 'true';
+  } else if (isNum) {
+    var desc = true;
+    for (var i = 1; i < rows.length; i++) {
+      var prev = parseFloat(val(rows[i-1]));
+      var curr = parseFloat(val(rows[i]));
+      if (!isNaN(prev) && !isNaN(curr) && curr > prev) { desc = false; break; }
+    }
+    asc = desc;
+  } else {
+    asc = true;
+  }
+  rows.sort(function(a, b) {
+    var av = val(a), bv = val(b);
+    var an = parseFloat(av), bn = parseFloat(bv);
+    if (!isNaN(an) && !isNaN(bn)) return asc ? an - bn : bn - an;
+    return asc ? av.localeCompare(bv) : bv.localeCompare(av);
+  });
+  rows.forEach(function(r) { tbody.appendChild(r); });
+  table.dataset.sortCol = col;
+  table.dataset.sortAsc = asc;
+}
+</script>
+<script>hljs.highlightAll();</script>
+</body>
+</html>

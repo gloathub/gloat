@@ -1,0 +1,9 @@
+# https://rosettacode.org/wiki/Fibonacci_sequence#YAMLScript
+
+!ys-0
+
+defn main(n=10):
+  loop a 0, b 1, i 1:
+    say: a
+    when i < n:
+      recur: b, (a + b), i.++

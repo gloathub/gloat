@@ -1,0 +1,13 @@
+# https://rosettacode.org/wiki/Leap_year#YAMLScript
+
+!ys-0
+
+defn main(year=2024):
+  say: "$year is $when-not(
+       leap-year(year) 'not ')a
+       leap year."
+
+defn leap-year(year):
+  (year % 4) == 0 &&:
+    (year % 100):pos? ||:
+      (year % 400).eq(0)

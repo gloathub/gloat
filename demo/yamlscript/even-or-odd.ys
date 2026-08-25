@@ -1,0 +1,9 @@
+# https://rosettacode.org/wiki/Even_or_odd#YAMLScript
+
+!ys-0
+
+defn main(*xs):
+  each x xs:
+    if x:even?:
+      say: "$x is even"
+      say: "$x is odd"

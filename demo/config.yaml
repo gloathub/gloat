@@ -1,0 +1,125 @@
+# Argument selectors for known programs
+
+100-doors: []
+
+99-bottles-of-beer:
+- - ["99 bottles", 99, true]
+  - ["50 bottles", 50]
+  - ["25 bottles", 25]
+  - ["10 bottles", 10]
+  - ["5 bottles", 5]
+  - ["3 bottles", 3]
+  - ["1 bottle", 1]
+
+best-shuffle:
+- - ["abracadabra", "abracadabra", true]
+  - ["seesaw", "seesaw"]
+  - ["elk", "elk"]
+  - ["grrrrrr", "grrrrrr"]
+  - ["up", "pu"]
+  - ["a", "a"]
+
+even-or-odd:
+- [1, 2, [42], 99, 100]
+
+factorial:
+- [5, 10, [12], 15, 20]
+
+fibonacci-sequence:
+- [5, [10], 15, 20, 30]
+
+fizzbuzz:
+- [7, [16], 22, 100]
+
+greatest-common-divisor:
+- - ["42 63 (default)", '[42, 63]', true]
+  - ["100 35", '[100, 35]']
+  - ["128 96", '[128, 96]']
+  - ["17 23 (coprime)", '[17, 23]']
+
+leap-year:
+- [1976, 1999, 2000, 2001, [2026]]
+
+luhn-test-of-credit-card-numbers:
+- - ["49927398716 (valid)", "49927398716", true]
+  - ["49927398717 (invalid)", "49927398717"]
+  - ["1234567812345678 (invalid)", "1234567812345678"]
+  - ["1234567812345670 (valid)", "1234567812345670"]
+
+validate-international-securities-identification-number:
+- - ["US0378331005 (Apple)", "US0378331005", true]
+  - ["AU0000XVGZA3 (valid)", "AU0000XVGZA3"]
+  - ["US0378331006 (invalid)", "US0378331006"]
+  - ["GB0002634946 (BAE)", "GB0002634946"]
+
+dragon-curve:
+- [63, 127, [255], 511]
+
+weird-numbers:
+- [100, 1000, [5000], 10000, 16500]
+
+array-length: []
+
+hello-world-text: []
+
+floyds-triangle:
+- [5, [14], 20, 25, 30]
+
+palindrome-detection:
+- - ["31337 (default)", 31337, true]
+  - ["12321 (palindrome)", 12321]
+  - ["12345 (not)", 12345]
+  - ["racecar", "racecar"]
+  - ["hello", "hello"]
+
+integer-comparison:
+- - ["5 10 (default)", '[5, 10]', true]
+  - ["10 5", '[10, 5]']
+  - ["7 7", '[7, 7]']
+  - ["100 50", '[100, 50]']
+
+sieve-of-eratosthenes:
+- [25, 50, [100], 200, 500]
+
+tokenize-a-string:
+- - ["Comma delimited (default)", "Hello,How,Are,You,Today", true]
+  - ["Dots", "one.two.three.four"]
+  - ["Spaces", "foo bar baz"]
+
+function-definition:
+- - ["2 3 4 (default)", '[2, 3, 4]', true]
+  - ["5 10", '[5, 10]']
+  - ["1 2 3 4 5", '[1, 2, 3, 4, 5]']
+
+jortsort:
+- - ["1 2 3 4 5 (sorted)", '[1, 2, 3, 4, 5]', true]
+  - ["5 4 3 2 1 (not sorted)", '[5, 4, 3, 2, 1]']
+  - ["1 3 2 4 (not sorted)", '[1, 3, 2, 4]']
+
+sparkline-in-unicode:
+- - ["1 2 3 4 5 6 7 8 7 6 5 4 3 2 1", '[1, 2, 3, 4, 5, 6, 7, 8, 7, 6, 5, 4, 3, 2, 1]', true]
+  - ["0 1 19 20", '[0, 1, 19, 20]']
+  - ["0 999 4000 4999 7000 7999", '[0, 999, 4000, 4999, 7000, 7999]']
+
+van-der-corput-sequence:
+- [2, [3], 4, 5, 10]
+
+yellowstone-sequence:
+- [10, 20, [30], 40, 50]
+
+one-dimensional-cellular-automata:
+- [5, [10], 15, 20, 30]
+
+xiaolin-wus-line-algorithm:
+- - ["0 1 10 2 (default)", '[0, 1, 10, 2]', true]
+  - ["0 0 10 10 (diagonal)", '[0, 0, 10, 10]']
+  - ["0 5 10 5 (horizontal)", '[0, 5, 10, 5]']
+  - ["5 0 5 10 (vertical)", '[5, 0, 5, 10]']
+
+next-highest-int-from-digits:
+- - ["12453 (default)", 12453, true]
+  - ["738440", 738440]
+  - ["45072010", 45072010]
+  - ["95322020", 95322020]
+  - ["0 (none)", 0]
+  - ["9 (none)", 9]

@@ -2428,7 +2428,7 @@ Less common:
                   (when (has-main-fn? clj-content)
                     (reset! has-main true))
                   (when (re-find
-                          #"\((?:[\w.-]+/)?(?:\+use|use)(?:\s|\[)"
+                          #"(?m)^[ \t]*\((?:[\w.-]+/)?(?:\+use|use)(?:\s|\[)"
                           clj-content)
                     (reset! portable-use-found true)
                     (swap! portable-use-namespaces conj

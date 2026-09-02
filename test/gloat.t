@@ -419,6 +419,14 @@ try "$GLOAT_BIN hello.ys -t clj"
 is "$rc" 0 "'gloat hello.ys -t clj' exits 0"
 has "$got" "(ns " "'gloat hello.ys -t clj' outputs Clojure"
 
+try "$GLOAT_BIN -q -Xprune '$FIXTURES_DIR/comment-use.clj' \
+  -o '$TMP/comment-use-bin'"
+is "$rc" 0 "comments mentioning use do not disable pruning"
+
+try "'$TMP/comment-use-bin'"
+is "$rc" 0 "comment use fixture runs"
+is "$got" "ok" "comment use fixture prints its result"
+
 if [[ ${RUN_SLOW_TESTS:-} ]]; then
   # Test Go stdout mode
   try "$GLOAT_BIN hello.ys -t go"

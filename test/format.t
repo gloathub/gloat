@@ -8,7 +8,7 @@ GLOAT_BIN=$PROJECT_ROOT/bin/gloat
 SOURCE=$TMP/format.clj
 OTHER=$TMP/format.txt
 WIDE_SOURCE=$TMP/wide.clj
-CLJFMT_SOURCE=$TMP/cljfmt.clj
+CLJFMT_SOURCE=$TMP/cljfmt-input.clj
 
 printf '%s\n' '(defn greet[name](println "Hello,"name))' > "$SOURCE"
 cp "$SOURCE" "$OTHER"
@@ -16,6 +16,7 @@ printf '%s\n' \
   '(defn wide-function [alpha beta gamma delta epsilon zeta eta theta] (+ alpha beta gamma delta epsilon zeta eta theta))' \
   > "$WIDE_SOURCE"
 printf '(foo\nbar)\n' > "$CLJFMT_SOURCE"
+printf '%s\n' '{}' > "$TMP/.cljfmt.edn"
 
 LESS_BIN=$TMP/less-bin
 mkdir -p "$LESS_BIN"
@@ -37,14 +38,14 @@ try "set -o pipefail; '$GLOAT_BIN' --fmt '$SOURCE' | cat"
 is "$rc" 0 "'gloat --fmt file.clj' exits 0"
 is "$got" "$short_output" "'--fmt' matches '-F'"
 
-try "set -o pipefail; GLOAT_FMT='cljfmt fix -' \
+try "set -o pipefail; cd '$TMP' && GLOAT_FMT='cljfmt fix -' \
   '$GLOAT_BIN' -F '$CLJFMT_SOURCE' | cat"
 is "$rc" 0 "'GLOAT_FMT=cljfmt gloat -F file.clj' exits 0"
 is "$got" $'(foo\n bar)' "GLOAT_FMT selects cljfmt"
 hasnt "$got" "Reformatted STDIN" \
   "Gloat suppresses cljfmt's routine success notice"
 
-try "set -o pipefail; \
+try "set -o pipefail; cd '$TMP' && \
   GLOAT_FMT='cljfmt --function-arguments-indentation zprint fix -' \
   '$GLOAT_BIN' -F '$CLJFMT_SOURCE' | cat"
 is "$rc" 0 "GLOAT_FMT accepts formatter-specific options"
@@ -173,13 +174,13 @@ try "set -o pipefail; printf '%s\n' '(' | '$GLOAT_BIN' -F - | cat"
 is "$rc" 1 "'gloat -F -' propagates zprint failure"
 has "$got" "Unexpected EOF" "'gloat -F -' reports malformed Clojure input"
 
-try "set -o pipefail; printf '%s\n' '(' |
+try "set -o pipefail; cd '$TMP' && printf '%s\n' '(' |
   GLOAT_FMT='cljfmt fix -' '$GLOAT_BIN' -F - | cat"
 is "$rc" 2 "'GLOAT_FMT=cljfmt gloat -F -' propagates cljfmt failure"
 has "$got" "Failed to format file: STDIN" \
   "'GLOAT_FMT=cljfmt' preserves cljfmt diagnostics"
 
-try "set -o pipefail; GLOAT_FMT='cljfmt fix -' \
+try "set -o pipefail; cd '$TMP' && GLOAT_FMT='cljfmt fix -' \
   '$GLOAT_BIN' -FC '$SOURCE' | cat"
 is "$rc" 0 "'GLOAT_FMT=cljfmt gloat -FC file.clj' exits 0"
 has "$got" $'\033[' "'GLOAT_FMT=cljfmt gloat -FC' emits ANSI highlighting"

@@ -45,7 +45,7 @@ DEMO-PROGRAMS := \
 DEMO-LANGS := yamlscript clojure
 DEMO-STAGES := glj go js
 DEMO-ASSETS := docs/demo-assets
-DEMO-BRANCH := demo-assets
+DEMO-BRANCH := origin/demo-assets
 
 default::
 

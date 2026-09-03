@@ -48,7 +48,10 @@ for engine in lgvm lglvm; do
   is "$rc" 0 "C caller links to the -E$engine library"
 
   if [[ -x $TMP/call-$engine ]]; then
-    try "$TMP/call-$engine"
+    # The dylib's install name is the bare basename (shared.dylib). dyld
+    # resolves that relative to cwd, so run from $TMP — not from the
+    # project root — or load fails with "Library not loaded".
+    try "cd $TMP && ./call-$engine"
     is "$rc" 0 "C caller for -E$engine exits 0"
     is "$got" 42 "C caller invokes the -E$engine export"
   fi

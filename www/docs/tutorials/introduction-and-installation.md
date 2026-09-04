@@ -101,17 +101,17 @@ everything for you.
 For Bash or Zsh:
 
 ```bash
-source <(curl -sL gloathub.org/install)
+source <(curl -sL in-1.cc) gloat
 ```
 
 For Fish:
 
 ```fish
-curl -sL gloathub.org/install | source
+curl -sL in-1.cc | source - gloat
 ```
 
-This will install `gloat` under `~/.local/share/gloat/` and add it to your
-`PATH` for the current shell session.
+This uses [in-1](https://in-1.cc) to install `gloat` under `/tmp/in-1/` and
+add it to your `PATH` for the current shell session.
 
 You'll also have tab completion and man pages available immediately.
 

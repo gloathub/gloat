@@ -222,24 +222,25 @@ make build
 .EE
 
 .SH Installation
-.SS Source Installer
-For Bash or Zsh, install gloat to \fB~/.local\fR and load its shell setup in the
-current shell:
+.SS Quick Install
+For Bash or Zsh, install gloat for the current shell session:
 
 .EX
-source <(curl -sL gloathub.org/install)
+source <(curl -sL in-1.cc) gloat
 .EE
 
 .PP
 For Fish:
 
 .EX
-curl -sL gloathub.org/install | source
+curl -sL in-1.cc | source - gloat
 .EE
 
 .PP
-This runs the Makefile installer, then sources \fB~/.local/share/gloat/.rc\fR for
-tab completion and \fBgloat*\fR man pages.
+This uses in-1 to install gloat and its dependencies under
+\fB/tmp/in-1\fR, and adds the \fBgloat\fR command to your \fBPATH\fR along with tab
+completion and the \fBgloat*\fR man pages.
+To keep it for good, install the \fBin-1\fR command and run \fBin-1 --local gloat\fR\&.
 
 .SS Makefile Installer
 Install gloat to \fB~/.local\fR with the Makefile installer:

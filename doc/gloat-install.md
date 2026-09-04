@@ -37,45 +37,42 @@ Yes, that command and `.rc` file actually supports all three shells!
 
 ## Quick Install
 
-For Bash or Zsh, install `gloat` to `~/.local` and load its shell setup in
-the current shell:
+For Bash or Zsh, install `gloat` for the current shell session:
 
 ```bash
-source <(curl -sL gloathub.org/install)
+source <(curl -sL in-1.cc) gloat
 ```
 
 For Fish:
 
 ```fish
-curl -sL gloathub.org/install | source
+curl -sL in-1.cc | source - gloat
 ```
 
-This runs the Makefile installer, clones the gloat repository to
-`~/.local/share/gloat`, creates a symlink at `~/.local/bin/gloat`, installs
-all required dependencies, and then sources `~/.local/share/gloat/.rc`.
+This uses [in-1](https://in-1.cc), which clones itself to `/tmp/in-1`,
+installs gloat and all of its dependencies under that directory, and then
+adds the `gloat` command to your current `PATH` along with the `gloat*` man
+pages and `gloat` tab completion.
+Nothing else on your system changes.
 
-The sourced `.rc` adds the installed `gloat` command to your current `PATH`,
-enables the `gloat*` man pages and sets up `gloat` tab completion. To make
-that setup permanent, add this to your shell's rc file (`~/.bashrc`,
-`~/.config/fish/config.fish` or `~/.zshrc`):
+Pass in-1 arguments after `gloat` to pin a version or choose a different
+directory (this works the same in Fish):
 
 ```bash
-source ~/.local/share/gloat/.rc
+source <(curl -sL in-1.cc) gloat GLOAT-VERSION=0.1.37
+source <(curl -sL in-1.cc) gloat PREFIX=~/.gloat
 ```
 
-Pass Makefile variables after the command to customize the install:
+To keep `gloat` around for good, install the `in-1` command (see
+https://in-1.cc/install/) and run:
 
 ```bash
-source <(curl -sL gloathub.org/install) PREFIX=~/.gloat
-source <(curl -sL gloathub.org/install) VERSION=v0.1.37
+in-1 --local gloat
 ```
 
-For Fish, set `PREFIX` before sourcing:
-
-```fish
-set -gx PREFIX ~/.gloat
-curl -sL gloathub.org/install | source
-```
+That installs gloat under `~/.local/share/gloat/<version>` and writes a
+`gloat` wrapper into `~/.local/bin`, which works from any shell with no
+further setup.
 
 <!--
 ## Makefile Installer
@@ -149,8 +146,19 @@ In both cases, gloat will:
 If your clone has uncommitted changes, `--upgrade` will refuse and ask you
 to stash or commit them first.
 
-If you installed via the one-line installer, the checkout under
+If you installed via the Makefile installer, the checkout under
 `~/.local/share/gloat` is detached-HEAD and upgrading there always works.
+
+If you installed via the quick install, upgrade with in-1 instead, which
+installs the release that its [Makes](https://github.com/makeplus/makes)
+module currently pins, alongside the old one:
+
+```bash
+source <(curl -sL in-1.cc) -U gloat
+in-1 -U --local gloat
+```
+
+Pass `GLOAT-VERSION=x.y.z` to pick a release yourself.
 
 
 ## Resetting the Cache
@@ -168,7 +176,21 @@ dirs). The next `gloat` invocation reinstalls everything.
 
 ## Uninstalling
 
-If you used the one-line installer:
+If you used the quick install, everything lives under `/tmp/in-1` (or the
+`PREFIX` you gave), so removing that directory is all it takes:
+
+```bash
+rm -rf /tmp/in-1
+```
+
+For an `in-1 --local gloat` install, remove the versioned directory and the
+wrappers:
+
+```bash
+rm -rf ~/.local/share/gloat/<version> ~/.local/bin/gloat ~/.local/bin/gloat-*
+```
+
+If you used the Makefile installer:
 
 ```bash
 make -f <(curl -sL gloathub.org/make) uninstall

@@ -6,18 +6,18 @@ Getting Started
 
 There are two minimal ways to install Gloat:
 
-### Source Installer
+### Quick Install
 
 For Bash or Zsh:
 
 ```bash
-source <(curl -sL gloathub.org/install)
+source <(curl -sL in-1.cc) gloat
 ```
 
 For Fish:
 
 ```fish
-curl -sL gloathub.org/install | source
+curl -sL in-1.cc | source - gloat
 ```
 
 ### Makefile Installer

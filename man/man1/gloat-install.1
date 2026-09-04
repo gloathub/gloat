@@ -38,50 +38,47 @@ source /path/to/gloat/.rc
 Yes, that command and \fB\&.rc\fR file actually supports all three shells!
 
 .SH Quick Install
-For Bash or Zsh, install \fBgloat\fR to \fB~/.local\fR and load its shell setup in
-the current shell:
+For Bash or Zsh, install \fBgloat\fR for the current shell session:
 
 .EX
-source <(curl -sL gloathub.org/install)
+source <(curl -sL in-1.cc) gloat
 .EE
 
 .PP
 For Fish:
 
 .EX
-curl -sL gloathub.org/install | source
+curl -sL in-1.cc | source - gloat
 .EE
 
 .PP
-This runs the Makefile installer, clones the gloat repository to
-\fB~/.local/share/gloat\fR, creates a symlink at \fB~/.local/bin/gloat\fR, installs
-all required dependencies, and then sources \fB~/.local/share/gloat/.rc\fR\&.
+This uses in-1, which clones itself to \fB/tmp/in-1\fR,
+installs gloat and all of its dependencies under that directory, and then
+adds the \fBgloat\fR command to your current \fBPATH\fR along with the \fBgloat*\fR man
+pages and \fBgloat\fR tab completion.
+Nothing else on your system changes.
 
 .PP
-The sourced \fB\&.rc\fR adds the installed \fBgloat\fR command to your current \fBPATH\fR,
-enables the \fBgloat*\fR man pages and sets up \fBgloat\fR tab completion. To make
-that setup permanent, add this to your shell's rc file (\fB~/.bashrc\fR,
-\fB~/.config/fish/config.fish\fR or \fB~/.zshrc\fR):
+Pass in-1 arguments after \fBgloat\fR to pin a version or choose a different
+directory (this works the same in Fish):
 
 .EX
-source ~/.local/share/gloat/.rc
+source <(curl -sL in-1.cc) gloat GLOAT-VERSION=0.1.37
+source <(curl -sL in-1.cc) gloat PREFIX=~/.gloat
 .EE
 
 .PP
-Pass Makefile variables after the command to customize the install:
+To keep \fBgloat\fR around for good, install the \fBin-1\fR command (see
+https://in-1.cc/install/) and run:
 
 .EX
-source <(curl -sL gloathub.org/install) PREFIX=~/.gloat
-source <(curl -sL gloathub.org/install) VERSION=v0.1.37
+in-1 --local gloat
 .EE
 
 .PP
-For Fish, set \fBPREFIX\fR before sourcing:
-
-.EX
-set -gx PREFIX ~/.gloat
-curl -sL gloathub.org/install | source
-.EE
+That installs gloat under \fB~/.local/share/gloat/<version>\fR and writes a
+\fBgloat\fR wrapper into \fB~/.local/bin\fR, which works from any shell with no
+further setup.
 
 .SH Upgrading
 Upgrade gloat to the latest release:
@@ -113,8 +110,21 @@ If your clone has uncommitted changes, \fB--upgrade\fR will refuse and ask you
 to stash or commit them first.
 
 .PP
-If you installed via the one-line installer, the checkout under
+If you installed via the Makefile installer, the checkout under
 \fB~/.local/share/gloat\fR is detached-HEAD and upgrading there always works.
+
+.PP
+If you installed via the quick install, upgrade with in-1 instead, which
+installs the release that its Makes
+module currently pins, alongside the old one:
+
+.EX
+source <(curl -sL in-1.cc) -U gloat
+in-1 -U --local gloat
+.EE
+
+.PP
+Pass \fBGLOAT-VERSION=x.y.z\fR to pick a release yourself.
 
 .SH Resetting the Cache
 If something gets stuck or you want to force a fresh dependency install
@@ -129,7 +139,23 @@ This removes \fB\&.cache/\fR entirely (binaries, build artifacts, REPL working
 dirs). The next \fBgloat\fR invocation reinstalls everything.
 
 .SH Uninstalling
-If you used the one-line installer:
+If you used the quick install, everything lives under \fB/tmp/in-1\fR (or the
+\fBPREFIX\fR you gave), so removing that directory is all it takes:
+
+.EX
+rm -rf /tmp/in-1
+.EE
+
+.PP
+For an \fBin-1 --local gloat\fR install, remove the versioned directory and the
+wrappers:
+
+.EX
+rm -rf ~/.local/share/gloat/<version> ~/.local/bin/gloat ~/.local/bin/gloat-*
+.EE
+
+.PP
+If you used the Makefile installer:
 
 .EX
 make -f <(curl -sL gloathub.org/make) uninstall

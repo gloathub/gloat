@@ -211,23 +211,24 @@ make build
 ## Installation
 
 
-### Source Installer
+### Quick Install
 
-For Bash or Zsh, install gloat to `~/.local` and load its shell setup in the
-current shell:
+For Bash or Zsh, install gloat for the current shell session:
 
 ```bash
-source <(curl -sL gloathub.org/install)
+source <(curl -sL in-1.cc) gloat
 ```
 
 For Fish:
 
 ```fish
-curl -sL gloathub.org/install | source
+curl -sL in-1.cc | source - gloat
 ```
 
-This runs the Makefile installer, then sources `~/.local/share/gloat/.rc` for
-tab completion and `gloat*` man pages.
+This uses [in-1](https://in-1.cc) to install gloat and its dependencies under
+`/tmp/in-1`, and adds the `gloat` command to your `PATH` along with tab
+completion and the `gloat*` man pages.
+To keep it for good, install the `in-1` command and run `in-1 --local gloat`.
 
 
 ### Makefile Installer

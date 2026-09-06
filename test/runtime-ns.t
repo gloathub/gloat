@@ -5,6 +5,11 @@
 
 source "$(dirname "${BASH_SOURCE[0]}")/init"
 
+# This test covers the default main.go template.
+# -Xprune builds main.go from main-prune.go and picks its namespaces in
+# deep-prune, so a GLOAT_X_PRUNE=1 test run must not redirect it there.
+unset GLOAT_X_PRUNE
+
 fixture=$PROJECT_ROOT/test/fixtures/runtime-ns.clj
 ys_fixture=$PROJECT_ROOT/test/fixtures/hello.ys
 

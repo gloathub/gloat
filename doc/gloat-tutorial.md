@@ -78,7 +78,7 @@ For a directory, binary, library, or WebAssembly output, Gloat:
 3. Rewrites and compiles the application namespace with Glojure.
 4. Copies only application loaders into the generated module.
 5. Renders `go.mod` and the appropriate Go entry point.
-6. Links `github.com/gloathub/ys-v0-glj/runtime` and calls `runtime.Load()`
+6. Links and requires the runtime namespaces the application loaders reach
    before requiring the application namespace.
 
 The generated `go.mod` has this dependency shape:
@@ -100,9 +100,17 @@ generated modules otherwise resolve the pinned tag through the Go proxy.
 
 ## Runtime Loading and Pruning
 
-The normal templates blank-import the generated application package and call
-`ys-v0-glj/runtime.Load()`. The loader registers and requires the runtime
-namespaces in the order recorded by `runtime/namespaces.edn`.
+The normal templates blank-import the generated application package plus the
+`ys-v0-glj` and Glojure stdlib namespaces the application loaders reach.
+Gloat finds that set by following the namespace symbols in each loader
+transitively, so a program that never touches the YS runtime links none of it,
+while a YAMLScript program pulls in the `ys.v0.*` namespaces its compiled
+form refers to, and what those require.
+The requires run in the order recorded by `runtime/namespaces.edn`, and the
+`ENV`, `CWD`, `RUN` and `NS` globals are set only when `ys.v0.global` and
+`ys.v0` are loaded.
+Set `GLOAT_YS_RUNTIME=all` to link and require the whole runtime for programs
+that reach namespaces only through strings built at run time.
 
 With pruning enabled, Gloat analyzes references from the user loaders and the
 runtime loaders in `ys-v0-glj`. It copies the retained runtime packages into

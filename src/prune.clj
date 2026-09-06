@@ -393,6 +393,45 @@
     :else nil))
 
 ;;------------------------------------------------------------------------------
+;; Runtime namespace closure
+;;------------------------------------------------------------------------------
+
+(defn loader-namespace-refs
+  "Namespaces named by a loader, through its sym_ identifiers (the
+   namespace part of a qualified symbol counts) and quoted strings."
+  [loader-path]
+  (let [text (slurp loader-path)
+        syms (map #(decode-go-name (second %))
+                  (re-seq #"\bsym_(\w+)\b" text))
+        strs (map second
+                  (re-seq #"\"((?:ys|yamlscript|babashka|clojure)\.[\w.-]+)\""
+                          text))]
+    (into #{}
+          (map #(first (str/split % #"/" 2)))
+          (concat syms strs))))
+
+(defn used-runtime-namespaces
+  "The candidate namespaces reachable from the loaders under the build
+   directory's pkg/, following loader references transitively.
+   This works at namespace level, so it is a superset of what the deep
+   prune keeps and covers runtime require and use forms too."
+  [candidates config]
+  (let [candidates (set candidates)
+        roots (map str (fs/glob (str (:build-dir config) "/pkg")
+                                "**/loader.go"))]
+    (loop [queue (vec roots) seen #{} used #{}]
+      (if-let [path (first queue)]
+        (let [queue (subvec queue 1)]
+          (if (or (contains? seen path) (not (fs/exists? path)))
+            (recur queue seen used)
+            (let [refs (filter candidates (loader-namespace-refs path))
+                  added (remove used refs)]
+              (recur (into queue (map #(ns-to-loader-path % config)) added)
+                     (conj seen path)
+                     (into used added)))))
+        used))))
+
+;;------------------------------------------------------------------------------
 ;; Graph building
 ;;------------------------------------------------------------------------------
 

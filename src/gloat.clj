@@ -1199,6 +1199,64 @@ Less common:
               (map #(str "\trequire.Invoke(lang.NewSymbol(\"" % "\"))")
                    ordered))))
 
+(def GLOJURE-STDLIB-MODULE "github.com/glojurelang/glojure/pkg/stdlib")
+(def YS-V0-GLJ-MODULE "github.com/gloathub/ys-v0-glj")
+
+(defn stdlib-namespaces
+  "Glojure stdlib namespaces with an AOT loader, apart from the ones the
+   glj runtime always links (clojure.core and glojure.go.io)."
+  [stdlib-dir]
+  (->> (fs/glob stdlib-dir "**/loader.go")
+       (map #(str (fs/relativize stdlib-dir (fs/parent %))))
+       (map #(-> % (str/replace "/" ".") (str/replace "_" "-")))
+       (remove #{"clojure.core" "glojure.go.io"})
+       sort))
+
+(defn runtime-namespaces
+  "The runtime namespaces main.go links and requires: the ys-v0-glj and
+   glojure stdlib namespaces the program's loaders reach, or all of them
+   when GLOAT_YS_RUNTIME is all.
+   Returns them in load order with their Go import paths."
+  [output-dir]
+  (let [stdlib-dir (find-glojure-stdlib-dir)
+        stdlib-nses (stdlib-namespaces stdlib-dir)
+        ys-nses (ys-ns-order)
+        candidates (distinct (concat ys-nses stdlib-nses))
+        used (if (= "all" (System/getenv "GLOAT_YS_RUNTIME"))
+               (set candidates)
+               (prune/used-runtime-namespaces
+                candidates
+                {:build-dir output-dir
+                 :ys-v0-glj-dir (:YS-V0-GLJ-DIR make-vars)
+                 :stdlib-dir stdlib-dir}))
+        stdlib-set (set stdlib-nses)
+        ordered (concat (remove (set ys-nses) (filter used stdlib-nses))
+                        (filter used ys-nses))]
+    (mapv (fn [ns-name]
+            (let [path (-> ns-name
+                           (str/replace "." "/")
+                           (str/replace "-" "_"))
+                  module (if (contains? stdlib-set ns-name)
+                           GLOJURE-STDLIB-MODULE
+                           YS-V0-GLJ-MODULE)]
+              [ns-name (str module "/" path)]))
+          ordered)))
+
+(defn generate-runtime-imports
+  "Generate blank Go import lines for the runtime namespaces."
+  [runtime-nses]
+  (str/join "\n"
+            (map (fn [[_ import-path]] (str "\t_ \"" import-path "\""))
+                 runtime-nses)))
+
+(defn generate-runtime-requires
+  "Generate Go require.Invoke lines for the runtime namespaces."
+  [runtime-nses]
+  (str/join "\n"
+            (map (fn [[ns-name _]]
+                   (str "\trequire.Invoke(lang.NewSymbol(\"" ns-name "\"))"))
+                 runtime-nses)))
+
 (defn deep-prune
   "Run the full dependency-graph prune using prune.clj.
    Returns the set of used ys/yamlscript namespaces."
@@ -2675,13 +2733,17 @@ Less common:
                       (generate-js-export-registrations @export-map)
 
                       :else "")
-                    ;; Generate dynamic imports/requires for prune mode
+                    ;; Generate the runtime imports/requires: pruned
+                    ;; internal copies in prune mode, otherwise the
+                    ;; module packages the program reaches
+                    linked-runtime (when-not used-ys-ns
+                                     (runtime-namespaces output-dir))
                     ys-imports (if used-ys-ns
                                  (generate-ys-imports used-ys-ns go-module)
-                                 "")
+                                 (generate-runtime-imports linked-runtime))
                     ys-requires (if used-ys-ns
                                   (generate-ys-requires used-ys-ns)
-                                  "")
+                                  (generate-runtime-requires linked-runtime))
                     application-nses
                     (let [runtime-nses (set (ys-ns-order))]
                       (remove #(or (= % @main-namespace)

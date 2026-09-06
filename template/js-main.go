@@ -8,8 +8,8 @@ import (
 
 	"github.com/glojurelang/glojure/pkg/glj"
 	"github.com/glojurelang/glojure/pkg/lang"
-	ysv0 "github.com/gloathub/ys-v0-glj/runtime"
 	_ "GO-MODULE/pkg/PACKAGE-PATH"
+YS-IMPORTS
 ALL-NS-IMPORTS
 )
 
@@ -112,41 +112,46 @@ func registerExport(
 }
 
 func initializeRuntime() {
-	ysv0.Load()
 	require := glj.Var("clojure.core", "require")
+YS-REQUIRES
 ALL-NS-REQUIRES
 	require.Invoke(lang.NewSymbol(programNamespace))
 
 	alterVarRoot := glj.Var("clojure.core", "alter-var-root")
 	constantly := glj.Var("clojure.core", "constantly")
 
-	environ := os.Environ()
-	envPairs := make([]any, 0, len(environ)*2)
-	for _, entry := range environ {
-		if index := strings.IndexByte(entry, '='); index >= 0 {
-			envPairs = append(envPairs, entry[:index], entry[index+1:])
-		}
-	}
-	alterVarRoot.Invoke(
-		glj.Var("ys.v0.global", "ENV"),
-		constantly.Invoke(lang.NewMap(envPairs...)),
-	)
-
 	namespace := lang.FindOrCreateNamespace(lang.NewSymbol(programNamespace))
-	alterVarRoot.Invoke(glj.Var("ys.v0", "NS"), constantly.Invoke(namespace))
 	glj.Var("clojure.core", "push-thread-bindings").Invoke(
 		lang.NewMap(glj.Var("clojure.core", "*ns*"), namespace),
 	)
 
-	cwd, _ := os.Getwd()
-	alterVarRoot.Invoke(glj.Var("ys.v0.global", "CWD"), constantly.Invoke(cwd))
-	alterVarRoot.Invoke(
-		glj.Var("ys.v0.global", "RUN"),
-		constantly.Invoke(lang.NewMap(
-			lang.NewKeyword("args"), lang.NewVector(),
-			lang.NewKeyword("pid"), int64(os.Getpid()),
-		)),
-	)
+	// The YS globals exist only when the program links the YS runtime.
+	if lang.FindNamespace(lang.NewSymbol("ys.v0.global")) != nil {
+		environ := os.Environ()
+		envPairs := make([]any, 0, len(environ)*2)
+		for _, entry := range environ {
+			if index := strings.IndexByte(entry, '='); index >= 0 {
+				envPairs = append(envPairs, entry[:index], entry[index+1:])
+			}
+		}
+		alterVarRoot.Invoke(
+			glj.Var("ys.v0.global", "ENV"),
+			constantly.Invoke(lang.NewMap(envPairs...)),
+		)
+
+		cwd, _ := os.Getwd()
+		alterVarRoot.Invoke(glj.Var("ys.v0.global", "CWD"), constantly.Invoke(cwd))
+		alterVarRoot.Invoke(
+			glj.Var("ys.v0.global", "RUN"),
+			constantly.Invoke(lang.NewMap(
+				lang.NewKeyword("args"), lang.NewVector(),
+				lang.NewKeyword("pid"), int64(os.Getpid()),
+			)),
+		)
+	}
+	if lang.FindNamespace(lang.NewSymbol("ys.v0")) != nil {
+		alterVarRoot.Invoke(glj.Var("ys.v0", "NS"), constantly.Invoke(namespace))
+	}
 
 	// Load dependencies requested by portable use forms.
 PORTABLE-USE-LOADS

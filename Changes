@@ -1,3 +1,13 @@
+- version: 0.1.80
+  date:    Sun Sep  6 10:20:08 AM EDT 2026
+  changes:
+  - Run runtime-ns test on the default main path
+  - Prune hoisted Go builtin declarations
+  - Link only the runtime namespaces a program uses
+  - Copy an extra Go package tree into the module
+  - Use in-1 for the quick install
+  - www: Use remote demo assets branch
+
 - version: 0.1.79
   date:    Wed Sep  2 11:01:39 AM EDT 2026
   changes:

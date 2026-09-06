@@ -87,7 +87,7 @@ Copies only application loaders into the generated module.
 .IP "  5." 5
 Renders \fBgo.mod\fR and the appropriate Go entry point.
 .IP "  6." 5
-Links \fBgithub.com/gloathub/ys-v0-glj/runtime\fR and calls \fBruntime.Load()\fR
+Links and requires the runtime namespaces the application loaders reach
 before requiring the application namespace.
 
 .PP
@@ -101,14 +101,27 @@ require (
 .EE
 
 .PP
+Setting \fBGLOAT_EXTRA_GO_DIR\fR to a directory copies that Go package tree into
+the generated module as \fBinternal/<directory name>\fR, so a build can ship hand
+written Go packages next to the compiled loaders.
+
+.PP
 When \fBrepos/ys-v0-glj\fR exists, Gloat adds a local \fBreplace\fR pointing at that
 development checkout. Cached runtime clones never produce a \fBreplace\fR, so
 generated modules otherwise resolve the pinned tag through the Go proxy.
 
 .SH Runtime Loading and Pruning
-The normal templates blank-import the generated application package and call
-\fBys-v0-glj/runtime.Load()\fR\&. The loader registers and requires the runtime
-namespaces in the order recorded by \fBruntime/namespaces.edn\fR\&.
+The normal templates blank-import the generated application package plus the
+\fBys-v0-glj\fR and Glojure stdlib namespaces the application loaders reach.
+Gloat finds that set by following the namespace symbols in each loader
+transitively, so a program that never touches the YS runtime links none of it,
+while a YAMLScript program pulls in the \fBys.v0.*\fR namespaces its compiled
+form refers to, and what those require.
+The requires run in the order recorded by \fBruntime/namespaces.edn\fR, and the
+\fBENV\fR, \fBCWD\fR, \fBRUN\fR and \fBNS\fR globals are set only when \fBys.v0.global\fR and
+\fBys.v0\fR are loaded.
+Set \fBGLOAT_YS_RUNTIME=all\fR to link and require the whole runtime for programs
+that reach namespaces only through strings built at run time.
 
 .PP
 With pruning enabled, Gloat analyzes references from the user loaders and the

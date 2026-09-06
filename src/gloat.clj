@@ -2351,6 +2351,18 @@ Less common:
       (finally
         (fs/delete-tree tmpdir)))))
 
+(defn copy-extra-go-dir
+  "Copy the Go package tree named by GLOAT_EXTRA_GO_DIR into the generated
+   module under internal/, replacing any earlier copy, so a build can add
+   hand written Go packages next to the compiled loaders."
+  [output-dir]
+  (when-let [extra-go-dir (System/getenv "GLOAT_EXTRA_GO_DIR")]
+    (when (fs/exists? extra-go-dir)
+      (let [target (str output-dir "/internal/" (fs/file-name extra-go-dir))]
+        (fs/delete-tree target)
+        (fs/create-dirs (fs/parent target))
+        (fs/copy-tree extra-go-dir target)))))
+
 (defn convert-directory [input-dir output format namespace module platform]
   (reset! portable-use-found false)
   (reset! portable-use-namespaces #{})
@@ -2380,6 +2392,7 @@ Less common:
 
     (msg "Converting directory" input-dir "to" output-dir)
     (fs/create-dirs output-dir)
+    (copy-extra-go-dir output-dir)
 
     ;; Find source files
     (let [source-files (concat

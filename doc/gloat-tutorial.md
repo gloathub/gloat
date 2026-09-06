@@ -90,6 +90,10 @@ require (
 )
 ```
 
+Setting `GLOAT_EXTRA_GO_DIR` to a directory copies that Go package tree into
+the generated module as `internal/<directory name>`, so a build can ship hand
+written Go packages next to the compiled loaders.
+
 When `repos/ys-v0-glj` exists, Gloat adds a local `replace` pointing at that
 development checkout. Cached runtime clones never produce a `replace`, so
 generated modules otherwise resolve the pinned tag through the Go proxy.

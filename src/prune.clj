@@ -51,6 +51,7 @@
      :loadns-open   - the 'func LoadNS() {' line
      :sym-lines     - vec of [line-text var-name]
      :kw-lines      - vec of [line-text var-name]
+     :builtin-lines - vec of [line-text var-name]
      :var-lines     - vec of [line-text var-name comment-line]
      :preamble-lines - lines between declarations and function blocks
      :blocks        - vec of [name block-text]
@@ -62,6 +63,7 @@
                       :loadns-open ""
                       :sym-lines []
                       :kw-lines []
+                      :builtin-lines []
                       :var-lines []
                       :preamble-lines []
                       :blocks []
@@ -90,6 +92,7 @@
                       :loadns-open ""
                       :sym-lines []
                       :kw-lines []
+                      :builtin-lines []
                       :var-lines []
                       :preamble-lines []
                       :blocks []
@@ -126,6 +129,14 @@
               (re-find #"^\t(kw_\w+)\s*:=\s*lang\.NewKeyword\(" line)
               (let [m (re-find #"^\t(kw_\w+)\s*:=\s*lang\.NewKeyword\(" line)]
                 (swap! result update :kw-lines conj
+                       [(nth lines-with-nl @i) (second m)])
+                (swap! i inc)
+                (recur))
+
+              ;; builtin_ declaration (hoisted Go builtin)
+              (re-find #"^\t(builtin_\w+)\s*:=\s*lang\.Builtins\[" line)
+              (let [m (re-find #"^\t(builtin_\w+)\s*:=\s*lang\.Builtins\[" line)]
+                (swap! result update :builtin-lines conj
                        [(nth lines-with-nl @i) (second m)])
                 (swap! i inc)
                 (recur))
@@ -214,10 +225,11 @@
 ;;------------------------------------------------------------------------------
 
 (defn find-used-identifiers
-  "Find all sym_, kw_, var_, closed identifiers used in code text."
+  "Find all sym_, kw_, builtin_, var_, closed identifiers used in code text."
   [code-text]
   {:syms   (set (map second (re-seq #"\b(sym_\w+)\b" code-text)))
    :kws    (set (map second (re-seq #"\b(kw_\w+)\b" code-text)))
+   :builtins (set (map second (re-seq #"\b(builtin_\w+)\b" code-text)))
    :vars   (set (map second (re-seq #"\b(var_\w+)\b" code-text)))
    :closed (set (map second (re-seq #"\b(closed\d+)\b" code-text)))})
 
@@ -791,13 +803,16 @@
         kept-var-text (str (apply str (map first kept-var-lines))
                            (apply str (map #(nth % 2) kept-var-lines)))
         all-scannable (str code-for-var-scan kept-var-text)
-        {:keys [syms kws]} (find-used-identifiers all-scannable)
+        {:keys [syms kws builtins]} (find-used-identifiers all-scannable)
 
         ;; Step 6-7: Filter sym and kw declarations
         kept-syms (filterv (fn [[_ var-name]] (contains? syms var-name))
                            (:sym-lines parsed))
         kept-kws (filterv (fn [[_ var-name]] (contains? kws var-name))
                           (:kw-lines parsed))
+        kept-builtins (filterv (fn [[_ var-name]]
+                                 (contains? builtins var-name))
+                               (:builtin-lines parsed))
 
         ;; Step 8: Format kept var declarations
         kept-vars-text (apply str
@@ -810,6 +825,7 @@
         header-text (apply str (:header-lines parsed))
         body-code (str (apply str (map first kept-syms))
                        (apply str (map first kept-kws))
+                       (apply str (map first kept-builtins))
                        kept-vars-text
                        pruned-preamble
                        blocks-text)
@@ -825,6 +841,7 @@
                     (:loadns-open parsed)
                     (apply str (map first kept-syms))
                     (apply str (map first kept-kws))
+                    (apply str (map first kept-builtins))
                     kept-vars-text
                     pruned-preamble
                     blocks-text

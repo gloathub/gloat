@@ -3,13 +3,9 @@ package main
 import "C"
 
 import (
-	"bytes"
 	_ "embed"
 	"fmt"
 
-	"github.com/nooga/let-go/pkg/bytecode"
-	"github.com/nooga/let-go/pkg/compiler"
-	"github.com/nooga/let-go/pkg/resolver"
 	"github.com/nooga/let-go/pkg/rt"
 	"github.com/nooga/let-go/pkg/vm"
 LOWERED-IMPORTS
@@ -21,20 +17,19 @@ var lgbData []byte
 const programNamespace = "NAMESPACE"
 
 func init() {
-	ctx := compiler.NewCompiler(vm.NewConsts(), rt.NS("user"))
-	rt.SetNSLoader(resolver.NewNSResolver(ctx, nil))
-
-	resolve := func(nsName, name string) *vm.Var {
-		n := rt.DefNSBare(nsName)
-		if v := n.LookupLocal(vm.Symbol(name)); v != nil {
-			return v
-		}
-		return n.DefStub(name)
+	// Runtime-only boot: core loads from its embedded bundle, so neither
+	// the compiler nor the resolver is linked into the shared library.
+	if _, err := rt.BootCore(); err != nil {
+		panic(vm.FormatError(err))
 	}
-	unit, err := bytecode.DecodeToExecUnit(bytes.NewReader(lgbData), resolve)
+	unit, err := rt.DecodeExecUnit(lgbData)
 	if err != nil {
 		panic(vm.FormatError(err))
 	}
+	// Same skip+drain loop as lg-main.go. rt.LoadProgramNamespaces would
+	// replay MainChunk (wrong if the driver calls -main) and is not in the
+	// pinned let-go v1.12.2 release; keep the explicit loop so the pin and
+	// the semantics stay aligned.
 	for _, name := range unit.NSOrder {
 		chunk := unit.NSChunks[name]
 		if chunk == nil || chunk == unit.MainChunk {

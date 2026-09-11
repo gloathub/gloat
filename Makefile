@@ -354,13 +354,21 @@ python-local-server: $(PYTHON)
 annoucement:
 	@make-do $@ $(GLOJURE-VERSION)
 
+# Long-form command-line variables take precedence over their aliases.
+RELEASE-VERSION := \
+  $(strip $(if $(filter command line,$(origin VERSION)),$(VERSION),\
+    $(if $(filter command line,$(origin v)),$(v))))
+RELEASE-GLJ-VERSION := \
+  $(strip $(if $(filter command line,$(origin GLJ-VERSION)),$(GLJ-VERSION),\
+    $(if $(filter command line,$(origin glj)),$(glj))))
+
 release: $(GH) $(PERL) $(GO)
-	@$(if $(filter command line,$(origin VERSION)),,\
-	  $(error VERSION is required on the command line))
-	@$(if $(filter command line,$(origin GLJ-VERSION)),,\
-	  $(error GLJ-VERSION is required on the command line))
-	$(eval RELEASE_VER := $(patsubst v%,%,$(VERSION)))
-	$(eval GLJ_VER := $(patsubst v%,%,$(GLJ-VERSION)))
+	@$(if $(RELEASE-VERSION),,\
+	  $(error v or VERSION is required on the command line))
+	@$(if $(RELEASE-GLJ-VERSION),,\
+	  $(error glj or GLJ-VERSION is required on the command line))
+	$(eval RELEASE_VER := $(patsubst v%,%,$(RELEASE-VERSION)))
+	$(eval GLJ_VER := $(patsubst v%,%,$(RELEASE-GLJ-VERSION)))
 	$(eval RELEASE_BRANCH := $(or $(GLOAT_RELEASE_BRANCH),$(GLOAT-RELEASE-BRANCH)))
 	$(if $(RELEASE_BRANCH),GLOAT_RELEASE_BRANCH="$(RELEASE_BRANCH)" )make-do $@ $(RELEASE_VER) "$(MESSAGE)" "$(GLJ_VER)"
 

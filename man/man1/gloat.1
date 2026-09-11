@@ -973,3 +973,18 @@ Copyright 2026 - Ingy dot Net
 
 .PP
 MIT License - See License file.
+
+.SH Native shared-library files
+For Glojure shared libraries, set \fBGLOAT_EXTRA_GO_MAIN_DIR\fR to a directory
+containing handwritten \fB\&.go\fR, \fB\&.c\fR, and \fB\&.h\fR files.
+Gloat copies those files into the generated main package and builds the whole
+package with CGO enabled.
+An existing generated filename, including \fBmain.go\fR, causes an error.
+A missing source directory also causes an error.
+Other output formats do not use this setting.
+
+.PP
+Use \fB(def EXPORT {})\fR when the native files implement all public exports.
+A nonempty \fBEXPORT\fR map can still generate additional functions alongside them.
+This setting is separate from \fBGLOAT_EXTRA_GO_DIR\fR, which supplies a package
+under the generated module's \fBinternal/\fR directory.

@@ -1,4 +1,10 @@
 - version: 0.1.81
+  date:    Fri Sep 11 05:56:28 PM EDT 2026
+  changes:
+  - Support short release dependency arguments
+  - Support native shared-library main files
+
+- version: 0.1.81
   date:    Mon Sep  7 08:30:27 PM EDT 2026
   changes:
   - Release v0.1.81

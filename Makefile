@@ -11,11 +11,13 @@ include $M/babashka.mk
 include $M/cljfmt.mk
 include $M/gh.mk
 include $M/git.mk
+OA-macos-int64 := darwin_amd64
 include $M/glojure.mk
 include $M/go.mk
 include $M/hy.mk
 include $M/janet.mk
 include $M/joker.mk
+OA-macos-int64 := x86_64-macos
 include $M/jolt.mk
 include $M/lein.mk
 include $M/let-go.mk

@@ -2376,8 +2376,7 @@ Less common:
       ;; main and uses its namespace for the generated binary or library.
       (let [export-file (when (= format "lib")
                           (first (filter
-                                  #(not-empty
-                                    (or (extract-export (slurp (str %))) []))
+                                  #(some? (extract-export (slurp (str %))))
                                   input-files)))
             main-file (when (not= format "lib")
                         (first (filter
@@ -2420,6 +2419,21 @@ Less common:
         (fs/delete-tree target)
         (fs/create-dirs (fs/parent target))
         (fs/copy-tree extra-go-dir target)))))
+
+(defn copy-extra-go-main-dir
+  "Copy native main-package files for a Glojure shared library."
+  [output-dir]
+  (when-let [source (System/getenv "GLOAT_EXTRA_GO_MAIN_DIR")]
+    (when-not (fs/directory? source)
+      (die "GLOAT_EXTRA_GO_MAIN_DIR is not a directory: " source))
+    (let [files (filter #(contains? #{"go" "c" "h"} (fs/extension %))
+                        (fs/list-dir source))]
+      ;; Check every destination before copying any files.
+      (doseq [file files]
+        (when (fs/exists? (fs/path output-dir (fs/file-name file)))
+          (die "Native main-package filename collision: " (fs/file-name file))))
+      (doseq [file files]
+        (fs/copy file (fs/path output-dir (fs/file-name file)))))))
 
 (defn convert-directory [input-dir output format namespace module platform]
   (reset! portable-use-found false)
@@ -2791,6 +2805,9 @@ Less common:
                 (spit (str output-dir "/main.go") result)
                 (msg "Generated:" (str output-dir "/main.go")))
 
+            (when (= format "lib")
+              (copy-extra-go-main-dir output-dir))
+
               ;; Generate Makefile for directory output
             (when is-dir-output
               (let [bin-name (or binary-name (fs/file-name output-dir))
@@ -2859,7 +2876,9 @@ Less common:
                                 (when (seq build-tags)
                                   ["-tags" build-tags])
                                 (when build-mode [build-mode])
-                                ["main.go"])]
+                                [(if (and (= format "lib")
+                                          (System/getenv "GLOAT_EXTRA_GO_MAIN_DIR"))
+                                   "." "main.go")])]
                     (apply process/shell (merge {:dir output-dir
                                                  :extra-env build-env}
                                                 io-opts)

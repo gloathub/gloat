@@ -914,3 +914,18 @@ make repl
 Copyright 2026 - Ingy dot Net
 
 MIT License - See [License](License) file.
+
+## Native shared-library files
+
+For Glojure shared libraries, set `GLOAT_EXTRA_GO_MAIN_DIR` to a directory
+containing handwritten `.go`, `.c`, and `.h` files.
+Gloat copies those files into the generated main package and builds the whole
+package with CGO enabled.
+An existing generated filename, including `main.go`, causes an error.
+A missing source directory also causes an error.
+Other output formats do not use this setting.
+
+Use `(def EXPORT {})` when the native files implement all public exports.
+A nonempty `EXPORT` map can still generate additional functions alongside them.
+This setting is separate from `GLOAT_EXTRA_GO_DIR`, which supplies a package
+under the generated module's `internal/` directory.

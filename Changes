@@ -1,3 +1,8 @@
+- version: 0.1.84
+  date:    Sat Sep 12 07:28:07 PM EDT 2026
+  changes:
+  - Fix Git path during tool setup
+
 - version: 0.1.83
   date:    Sat Sep 12 12:42:27 PM EDT 2026
   changes:

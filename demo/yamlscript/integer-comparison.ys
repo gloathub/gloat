@@ -1,0 +1,10 @@
+# https://rosettacode.org/wiki/Integer_comparison#YAMLScript
+
+!ys-0
+
+defn main(x y):
+  say:
+    cond:
+      x < y: "$x is less than $y"
+      x > y: "$x is greater than $y"
+      else : "$x is equal to $y"

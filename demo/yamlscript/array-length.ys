@@ -1,0 +1,10 @@
+# https://rosettacode.org/wiki/Array_length#YAMLScript
+
+!ys-0
+
+defn main():
+  say: "Length of ['apple' 'orange']: $(['apple' 'orange']:count)"
+  say: "Length of ARGS: $(ARGS:count)"
+  say: "Length of (10 .. 20): $((10 .. 20):count)"
+  say: "Length of range(10 20): $(range(10 20):count)"
+  say: "Length of 'Hello, world!': $(count('Hello, world!'))"

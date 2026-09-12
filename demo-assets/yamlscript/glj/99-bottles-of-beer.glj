@@ -1,0 +1,33 @@
+(ns _99_bottles_of_beer.core
+  (:require [ys.v0 :refer :all])
+  (:refer-clojure :exclude [atom die print read replace reverse set]))
+
+(declare bottles)
+
+(defn main
+ ([number]
+  (each
+   [num (rng number 1)]
+   (say
+    (str
+     (bottles num)
+     " of beer on the wall,\n"
+     (bottles num)
+     " of beer.\nTake one down, pass it around.\n"
+     (bottles (dec+ num))
+     " of beer on the wall."
+     "\n"))))
+ ([] (main 99)))
+
+(defn bottles [n]
+ (condp eq n 0 "No more bottles" 1 "1 bottle" (str n " bottles")))
+
+(defn -main [& argv]
+  (let [args (map-parse argv)]
+    (alter-var-root #'ARGV (constantly argv))
+    (alter-var-root #'ARGS (constantly args))
+    (alter-var-root #'FILE (constantly "/home/ingy/src/gloat/demo/yamlscript/99-bottles-of-beer.ys"))
+    (alter-var-root #'DIR (constantly "/home/ingy/src/gloat/demo/yamlscript"))
+    (apply main args)))
+
+  

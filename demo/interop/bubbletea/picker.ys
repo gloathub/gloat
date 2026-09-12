@@ -1,0 +1,57 @@
+!ys-0
+
+defn init-model()::
+  :choices:
+    [ milk, eggs, bread, butter, cheese, orange juice,
+      pasta, olive oil, tomatoes, apples ]
+  :cursor: 0
+  :selected:: \{}
+  :done: false
+
+defn toggle(model selected cursor):
+  if cursor.in?(selected):
+    assoc model :selected:
+      disj selected: cursor
+    assoc model :selected:
+      conj selected: cursor
+
+defn update-model(model key-str):
+  cursor =: model.cursor
+  n =: model.choices.#
+  selected =: model.selected
+  cond:
+    key-str == 'd': model.assoc(:done true)
+    key-str.in?(['q' 'ctrl+c']): nil
+    key-str.in?(['k' 'up']): model.assoc(:cursor max(0 cursor.--))
+    key-str.in?(['j' 'down']): model.assoc(:cursor min(n.-- cursor.++))
+    key-str.in?(['enter' ' ']): model.toggle(selected cursor)
+    else: model
+
+defn format-result(model):
+  when model.done:
+    choices =: model.choices
+    selected =: model.selected
+    items =: map(\(nth(choices _)) selected:sort):V
+    n =: items.#
+    cond:
+      items:empty?: "We don't need to buy anything."
+      n == 1: "We need to buy $first(items)."
+      else:
+        joined =: items:butlast.join(', ')
+        last =: items:last
+        =>: "We need to buy $joined and $last."
+
+defn view-model(model):
+  choices =: model.choices
+  cursor =: model.cursor
+  selected =: model.selected
+  defn row(i choice):
+    cur =: cursor.eq(i).if('> ', '  ')
+    chk =: i.in?(selected).if('[x] ', '[ ] ')
+    =>: "$cur$chk$choice\n"
+  rows =: choices.map-indexed(row _)
+  =>: |
+    What should we buy at the market?
+
+    $(rows:join)
+    Press d when done, q to quit.

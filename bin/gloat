@@ -184,6 +184,8 @@ main() (
   fi
 
   PATH=$(make --quiet --no-print-directory -C "$root" path)
+  # Native Windows make can omit the Git Bash directory from PATH.
+  path-prepend "${BASH%/*}"
   promote-cache-paths
   export PATH
 

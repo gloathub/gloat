@@ -1,3 +1,8 @@
+- version: 0.1.83
+  date:    Sat Sep 12 12:42:27 PM EDT 2026
+  changes:
+  - Fix Bash path after tool setup
+
 - version: 0.1.82
   date:    Fri Sep 11 06:15:54 PM EDT 2026
   changes:

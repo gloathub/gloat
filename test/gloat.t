@@ -31,6 +31,28 @@ else
     "'gloat --version' omits uninstalled lg version"
 fi
 
+path_bin=$TMP/path-bin
+path_git_marker=$TMP/path-git-used
+real_git=$(command -v git)
+mkdir -p "$path_bin"
+cat > "$path_bin/make" <<EOF
+#!/usr/bin/env bash
+case " \$* " in
+  *" gloat-version "*) printf '%s\n' test ;;
+  *" path "*) printf '%s\n' /usr/bin ;;
+esac
+EOF
+cat > "$path_bin/git" <<EOF
+#!/usr/bin/env bash
+touch '$path_git_marker'
+exec '$real_git' "\$@"
+EOF
+chmod +x "$path_bin/make" "$path_bin/git"
+try "PATH='$path_bin:/usr/bin' '$GLOAT_BIN' --invalid-option"
+is "$rc" 129 "'gloat' validates options after rebuilding PATH"
+ok "$([[ -f $path_git_marker ]])" \
+  "'gloat' preserves the Git directory while rebuilding PATH"
+
 try "$GLOAT_BIN --which=glj"
 is "$rc" 0 "'gloat --which=glj' exits 0"
 has "$got" "/glj" "'gloat --which=glj' prints glj path"

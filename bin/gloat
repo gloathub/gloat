@@ -183,8 +183,11 @@ main() (
     show-help
   fi
 
+  local git_bin
+  git_bin=$(command -v git)
   PATH=$(make --quiet --no-print-directory -C "$root" path)
-  # Native Windows make can omit the Git Bash directory from PATH.
+  # Native Windows make can omit Git and Bash directories from PATH.
+  path-prepend "$(dirname "$git_bin")"
   path-prepend "${BASH%/*}"
   promote-cache-paths
   export PATH

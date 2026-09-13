@@ -1,3 +1,12 @@
+- version: 0.1.85
+  date:    Sun Sep 13 12:40:42 AM EDT 2026
+  changes:
+  - Preserve complete launcher path
+  - Preserve Make during path setup
+  - Fix cross-platform CI validation
+  - Limit Windows test to CLI suite
+  - Fix Windows tool path recovery
+
 - version: 0.1.84
   date:    Sat Sep 12 07:28:07 PM EDT 2026
   changes:

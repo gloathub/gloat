@@ -41,6 +41,7 @@ cat > "$path_bin/make" <<EOF
 case " \$* " in
   *" gloat-version "*) printf '%s\n' test ;;
   *" path "*) printf '%s\n' '$managed_bin' ;;
+  *) exit 1 ;;
 esac
 EOF
 cat > "$path_bin/git" <<EOF
@@ -53,6 +54,11 @@ try "PATH='$path_bin:/usr/bin:/bin' '$GLOAT_BIN' --invalid-option"
 is "$rc" 129 "'gloat' validates options after rebuilding PATH"
 ok "$([[ -f $path_git_marker ]])" \
   "'gloat' preserves the Git directory while rebuilding PATH"
+
+try "PATH='$path_bin:/usr/bin:/bin' '$GLOAT_BIN' --which=git,make"
+is "$rc" 0 "'gloat --which' avoids installing unrelated dependencies"
+has "$got" "$path_bin/git" "'gloat --which' retains Git from PATH"
+has "$got" "$path_bin/make" "'gloat --which' retains Make from PATH"
 
 try "$GLOAT_BIN --which=glj"
 is "$rc" 0 "'gloat --which=glj' exits 0"

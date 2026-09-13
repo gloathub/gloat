@@ -183,16 +183,10 @@ main() (
     show-help
   fi
 
-  local git_dir make_dir
-  git_dir=$(command -v git)
-  git_dir=${git_dir%/*}
-  make_dir=$(command -v make)
-  make_dir=${make_dir%/*}
+  local original_path=$PATH
   PATH=$(make --quiet --no-print-directory -C "$root" path)
-  # Native Windows make can omit Git, Make, and Bash directories from PATH.
-  path-prepend "$git_dir"
-  path-prepend "$make_dir"
-  path-prepend "${BASH%/*}"
+  # Native Windows make can omit launcher and system tools from PATH.
+  PATH=$PATH:$original_path
   promote-cache-paths
   export PATH
 
@@ -803,7 +797,7 @@ setup() {
   opts_edn=$(printf '%s\n' "$GETOPT_SPEC" | \
     "$root/util/getopt" ${proc_args[@]+"${proc_args[@]}"}) || exit $?
 
-  install-deps
+  [[ $opt_which_set ]] || install-deps
   promote-cache-paths
 }
 

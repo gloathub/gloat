@@ -107,7 +107,7 @@ version       Show version
 main() (
   local -a normalized_args=()
   normalize-short-args "$@"
-  set -- "${normalized_args[@]}"
+  set -- ${normalized_args[@]+"${normalized_args[@]}"}
   local -a argv=("$@")
 
   unset MAKES_LOCAL_DIR

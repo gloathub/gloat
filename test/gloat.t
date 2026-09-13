@@ -49,7 +49,7 @@ touch '$path_git_marker'
 exec '$real_git' "\$@"
 EOF
 chmod +x "$path_bin/make" "$path_bin/git"
-try "PATH='$path_bin:/usr/bin' '$GLOAT_BIN' --invalid-option"
+try "PATH='$path_bin:/usr/bin:/bin' '$GLOAT_BIN' --invalid-option"
 is "$rc" 129 "'gloat' validates options after rebuilding PATH"
 ok "$([[ -f $path_git_marker ]])" \
   "'gloat' preserves the Git directory while rebuilding PATH"
@@ -285,6 +285,7 @@ hasnt "$got" "(defn -main" "portable EXPORT source gets no main wrapper"
 
 JOLT_PROJECT=$TMP/jolt-project
 mkdir -p "$JOLT_PROJECT/src/multi"
+JOLT_PROJECT=$(cd "$JOLT_PROJECT" && pwd -P)
 cp "$FIXTURES_DIR/multi-main.clj" "$JOLT_PROJECT/src/multi/app.clj"
 cp "$FIXTURES_DIR/multi-helper.clj" "$JOLT_PROJECT/src/multi/helper.clj"
 printf '{:paths ["src"]}\n' > "$JOLT_PROJECT/deps.edn"

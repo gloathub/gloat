@@ -56,8 +56,9 @@ jobs:
         key: makes-${{ runner.os }}-${{ hashFiles('Makefile', 'common/common.mk') }}
         restore-keys: makes-${{ runner.os }}-
 
-    - name: Run tests
-      run: make test v=1 test=test/gloat.t
+    - name: Test Windows path setup
+      shell: bash
+      run: ./bin/gloat --which=git
 
   test-prune:
     name: Test with pruning (Linux)

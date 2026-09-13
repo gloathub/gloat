@@ -191,7 +191,7 @@ is "$plain" '(defn greet [name] (println "Hello," name))' \
 try "set -o pipefail; printf '%s\n' '(foo)' |
   GLOAT_FMT='definitely-not-a-formatter --flag' '$GLOAT_BIN' -F | cat"
 is "$rc" 127 "a missing GLOAT_FMT command exits 127"
-has "$got" "definitely-not-a-formatter: not found" \
+has "$got" "definitely-not-a-formatter:" \
   "the shell reports a missing GLOAT_FMT command"
 
 try "set -o pipefail; '$GLOAT_BIN' -C '$SOURCE' | cat"

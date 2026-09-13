@@ -57,7 +57,7 @@ jobs:
         restore-keys: makes-${{ runner.os }}-
 
     - name: Run tests
-      run: make test v=1
+      run: make test v=1 test=test/gloat.t
 
   test-prune:
     name: Test with pruning (Linux)

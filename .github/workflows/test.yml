@@ -45,9 +45,6 @@ jobs:
     name: Test (windows-latest)
     runs-on: windows-latest
     timeout-minutes: 30
-    if: github.event_name == 'workflow_dispatch'
-    # Windows not yet supported — no Windows downloads in Makes for Glojure/YAMLScript.
-    # Triggered manually to track progress toward Windows support.
 
     steps:
     - uses: actions/checkout@v4

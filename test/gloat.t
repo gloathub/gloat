@@ -33,13 +33,14 @@ fi
 
 path_bin=$TMP/path-bin
 path_git_marker=$TMP/path-git-used
+managed_bin=$TMP/managed-bin
 real_git=$(command -v git)
-mkdir -p "$path_bin"
+mkdir -p "$path_bin" "$managed_bin"
 cat > "$path_bin/make" <<EOF
 #!/usr/bin/env bash
 case " \$* " in
   *" gloat-version "*) printf '%s\n' test ;;
-  *" path "*) printf '%s\n' /usr/bin ;;
+  *" path "*) printf '%s\n' '$managed_bin' ;;
 esac
 EOF
 cat > "$path_bin/git" <<EOF

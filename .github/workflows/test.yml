@@ -58,7 +58,7 @@ jobs:
 
     - name: Test Windows path setup
       shell: bash
-      run: ./bin/gloat --which=git
+      run: ./bin/gloat --which=git,make
 
   test-prune:
     name: Test with pruning (Linux)

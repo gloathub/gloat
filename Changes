@@ -1,3 +1,8 @@
+- version: 0.1.86
+  date:    Sun Sep 13 08:00:41 PM EDT 2026
+  changes:
+  - Release v0.1.86
+
 - version: 0.1.85
   date:    Sun Sep 13 12:40:42 AM EDT 2026
   changes:

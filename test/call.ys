@@ -1,31 +1,28 @@
 !ys-0
 
-use: fs
-use ipc: :all
-
 defn main(fun *args):
   case fun:
     # IPC: sh (direct exec) - field extraction
     'sh-exit':
-      say: sh(args*).:exit
+      say: ys::v0::ipc/sh(args*).:exit
     'sh-stdout':
-      say: trim(sh(args*).:out)
+      say: trim(ys::v0::ipc/sh(args*).:out)
     'sh-stderr':
-      say: trim(sh(args*).:err)
+      say: trim(ys::v0::ipc/sh(args*).:err)
 
     # IPC: shell (via /bin/sh -c) - field extraction
     'shell-exit':
-      say: shell(args*).:exit
+      say: ys::v0::ipc/shell(args*).:exit
     'shell-stdout':
-      say: trim(shell(args*).:out)
+      say: trim(ys::v0::ipc/shell(args*).:out)
     'shell-stderr':
-      say: trim(shell(args*).:err)
+      say: trim(ys::v0::ipc/shell(args*).:err)
 
     # IPC: string-returning wrappers
     'sh-out':
-      say: sh-out(args*)
+      say: ys::v0::ipc/sh-out(args*)
     'bash-out':
-      say: bash-out(args*)
+      say: ys::v0::ipc/bash-out(args*)
 
     # Global variables
     'env-home':
@@ -33,7 +30,7 @@ defn main(fun *args):
     'env-path-len':
       say: len(ENV.PATH)
     'ns':
-      say: str(NS)
+      say: NS:S
     'cwd':
       say: CWD
     'file':
@@ -45,18 +42,37 @@ defn main(fun *args):
     'run-args-empty':
       say: RUN.args
     'run-args-with':
-      say: RUN.args.rest()
+      say: RUN.args:rest
     'argv-empty':
       say: ARGV
     'argv-with':
-      say: ARGV.rest()
+      say: ARGV:rest
     'args-empty':
       say: ARGS
     'args-with':
-      say: ARGS.rest()
+      say: ARGS:rest
 
     else:
-      condp eq args.#:
-        0: fun.call():say
-        1: fun.call(args.0):say
-        2: fun.call(args.0 args.1):say
+      say: call-fs(fun args)
+
+defn call-fs(fun args):
+  case fun:
+    'fs/mkdir': ys::v0::fs/mkdir(args*)
+    'fs/e': ys::v0::fs/e(args*)
+    'fs/mkdir-p': ys::v0::fs/mkdir-p(args*)
+    'fs/dir?': ys::v0::fs/dir?(args*)
+    'fs/touch': ys::v0::fs/touch(args*)
+    'fs/file?': ys::v0::fs/file?(args*)
+    'fs/exists?': ys::v0::fs/exists?(args*)
+    'fs/cp': ys::v0::fs/cp(args*)
+    'fs/mv': ys::v0::fs/mv(args*)
+    'fs/rm': ys::v0::fs/rm(args*)
+    'fs/rm-r': ys::v0::fs/rm-r(args*)
+    'fs/rm-f': ys::v0::fs/rm-f(args*)
+    'fs/rmdir': ys::v0::fs/rmdir(args*)
+    'fs/cwd': ys::v0::fs/cwd(args*)
+    'fs/abs': ys::v0::fs/abs(args*)
+    'fs/basename': ys::v0::fs/basename(args*)
+    'fs/dirname': ys::v0::fs/dirname(args*)
+    'fs/ls': ys::v0::fs/ls(args*)
+    else: die("Unknown function:\ $fun")

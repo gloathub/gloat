@@ -1,0 +1,34 @@
+(ns floyds_triangle.core
+  (:require [ys.v0 :refer :all])
+  (:refer-clojure :exclude [atom die print read replace reverse set]))
+
+(defn main
+ ([n]
+  (let
+   [nums
+    (+map (range) (mul+ inc str))
+    rows
+    (loop
+     [row 1 nums nums rows []]
+     (if
+      (< (count rows) n)
+      (recur (inc+ row) (+drop nums row) (conj rows (+take nums row)))
+      rows))
+    fmt
+    (fn
+     [& [_1]]
+     (add+
+      (mul+ " " (sub+ (count (last (last rows))) (count _1)))
+      _1))]
+   (each [row rows] (say (joins (+map row fmt))))))
+ ([] (main 14)))
+
+(defn -main [& argv]
+  (let [args (map-parse argv)]
+    (alter-var-root #'ARGV (constantly argv))
+    (alter-var-root #'ARGS (constantly args))
+    (alter-var-root #'FILE (constantly "/home/ingy/src/gloat/demo/yamlscript/floyds-triangle.ys"))
+    (alter-var-root #'DIR (constantly "/home/ingy/src/gloat/demo/yamlscript"))
+    (apply main args)))
+
+  

@@ -1,0 +1,9 @@
+# https://rosettacode.org/wiki/FizzBuzz#YAMLScript
+
+!ys-0
+
+defn main(n=100):
+  each x (1 .. n): !say
+    or? _ x:
+      str ((x % 3).! &&& 'Fizz'):
+          ((x % 5).! &&& 'Buzz')

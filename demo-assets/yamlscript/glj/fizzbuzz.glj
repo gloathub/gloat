@@ -1,0 +1,25 @@
+(ns fizzbuzz.core
+  (:require [ys.v0 :refer :all])
+  (:refer-clojure :exclude [atom die print read replace reverse set]))
+
+(defn main
+ ([n]
+  (each
+   [x (rng 1 n)]
+   (say
+    (or?
+     (str
+      (and? (falsey? (rem x 3)) "Fizz")
+      (and? (falsey? (rem x 5)) "Buzz"))
+     x))))
+ ([] (main 100)))
+
+(defn -main [& argv]
+  (let [args (map-parse argv)]
+    (alter-var-root #'ARGV (constantly argv))
+    (alter-var-root #'ARGS (constantly args))
+    (alter-var-root #'FILE (constantly "/home/ingy/src/gloat/demo/yamlscript/fizzbuzz.ys"))
+    (alter-var-root #'DIR (constantly "/home/ingy/src/gloat/demo/yamlscript"))
+    (apply main args)))
+
+  

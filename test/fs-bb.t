@@ -7,7 +7,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/init"
 # Test fs/mkdir
 try "bb test/call.clj fs/mkdir $TMP/d2"
 is "$rc" 0 "fs/mkdir runs"
-try "bb test/call.clj fs-e $TMP/d2"
+try "bb test/call.clj fs/e $TMP/d2"
 is "$got" "true" "fs/mkdir created directory"
 
 # Test fs/mkdir-p

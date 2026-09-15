@@ -1,5 +1,8 @@
 !ys-0
 
+use: fs
+use ipc: :all
+
 defn main(fun *args):
   case fun:
     # IPC: sh (direct exec) - field extraction
@@ -40,17 +43,17 @@ defn main(fun *args):
     'run-pid':
       say: RUN.pid
     'run-args-empty':
-      println: RUN.args
+      say: RUN.args
     'run-args-with':
-      println: RUN.args.rest()
+      say: RUN.args.rest()
     'argv-empty':
-      println: ARGV
+      say: ARGV
     'argv-with':
-      println: ARGV.rest()
+      say: ARGV.rest()
     'args-empty':
-      println: ARGS
+      say: ARGS
     'args-with':
-      println: ARGS.rest()
+      say: ARGS.rest()
 
     else:
       condp eq args.#:

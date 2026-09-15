@@ -22,6 +22,7 @@ include $M/jolt.mk
 include $M/lein.mk
 include $M/let-go.mk
 include $M/md2man.mk
+include $M/node.mk
 include $M/perl.mk
 include $M/phel.mk
 include $M/shellcheck.mk
@@ -152,6 +153,9 @@ TEST-DEPS += $(SHELLCHECK)
 endif
 ifneq (,$(filter test/format.t,$(tests)))
 TEST-DEPS += $(PATH-DEPS) $(WASMTIME) $(CLJFMT) $(ZPRINT)
+endif
+ifneq (,$(filter test/browser.t,$(tests)))
+TEST-DEPS += $(BB) $(NODE)
 endif
 ifneq (,$(filter %-bb.t %-bin.t,$(tests)))
 TEST-DEPS += $(TEST-CALL)

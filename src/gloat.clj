@@ -734,8 +734,8 @@ Format can usually be inferred from -o extension:
   deps=tree   Print dependency tree (implies prune)
   goimports   Include Go stdlib in pkgmap (needed for runtime Go interop)
   gzip        Compress with gzip (requires gzip command)
-  html        Generate HTML page for js/wasm (-Xhtml or -Xhtml='args')
-  open        Open browser after serving (-Xopen or -Xopen='args')
+  html        Generate HTML page for js/wasm (-Xhtml)
+  open        Open browser after serving (-Xopen)
   prune       Prune unused clojure.core functions (smaller binaries)
   serve       Start a local HTTP server after building (-Xserve)
 
@@ -744,7 +744,7 @@ The html, serve, and open extensions are only valid with js format (-o foo.js or
 The prune extension applies to binary builds (bin, lib, wasm, js, dir).
 The goimports extension applies to binary builds (bin, lib, wasm, js, dir).
 
-Multiple extensions can be combined with commas: -Xserve,html=100
+Multiple extensions can be combined with commas: -Xserve,prune
 -Xopen implies -Xserve which implies -Xhtml.")
     (System/exit 0)))
 
@@ -818,7 +818,12 @@ Less common:
       (doseq [[ext-name ext-val] parsed]
         (when-not (VALID-EXTENSIONS ext-name)
           (die "Unknown extension: " ext-name
-               " (see --extensions for available extensions)")))
+               " (see --extensions for available extensions)"))
+        (when (and (contains? #{"html" "serve" "open"} ext-name)
+                   (string? ext-val))
+          (die "Arguments for -X" ext-name
+               " must be specified in the URL query,"
+               " for example '?arg1,arg2'.")))
       ;; Validate deps values
       (when-let [deps-val (get parsed "deps")]
         (when (and (string? deps-val)
@@ -863,6 +868,7 @@ Less common:
         path))))
 
 (def star-preamble-heads ['require 'deps/add-deps 'ns 'ys.v0/init])
+(def clj-plus-preamble-heads ['when-not 'ns 'when-not])
 
 (defn read-clojure-forms
   ([text] (read-clojure-forms text nil))
@@ -879,11 +885,21 @@ Less common:
                (recur (conj forms form))))))))))
 
 (defn star-forms? [forms]
-  (= star-preamble-heads
-     (mapv #(when (seq? %1) (first %1)) (take 4 forms))))
+  (let [heads #(mapv (fn [form]
+                       (when (seq? form) (first form)))
+                     (take %1 forms))]
+    (or (= star-preamble-heads (heads 4))
+        (= clj-plus-preamble-heads (heads 3)))))
+
+(defn portable-preamble-count [forms]
+  (if (= star-preamble-heads
+         (mapv #(when (seq? %1) (first %1)) (take 4 forms)))
+    4
+    3))
 
 (defn star-namespace [forms]
-  (let [ns-form (nth forms 2 nil)]
+  (let [ns-form (some #(when (and (seq? %1) (= 'ns (first %1))) %1)
+                      (take 4 forms))]
     (when (and (seq? ns-form) (= 'ns (first ns-form)))
       (str (second ns-form)))))
 
@@ -927,8 +943,8 @@ Less common:
 
 (defn write-star-clj [forms output namespace input]
   (when-not (star-forms? forms)
-    (die "Unexpected ys --to=star preamble"))
-  (let [body-forms (->> (drop 4 forms)
+    (die "Unexpected YAMLScript portable preamble"))
+  (let [body-forms (->> (drop (portable-preamble-count forms) forms)
                         (remove #(= %1 '(apply main ARGS))))
         main? (star-function-defined? body-forms 'main)
         dash-main? (star-function-defined? body-forms '-main)
@@ -1007,9 +1023,9 @@ Less common:
                    :err :string
                    :continue true
                    :extra-env go-env}
-                  ys "--to=star" input)]
+                  ys "--compile" "--to=clj+" input)]
       (when-not (zero? (:exit result))
-        (die "ys --to=star failed:\n"
+        (die "ys --to=clj+ failed:\n"
              (or (not-empty (:err result)) (:out result))))
       (write-star-clj
         (read-clojure-forms (:out result)) output namespace input))
@@ -2888,6 +2904,8 @@ Less common:
                 (let [built-file (str output-dir "/" binary-name)]
                   (if (fs/exists? built-file)
                     (do
+                      (when-let [parent (fs/parent output)]
+                        (fs/create-dirs parent))
                       (fs/copy built-file output {:replace-existing true})
                       (msg "Generated:" output)
 
@@ -2905,18 +2923,11 @@ Less common:
                               has-open  (contains? parsed "open")
                               has-serve (or has-open (contains? parsed "serve"))
                               has-html  (or has-serve (contains? parsed "html"))
-                              args-val  (some #(let [v (get parsed %)]
-                                                 (when (string? v) v))
-                                              ["open" "serve" "html"])
-                              program-args (if (seq args-val)
-                                             (str/split args-val #"\s+") [])
                               config {:output       output
                                       :go-bin       (:GO make-vars)
                                       :template-dir TEMPLATE
-                                      :program-args program-args
                                       :quiet        (:quiet *opts*)
                                       :serve        has-serve
-                                      :has-html     has-html
                                       :open         has-open
                                       :gloat-root   GLOAT-ROOT}]
                           (when has-html (html/generate config))
@@ -3038,6 +3049,9 @@ Less common:
         to (:to opts)
         run (:run opts)
         engine (resolve-engine opts)
+        parsed-extensions (parse-extensions (or (:ext opts) []))
+        serving (or (contains? parsed-extensions "serve")
+                    (contains? parsed-extensions "open"))
         format-guess (if (and (nil? output) (nil? to))
                        ;; --run under the lg engine defaults to lg format
                        (if (and run (= "let-go-vm" engine)) "lg" "bin")
@@ -3207,15 +3221,24 @@ Less common:
                         :else [(str run-tmpdir "/gloat-run." to) to]))
                     [output to])]
 
-              ;; Default: no -o and no -t means binary output
+              ;; Serving a js target without -o creates a named bundle.
               (let [[output to]
-                    (if (and (nil? output) (nil? to))
+                    (cond
+                      (and (nil? output) (= to "js") serving)
+                      (let [basename (if (= input "-")
+                                       "app"
+                                       (-> (fs/file-name input)
+                                           (str/replace #"\.[^.]+$" "")))]
+                        [(str basename "/index.js") to])
+
+                      (and (nil? output) (nil? to))
                       (let [basename (if (= input "-")
                                        "app"
                                        (-> (fs/file-name input)
                                            (str/replace #"\.[^.]+$" "")))]
                         [basename "bin"])
-                      [output to])]
+
+                      :else [output to])]
 
                 (assoc opts
                        :input input
@@ -3282,6 +3305,17 @@ Less common:
                    opts)]
 
         (binding [*opts* opts]
+          (let [parsed (parse-extensions (or (:ext opts) []))
+                html? (and (= format "js")
+                           (some #(contains? parsed %)
+                                 ["html" "serve" "open"]))
+                html-output (when (and html? (:output opts))
+                              (html/output-path (:output opts)))]
+            (when (and html-output
+                       (not (:force opts))
+                       (fs/exists? html-output))
+              (die "Output already exists: " html-output
+                   " (use --force to overwrite)")))
           (check-exists (:output opts) (:force opts))
 
           ;; Fail fast if output already exists (unless --force or deps-only)

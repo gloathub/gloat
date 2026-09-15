@@ -479,7 +479,7 @@ if [[ ${RUN_SLOW_TESTS:-} ]]; then
 
   try "YS_MAVEN_REPOSITORY='$star_m2' \
     YS_GITLIBS_DIR='$star_gitlibs' \
-    '$GLOAT_BIN' -q <(ys --to=star '$star_fixture') \
+    '$GLOAT_BIN' -q <(ys -Tclj+ '$star_fixture') \
     -o '$TMP/star-stream-bin'"
   is "$rc" 0 "portable star stream builds a native binary"
 
@@ -490,7 +490,7 @@ if [[ ${RUN_SLOW_TESTS:-} ]]; then
     "portable star stream prints dependency-backed output"
 
   printf '%s\n' '!ys-0' 'say: 40 + 2' > "$TMP/star-script.ys"
-  try "'$GLOAT_BIN' -q <(ys --to=star '$TMP/star-script.ys') \
+  try "'$GLOAT_BIN' -q <(ys -Tclj+ '$TMP/star-script.ys') \
     -o '$TMP/star-script-bin'"
   is "$rc" 0 "top-level portable star stream builds a native binary"
 

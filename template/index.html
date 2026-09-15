@@ -3,50 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TITLE</title>
+  <title>PROGRAM-NAME</title>
   <style>
     body { font-family: monospace; padding: 1em; }
-    #output { white-space: pre; background: #f4f4f4; padding: 1em; }
-    #status { color: #666; margin-bottom: 0.5em; }
+    #output { background: #f4f4f4; padding: 1em 0; }
+    .output-row {
+      min-height: 1em;
+      padding: 0 1em;
+      white-space: pre-wrap;
+    }
+    .output-row.stderr { background: #fff0f0; }
   </style>
 </head>
 <body>
-  <h1>TITLE</h1>
-  <div id="status">Loading...</div>
-  <pre id="output"></pre>
+  <div id="output"></div>
   <script>
 WASM-EXEC-JS
   </script>
   <script>
     const outputEl = document.getElementById('output');
-    const statusEl = document.getElementById('status');
+    const decoders = {
+      1: new TextDecoder(),
+      2: new TextDecoder(),
+    };
+    const currentRows = {1: null, 2: null};
 
-    const origLog = console.log;
-    console.log = function(...args) {
-      origLog.apply(console, args);
-      outputEl.textContent += args.join(' ') + '\n';
+    function currentRow(fd) {
+      if (!currentRows[fd]) {
+        const row = document.createElement('div');
+        row.className = 'output-row ' + (fd === 2 ? 'stderr' : 'stdout');
+        outputEl.appendChild(row);
+        currentRows[fd] = row;
+      }
+      return currentRows[fd];
+    }
+
+    function writeText(fd, text) {
+      const lines = text.split('\n');
+      lines.forEach((line, index) => {
+        const endsLine = index < lines.length - 1;
+        if (line || endsLine || currentRows[fd]) {
+          const row = currentRow(fd);
+          row.textContent += line;
+          if (endsLine) {
+            if (row.textContent.endsWith('\r')) {
+              row.textContent = row.textContent.slice(0, -1);
+            }
+            currentRows[fd] = null;
+          }
+        }
+      });
+    }
+
+    function writeOutput(fd, buffer) {
+      writeText(fd, decoders[fd].decode(buffer, {stream: true}));
+      return buffer.length;
+    }
+
+    function flushOutput() {
+      for (const fd of [1, 2]) {
+        writeText(fd, decoders[fd].decode());
+      }
+    }
+
+    const originalWriteSync = globalThis.fs.writeSync.bind(globalThis.fs);
+    globalThis.fs.writeSync = function(fd, buffer) {
+      return fd === 1 || fd === 2
+        ? writeOutput(fd, buffer)
+        : originalWriteSync(fd, buffer);
     };
 
-    const go = new Go();
-    go.argv = ['TITLE'].concat(PROGRAM-ARGS);
-    globalThis.addEventListener('gloat-ready', () => {
-      statusEl.textContent = 'Ready.';
-    });
+    function queryArgs() {
+      const query = globalThis.location.search.slice(1);
+      return query ? query.split(',').map(decodeURIComponent) : [];
+    }
 
-    fetch('WASM-FILE')
+    function reportError(error) {
+      flushOutput();
+      const message = error instanceof Error ? error.message : String(error);
+      writeText(2, 'Error: ' + message + '\n');
+    }
+
+    let go;
+    try {
+      go = new Go();
+      go.argv = [PROGRAM-NAME-JSON].concat(queryArgs());
+    } catch (error) {
+      reportError(error);
+    }
+
+    if (go) fetch('WASM-FILE')
       .then(r => r.arrayBuffer())
       .then(buf => WebAssembly.instantiate(buf, go.importObject))
-      .then(result => {
-        statusEl.textContent = 'Running...';
-        return go.run(result.instance);
-      })
-      .then(() => {
-        statusEl.textContent = 'Done.';
-      })
-      .catch(err => {
-        statusEl.textContent = 'Error: ' + err;
-        console.log('Error:', err);
-      });
+      .then(result => go.run(result.instance))
+      .then(flushOutput)
+      .catch(reportError);
   </script>
 </body>
 </html>

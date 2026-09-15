@@ -5,6 +5,30 @@
    [babashka.fs :as fs]
    [clojure.string :as str]))
 
+(defn- html-escape [text]
+  (-> text
+      (str/replace "&" "&amp;")
+      (str/replace "<" "&lt;")
+      (str/replace ">" "&gt;")
+      (str/replace "\"" "&quot;")))
+
+(defn- javascript-string [text]
+  (-> (pr-str text)
+      (str/replace "<" "\\u003c")
+      (str/replace ">" "\\u003e")
+      (str/replace "&" "\\u0026")))
+
+(defn program-name [output]
+  (let [filename (fs/file-name output)
+        stem (str/replace filename #"\.js$" "")]
+    (if (= stem "index")
+      (or (some-> output fs/absolutize fs/parent fs/file-name str)
+          stem)
+      stem)))
+
+(defn output-path [output]
+  (str/replace output #"\.js$" ".html"))
+
 (defn generate
   "Generate an HTML page for running a WASM js module in the browser.
 
@@ -12,27 +36,24 @@
      :output       - the .js output path
      :go-bin       - path to Go binary (to locate wasm_exec.js)
      :template-dir - path to template directory
-     :program-args - vector of program arg strings, or []
      :quiet        - suppress output messages
      :serve        - true if -Xserve is active (suppress hint)
 
    Returns the html output path."
-  [{:keys [output go-bin template-dir program-args quiet serve]}]
+  [{:keys [output go-bin template-dir quiet serve]}]
   (let [go-root (str (fs/parent (fs/parent go-bin)))
         wasm-exec-js (str go-root "/lib/wasm/wasm_exec.js")
-        html-output (str/replace output #"\.js$" ".html")
-        title (-> (fs/file-name output) (str/replace #"\.js$" ""))
+        html-output (output-path output)
+        title (program-name output)
         wasm-file (fs/file-name output)
-        args-json (str "[" (str/join ", "
-                                     (map #(str "\"" % "\"") program-args))
-                       "]")
         template (slurp (str template-dir "/index.html"))
         wasm-exec-content (slurp wasm-exec-js)
         html (-> template
                  (str/replace "WASM-EXEC-JS" wasm-exec-content)
-                 (str/replace "TITLE" title)
-                 (str/replace "WASM-FILE" wasm-file)
-                 (str/replace "PROGRAM-ARGS" args-json))]
+                 (str/replace "PROGRAM-NAME-JSON"
+                              (javascript-string title))
+                 (str/replace "PROGRAM-NAME" (html-escape title))
+                 (str/replace "WASM-FILE" wasm-file))]
     (spit html-output html)
     (when-not quiet
       (binding [*out* *err*]

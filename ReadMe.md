@@ -425,10 +425,9 @@ Enable them with `-X` (or `--ext`):
     gloat app.ys -o app.js -Xhtml
     gloat app.ys -o app.wasm -Xprune,gzip
 
-Multiple extensions can be combined with commas, and some accept a
-value with `=`:
+Multiple extensions can be combined with commas:
 
-    gloat app.ys -o app.js -Xserve,html=100
+    gloat app.ys -o app.js -Xserve,prune
 
 Run `gloat --extensions` to list all available extensions.
 
@@ -479,11 +478,18 @@ the browser.
 Only valid with `js` format (`-o app.js`).
 
     gloat app.ys -o app.js -Xhtml
-    gloat app.ys -o app.js -Xhtml='arg1 arg2'
 
 This generates `app.html` alongside `app.js`, with the Go WASM
 runtime (`wasm_exec.js`) inlined.
 After generation, gloat prints the command to serve locally.
+Program arguments come from the page URL query.
+Arguments are separated by commas and percent-decoded individually:
+
+    http://localhost:8000/app.html?one,two
+    http://localhost:8000/app.html?one%2Ctwo
+
+The first URL passes two arguments.
+The second passes one argument containing a comma.
 
 > **Note:** `fetch()` requires HTTP, not `file://`, so a local
 > server is needed to run WASM in the browser.
@@ -496,7 +502,6 @@ Implies `-Xserve` (which implies `-Xhtml`).
 Only valid with `js` format.
 
     gloat app.ys -o app.js -Xopen
-    gloat app.ys -o app.js -Xopen='arg1 arg2'
 
 The implication chain: `-Xopen` → `-Xserve` → `-Xhtml`.
 
@@ -545,11 +550,17 @@ Implies `-Xhtml`.
 Only valid with `js` format.
 
     gloat app.ys -o app.js -Xserve
-    gloat app.ys -o app.js -Xserve='arg1 arg2'
+    gloat app.ys -t js -Xserve
 
-Without explicit `-Xhtml`, the HTML page is served from a temporary
-directory so the output directory is left clean.
-With `-Xserve,html`, the HTML is generated alongside the output.
+An explicit output creates persistent sibling files, such as `app.js`
+and `app.html`.
+Without `-o`, the second command creates `app/index.js` and
+`app/index.html`, then serves this URL:
+
+    http://localhost:8000/app/index.html
+
+The files remain after the server stops.
+Add arguments to the URL query, for example `?3` or `?one,two`.
 
 
 ## Options

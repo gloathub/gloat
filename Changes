@@ -1,3 +1,12 @@
+- version: 0.1.87
+  date:    Tue Sep 15 05:32:49 PM EDT 2026
+  changes:
+  - Keep runtime tests prune-safe
+  - Restore explicit runtime imports
+  - Upgrade runtime for short imports
+  - Allow releases from current branch
+  - Improve browser Wasm serving
+
 - version: 0.1.86
   date:    Sun Sep 13 08:00:41 PM EDT 2026
   changes:

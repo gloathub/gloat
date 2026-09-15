@@ -365,6 +365,10 @@ RELEASE-VERSION := \
 RELEASE-GLJ-VERSION := \
   $(strip $(if $(filter command line,$(origin GLJ-VERSION)),$(GLJ-VERSION),\
     $(if $(filter command line,$(origin glj)),$(glj))))
+# Use a=1 to release from the current branch.
+ifdef a
+GLOAT-RELEASE-BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
+endif
 
 release: $(GH) $(PERL) $(GO)
 	@$(if $(RELEASE-VERSION),,\

@@ -45,25 +45,25 @@ returns the same FQ name, matching JVM Clojure output.
 
 ## How it works
 
-JVM symbols flow through three layers:
+JVM symbols flow through two layers:
 
-1. **Rewrite** -- the `.clj` -> `.glj` transform translates each
-   `Math/*` symbol to a fully-qualified Go reference into the bridge
-   package.
-2. **Bridge** -- small Go packages inside glojure
+1. **Bridge** -- small Go packages inside glojure
    (`pkg/javacompat/math/`, `pkg/javacompat/system/`) that handle
    JVM-specific semantics: polymorphic dispatch on argument type,
    JVM-faithful rounding rules, exact-arithmetic overflow detection,
    nil-on-unset env/property lookups, conversion of Go return values
    into Clojure-friendly forms.
-3. **gojava** -- the typed Go port of `java.lang.*`, with one Go name
+2. **gojava** -- the typed Go port of `java.lang.*`, with one Go name
    per JVM overload (`AbsInt`, `AbsLong`, `FloorDivInt`, `FloorDivLong`,
    ...).
 
-At the REPL the rewrite step is skipped; each bridge registers its
-symbols under the JVM-style `Math.<name>` and `System.<name>` keys in
-glojure's pkgmap so `(Math/sqrt 144)` and `(System/getenv "PATH")`
-resolve the same way without translation.
+Each bridge registers its symbols under the JVM-style `Math.<name>` and
+`System.<name>` keys in glojure's pkgmap, so `(Math/sqrt 144)` and
+`(System/getenv "PATH")` resolve the same way at the REPL and in a
+compiled binary.
+Your source is never rewritten; the same `.clj` file feeds both paths.
+Sources that also use Go interop take the `.glj` extension and are
+accepted as input the same way.
 
 ## Static method calls
 
@@ -228,8 +228,8 @@ Long/MAX_VALUE                        ; -> 9223372036854775807
 
 (Integer/valueOf 7)                   ; -> 7
 (Integer/valueOf "7")                 ; -> 7 (parses)
-(Integer. 5)                          ; rewrites to (Integer/valueOf 5)
-(Long.    "9999999999")               ; rewrites to (Long/valueOf "...")
+(Integer. 5)                          ; same as (Integer/valueOf 5)
+(Long.    "9999999999")               ; same as (Long/valueOf "...")
 
 (Integer/bitCount 0xFF)               ; -> 8
 (Integer/numberOfLeadingZeros 1)      ; -> 31
@@ -237,9 +237,9 @@ Long/MAX_VALUE                        ; -> 9223372036854775807
 (Integer/max 3 7)                     ; -> 7
 ```
 
-Constructor forms `(Integer. x)` and `(Long. x)` are rewritten at
-compile time to the matching `valueOf`, which accepts either a number
-(coerced to int32 / int64) or a string (parsed as decimal). Parse
+Constructor forms `(Integer. x)` and `(Long. x)` call the matching
+`valueOf`, which accepts either a number (coerced to int32 / int64) or
+a string (parsed as decimal). Parse
 failures raise a runtime error with `NumberFormatException` in the
 message, matching JVM behavior.
 
@@ -247,14 +247,14 @@ message, matching JVM behavior.
 
 Runnable: [`08-string.clj`](../demo/interop/java-interop/08-string.clj)
 
-`String/*` statics rewrite to the javacompat bridge like `Math/*` does.
+`String/*` statics resolve to the javacompat bridge like `Math/*` does.
 Instance methods (`(.length s)`, `(.toUpperCase s)`, `(.substring s 1
 4)`, ...) take a different path: glojure has no Go-side methods on the
 primitive `string` type, so the bridge registers each JVM method with
 the runtime, and `lang.FieldOrMethod` consults that registry when the
 receiver is a Go string. The dispatch is case-insensitive on the first
-letter so both the original (`.equals`) and the rewrite-renamed
-(`.Equals`) spellings reach the same handler.
+letter so both the JVM (`.equals`) and the Go-style (`.Equals`)
+spellings reach the same handler.
 
 ```clojure
 (.length "naïve")              ; 5 (UTF-16 code units, JVM semantics)
@@ -270,7 +270,7 @@ letter so both the original (`.equals`) and the rewrite-renamed
 (String/format "%s=%d" "x" 42) ; "x=42"
 (String/join "-" ["a" "b"])    ; "a-b"
 (String/valueOf nil)           ; "null"
-(String. "hello")              ; "hello"   (rewrites to valueOf)
+(String. "hello")              ; "hello"   (same as valueOf)
 ```
 
 The format string for `String/format` accepts `%n` (newline), `%b`
@@ -306,7 +306,7 @@ to match Java's double precision.
 (Double/doubleToLongBits 1.0)          ; 4607182418800017408
 (Double/longBitsToDouble 4607182418800017408) ; 1.0
 
-(Double. "1.25")                       ; 1.25 (rewrites to valueOf)
+(Double. "1.25")                       ; 1.25 (same as valueOf)
 ```
 
 `Double/toString` is JVM-faithful: mantissa always carries a decimal
@@ -341,7 +341,7 @@ including the empty string and nil.
 Boolean/TRUE                           ; true
 Boolean/FALSE                          ; false
 
-(Boolean. "true")                      ; true   (rewrites to valueOf)
+(Boolean. "true")                      ; true   (same as valueOf)
 ```
 
 The logical combinators are present so callers porting code that uses
@@ -379,7 +379,7 @@ point.
 Character/MIN_RADIX                    ; 2
 Character/MAX_RADIX                    ; 36
 
-(Character. \W)                        ; \W   (rewrites to valueOf)
+(Character. \W)                        ; \W   (same as valueOf)
 ```
 
 Classification uses Go's `unicode` package, which tracks the same
@@ -562,7 +562,7 @@ sugar.
   `Integer/BYTES`
 - Parsing: `Integer/parseInt` (1+2 arg), `Integer/parseUnsignedInt`,
   `Integer/valueOf` (int or string)
-- Constructor: `(Integer. x)` (rewrites to `valueOf`)
+- Constructor: `(Integer. x)` (same as `valueOf`)
 - Formatting: `Integer/toString` (1+2 arg), `Integer/toBinaryString`,
   `Integer/toOctalString`, `Integer/toHexString`
 - Bit operations: `Integer/bitCount`, `Integer/numberOfLeadingZeros`,
@@ -582,7 +582,7 @@ return types. Includes `Long/MIN_VALUE`, `Long/MAX_VALUE`,
 
 - Statics: `String/format`, `String/join`, `String/valueOf`,
   `String/copyValueOf`
-- Constructor: `(String. x)` (rewrites to `valueOf`)
+- Constructor: `(String. x)` (same as `valueOf`)
 - Length and predicates: `.length`, `.isEmpty`, `.isBlank`
 - Case: `.toUpperCase`, `.toLowerCase`
 - Trimming: `.trim`, `.strip`, `.stripLeading`, `.stripTrailing`
@@ -603,7 +603,7 @@ return types. Includes `Long/MIN_VALUE`, `Long/MAX_VALUE`,
   `Double/POSITIVE_INFINITY`, `Double/NEGATIVE_INFINITY`, `Double/NaN`,
   `Double/SIZE`, `Double/BYTES`
 - Parsing: `Double/parseDouble`, `Double/valueOf` (string or number)
-- Constructor: `(Double. x)` (rewrites to `valueOf`)
+- Constructor: `(Double. x)` (same as `valueOf`)
 - Formatting: `Double/toString` (JVM-style), `Double/toHexString`
 - Predicates: `Double/isNaN`, `Double/isInfinite`, `Double/isFinite`
 - Bit conversion: `Double/doubleToLongBits`,
@@ -614,7 +614,7 @@ return types. Includes `Long/MIN_VALUE`, `Long/MAX_VALUE`,
 
 - Constants: `Boolean/TRUE`, `Boolean/FALSE`
 - Parsing: `Boolean/parseBoolean`, `Boolean/valueOf` (string or boolean)
-- Constructor: `(Boolean. x)` (rewrites to `valueOf`)
+- Constructor: `(Boolean. x)` (same as `valueOf`)
 - Formatting: `Boolean/toString`
 - Logical: `Boolean/logicalAnd`, `Boolean/logicalOr`, `Boolean/logicalXor`
 - Properties: `Boolean/getBoolean` (falls back to the process env)
@@ -624,7 +624,7 @@ return types. Includes `Long/MIN_VALUE`, `Long/MAX_VALUE`,
 
 - Constants: `Character/MIN_VALUE`, `Character/MAX_VALUE`,
   `Character/MIN_RADIX`, `Character/MAX_RADIX`
-- Constructor: `(Character. c)` (rewrites to `valueOf`)
+- Constructor: `(Character. c)` (same as `valueOf`)
 - Predicates: `Character/isDigit`, `Character/isLetter`,
   `Character/isLetterOrDigit`, `Character/isAlphabetic`,
   `Character/isWhitespace`, `Character/isSpaceChar`,
@@ -637,7 +637,7 @@ return types. Includes `Long/MIN_VALUE`, `Long/MAX_VALUE`,
 ### java.util.regex.Pattern
 
 - Statics: `Pattern/compile` (1+2 arg), `Pattern/matches`, `Pattern/quote`
-- Constructor: `(Pattern. regex)` (rewrites to `compile`)
+- Constructor: `(Pattern. regex)` (same as `compile`)
 - Flag constants: `Pattern/CASE_INSENSITIVE`, `Pattern/MULTILINE`,
   `Pattern/LITERAL`, `Pattern/DOTALL`, `Pattern/UNICODE_CASE`
 - Pattern instance: `.pattern`, `.flags`, `.toString`, `.matcher`,
@@ -650,7 +650,7 @@ return types. Includes `Long/MIN_VALUE`, `Long/MAX_VALUE`,
 ### java.util.UUID
 
 - Statics: `UUID/randomUUID`, `UUID/fromString`, `UUID/nameUUIDFromBytes`
-- Constructor: `(UUID. msb lsb)` (rewrites to `fromBits`)
+- Constructor: `(UUID. msb lsb)` (same as `fromBits`)
 - Instance: `.toString`, `.getMostSignificantBits`,
   `.getLeastSignificantBits`, `.version`, `.variant`, `.compareTo`,
   `.equals`, `.hashCode`

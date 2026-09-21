@@ -2,13 +2,15 @@
 .TH Gloat Ecosystem Tutorial
 Gloat compiles YAMLScript, Clojure, or Glojure to Go source, native binaries,
 WebAssembly, and shared libraries.
+Input files are \fB\&.ys\fR, \fB\&.clj\fR, or \fB\&.glj\fR\&.
+Use \fB\&.glj\fR for Clojure that relies on Glojure-only features such as Go
+interop.
 
 .SH Compilation Pipeline
 The normal YAMLScript pipeline is:
 
 .EX
-\&.ys -> ys -T clj -> .clj -> Glojure rewrite -> .glj
-    -> glj compile -> .go -> go build -> binary
+\&.ys -> ys -T clj -> .clj -> glj compile -> .go -> go build -> binary
 .EE
 
 .PP
@@ -137,8 +139,6 @@ Gloat can also stop before building Go:
 .IP \(bu 2
 \fB-t bb\fR prepends \fBys-v0-glj/bb/runtime.clj\fR, producing a self-contained
 Babashka program with no run-time Java or Maven requirement.
-.IP \(bu 2
-\fB-t glj\fR emits rewritten Glojure source.
 .IP \(bu 2
 \fB-t go\fR emits the generated application loader.
 .IP \(bu 2

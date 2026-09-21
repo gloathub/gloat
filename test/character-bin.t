@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Test java.lang.Character interop in a gloat-compiled binary. Verifies that
-# Character/* statics flow from glojure's rewrite, through the
-# javacompat/character bridge, into gojava. Exercises both `\c` char-literal
+# Character/* statics flow through the javacompat/character bridge
+# into gojava. Exercises both `\c` char-literal
 # arguments (lang.Char) and integer code-point arguments.
 
 source "$(dirname "${BASH_SOURCE[0]}")/init"

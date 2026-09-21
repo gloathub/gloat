@@ -1,7 +1,7 @@
 ;; Calling java.lang.Integer and java.lang.Long static members.
 ;;
-;; Same three-layer flow as Math/* and System/*: gloat rewrites each
-;; `Integer/*` and `Long/*` symbol to glojure's javacompat bridge, which
+;; Same two-layer flow as Math/* and System/*: glojure resolves each
+;; `Integer/*` and `Long/*` symbol to its javacompat bridge, which
 ;; forwards to gojava's typed Go ports.
 ;;
 ;; `Integer/MAX_VALUE` is an int32 with the JVM-faithful value 2^31 - 1,
@@ -33,7 +33,7 @@
   (println "valueOf int:" (Integer/valueOf 7))
   (println "valueOf str:" (Integer/valueOf "7"))
 
-  ;; Constructor sugar rewrites to valueOf
+  ;; Constructor sugar calls valueOf
   (println "(Integer. 5):"   (Integer. 5))
   (println "(Integer. \"5\"):" (Integer. "5"))
   (println "(Long. 12345):"  (Long. 12345))

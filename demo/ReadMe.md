@@ -18,7 +18,7 @@ Then open http://localhost:8080 in your browser.
   `yamlscript/` and `clojure/` directories
 - **Live Editor**: Edit source code in CodeMirror 6 with syntax highlighting
 - **On-Demand Compilation**: Click "Run" to compile and execute
-- **Multi-Stage Pipeline**: View intermediate Clojure, Glojure, and Go code
+- **Multi-Stage Pipeline**: View intermediate Clojure and Go code
 - **WASM Execution**: Runs compiled WASM in the browser
 
 ## How It Works
@@ -40,7 +40,7 @@ Python HTTP server providing:
 - File selector dropdown populated from server
 - Run button that:
   1. Sends editor content to `/api/compile`
-  2. Updates Glojure and Go code panels on success
+  2. Updates Clojure and Go code panels on success
   3. Loads and executes WASM binary
   4. Displays compilation errors in output pane on failure
 
@@ -55,13 +55,12 @@ POST /api/compile {source, ext}
         ↓
 Server invokes gloat via bin/compile.sh:
   - gloat temp.ys -t clj
-  - gloat temp.ys -t glj
   - gloat temp.ys -t go
   - gloat temp.ys -o temp.wasm -t js
         ↓
 Server streams progress via SSE (Server-Sent Events)
         ↓
-Server returns {clj, glj, go, wasm (base64)}
+Server returns {clj, go, wasm (base64)}
         ↓
 Frontend updates code panels and runs WASM
 ```

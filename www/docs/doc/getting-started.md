@@ -82,9 +82,6 @@ Output any stage of the compilation pipeline:
 # View generated Clojure
 gloat code.ys -t clj
 
-# View generated Glojure
-gloat code.ys -t glj
-
 # View generated Go
 gloat code.ys -t go
 ```
@@ -154,7 +151,6 @@ Use `-o` to save output to a file:
 ```bash
 # File format inferred from extension
 gloat app.ys -o app.clj    # Save as Clojure
-gloat app.ys -o app.glj    # Save as Glojure
 gloat app.ys -o app.go     # Save as Go
 ```
 
@@ -162,7 +158,6 @@ Or use the shorthand `-t .ext` syntax:
 
 ```bash
 gloat app.ys -t .clj       # Creates app.clj
-gloat app.ys -t .glj       # Creates app.glj
 gloat app.ys -t .go        # Creates app.go
 ```
 
@@ -176,7 +171,6 @@ Gloat supports multiple output formats:
 | `bin`  | `-t bin` or no extension | Native executable (default) |
 | `clj`  | `-t clj` or `.clj` | Clojure source |
 | `bb`   | `-t bb` or `.bb` | Babashka self-contained script |
-| `glj`  | `-t glj` or `.glj` | Glojure source |
 | `go`   | `-t go` or `.go` | Go source |
 | `dir`  | `-o path/` | Portable Go project directory |
 | `lib`  | `.so` or `.dylib` | Shared library |

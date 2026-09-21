@@ -99,7 +99,6 @@ gloat app.clj -o app.exe -p windows/amd64
 gloat program.clj -o program.wasm
 
 # Output intermediate formats
-gloat code.clj -t glj  # See generated Glojure
 gloat code.clj -t go   # See generated Go
 
 # Format and syntax highlight Clojure

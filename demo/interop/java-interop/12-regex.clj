@@ -1,7 +1,7 @@
 ;; Calling java.util.regex.Pattern and the Matcher it produces.
 ;;
-;; Same three-layer flow as the java.lang.* classes: gloat rewrites each
-;; `Pattern/*` symbol to glojure's javacompat bridge, which forwards to
+;; Same two-layer flow as the java.lang.* classes: glojure resolves each
+;; `Pattern/*` symbol to its javacompat bridge, which forwards to
 ;; gojava's typed Go port. Matcher instance methods are reached at runtime
 ;; via reflection on the *Matcher receiver; the gojava package uses
 ;; capitalized variadic Go signatures so JVM overloads collapse to one
@@ -55,7 +55,7 @@
         m (.matcher p "a1 b22 c333")]
     (println "replaceAll:" (.replaceAll m "N")))
 
-  ;; Constructor sugar rewrites to compile
+  ;; Constructor sugar calls compile
   (println "(Pattern. \"x+\"):" (.pattern (Pattern. "x+")))
 
   ;; Fully qualified form also resolves

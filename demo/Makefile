@@ -30,7 +30,6 @@ SRC-EXT  := $(suffix $(SRC-FILE))
 GO-FILE  := $(NAME).go
 CLJ-FILE := $(NAME).clj
 BB-FILE  := $(NAME).bb
-GLJ-FILE := $(NAME).glj
 GO-DIR   := $(NAME)/
 BINARY   := $(NAME)
 LIBRARY  := $(NAME).$(SO)
@@ -40,7 +39,6 @@ WASM-JS  := $(NAME).js
 TARGETS := \
   $(CLJ-FILE) \
   $(BB-FILE) \
-  $(GLJ-FILE) \
   $(GO-DIR) \
   $(BINARY) \
   $(LIBRARY) \
@@ -104,7 +102,6 @@ clean::
 go:   $(GO-FILE)
 clj:  $(CLJ-FILE)
 bb:   $(BB-FILE)
-glj:  $(GLJ-FILE)
 dir:  $(GO-DIR)
 bin:  $(BINARY)
 lib:  $(LIBRARY)
@@ -126,7 +123,7 @@ ifdef a
 	@exit 1
 endif
 
-run-js: check-a $(WASM-JS) $(CLJ-FILE) $(GLJ-FILE) $(GO-FILE) $(WASM-EXEC-JS) $(PYTHON-VENV)
+run-js: check-a $(WASM-JS) $(CLJ-FILE) $(GO-FILE) $(WASM-EXEC-JS) $(PYTHON-VENV)
 	cp $(SRC-FILE) $(NAME)$(SRC-EXT)
 	ys -J $(CONFIG-YAML) | \
 	jq --arg prog '$(NAME)' \

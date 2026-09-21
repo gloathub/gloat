@@ -1,6 +1,6 @@
 ;; Calling java.lang.Thread/sleep.
 ;;
-;; gloat rewrites `Thread/sleep` to glojure's javacompat bridge, which forwards
+;; glojure resolves `Thread/sleep` to its javacompat bridge, which forwards
 ;; to gojava's thread package; the implementation wraps Go's `time.Sleep`. Only
 ;; Thread/sleep is supported today: the full Java Thread API (start, join,
 ;; interrupt, names, uncaught handlers) has no clean goroutine analogue and is

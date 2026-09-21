@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Test java.lang.Double interop in a gloat-compiled binary. Verifies that
-# Double/* statics flow from glojure's rewrite, through the javacompat/double
-# bridge, into gojava.
+# Double/* statics flow through the javacompat/double bridge into
+# gojava.
 
 source "$(dirname "${BASH_SOURCE[0]}")/init"
 

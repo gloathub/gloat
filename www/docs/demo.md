@@ -50,17 +50,6 @@ Select a program, view the Source/Glojure/Go, click <strong>Run</strong>.</p>
   </div>
 </div>
 
-<!-- Glojure intermediate -->
-<div class="demo-code-panel demo-collapsible demo-collapsed" id="demo-glj">
-  <div class="demo-panel-header" onclick="demoAccordion(this)">
-    <span>Glojure (intermediate)</span>
-    <span><button class="demo-raw-link demo-view-btn" onclick="demoCopy(this)" title="Copy"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></button><a id="demo-glj-link" class="demo-raw-link" href="#" download onclick="event.stopPropagation()" title="Download"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M5 20h14v-2H5v2zm7-18v10.17l-3.59-3.58L7 10l5 5 5-5-1.41-1.41L13 12.17V2h-2z"/></svg></a><button class="demo-raw-link demo-view-btn" onclick="demoViewCode(event, 'demo-glj')" title="Open in new tab"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></button><span class="demo-toggle-icon"></span></span>
-  </div>
-  <div class="demo-pre-wrap">
-    <pre><code></code></pre>
-  </div>
-</div>
-
 <!-- Go intermediate -->
 <div class="demo-code-panel demo-collapsible demo-collapsed" id="demo-go">
   <div class="demo-panel-header" onclick="demoAccordion(this)">

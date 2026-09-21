@@ -161,6 +161,12 @@ is "$rc" 1 "'gloat -Egraalvm -Xprune' exits 1"
 has "$got" "does not support -X/--ext" \
   "'gloat -Egraalvm' rejects Go processing extensions"
 
+printf '(ns unsupported)\n' > "$TMP/graalvm.glj"
+try "$GLOAT_BIN -Egraalvm -o $TMP/graalvm-glj $TMP/graalvm.glj"
+is "$rc" 1 "'gloat -Egraalvm input.glj' exits 1"
+has "$got" "only supports Clojure (.clj) input" \
+  "'gloat -Egraalvm' rejects Glojure input"
+
 printf '{:deps {}}\n' > "$TMP/gljdeps.edn"
 try "$GLOAT_BIN -Egraalvm --deps=$TMP/gljdeps.edn x.clj"
 is "$rc" 1 "'gloat -Egraalvm --deps' exits 1"
@@ -204,6 +210,12 @@ try "$GLOAT_BIN -Ejolt --deps=$TMP/gljdeps.edn x.clj"
 is "$rc" 1 "'gloat -Ejolt --deps' exits 1"
 has "$got" "use deps.edn for Jolt dependencies" \
   "'gloat -Ejolt' rejects Glojure dependency configuration"
+
+printf 'package main\n' > "$TMP/jolt.go"
+try "$GLOAT_BIN -Ejolt -o $TMP/jolt-go $TMP/jolt.go"
+is "$rc" 1 "'gloat -Ejolt input.go' exits 1"
+has "$got" "only supports Clojure (.clj) and YAMLScript (.ys) input" \
+  "'gloat -Ejolt' rejects Go input"
 
 printf '(ns unsupported)\n' > "$TMP/jolt.glj"
 try "$GLOAT_BIN -Ejolt -o $TMP/jolt-glj $TMP/jolt.glj"
@@ -512,11 +524,16 @@ is "$rc" 1 "'gloat nonexistent.ys' exits 1"
 has "$got" "does not exist" "'gloat nonexistent.ys' shows error"
 
 # Test -t .ext shorthand
-rm -f "$FIXTURES_DIR/hello.glj"
-try "$GLOAT_BIN hello.ys -t .glj"
-is "$rc" 0 "'gloat hello.ys -t .glj' exits 0"
-ok "$([[ -f $FIXTURES_DIR/hello.glj ]])" "'gloat hello.ys -t .glj' creates hello.glj"
-rm -f "$FIXTURES_DIR/hello.glj"
+rm -f "$FIXTURES_DIR/hello.clj"
+try "$GLOAT_BIN hello.ys -t .clj"
+is "$rc" 0 "'gloat hello.ys -t .clj' exits 0"
+ok "$([[ -f $FIXTURES_DIR/hello.clj ]])" "'gloat hello.ys -t .clj' creates hello.clj"
+rm -f "$FIXTURES_DIR/hello.clj"
+
+# Glojure is an input format only; there is no rewrite to emit
+try "$GLOAT_BIN hello.ys -t glj"
+is "$rc" 1 "'gloat hello.ys -t glj' exits 1"
+has "$got" "Unknown format 'glj'" "'gloat -t glj' is not an output format"
 
 if [[ ${RUN_SLOW_TESTS:-} ]]; then
   # Test -t .go shorthand

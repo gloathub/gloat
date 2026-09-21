@@ -5,7 +5,6 @@ _gloat() {
         'clj:Clojure source file'
         'bb:Babashka-ready source file'
         'lg:let-go source file'
-        'glj:Glojure source file'
         'go:Go source'
         'dir:Go project directory'
         'bin:Native binary'

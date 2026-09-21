@@ -12,7 +12,7 @@ DEMO_BRANCH=${DEMO_BRANCH:?}
 DEMO_PROGRAMS=("$@")
 
 DEMO_LANGS=(yamlscript clojure)
-DEMO_STAGES=(glj go js)
+DEMO_STAGES=(go js)
 
 rm -rf "$DEMO_ASSETS"
 mkdir -p "$DEMO_ASSETS"

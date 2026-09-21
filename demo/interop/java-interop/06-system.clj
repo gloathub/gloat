@@ -1,7 +1,7 @@
 ;; Calling java.lang.System static members.
 ;;
-;; Same three-layer flow as Math/*: gloat rewrites each `System/*`
-;; symbol to glojure's javacompat bridge, which forwards to gojava's
+;; Same two-layer flow as Math/*: glojure resolves each `System/*`
+;; symbol to its javacompat bridge, which forwards to gojava's
 ;; typed Go port of `java.lang.System`.
 ;;
 ;; The streams `System/out`, `System/err`, and `System/in` are thin

@@ -3,7 +3,7 @@
 # Test fully-qualified java.lang.X/y interop in a gloat-compiled binary.
 # In standard Clojure, java.lang.* classes are auto-imported, so the
 # fully-qualified form must resolve identically to the bare form. This
-# verifies the rewrite step strips the java.lang. prefix before mapping
+# verifies that the java.lang. prefix is stripped before mapping
 # Class/member symbols to the javacompat bridge.
 
 source "$(dirname "${BASH_SOURCE[0]}")/init"

@@ -43,7 +43,7 @@ DEMO-PROGRAMS := \
   floyds-triangle \
 
 DEMO-LANGS := yamlscript clojure
-DEMO-STAGES := glj go js
+DEMO-STAGES := go js
 DEMO-ASSETS := docs/demo-assets
 DEMO-BRANCH := origin/demo-assets
 

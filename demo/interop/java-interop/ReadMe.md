@@ -11,11 +11,10 @@ and `java.util.*` classes from Glojure. Today the supported surface is
 to other classes as the [gojava](https://github.com/gloathub/gojava)
 port grows.
 
-Files are `.clj` (not `.glj`) so they go through the rewrite step that
-translates JVM-style `Math/*`, `System/*`, `Integer/*`, `Long/*`,
-`String/*`, `Double/*`, `Boolean/*`, `Character/*`, `Thread/*`,
-`Pattern/*`, `UUID/*`, and `Instant/*` symbols into calls on the
-glojure-internal javacompat bridge.
+JVM-style `Math/*`, `System/*`, `Integer/*`, `Long/*`, `String/*`,
+`Double/*`, `Boolean/*`, `Character/*`, `Thread/*`, `Pattern/*`,
+`UUID/*`, and `Instant/*` symbols resolve to the glojure-internal
+javacompat bridge, in the REPL and in compiled binaries alike.
 String instance methods like `(.toUpperCase s)` dispatch through a
 string-method registry; UUID and Matcher instance methods reach through
 reflection on the Go receiver. The bridge then forwards to gojava's

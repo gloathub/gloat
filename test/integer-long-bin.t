@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
 # Test java.lang.Integer and java.lang.Long interop in a gloat-compiled
-# binary. Verifies that Integer/* and Long/* symbols rewritten by
-# glojure's rewrite-core flow through the javacompat bridge into gojava
-# and produce JVM-faithful results.
+# binary. Verifies that Integer/* and Long/* symbols flow through the
+# javacompat bridge into gojava and produce JVM-faithful results.
 
 source "$(dirname "${BASH_SOURCE[0]}")/init"
 
@@ -46,9 +45,9 @@ check long-to-hex '1000'   'Long/toHexString'
 check value-of-int '7' 'Integer/valueOf accepts int'
 check value-of-str '7' 'Integer/valueOf parses string'
 
-check ctor-int  '5'     '(Integer. n) rewrites to valueOf'
+check ctor-int  '5'     '(Integer. n) -> valueOf'
 check ctor-str  '5'     '(Integer. "s") parses'
-check ctor-long '12345' '(Long. n) rewrites to valueOf'
+check ctor-long '12345' '(Long. n) -> valueOf'
 
 check bit-count       '8'  'Integer/bitCount 0xFF'
 check leading-zeros   '31' 'Integer/numberOfLeadingZeros 1'

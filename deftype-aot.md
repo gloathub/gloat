@@ -39,13 +39,13 @@ Verdict: **accurate**. Trail through `/home/ingy/src/glojure`:
 5. **No codegen handler.** `pkg/runtime/codegen.go:1125-1184` (the AST to
    Go emitter) has no deftype/reify case.
 
-6. **No Clojure-level macros.** `pkg/stdlib/clojure/core_deftype.glj`
+6. **No Clojure-level macros.** `pkg/stdlib/clojure/core_deftype.clj`
    only defines `defprotocol`, `extend`, `extend-type`,
    `extend-protocol`, and helpers. No `deftype`, no `reify`, no
    `defrecord`. The file is 251 lines, a heavy reduction of upstream
    Clojure's `core_deftype.clj`.
 
-7. **Glojure documents this itself** in `core_deftype.glj:22-25`:
+7. **Glojure documents this itself** in `core_deftype.clj:22-25`:
    > "Go's reflection capabilities don't yet support a native
    > interface-based implementation, so protocols are implemented in
    > Glojure as maps from type to protocol method implementations."
@@ -67,7 +67,7 @@ other Go interface) from inside the running glj REPL. This is a Go
 language limitation, not a Glojure limitation, and there is no clean
 workaround.
 
-**AOT (codegen) path is open.** gloat already turns `.glj` into `.go`
+**AOT (codegen) path is open.** gloat already turns `.clj` into `.go`
 source via `glj compile`. A `deftype` form can be emitted as a real
 Go `type Foo struct { ... }` with real methods. At Go build time it
 satisfies any interface its method set matches, exactly as if a human
@@ -128,7 +128,7 @@ reads its method set, and emits matching Go methods.
    construct the new AST nodes. Today these forms never get past the
    reader because the analyzer has no parse rule for them.
 
-3. **Macros.** Add to `core_deftype.glj`:
+3. **Macros.** Add to `core_deftype.clj`:
    - `deftype` macro that lowers to `deftype*`
    - `reify` macro that lowers to `reify*` (or directly to a `deftype*`
      of a generated gensym name plus a constructor invocation).
@@ -217,7 +217,7 @@ step. Everything is in Clojure.
   both at runtime with a clear error
 - `pkg/runtime/codegen.go` add codegen cases that emit Go `type` and
   methods; add tuple-return rule for multi-value method signatures
-- `pkg/stdlib/clojure/core_deftype.glj` add `deftype` and `reify`
+- `pkg/stdlib/clojure/core_deftype.clj` add `deftype` and `reify`
   macros; keep the existing protocol machinery
 - Analyzer (Clojure side, wherever `parse-*` for special forms lives;
   this is the rewrite layer between `.clj` and the AST) add

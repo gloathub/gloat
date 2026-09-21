@@ -1,7 +1,7 @@
 ;; Calling java.lang.Boolean static members.
 ;;
-;; Same three-layer flow as the other java.lang.* classes: gloat rewrites
-;; each `Boolean/*` symbol to glojure's javacompat bridge, which forwards
+;; Same two-layer flow as the other java.lang.* classes: glojure resolves
+;; each `Boolean/*` symbol to its javacompat bridge, which forwards
 ;; to gojava's typed Go port.
 ;;
 ;; `parseBoolean` and `valueOf` are the JVM-lenient form: they return
@@ -34,7 +34,7 @@
   (println "logicalOr  t f:" (Boolean/logicalOr true false))
   (println "logicalXor t t:" (Boolean/logicalXor true true))
 
-  ;; Constructor sugar rewrites to valueOf
+  ;; Constructor sugar calls valueOf
   (println "(Boolean. \"true\"):" (Boolean. "true"))
   (println "(Boolean. false):"    (Boolean. false))
 

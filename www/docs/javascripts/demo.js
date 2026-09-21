@@ -68,7 +68,7 @@ function demoAccordion(header) {
 
   // DOM elements (resolved after DOMContentLoaded)
   let programSelect, langToggle, argSelect, runBtn;
-  let sourcePanel, gljPanel, goPanel, outputPanel;
+  let sourcePanel, goPanel, outputPanel;
   let loadingIndicator;
 
   // Source file extensions per language
@@ -78,7 +78,7 @@ function demoAccordion(header) {
   const langName = { yamlscript: 'YAMLScript', clojure: 'Clojure' };
 
   // highlight.js language names
-  const hlLang = { ys: 'yaml', clj: 'clojure', glj: 'clojure', go: 'go' };
+  const hlLang = { ys: 'yaml', clj: 'clojure', go: 'go' };
 
   // Fetch a text file from demo-assets
   function fetchAsset(path) {
@@ -176,32 +176,27 @@ function demoAccordion(header) {
   async function loadProgram() {
     const ext = srcExt[currentLang];
     const srcPath = `${currentLang}/src/${currentProg}.${ext}`;
-    const gljPath = `${currentLang}/glj/${currentProg}.glj`;
     const goPath = `${currentLang}/go/${currentProg}.go`;
 
     // Update source panel title and raw links
     var titleEl = sourcePanel.querySelector('.demo-source-title');
     if (titleEl) titleEl.textContent = langName[currentLang] + ' Source';
     var srcLink = document.getElementById('demo-source-link');
-    var gljLink = document.getElementById('demo-glj-link');
     var goLink = document.getElementById('demo-go-link');
     if (srcLink) srcLink.href = ASSETS + '/' + srcPath;
-    if (gljLink) gljLink.href = ASSETS + '/' + gljPath;
     if (goLink) goLink.href = ASSETS + '/' + goPath;
 
     // Clear output
     outputPanel.querySelector('.demo-output-text').textContent = '';
 
-    // Load all three files in parallel
+    // Load both files in parallel
     try {
-      const [src, glj, go] = await Promise.all([
+      const [src, go] = await Promise.all([
         fetchAsset(srcPath),
-        fetchAsset(gljPath),
         fetchAsset(goPath)
       ]);
 
       displayCode(sourcePanel, src, hlLang[ext]);
-      displayCode(gljPanel, glj, hlLang.glj);
       displayCode(goPanel, go, hlLang.go);
     } catch (err) {
       displayCode(sourcePanel, 'Error loading source: ' + err.message, '');
@@ -378,7 +373,6 @@ function demoAccordion(header) {
     argSelect = document.getElementById('demo-args');
     runBtn = document.getElementById('demo-run');
     sourcePanel = document.getElementById('demo-source');
-    gljPanel = document.getElementById('demo-glj');
     goPanel = document.getElementById('demo-go');
     outputPanel = document.getElementById('demo-output');
     loadingIndicator = document.getElementById('demo-loading');

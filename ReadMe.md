@@ -26,12 +26,10 @@ gloat app.clj -o myapp          # Creates ./myapp binary
 
 # Output intermediate formats
 gloat app.ys -t clj             # Clojure to stdout
-gloat app.ys -t glj             # Glojure to stdout
 gloat app.ys -t go              # Go to stdout
 
 # Create files with -t .ext shorthand
 gloat app.ys -t .clj            # Creates app.clj
-gloat app.ys -t .glj            # Creates app.glj
 gloat app.ys -t .go             # Creates app.go
 
 # Create a portable Go project directory
@@ -58,7 +56,8 @@ gloat app.ys -o app.wasm -t js  # JavaScript target
 
 ## Description
 
-Gloat compiles Clojure or YAMLScript source files to any of these forms:
+Gloat compiles Clojure (`.clj`, or `.glj` when it uses Go interop) or
+YAMLScript (`.ys`) source files to any of these forms:
 
 * Native binaries
   * Cross compile to 20+ OS/Arch environments
@@ -74,11 +73,9 @@ Gloat compiles Clojure or YAMLScript source files to any of these forms:
 ```txt
 .ys  →  ys -c   →  .clj
                     ↓
-.clj  ────────→  rewrite  →  .glj
-                              ↓
-.glj  ──────────────────→  glj compile  →  .go
-                                            ↓
-                                       go build  →  binary/wasm
+.clj  ────────→  glj compile  →  .go
+                                  ↓
+                             go build  →  binary/wasm
 ```
 
 The tool has **zero external dependencies**.
@@ -306,7 +303,6 @@ source /absolute/path/to/gloat/.rc
 | `bin`  | `-t bin` or no extension | Native executable (default) |
 | `clj`  | `-t clj` | Clojure source |
 | `bb`   | `-t bb` | Babashka self-contained script |
-| `glj`  | `-t glj` | Glojure source |
 | `go`   | `-t go` | Go source |
 | `dir`  | `-o path/` | Portable Go project directory |
 | `lib`  | `.so` or `.dylib` extension | Shared library |

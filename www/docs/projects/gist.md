@@ -107,7 +107,7 @@ The `gist` tool is written in YAMLScript and compiled through Gloat's full
 pipeline:
 
 ```
-.ys → .clj → .glj → .go → binary
+.ys → .clj → .go → binary
 ```
 
 A single YAMLScript source file produces native binaries for all 13

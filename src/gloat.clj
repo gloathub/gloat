@@ -353,6 +353,9 @@
         (catch Exception _ "unknown"))
       "unknown")))
 
+(def output-formats
+  #{"clj" "bb" "lg" "LG" "go" "dir" "bin" "lib" "wasm" "js"})
+
 (defn infer-format [output to]
   (cond
     ;; Explicit -t flag takes precedence
@@ -365,7 +368,6 @@
     (str/ends-with? output ".bb") "bb"
     (str/ends-with? output ".lg") "lg"
     (str/ends-with? output ".clj") "clj"
-    (str/ends-with? output ".glj") "glj"
     (str/ends-with? output ".go") "go"
     (str/ends-with? output ".so") "lib"
     (str/ends-with? output ".dylib") "lib"
@@ -692,7 +694,6 @@ Source formats:
   clj       Clojure source file
   bb        Babashka-ready source file (self-contained)
   lg        let-go source file (self-contained; lg engine)
-  glj       Glojure source file
   go        Go source (default for stdout)
   dir       Go project directory
 
@@ -703,10 +704,10 @@ Binary formats:
   js        WebAssembly js target
 
 Format can usually be inferred from -o extension:
-  .clj → clj      .glj → glj    .go → go
+  .clj → clj       .go → go     .lg → lg
    .so → lib    .dylib → lib   .dll → lib
-   .js → js     .wasm → wasm    .lg → lg
-     / → dir    <none> → bin   .exe → bin")
+   .js → js     .wasm → wasm  .exe → bin
+     / → dir    <none> → bin")
     (System/exit 0)))
 
 (defn do-engines []
@@ -1031,40 +1032,29 @@ Less common:
         (read-clojure-forms (:out result)) output namespace input))
     (timer-end "YS→CLJ")))
 
-(defn clj-to-glj [input output]
-  (let [bb (:BB make-vars)
-        glojure-dir (:GLOJURE-DIR make-vars)
-        rewrite-script (str glojure-dir "/scripts/rewrite-core/rewrite.clj")
-        name (-> (fs/file-name input) (str/replace #"\.clj$" ""))
-        parent (fs/file-name (fs/parent input))
-        label (if (or (= parent "ys") (= parent "yamlscript"))
-                (str parent "." name)
-                name)]
-    (timer-start)
-    (let [result (process/shell
-                  {:out :string
-                   :extra-env go-env}
-                  bb rewrite-script input)]
-      (spit output (:out result)))
-    (timer-end (str "CLJ→GLJ (" label ")"))))
+(defn source-ext
+  "Staged extension for a Clojure source: .glj input stays .glj."
+  [input]
+  (if (str/ends-with? (str input) ".glj") ".glj" ".clj"))
 
-(defn glj-to-go [input namespace output-dir]
+(defn clj-to-go [input namespace output-dir]
   (let [glj (:GLJ make-vars)
         ns-path (-> namespace
                     (str/replace #"\." "/")
                     (str/replace #"-" "_"))
         ns-dir (if (str/includes? ns-path "/")
                  (subs ns-path 0 (str/last-index-of ns-path "/"))
-                 "")
-        ns-file (str (last (str/split namespace #"\.")) ".glj")]
+                 "")]
 
     (timer-start)
 
     ;; Create namespace directory structure
     (fs/create-dirs (str output-dir "/" ns-dir))
 
-    ;; Copy input to namespace structure
-    (fs/copy input (str output-dir "/" ns-path ".glj") {:replace-existing true})
+    ;; Copy input to namespace structure, keeping its extension so
+    ;; Glojure-specific .glj sources stay .glj
+    (fs/copy input (str output-dir "/" ns-path (source-ext input))
+             {:replace-existing true})
 
     ;; Copy the patched portable ys.v0 source tree into the writable compile
     ;; workspace. Glojure analyzes these sources while the final program links
@@ -1089,7 +1079,7 @@ Less common:
         (process/shell opts glj)
         (catch Exception _ nil)))
 
-    (timer-end "GLJ→GO")))
+    (timer-end "CLJ→GO")))
 
 (defn compress-wasm [file exts]
   (doseq [ext exts]
@@ -2207,15 +2197,14 @@ Less common:
           [input false])
         tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))
         input-type (get-file-type input)
-        clj-file (str tmpdir "/temp.clj")
-        glj-file (str tmpdir "/temp.glj")]
+        clj-file (str tmpdir "/temp" (source-ext input))]
 
     (try
       ;; Convert to Clojure if needed
       (case input-type
         "ys" (ys-to-clj input clj-file namespace)
         "clj" (clj-to-clj input clj-file namespace)
-        "glj" (fs/copy input glj-file {:replace-existing true})
+        "glj" (fs/copy input clj-file {:replace-existing true})
         (die "Unknown input file type: " input))
 
       ;; Output based on format
@@ -2224,28 +2213,17 @@ Less common:
         "bb" (print (generate-bb clj-file))
         "lg" (print (generate-lg clj-file))
         "LG" (print (generate-LG-lowered-go input namespace))
-        "glj" (do
-                (when (fs/exists? clj-file)
-                  (clj-to-glj clj-file glj-file))
-                (print (slurp glj-file)))
-        "go" (let [go-tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))]
-               (when (fs/exists? clj-file)
-                 (clj-to-glj clj-file glj-file))
-               (let [ns (resolve-namespace
-                         (or (when
-                              (fs/exists? clj-file)
-                               clj-file)
-                             glj-file)
-                         nil)]
-                 (glj-to-go glj-file ns go-tmpdir)
-                 (let [ns-path (-> ns
-                                   (str/replace #"\." "/")
-                                   (str/replace #"-" "_"))
-                       loader-file (str go-tmpdir "/" ns-path "/loader.go")]
-                   (if (fs/exists? loader-file)
-                     (print (slurp loader-file))
-                     (die "glj compile did not produce loader.go"))
-                   (fs/delete-tree go-tmpdir))))
+        "go" (let [go-tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))
+                   ns (resolve-namespace clj-file nil)]
+               (clj-to-go clj-file ns go-tmpdir)
+               (let [ns-path (-> ns
+                                 (str/replace #"\." "/")
+                                 (str/replace #"-" "_"))
+                     loader-file (str go-tmpdir "/" ns-path "/loader.go")]
+                 (if (fs/exists? loader-file)
+                   (print (slurp loader-file))
+                   (die "glj compile did not produce loader.go"))
+                 (fs/delete-tree go-tmpdir)))
         (die "Format '" format "' requires -o output"))
 
       (finally
@@ -2320,8 +2298,7 @@ Less common:
 
       ;; Handle simple file conversion
       (let [tmpdir (str (fs/create-temp-dir {:dir GLOAT-TMP}))
-            clj-file (str tmpdir "/temp.clj")
-            glj-file (str tmpdir "/temp.glj")
+            clj-file (str tmpdir "/temp" (source-ext input))
             ns (when (= input-type "ys")
                  (or namespace (derive-namespace input)))]
 
@@ -2332,7 +2309,7 @@ Less common:
                    (msg "Converting" input "(.ys) to Clojure...")
                    (ys-to-clj input clj-file ns))
             "clj" (clj-to-clj input clj-file namespace)
-            "glj" (fs/copy input glj-file {:replace-existing true})
+            "glj" (fs/copy input clj-file {:replace-existing true})
             (die "Unknown input file type: " input))
 
           ;; Stage 2: Convert based on format
@@ -2349,23 +2326,9 @@ Less common:
             "LG" (do
                    (spit output (generate-LG-lowered-go input namespace))
                    (msg "Generated:" output))
-            "glj" (do
-                    (when (fs/exists? clj-file)
-                      (msg "Converting Clojure to Glojure...")
-                      (clj-to-glj clj-file glj-file))
-                    (fs/copy glj-file output {:replace-existing true})
-                    (msg "Generated:" output))
-            "go" (let [ns (or ns
-                              (resolve-namespace
-                               (or
-                                (when (fs/exists? clj-file) clj-file)
-                                glj-file)
-                               namespace))]
-                   (when (fs/exists? clj-file)
-                     (msg "Converting Clojure to Glojure...")
-                     (clj-to-glj clj-file glj-file))
-                   (msg "Compiling Glojure to Go...")
-                   (glj-to-go glj-file ns tmpdir)
+            "go" (let [ns (or ns (resolve-namespace clj-file namespace))]
+                   (msg "Compiling Clojure to Go...")
+                   (clj-to-go clj-file ns tmpdir)
                    (let [ns-path (-> ns
                                      (str/replace #"\." "/")
                                      (str/replace #"-" "_"))
@@ -2506,8 +2469,8 @@ Less common:
             (let [basename (fs/file-name source-file)
                   name (str/replace basename #"\.[^.]+$" "")
                   input-type (get-file-type (str source-file))
-                  clj-file (str shared-tmpdir "/" name ".clj")
-                  glj-file (str shared-tmpdir "/" name ".glj")
+                  ext (source-ext source-file)
+                  clj-file (str shared-tmpdir "/" name ext)
                   ns (when (= input-type "ys")
                        (or namespace (derive-namespace (str source-file))))]
 
@@ -2517,54 +2480,44 @@ Less common:
               (case input-type
                 "ys" (ys-to-clj (str source-file) clj-file ns)
                 "clj" (clj-to-clj source-file clj-file namespace)
-                "glj" (fs/copy source-file glj-file {:replace-existing true})
+                "glj" (fs/copy source-file clj-file {:replace-existing true})
                 (die "Unknown file type: " basename))
 
               ;; Extract EXPORT, check for main function, and collect
               ;; required namespaces for prune
-              (when (fs/exists? clj-file)
-                (let [clj-content (slurp clj-file)]
-                  (when-let [exports (extract-export clj-content)]
-                    (reset! export-map exports))
-                  (when (has-main-fn? clj-content)
-                    (reset! has-main true))
-                  (when (re-find
-                          #"(?m)^[ \t]*\((?:[\w.-]+/)?(?:\+use|use)(?:\s|\[)"
-                          clj-content)
-                    (reset! portable-use-found true)
-                    (swap! portable-use-namespaces conj
-                      (or ns (parse-namespace clj-file))))
-                  ;; Collect ys/yamlscript namespaces from bare require forms
-                  ;; Matches: 'ys.fs and '[ys.http :as http] but NOT
-                  ;; (:require [ys.v0 ...]) which is handled by loader scanning
-                  (let [nses (re-seq #"'(?:\[)?(ys\.\w+|yamlscript\.\w+)"
-                                     clj-content)]
-                    (doseq [[_ ns-name] nses]
-                      (swap! required-nses conj ns-name)))))
-
-              ;; Clojure to Glojure
-              (when (fs/exists? clj-file)
-                (clj-to-glj clj-file glj-file))
+              (let [clj-content (slurp clj-file)]
+                (when-let [exports (extract-export clj-content)]
+                  (reset! export-map exports))
+                (when (has-main-fn? clj-content)
+                  (reset! has-main true))
+                (when (re-find
+                        #"(?m)^[ \t]*\((?:[\w.-]+/)?(?:\+use|use)(?:\s|\[)"
+                        clj-content)
+                  (reset! portable-use-found true)
+                  (swap! portable-use-namespaces conj
+                    (or ns (parse-namespace clj-file))))
+                ;; Collect ys/yamlscript namespaces from bare require forms
+                ;; Matches: 'ys.fs and '[ys.http :as http] but NOT
+                ;; (:require [ys.v0 ...]) which is handled by loader scanning
+                (let [nses (re-seq #"'(?:\[)?(ys\.\w+|yamlscript\.\w+)"
+                                   clj-content)]
+                  (doseq [[_ ns-name] nses]
+                    (swap! required-nses conj ns-name))))
 
               ;; Resolve namespace
-              (let [ns (or ns (resolve-namespace
-                               (or
-                                (when (fs/exists? clj-file) clj-file)
-                                glj-file)
-                               namespace))
+              (let [ns (or ns (resolve-namespace clj-file namespace))
                     ns-path (-> ns
                                 (str/replace #"\." "/")
                                 (str/replace #"-" "_"))
                     ns-dir (if (str/includes? ns-path "/")
                              (subs ns-path 0 (str/last-index-of ns-path "/"))
-                             "")
-                    ns-file-name (str (last (str/split ns #"\.")) ".glj")]
+                             "")]
 
                 (swap! all-namespaces conj ns)
 
                 ;; Copy to namespace structure
                 (fs/create-dirs (str shared-tmpdir "/" ns-dir))
-                (fs/copy glj-file (str shared-tmpdir "/" ns-path ".glj")
+                (fs/copy clj-file (str shared-tmpdir "/" ns-path ext)
                          {:replace-existing true})
 
                 ;; First file or file named 'main' becomes main namespace
@@ -3026,15 +2979,15 @@ Less common:
 ;;------------------------------------------------------------------------------
 
 (defn expand-dir-args
-  "Expand any directory arguments to all .clj, .ys, and .glj files within.
+  "Expand any directory arguments to all .clj, .glj, and .ys files within.
   Non-directory arguments are passed through unchanged. Order is preserved:
   directory contents are sorted and inserted at the directory's position."
   [args]
   (mapcat (fn [arg]
             (if (fs/directory? arg)
               (->> (concat (fs/glob arg "**/*.clj")
-                           (fs/glob arg "**/*.ys")
-                           (fs/glob arg "**/*.glj"))
+                           (fs/glob arg "**/*.glj")
+                           (fs/glob arg "**/*.ys"))
                    sort
                    (map str))
               [arg]))
@@ -3141,7 +3094,7 @@ Less common:
               format (infer-format output to)]
           (when-not output
             (die "Multiple input files require -o output"))
-          (when (contains? #{"clj" "glj" "go" "bb"} format)
+          (when (contains? #{"clj" "go" "bb"} format)
             (die "Multiple input files not supported for format: " format))
           (doseq [f files]
             (when-not (fs/exists? f)
@@ -3296,6 +3249,9 @@ Less common:
 
       (let [opts (set-vars parsed-opts)
             format (infer-format (:output opts) (:to opts))
+            _ (when-not (contains? output-formats format)
+                (die "Unknown format '" format
+                     "'. Use --formats to list output formats"))
             deps-only (contains? (parse-extensions (or (:ext opts) []))
                                  "deps")
             opts (if deps-only
@@ -3334,7 +3290,7 @@ Less common:
           ;; Dispatch based on input/output
           (cond
             (nil? (:output opts))
-            (if (contains? #{"clj" "bb" "lg" "LG" "glj" "go"} format)
+            (if (contains? #{"clj" "bb" "lg" "LG" "go"} format)
               (convert-to-stdout
                (:input opts) format (or (:namespace opts) "main.core"))
               (die "Format '" format "' requires -o output"))

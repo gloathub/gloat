@@ -1,7 +1,7 @@
 ;; Calling java.time.Instant static members and instance methods.
 ;;
-;; Same three-layer flow as the java.lang.* classes: gloat rewrites each
-;; `Instant/*` symbol to glojure's javacompat bridge, which forwards to
+;; Same two-layer flow as the java.lang.* classes: glojure resolves each
+;; `Instant/*` symbol to its javacompat bridge, which forwards to
 ;; gojava's typed Go port. Instance methods (toString, plusMillis,
 ;; compareTo, ...) reach through reflection on the *Instant receiver.
 ;; The Go type implements fmt.Stringer so (str i) and println yield the

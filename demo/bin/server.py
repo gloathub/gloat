@@ -114,16 +114,6 @@ class GloatHandler(http.server.SimpleHTTPRequestHandler):
                 if clj_result.returncode != 0:
                     print(f"CLJ stderr: {clj_result.stderr}")
 
-                glj_result = subprocess.run(
-                    [str(compile_script), str(source_file), '', 'glj'],
-                    capture_output=True,
-                    text=True,
-                    timeout=30
-                )
-                print(f"GLJ result: exit={glj_result.returncode}")
-                if glj_result.returncode != 0:
-                    print(f"GLJ stderr: {glj_result.stderr}")
-
                 go_result = subprocess.run(
                     [str(compile_script), str(source_file), '', 'go'],
                     capture_output=True,
@@ -149,7 +139,7 @@ class GloatHandler(http.server.SimpleHTTPRequestHandler):
                 print(f"Files in temp dir: {[f.name for f in temp_files]}")
 
                 # Check if all compilations succeeded
-                if all(r.returncode == 0 for r in [clj_result, glj_result, go_result, wasm_result]):
+                if all(r.returncode == 0 for r in [clj_result, go_result, wasm_result]):
                     # Read WASM and encode as base64
                     if not wasm_file.exists():
                         print(f"WASM file not found: {wasm_file}")
@@ -170,7 +160,6 @@ class GloatHandler(http.server.SimpleHTTPRequestHandler):
                     return {
                         'success': True,
                         'clj': clj_result.stdout,
-                        'glj': glj_result.stdout,
                         'go': go_result.stdout,
                         'wasm': wasm_base64
                     }
@@ -179,8 +168,6 @@ class GloatHandler(http.server.SimpleHTTPRequestHandler):
                     errors = []
                     if clj_result.returncode != 0:
                         errors.append(f"CLJ: {clj_result.stderr}")
-                    if glj_result.returncode != 0:
-                        errors.append(f"GLJ: {glj_result.stderr}")
                     if go_result.returncode != 0:
                         errors.append(f"GO: {go_result.stderr}")
                     if wasm_result.returncode != 0:
@@ -226,20 +213,7 @@ class GloatHandler(http.server.SimpleHTTPRequestHandler):
                 if clj_result.returncode != 0:
                     self.send_sse('error', {'step': 'clj', 'error': clj_result.stderr})
                     return
-                self.send_sse('progress', {'step': 'clj', 'status': 'done', 'ms': clj_ms})
-
-                # GLJ step
-                self.send_sse('progress', {'step': 'glj', 'status': 'started'})
-                glj_start = time.time()
-                glj_result = subprocess.run(
-                    [str(compile_script), str(source_file), '', 'glj'],
-                    capture_output=True, text=True, timeout=30
-                )
-                glj_ms = int((time.time() - glj_start) * 1000)
-                if glj_result.returncode != 0:
-                    self.send_sse('error', {'step': 'glj', 'error': glj_result.stderr})
-                    return
-                self.send_sse('progress', {'step': 'glj', 'status': 'done', 'ms': glj_ms, 'code': glj_result.stdout})
+                self.send_sse('progress', {'step': 'clj', 'status': 'done', 'ms': clj_ms, 'code': clj_result.stdout})
 
                 # GO step
                 self.send_sse('progress', {'step': 'go', 'status': 'started'})
@@ -286,7 +260,6 @@ class GloatHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_sse('done', {
                     'success': True,
                     'clj': clj_result.stdout,
-                    'glj': glj_result.stdout,
                     'go': go_result.stdout,
                     'wasm': wasm_base64
                 })

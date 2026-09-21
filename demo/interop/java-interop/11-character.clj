@@ -1,7 +1,7 @@
 ;; Calling java.lang.Character static members.
 ;;
-;; Same three-layer flow as the other java.lang.* classes: gloat rewrites
-;; each `Character/*` symbol to glojure's javacompat bridge, which forwards
+;; Same two-layer flow as the other java.lang.* classes: glojure resolves
+;; each `Character/*` symbol to its javacompat bridge, which forwards
 ;; to gojava's typed Go port.
 ;;
 ;; Glojure parses character literals (`\a`, `\5`, `\space`) as the wrapper
@@ -43,7 +43,7 @@
   (println "MIN_RADIX:" Character/MIN_RADIX)
   (println "MAX_RADIX:" Character/MAX_RADIX)
 
-  ;; Constructor sugar rewrites to valueOf
+  ;; Constructor sugar calls valueOf
   (println "(Character. \\W):" (Character. \W))
 
   ;; Fully qualified form also resolves

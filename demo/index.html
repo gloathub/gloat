@@ -60,7 +60,7 @@
     .header-row h2 {
       margin-bottom: 0;
     }
-    #code, #gljCode, #goCode {
+    #code, #cljCode, #goCode {
       white-space: pre;
       padding: 15px;
       border: 1px solid #ddd;
@@ -81,7 +81,7 @@
     .cm-editor .cm-scroller {
       font-family: 'Fira Mono', monospace !important;
     }
-    #code code, #gljCode code, #goCode code {
+    #code code, #cljCode code, #goCode code {
       padding: 0;
     }
     #output {
@@ -201,7 +201,7 @@
 </head>
 
 <body>
-  <h1 id="pageTitle"><img src="../www/docs/img/gloat.jpeg" alt="Gloat" style="height:36px;border-radius:50%;vertical-align:middle;margin-right:10px">Gloat - <span id="pipelineTitle">YS→CLJ→GLJ→GO→WASM/JS</span> - <span id="programTitle"></span></h1>
+  <h1 id="pageTitle"><img src="../www/docs/img/gloat.jpeg" alt="Gloat" style="height:36px;border-radius:50%;vertical-align:middle;margin-right:10px">Gloat - <span id="pipelineTitle">YS→CLJ→GO→WASM/JS</span> - <span id="programTitle"></span></h1>
   <div class="container">
     <div class="left-panel">
       <div class="section">
@@ -223,10 +223,10 @@
       <div class="section">
         <h2 class="section-header" onclick="window.toggleSection && window.toggleSection(this)">
           <span class="toggle-indicator">&#9660;</span>
-          <span id="gljTitle">Glojure Code</span>
+          <span id="cljTitle">Clojure Code</span>
         </h2>
         <div class="section-content">
-          <pre id="gljCode"><code class="language-clojure">Click Compile to generate code</code></pre>
+          <pre id="cljCode"><code class="language-clojure">Click Compile to generate code</code></pre>
         </div>
       </div>
 
@@ -264,7 +264,7 @@
     let config = {};
 
     const output = document.getElementById('output');
-    const gljCodeElement = document.getElementById('gljCode');
+    const cljCodeElement = document.getElementById('cljCode');
     const goCodeElement = document.getElementById('goCode');
     const runButton = document.getElementById('runButton');
     const compileButton = document.getElementById('compileButton');
@@ -418,11 +418,11 @@
         }
 
         // Update pipeline based on source type
-        const pipeline = currentExt === '.ys' ? 'YS→CLJ→GLJ→GO→WASM/JS' : 'CLJ→GLJ→GO→WASM/JS';
+        const pipeline = currentExt === '.ys' ? 'YS→CLJ→GO→WASM/JS' : 'CLJ→GO→WASM/JS';
         document.getElementById('pipelineTitle').textContent = pipeline;
 
         // Clear compiled code panels
-        gljCodeElement.querySelector('code').textContent = 'Click Compile to generate code';
+        cljCodeElement.querySelector('code').textContent = 'Click Compile to generate code';
         goCodeElement.querySelector('code').textContent = 'Click Compile to generate code';
 
         // Reset compiled WASM
@@ -506,11 +506,11 @@
         runButton.disabled = true;
 
         // Clear code panes immediately
-        gljCodeElement.querySelector('code').textContent = 'Compiling...';
+        cljCodeElement.querySelector('code').textContent = 'Compiling...';
         goCodeElement.querySelector('code').textContent = 'Compiling...';
 
-        const steps = {clj: false, glj: false, go: false, wasm: false, encode: false};
-        const stepTimes = {clj: 0, glj: 0, go: 0, wasm: 0, encode: 0};
+        const steps = {clj: false, go: false, wasm: false, encode: false};
+        const stepTimes = {clj: 0, go: 0, wasm: 0, encode: 0};
         let statusText = '';
         const isYamlScript = currentExt === '.ys';
         const compileStartTime = performance.now();
@@ -529,13 +529,8 @@
           }
 
           if (steps.clj) {
-            if (steps.glj) lines.push(`  CLJ→GLJ... done (${stepTimes.glj}ms)`);
-            else if (statusText.includes('glj')) lines.push('  CLJ→GLJ...');
-          }
-
-          if (steps.glj) {
-            if (steps.go) lines.push(`  GLJ→GO... done (${stepTimes.go}ms)`);
-            else if (statusText.includes('go')) lines.push('  GLJ→GO...');
+            if (steps.go) lines.push(`  CLJ→GO... done (${stepTimes.go}ms)`);
+            else if (statusText.includes('go')) lines.push('  CLJ→GO...');
           }
 
           if (steps.go) {
@@ -596,10 +591,10 @@
                       stepTimes[data.step] = data.ms || 0;
 
                       // Display code as soon as it's available
-                      if (data.step === 'glj' && data.code) {
-                        const gljCode = gljCodeElement.querySelector('code');
-                        gljCode.textContent = data.code;
-                        hljs.highlightElement(gljCode);
+                      if (data.step === 'clj' && data.code) {
+                        const cljCode = cljCodeElement.querySelector('code');
+                        cljCode.textContent = data.code;
+                        hljs.highlightElement(cljCode);
                       } else if (data.step === 'go' && data.code) {
                         const goCode = goCodeElement.querySelector('code');
                         goCode.textContent = data.code;
@@ -614,12 +609,11 @@
                     // Build status message based on source type
                     const statusLines = [];
                     const filename = currentFile.split('/').pop();
-                    const totalMs = (isYamlScript ? stepTimes.clj : 0) + stepTimes.glj + stepTimes.go + stepTimes.wasm + stepTimes.encode;
+                    const totalMs = (isYamlScript ? stepTimes.clj : 0) + stepTimes.go + stepTimes.wasm + stepTimes.encode;
 
                     statusLines.push(`Compiling ${filename} to WASM/JS...`);
                     if (isYamlScript) statusLines.push(`  YS→CLJ... done (${stepTimes.clj}ms)`);
-                    statusLines.push(`  CLJ→GLJ... done (${stepTimes.glj}ms)`);
-                    statusLines.push(`  GLJ→GO... done (${stepTimes.go}ms)`);
+                    statusLines.push(`  CLJ→GO... done (${stepTimes.go}ms)`);
                     statusLines.push(`  GO→WASM/JS... done (${stepTimes.wasm}ms)`);
                     statusLines.push(`  WASM/JS→Base64... done (${stepTimes.encode}ms)`);
                     statusLines.push(`done (${totalMs}ms)`);

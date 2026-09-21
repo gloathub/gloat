@@ -7,7 +7,6 @@
 gljrepl/
 /*.bb
 /*.clj
-/*.glj
 /*.go
 /*.html
 /*.js

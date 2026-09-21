@@ -13,7 +13,7 @@ _gloat() {
           --which --repl --nrepl --srepl --deps --classpath --reset --upgrade
           --glj-build"
 
-    formats="clj bb lg glj go dir bin lib wasm js"
+    formats="clj bb lg go dir bin lib wasm js"
     engines="glj graalvm jolt lgvm lglvm lgl"
     platforms="linux/amd64 linux/arm64 linux/386 linux/arm
                 linux/ppc64le linux/s390x linux/riscv64 linux/mips64le

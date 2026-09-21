@@ -1,7 +1,7 @@
 ;; Calling java.lang.String static and instance members.
 ;;
-;; Three-layer flow as Math/*, Integer/*, System/*: static `String/*`
-;; symbols rewrite to glojure's javacompat bridge; instance `.method`
+;; Two-layer flow as Math/*, Integer/*, System/*: static `String/*`
+;; symbols resolve to glojure's javacompat bridge; instance `.method`
 ;; forms dispatch at runtime through the lang string-method registry.
 ;;
 ;; Method semantics match the JVM: `.length` returns UTF-16 code units,

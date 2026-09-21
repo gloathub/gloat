@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Test java.lang.Boolean interop in a gloat-compiled binary. Verifies that
-# Boolean/* statics flow from glojure's rewrite, through the javacompat/boolean
-# bridge, into gojava.
+# Boolean/* statics flow through the javacompat/boolean bridge into
+# gojava.
 
 source "$(dirname "${BASH_SOURCE[0]}")/init"
 

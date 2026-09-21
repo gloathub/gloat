@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Test java.lang.String interop in a gloat-compiled binary. Verifies
-# that String/* statics and (.method s) instance forms flow from
-# glojure's rewrite, through the javacompat/string bridge, into gojava.
+# that String/* statics and (.method s) instance forms flow through
+# the javacompat/string bridge into gojava.
 
 source "$(dirname "${BASH_SOURCE[0]}")/init"
 

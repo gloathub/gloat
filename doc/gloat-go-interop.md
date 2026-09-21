@@ -131,7 +131,8 @@ deps-key level, but at call sites you must use the colon form because
 the dot in a multi-slash slash form would parse as a host expression.
 Stick with the colon form everywhere for consistency.
 
-A program that uses it (saved next to the deps file):
+A program that uses it, saved as `greet.glj` next to the deps file.
+It takes the `.glj` extension because it calls into a Go package:
 
 ```clojure
 (ns main.core)

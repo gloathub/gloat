@@ -1,7 +1,7 @@
 ;; Calling java.lang.Double static members.
 ;;
-;; Same three-layer flow as the integer classes: gloat rewrites each
-;; `Double/*` symbol to glojure's javacompat bridge, which forwards to
+;; Same two-layer flow as the integer classes: glojure resolves each
+;; `Double/*` symbol to its javacompat bridge, which forwards to
 ;; gojava's typed Go port. Values are float64 to match Java's double.
 ;;
 ;; `Double/toString` emits JVM-style output: a decimal in the mantissa
@@ -38,7 +38,7 @@
   (println "doubleToLongBits 1.0:" (Double/doubleToLongBits 1.0))
   (println "longBitsToDouble:"     (Double/longBitsToDouble (Double/doubleToLongBits 3.14)))
 
-  ;; Constructor sugar rewrites to valueOf
+  ;; Constructor sugar calls valueOf
   (println "(Double. \"2.5\"):" (Double. "2.5"))
   (println "(Double. 4.0):"     (Double. 4.0))
 

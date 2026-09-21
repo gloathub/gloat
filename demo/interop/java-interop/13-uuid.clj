@@ -1,9 +1,9 @@
 ;; Calling java.util.UUID static members and instance methods.
 ;;
-;; Same three-layer flow as the java.lang.* classes: gloat rewrites each
-;; `UUID/*` symbol to glojure's javacompat bridge, which forwards to
-;; gojava's typed Go port. The (UUID. msb lsb) constructor sugar is
-;; rewritten to fromBits at AOT time.
+;; Same two-layer flow as the java.lang.* classes: glojure resolves each
+;; `UUID/*` symbol to its javacompat bridge, which forwards to
+;; gojava's typed Go port. The (UUID. msb lsb) constructor sugar calls
+;; fromBits.
 ;;
 ;; UUID instance methods (toString, version, variant, compareTo,
 ;; getMostSignificantBits, ...) are reached at runtime via reflection on

@@ -47,28 +47,27 @@ value prints as its fully-qualified Java name (e.g.
 returns the same FQ name, matching JVM Clojure output.
 
 .SH How it works
-JVM symbols flow through three layers:
+JVM symbols flow through two layers:
 .IP "  1." 5
-\fBRewrite\fP -- the \fB\&.clj\fR -> \fB\&.glj\fR transform translates each
-\fBMath/*\fR symbol to a fully-qualified Go reference into the bridge
-package.
-.IP "  2." 5
 \fBBridge\fP -- small Go packages inside glojure
 (\fBpkg/javacompat/math/\fR, \fBpkg/javacompat/system/\fR) that handle
 JVM-specific semantics: polymorphic dispatch on argument type,
 JVM-faithful rounding rules, exact-arithmetic overflow detection,
 nil-on-unset env/property lookups, conversion of Go return values
 into Clojure-friendly forms.
-.IP "  3." 5
+.IP "  2." 5
 \fBgojava\fP -- the typed Go port of \fBjava.lang.*\fR, with one Go name
 per JVM overload (\fBAbsInt\fR, \fBAbsLong\fR, \fBFloorDivInt\fR, \fBFloorDivLong\fR,
 \&...).
 
 .PP
-At the REPL the rewrite step is skipped; each bridge registers its
-symbols under the JVM-style \fBMath.<name>\fR and \fBSystem.<name>\fR keys in
-glojure's pkgmap so \fB(Math/sqrt 144)\fR and \fB(System/getenv "PATH")\fR
-resolve the same way without translation.
+Each bridge registers its symbols under the JVM-style \fBMath.<name>\fR and
+\fBSystem.<name>\fR keys in glojure's pkgmap, so \fB(Math/sqrt 144)\fR and
+\fB(System/getenv "PATH")\fR resolve the same way at the REPL and in a
+compiled binary.
+Your source is never rewritten; the same \fB\&.clj\fR file feeds both paths.
+Sources that also use Go interop take the \fB\&.glj\fR extension and are
+accepted as input the same way.
 
 .SH Static method calls
 Runnable: \fB01-static-method.clj\fR
@@ -235,8 +234,8 @@ Long/MAX_VALUE                        ; -> 9223372036854775807
 
 (Integer/valueOf 7)                   ; -> 7
 (Integer/valueOf "7")                 ; -> 7 (parses)
-(Integer. 5)                          ; rewrites to (Integer/valueOf 5)
-(Long.    "9999999999")               ; rewrites to (Long/valueOf "...")
+(Integer. 5)                          ; same as (Integer/valueOf 5)
+(Long.    "9999999999")               ; same as (Long/valueOf "...")
 
 (Integer/bitCount 0xFF)               ; -> 8
 (Integer/numberOfLeadingZeros 1)      ; -> 31
@@ -245,9 +244,9 @@ Long/MAX_VALUE                        ; -> 9223372036854775807
 .EE
 
 .PP
-Constructor forms \fB(Integer. x)\fR and \fB(Long. x)\fR are rewritten at
-compile time to the matching \fBvalueOf\fR, which accepts either a number
-(coerced to int32 / int64) or a string (parsed as decimal). Parse
+Constructor forms \fB(Integer. x)\fR and \fB(Long. x)\fR call the matching
+\fBvalueOf\fR, which accepts either a number (coerced to int32 / int64) or
+a string (parsed as decimal). Parse
 failures raise a runtime error with \fBNumberFormatException\fR in the
 message, matching JVM behavior.
 
@@ -255,14 +254,14 @@ message, matching JVM behavior.
 Runnable: \fB08-string.clj\fR
 
 .PP
-\fBString/*\fR statics rewrite to the javacompat bridge like \fBMath/*\fR does.
+\fBString/*\fR statics resolve to the javacompat bridge like \fBMath/*\fR does.
 Instance methods (\fB(.length s)\fR, \fB(.toUpperCase s)\fR, \fB(.substring s 1
 4)\fR, ...) take a different path: glojure has no Go-side methods on the
 primitive \fBstring\fR type, so the bridge registers each JVM method with
 the runtime, and \fBlang.FieldOrMethod\fR consults that registry when the
 receiver is a Go string. The dispatch is case-insensitive on the first
-letter so both the original (\fB\&.equals\fR) and the rewrite-renamed
-(\fB\&.Equals\fR) spellings reach the same handler.
+letter so both the JVM (\fB\&.equals\fR) and the Go-style (\fB\&.Equals\fR)
+spellings reach the same handler.
 
 .EX
 (.length "naïve")              ; 5 (UTF-16 code units, JVM semantics)
@@ -278,7 +277,7 @@ letter so both the original (\fB\&.equals\fR) and the rewrite-renamed
 (String/format "%s=%d" "x" 42) ; "x=42"
 (String/join "-" ["a" "b"])    ; "a-b"
 (String/valueOf nil)           ; "null"
-(String. "hello")              ; "hello"   (rewrites to valueOf)
+(String. "hello")              ; "hello"   (same as valueOf)
 .EE
 
 .PP
@@ -315,7 +314,7 @@ to match Java's double precision.
 (Double/doubleToLongBits 1.0)          ; 4607182418800017408
 (Double/longBitsToDouble 4607182418800017408) ; 1.0
 
-(Double. "1.25")                       ; 1.25 (rewrites to valueOf)
+(Double. "1.25")                       ; 1.25 (same as valueOf)
 .EE
 
 .PP
@@ -351,7 +350,7 @@ including the empty string and nil.
 Boolean/TRUE                           ; true
 Boolean/FALSE                          ; false
 
-(Boolean. "true")                      ; true   (rewrites to valueOf)
+(Boolean. "true")                      ; true   (same as valueOf)
 .EE
 
 .PP
@@ -390,7 +389,7 @@ point.
 Character/MIN_RADIX                    ; 2
 Character/MAX_RADIX                    ; 36
 
-(Character. \\W)                        ; \\W   (rewrites to valueOf)
+(Character. \\W)                        ; \\W   (same as valueOf)
 .EE
 
 .PP
@@ -593,7 +592,7 @@ Constants: \fBInteger/MIN_VALUE\fR, \fBInteger/MAX_VALUE\fR, \fBInteger/SIZE\fR,
 Parsing: \fBInteger/parseInt\fR (1+2 arg), \fBInteger/parseUnsignedInt\fR,
 \fBInteger/valueOf\fR (int or string)
 .IP \(bu 2
-Constructor: \fB(Integer. x)\fR (rewrites to \fBvalueOf\fR)
+Constructor: \fB(Integer. x)\fR (same as \fBvalueOf\fR)
 .IP \(bu 2
 Formatting: \fBInteger/toString\fR (1+2 arg), \fBInteger/toBinaryString\fR,
 \fBInteger/toOctalString\fR, \fBInteger/toHexString\fR
@@ -616,7 +615,7 @@ return types. Includes \fBLong/MIN_VALUE\fR, \fBLong/MAX_VALUE\fR,
 Statics: \fBString/format\fR, \fBString/join\fR, \fBString/valueOf\fR,
 \fBString/copyValueOf\fR
 .IP \(bu 2
-Constructor: \fB(String. x)\fR (rewrites to \fBvalueOf\fR)
+Constructor: \fB(String. x)\fR (same as \fBvalueOf\fR)
 .IP \(bu 2
 Length and predicates: \fB\&.length\fR, \fB\&.isEmpty\fR, \fB\&.isBlank\fR
 .IP \(bu 2
@@ -648,7 +647,7 @@ Constants: \fBDouble/MIN_VALUE\fR, \fBDouble/MAX_VALUE\fR, \fBDouble/MIN_NORMAL\
 .IP \(bu 2
 Parsing: \fBDouble/parseDouble\fR, \fBDouble/valueOf\fR (string or number)
 .IP \(bu 2
-Constructor: \fB(Double. x)\fR (rewrites to \fBvalueOf\fR)
+Constructor: \fB(Double. x)\fR (same as \fBvalueOf\fR)
 .IP \(bu 2
 Formatting: \fBDouble/toString\fR (JVM-style), \fBDouble/toHexString\fR
 .IP \(bu 2
@@ -665,7 +664,7 @@ Constants: \fBBoolean/TRUE\fR, \fBBoolean/FALSE\fR
 .IP \(bu 2
 Parsing: \fBBoolean/parseBoolean\fR, \fBBoolean/valueOf\fR (string or boolean)
 .IP \(bu 2
-Constructor: \fB(Boolean. x)\fR (rewrites to \fBvalueOf\fR)
+Constructor: \fB(Boolean. x)\fR (same as \fBvalueOf\fR)
 .IP \(bu 2
 Formatting: \fBBoolean/toString\fR
 .IP \(bu 2
@@ -680,7 +679,7 @@ Comparison: \fBBoolean/compare\fR
 Constants: \fBCharacter/MIN_VALUE\fR, \fBCharacter/MAX_VALUE\fR,
 \fBCharacter/MIN_RADIX\fR, \fBCharacter/MAX_RADIX\fR
 .IP \(bu 2
-Constructor: \fB(Character. c)\fR (rewrites to \fBvalueOf\fR)
+Constructor: \fB(Character. c)\fR (same as \fBvalueOf\fR)
 .IP \(bu 2
 Predicates: \fBCharacter/isDigit\fR, \fBCharacter/isLetter\fR,
 \fBCharacter/isLetterOrDigit\fR, \fBCharacter/isAlphabetic\fR,
@@ -698,7 +697,7 @@ Comparison: \fBCharacter/compare\fR
 .IP \(bu 2
 Statics: \fBPattern/compile\fR (1+2 arg), \fBPattern/matches\fR, \fBPattern/quote\fR
 .IP \(bu 2
-Constructor: \fB(Pattern. regex)\fR (rewrites to \fBcompile\fR)
+Constructor: \fB(Pattern. regex)\fR (same as \fBcompile\fR)
 .IP \(bu 2
 Flag constants: \fBPattern/CASE_INSENSITIVE\fR, \fBPattern/MULTILINE\fR,
 \fBPattern/LITERAL\fR, \fBPattern/DOTALL\fR, \fBPattern/UNICODE_CASE\fR
@@ -715,7 +714,7 @@ Matcher instance: \fB\&.matches\fR, \fB\&.lookingAt\fR, \fB\&.find\fR (0+1 arg),
 .IP \(bu 2
 Statics: \fBUUID/randomUUID\fR, \fBUUID/fromString\fR, \fBUUID/nameUUIDFromBytes\fR
 .IP \(bu 2
-Constructor: \fB(UUID. msb lsb)\fR (rewrites to \fBfromBits\fR)
+Constructor: \fB(UUID. msb lsb)\fR (same as \fBfromBits\fR)
 .IP \(bu 2
 Instance: \fB\&.toString\fR, \fB\&.getMostSignificantBits\fR,
 \fB\&.getLeastSignificantBits\fR, \fB\&.version\fR, \fB\&.variant\fR, \fB\&.compareTo\fR,

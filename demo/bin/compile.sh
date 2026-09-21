@@ -3,7 +3,7 @@
 set -e
 
 # Usage: compile.sh <source_file> <output_file> <format>
-# format can be: clj, glj, go, js (for wasm)
+# format can be: clj, go, js (for wasm)
 
 SOURCE_FILE="$1"
 OUTPUT_FILE="$2"

@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 # Test java.lang.Math interop in a gloat-compiled binary. Verifies that
-# Math/* symbols rewritten by glojure's rewrite-core flow through the
-# javacompat bridge into gojava and produce JVM-faithful results.
+# Math/* symbols flow through the javacompat bridge into gojava and produce JVM-faithful results.
 
 source "$(dirname "${BASH_SOURCE[0]}")/init"
 

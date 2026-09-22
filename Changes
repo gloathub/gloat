@@ -1,3 +1,8 @@
+- version: 0.1.89
+  date:    Mon Sep 21 10:15:29 PM EDT 2026
+  changes:
+  - Remove the Clojure rewrite from the pipeline
+
 - version: 0.1.88
   date:    Mon Sep 21 09:41:51 AM EDT 2026
   changes:

@@ -1,0 +1,12 @@
+# https://rosettacode.org/wiki/Factorial#YAMLScript
+
+!ys-0
+
+defn main(*ns):
+  each n ns:
+    say: "$n! -> $factorial(n)"
+
+defn factorial(x):
+  if x <= 2:
+    (x ||| 1)
+    (2 .. x).mul(*)

@@ -1,0 +1,16 @@
+# https://rosettacode.org/wiki/100_doors#YAMLScript
+
+!ys-0
+
+defn main():
+  open =:
+    reduce _ vec([true] * 100) (1 .. 100):
+      fn(doors i):
+        loop j i, doors doors:
+          if j < 100:
+            recur (j + i).++:
+              update-in doors [j]: \(doors.$j.!)
+            else: doors
+  say: +"Open doors after 100 passes:\ " +
+        (1 .. 100).map(\(_.--:open && _))
+                  .filter(a).join(', ')

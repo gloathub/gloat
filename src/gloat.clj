@@ -1214,7 +1214,10 @@ Less common:
   [stdlib-dir]
   (->> (fs/glob stdlib-dir "**/loader.go")
        (map #(str (fs/relativize stdlib-dir (fs/parent %))))
-       (map #(-> % (str/replace #"[\\/]" ".") (str/replace "_" "-")))
+       (map #(-> %
+                 (str/replace \\ \.)
+                 (str/replace \/ \.)
+                 (str/replace "_" "-")))
        (remove #{"clojure.core" "glojure.go.io"})
        sort))
 

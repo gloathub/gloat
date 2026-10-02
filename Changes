@@ -1,3 +1,11 @@
+- version: 0.1.90
+  date:    Thu Oct  1 11:59:40 PM EDT 2026
+  changes:
+  - Support current YAMLScript preamble
+  - Build namespaces from path components
+  - Use literal path separators
+  - Normalize Windows stdlib paths
+
 - version: 0.1.89
   date:    Mon Sep 21 10:15:29 PM EDT 2026
   changes:

@@ -1213,11 +1213,9 @@ Less common:
    glj runtime always links (clojure.core and glojure.go.io)."
   [stdlib-dir]
   (->> (fs/glob stdlib-dir "**/loader.go")
-       (map #(str (fs/relativize stdlib-dir (fs/parent %))))
-       (map #(-> %
-                 (str/replace \\ \.)
-                 (str/replace \/ \.)
-                 (str/replace "_" "-")))
+       (map #(fs/relativize stdlib-dir (fs/parent %)))
+       (map #(str/join "." %))
+       (map #(str/replace % "_" "-"))
        (remove #{"clojure.core" "glojure.go.io"})
        sort))
 

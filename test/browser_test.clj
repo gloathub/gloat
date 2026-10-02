@@ -43,18 +43,23 @@
     (is (= "Now serving http://localhost:8000/foo/index.html\n"
            (str output)))))
 
-(deftest windows-stdlib-paths
-  (with-redefs-fn
-    {#'fs/glob (fn [& _] [:core :io :test :walk])
-     #'fs/parent identity
-     #'fs/relativize
-     (fn [_ path]
-       ({:core "clojure\\core"
-         :io "glojure\\go\\io"
-         :test "clojure\\test"
-         :walk "clojure\\walk"} path))}
-    #(is (= ["clojure.test" "clojure.walk"]
-            (vec (gloat/stdlib-namespaces "stdlib"))))))
+(deftest stdlib-paths
+  (let [dir (fs/create-temp-dir)]
+    (try
+      (doseq [parts [["clojure" "core"]
+                     ["clojure" "data_structures"]
+                     ["clojure" "test"]
+                     ["clojure" "walk"]
+                     ["glojure" "go" "io"]]]
+        (let [loader (reduce fs/path dir (conj parts "loader.go"))]
+          (fs/create-dirs (fs/parent loader))
+          (spit (str loader) "")))
+      (is (= ["clojure.data-structures"
+              "clojure.test"
+              "clojure.walk"]
+             (vec (gloat/stdlib-namespaces dir))))
+      (finally
+        (fs/delete-tree dir)))))
 
 (deftest browser-page
   (let [dir (str (fs/create-temp-dir))

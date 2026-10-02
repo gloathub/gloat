@@ -43,6 +43,15 @@
     (is (= "Now serving http://localhost:8000/foo/index.html\n"
            (str output)))))
 
+(deftest portable-preambles
+  (doseq [[heads count]
+          [[gloat/star-preamble-heads 4]
+           [gloat/legacy-clj-plus-preamble-heads 3]
+           [gloat/clj-plus-preamble-heads 3]]]
+    (let [forms (mapv list heads)]
+      (is (gloat/star-forms? forms))
+      (is (= count (gloat/portable-preamble-count forms))))))
+
 (deftest stdlib-paths
   (let [dir (fs/create-temp-dir)]
     (try

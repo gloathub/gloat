@@ -869,7 +869,8 @@ Less common:
         path))))
 
 (def star-preamble-heads ['require 'deps/add-deps 'ns 'ys.v0/init])
-(def clj-plus-preamble-heads ['when-not 'ns 'when-not])
+(def legacy-clj-plus-preamble-heads ['when-not 'ns 'when-not])
+(def clj-plus-preamble-heads ['ns 'when-not 'ys.v0/init])
 
 (defn read-clojure-forms
   ([text] (read-clojure-forms text nil))
@@ -890,6 +891,7 @@ Less common:
                        (when (seq? form) (first form)))
                      (take %1 forms))]
     (or (= star-preamble-heads (heads 4))
+        (= legacy-clj-plus-preamble-heads (heads 3))
         (= clj-plus-preamble-heads (heads 3)))))
 
 (defn portable-preamble-count [forms]

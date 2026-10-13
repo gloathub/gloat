@@ -1,0 +1,177 @@
+# shellcheck shell=bash
+#
+# Usage:
+#   source <(curl -sL gloathub.org/install)                 # bash/zsh
+#   curl -sL gloathub.org/install | source                  # fish
+#   source <(curl -sL gloathub.org/install) PREFIX=~/.gloat # bash/zsh
+#   source <(curl -sL gloathub.org/install) VERSION=v0.1.37 # bash/zsh
+#
+# This file is meant to be sourced so it can load gloat's .rc into the
+# caller's current shell after the existing Makefile installer runs.
+
+test -n "$BASH_VERSION" && eval '
+_gloat_install_status=0
+_gloat_install_prefix=${PREFIX:-$HOME/.local}
+_gloat_install_file=${BASH_SOURCE[0]:-$0}
+_gloat_install_dir=$(cd "$(dirname "$_gloat_install_file")" 2>/dev/null && pwd -P || true)
+
+for _gloat_install_arg in "$@"; do
+  case $_gloat_install_arg in
+    PREFIX=*)
+      _gloat_install_prefix=${_gloat_install_arg#PREFIX=}
+      ;;
+  esac
+done
+
+case $_gloat_install_prefix in
+  "~")
+    _gloat_install_prefix=$HOME
+    ;;
+  "~/"*)
+    _gloat_install_prefix=$HOME/${_gloat_install_prefix#"~/"}
+    ;;
+esac
+
+if [[ -f $_gloat_install_dir/make ]]; then
+  make -f "$_gloat_install_dir/make" install GLOAT_INSTALL_SOURCE=1 "$@"
+else
+  make -f <(curl -sL gloathub.org/make) install GLOAT_INSTALL_SOURCE=1 "$@"
+fi
+_gloat_install_status=$?
+
+if [[ $_gloat_install_status = 0 ]]; then
+  _gloat_install_rc=$_gloat_install_prefix/share/gloat/.rc
+  if [[ -r $_gloat_install_rc ]]; then
+    source "$_gloat_install_rc"
+    echo ""
+    echo "These have been enabled for this shell:"
+    echo "- \`gloat --<TAB><TAB>\` for tab completion."
+    echo "- \`man gloat<TAB><TAB>\` for man pages."
+    echo ""
+    echo "To make them permanent, add this to your shell rc file:"
+    echo "  source $_gloat_install_rc"
+    echo ""
+    echo "See: https://gloathub.org/doc/gloat-install/ for details."
+  else
+    echo "Error: expected gloat rc file not found: $_gloat_install_rc" >&2
+    _gloat_install_status=1
+  fi
+fi
+
+unset _gloat_install_arg
+unset _gloat_install_file
+unset _gloat_install_dir
+unset _gloat_install_prefix
+unset _gloat_install_rc
+
+return "$_gloat_install_status" 2>/dev/null || exit "$_gloat_install_status"
+'
+
+test -n "$ZSH_VERSION" && eval '
+_gloat_install_status=0
+_gloat_install_prefix=${PREFIX:-$HOME/.local}
+_gloat_install_file=$0
+_gloat_install_dir=$(cd "$(dirname "$_gloat_install_file")" 2>/dev/null && pwd -P || true)
+
+for _gloat_install_arg in "$@"; do
+  case $_gloat_install_arg in
+    PREFIX=*)
+      _gloat_install_prefix=${_gloat_install_arg#PREFIX=}
+      ;;
+  esac
+done
+
+case $_gloat_install_prefix in
+  "~")
+    _gloat_install_prefix=$HOME
+    ;;
+  "~/"*)
+    _gloat_install_prefix=$HOME/${_gloat_install_prefix#"~/"}
+    ;;
+esac
+
+if [[ -f $_gloat_install_dir/make ]]; then
+  make -f "$_gloat_install_dir/make" install GLOAT_INSTALL_SOURCE=1 "$@"
+else
+  make -f <(curl -sL gloathub.org/make) install GLOAT_INSTALL_SOURCE=1 "$@"
+fi
+_gloat_install_status=$?
+
+if [[ $_gloat_install_status = 0 ]]; then
+  _gloat_install_rc=$_gloat_install_prefix/share/gloat/.rc
+  if [[ -r $_gloat_install_rc ]]; then
+    source "$_gloat_install_rc"
+    echo ""
+    echo "These have been enabled for this shell:"
+    echo "- \`gloat --<TAB><TAB>\` for tab completion."
+    echo "- \`man gloat<TAB><TAB>\` for man pages."
+    echo ""
+    echo "To make them permanent, add this to your shell rc file:"
+    echo "  source $_gloat_install_rc"
+    echo ""
+    echo "See: https://gloathub.org/doc/gloat-install/ for details."
+  else
+    echo "Error: expected gloat rc file not found: $_gloat_install_rc" >&2
+    _gloat_install_status=1
+  fi
+fi
+
+unset _gloat_install_arg
+unset _gloat_install_file
+unset _gloat_install_dir
+unset _gloat_install_prefix
+unset _gloat_install_rc
+
+return "$_gloat_install_status" 2>/dev/null || exit "$_gloat_install_status"
+'
+
+test -n "$FISH_VERSION" && eval '
+set _gloat_install_status 0
+set _gloat_install_prefix "$PREFIX"
+set _gloat_install_file (status filename)
+set _gloat_install_dir (cd (dirname "$_gloat_install_file") 2>/dev/null; and pwd -P)
+test -n "$_gloat_install_prefix"; or set _gloat_install_prefix "$HOME/.local"
+
+switch "$_gloat_install_prefix"
+  case "~"
+    set _gloat_install_prefix "$HOME"
+  case "~/*"
+    set _gloat_install_prefix "$HOME/"(string sub -s 3 "$_gloat_install_prefix")
+end
+
+if test -f "$_gloat_install_dir/make"
+  make -f "$_gloat_install_dir/make" install GLOAT_INSTALL_SOURCE=1 PREFIX="$_gloat_install_prefix"
+else
+  make -f (curl -sL gloathub.org/make | psub) install GLOAT_INSTALL_SOURCE=1 PREFIX="$_gloat_install_prefix"
+end
+set _gloat_install_status $status
+
+if test "$_gloat_install_status" = 0
+  set _gloat_install_rc "$_gloat_install_prefix/share/gloat/.rc"
+  if test -r "$_gloat_install_rc"
+    source "$_gloat_install_rc"
+    echo ""
+    echo "These have been enabled for this shell:"
+    echo "- `gloat --<TAB><TAB>` for tab completion."
+    echo "- `man gloat<TAB><TAB>` for man pages."
+    echo ""
+    echo "To make them permanent, add this to your shell rc file:"
+    echo "  source $_gloat_install_rc"
+    echo ""
+    echo "See: https://gloathub.org/doc/gloat-install/ for details."
+  else
+    echo "Error: expected gloat rc file not found: $_gloat_install_rc" >&2
+    set _gloat_install_status 1
+  end
+end
+
+set -e _gloat_install_file
+set -e _gloat_install_dir
+set -e _gloat_install_prefix
+set -e _gloat_install_rc
+
+return $_gloat_install_status
+'
+
+echo "ERROR: gloathub.org/install is not set up to work for shell '$0'" >&2
+false

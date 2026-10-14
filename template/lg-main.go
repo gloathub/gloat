@@ -7,14 +7,10 @@ package main
 // call; otherwise the driver main chunk runs it on the VM.
 
 import (
-	"bytes"
 	_ "embed"
 	"fmt"
 	"os"
 
-	"github.com/nooga/let-go/pkg/bytecode"
-	"github.com/nooga/let-go/pkg/compiler"
-	"github.com/nooga/let-go/pkg/resolver"
 	"github.com/nooga/let-go/pkg/rt"
 	"github.com/nooga/let-go/pkg/vm"
 LOWERED-IMPORTS
@@ -29,34 +25,32 @@ func fail(err error) {
 }
 
 func main() {
-	// Importing pkg/compiler booted core from its embedded bundle; the
-	// resolver (nil paths) lets replayed requires load embedded nses.
-	ctx := compiler.NewCompiler(vm.NewConsts(), rt.NS("user"))
-	rt.SetNSLoader(resolver.NewNSResolver(ctx, nil))
+	// Runtime-only boot: core loads from its embedded bundle, so neither
+	// the compiler nor the resolver is linked into the binary. Replayed
+	// requires resolve against namespaces the loop below has already
+	// installed, which is every namespace the bundle carries.
+	ec, err := rt.BootCore()
+	if err != nil {
+		fail(err)
+	}
 	defer rt.ShutdownAllPods()
 
 	args := os.Args[1:]
 	argv := make([]vm.Value, len(args))
-	var cla vm.Value = vm.NIL
-	if len(args) > 0 {
-		for i, a := range args {
-			argv[i] = vm.String(a)
-		}
-		cla = vm.NewList(argv)
+	for i, a := range args {
+		argv[i] = vm.String(a)
 	}
-	rt.CoreNS.Lookup("*command-line-args*").(*vm.Var).SetRoot(cla)
+	rt.SetCommandLineArgs(args)
 
-	resolve := func(nsName, name string) *vm.Var {
-		n := rt.DefNSBare(nsName)
-		if v := n.LookupLocal(vm.Symbol(name)); v != nil {
-			return v
-		}
-		return n.DefStub(name)
-	}
-	unit, err := bytecode.DecodeToExecUnit(bytes.NewReader(lgbData), resolve)
+	unit, err := rt.DecodeExecUnit(lgbData)
 	if err != nil {
 		fail(err)
 	}
+	// MainChunk is skipped here on purpose: gloat's driver chunk calls
+	// -main, so replaying it would run the program before (and in the
+	// :direct case in addition to) the entry call below. rt.RunExecUnit
+	// skips it too but drains no overrides, and rt.LoadProgramNamespaces
+	// drains them but replays MainChunk — neither fits this shape.
 	for _, name := range unit.NSOrder {
 		chunk := unit.NSChunks[name]
 		if chunk == nil || chunk == unit.MainChunk {
@@ -71,6 +65,7 @@ func main() {
 		// Drain this ns's Go-native overrides (no-op when none).
 		rt.ApplyGoOverrides(rt.LookupNS(name))
 	}
+	_ = ec
 	_ = argv
 ENTRY-CODE
 }

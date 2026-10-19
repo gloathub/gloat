@@ -1,12 +1,12 @@
 GLOAT-VERSION := 0.1.91
 
-GLOJURE-VERSION := 0.7.22
+GLOJURE-VERSION := 0.7.24
 GLOJURE-REPO := https://github.com/glojurelang/glojure
 
 LET-GO-VERSION := 1.12.2
 LET-GO-REPO := nooga/let-go
 
-# YAMLSCRIPT-VERSION := 0.2.31
+YAMLSCRIPT-VERSION := 0.3.6
 YS-VERSION := $(YAMLSCRIPT-VERSION)
 LIBYS-VERSION := $(YAMLSCRIPT-VERSION)
 
@@ -23,7 +23,7 @@ OA-macos-int64 := x86_64-macos
 # GLJ currently requires Go 1.24.0
 GO-VERSION := 1.24.0
 
-YS-V0-GLJ-VERSION := v0.1.5
+YS-V0-GLJ-VERSION := v0.1.6
 
 # Go 1.26 has a linker bug on macOS arm64 for shared library builds
 ifdef IS-MACOS

@@ -1,3 +1,9 @@
+- version: 0.1.92
+  date:    Mon Oct 19 08:03:37 PM EDT 2026
+  changes:
+  - Use the corrected YAMLScript runtime release
+  - Update released runtime dependency pins
+
 - version: 0.1.91
   date:    Tue Oct 13 07:34:51 PM EDT 2026
   changes:

@@ -1,3 +1,8 @@
+- version: 0.1.93
+  date:    Tue Oct 27 07:16:44 PM EDT 2026
+  changes:
+  - Use the faster JSON reader runtime
+
 - version: 0.1.92
   date:    Mon Oct 19 08:03:37 PM EDT 2026
   changes:

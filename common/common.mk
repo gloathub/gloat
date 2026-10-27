@@ -23,7 +23,7 @@ OA-macos-int64 := x86_64-macos
 # GLJ currently requires Go 1.24.0
 GO-VERSION := 1.24.0
 
-YS-V0-GLJ-VERSION := v0.1.7
+YS-V0-GLJ-VERSION := v0.1.8
 
 # Go 1.26 has a linker bug on macOS arm64 for shared library builds
 ifdef IS-MACOS

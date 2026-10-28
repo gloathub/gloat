@@ -25,7 +25,7 @@ test-docker() (
 
 release() (
   version=${1:?Usage: make release VERSION=...}
-  message=${2:-Release v$version}
+  message=${2:-Release Gloat v$version}
   glj_version=${3:-}
 
   # Validate version format (digits and dots, no v prefix)

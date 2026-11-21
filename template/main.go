@@ -34,7 +34,7 @@ ALL-NS-REQUIRES
 	}
 
 	// The YS globals exist only when the program links the YS runtime.
-	if lang.FindNamespace(lang.NewSymbol("ys.v0.global")) != nil {
+	if lang.FindNamespace(lang.NewSymbol("ys.base.global")) != nil {
 		// ENV: map of all environment variables
 		environ := os.Environ()
 		envPairs := make([]any, 0, len(environ)*2)
@@ -43,12 +43,12 @@ ALL-NS-REQUIRES
 				envPairs = append(envPairs, e[:idx], e[idx+1:])
 			}
 		}
-		envVar := glj.Var("ys.v0.global", "ENV")
+		envVar := glj.Var("ys.base.global", "ENV")
 		alterVarRoot.Invoke(envVar, constantly.Invoke(lang.NewMap(envPairs...)))
 
 		// CWD: current working directory
 		cwd, _ := os.Getwd()
-		cwdVar := glj.Var("ys.v0.global", "CWD")
+		cwdVar := glj.Var("ys.base.global", "CWD")
 		alterVarRoot.Invoke(cwdVar, constantly.Invoke(cwd))
 
 		// RUN: runtime metadata map (includes args and pid)
@@ -57,13 +57,15 @@ ALL-NS-REQUIRES
 			lang.NewKeyword("args"), argsVec,
 			lang.NewKeyword("pid"), int64(os.Getpid()),
 		)
-		runVar := glj.Var("ys.v0.global", "RUN")
+		runVar := glj.Var("ys.base.global", "RUN")
 		alterVarRoot.Invoke(runVar, constantly.Invoke(runMap))
 	}
-	if lang.FindNamespace(lang.NewSymbol("ys.v0")) != nil {
-		// NS: the user's namespace object
-		nsVar := glj.Var("ys.v0", "NS")
-		alterVarRoot.Invoke(nsVar, constantly.Invoke(nsObj))
+	// NS: the user's namespace object, in every linked ys.vN umbrella
+	for _, umbrella := range []string{YS-UMBRELLAS} {
+		if lang.FindNamespace(lang.NewSymbol(umbrella)) != nil {
+			nsVar := glj.Var(umbrella, "NS")
+			alterVarRoot.Invoke(nsVar, constantly.Invoke(nsObj))
+		}
 	}
 
 	// Load dependencies requested by portable use forms.

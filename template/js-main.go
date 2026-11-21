@@ -126,7 +126,7 @@ ALL-NS-REQUIRES
 	)
 
 	// The YS globals exist only when the program links the YS runtime.
-	if lang.FindNamespace(lang.NewSymbol("ys.v0.global")) != nil {
+	if lang.FindNamespace(lang.NewSymbol("ys.base.global")) != nil {
 		environ := os.Environ()
 		envPairs := make([]any, 0, len(environ)*2)
 		for _, entry := range environ {
@@ -135,22 +135,24 @@ ALL-NS-REQUIRES
 			}
 		}
 		alterVarRoot.Invoke(
-			glj.Var("ys.v0.global", "ENV"),
+			glj.Var("ys.base.global", "ENV"),
 			constantly.Invoke(lang.NewMap(envPairs...)),
 		)
 
 		cwd, _ := os.Getwd()
-		alterVarRoot.Invoke(glj.Var("ys.v0.global", "CWD"), constantly.Invoke(cwd))
+		alterVarRoot.Invoke(glj.Var("ys.base.global", "CWD"), constantly.Invoke(cwd))
 		alterVarRoot.Invoke(
-			glj.Var("ys.v0.global", "RUN"),
+			glj.Var("ys.base.global", "RUN"),
 			constantly.Invoke(lang.NewMap(
 				lang.NewKeyword("args"), lang.NewVector(),
 				lang.NewKeyword("pid"), int64(os.Getpid()),
 			)),
 		)
 	}
-	if lang.FindNamespace(lang.NewSymbol("ys.v0")) != nil {
-		alterVarRoot.Invoke(glj.Var("ys.v0", "NS"), constantly.Invoke(namespace))
+	for _, umbrella := range []string{YS-UMBRELLAS} {
+		if lang.FindNamespace(lang.NewSymbol(umbrella)) != nil {
+			alterVarRoot.Invoke(glj.Var(umbrella, "NS"), constantly.Invoke(namespace))
+		}
 	}
 
 	// Load dependencies requested by portable use forms.

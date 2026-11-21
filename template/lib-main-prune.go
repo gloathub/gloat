@@ -35,13 +35,17 @@ ALL-NS-REQUIRES
 			envPairs = append(envPairs, e[:idx], e[idx+1:])
 		}
 	}
-	envVar := glj.Var("ys.v0.global", "ENV")
+	envVar := glj.Var("ys.base.global", "ENV")
 	alterVarRoot.Invoke(envVar, constantly.Invoke(lang.NewMap(envPairs...)))
 
-	// NS: the user's namespace object
-	nsVar := glj.Var("ys.v0", "NS")
+	// NS: the user's namespace object, in every linked ys.vN umbrella
 	nsObj := lang.FindOrCreateNamespace(lang.NewSymbol("NAMESPACE"))
-	alterVarRoot.Invoke(nsVar, constantly.Invoke(nsObj))
+	for _, umbrella := range []string{YS-UMBRELLAS} {
+		if lang.FindNamespace(lang.NewSymbol(umbrella)) != nil {
+			nsVar := glj.Var(umbrella, "NS")
+			alterVarRoot.Invoke(nsVar, constantly.Invoke(nsObj))
+		}
+	}
 
 	// Set *ns* to the user's namespace using thread bindings
 	nsStarVar := glj.Var("clojure.core", "*ns*")
@@ -51,14 +55,14 @@ ALL-NS-REQUIRES
 
 	// CWD: current working directory
 	cwd, _ := os.Getwd()
-	cwdVar := glj.Var("ys.v0.global", "CWD")
+	cwdVar := glj.Var("ys.base.global", "CWD")
 	alterVarRoot.Invoke(cwdVar, constantly.Invoke(cwd))
 
 	// RUN: runtime metadata map (no args for libraries, just pid)
 	runMap := lang.NewMap(
 		lang.NewKeyword("pid"), int64(os.Getpid()),
 	)
-	runVar := glj.Var("ys.v0.global", "RUN")
+	runVar := glj.Var("ys.base.global", "RUN")
 	alterVarRoot.Invoke(runVar, constantly.Invoke(runMap))
 }
 

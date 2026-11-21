@@ -249,13 +249,14 @@
       ;; The decoded form has dots for _DOT_ and other chars decoded.
       ;; We need to find where the namespace ends.
       ;; Known namespace patterns: clojure.core, clojure.string,
-      ;; ys.v0, ys.std, ys.dwim, ys.fs, ys.http, ys.ipc, ys.json,
+      ;; ys.base, ys.v0, ys.v1, ys.std, ys.dwim, ys.fs, ys.http, ys.ipc,
+      ;; ys.json,
       ;; yamlscript.common, yamlscript.util
       ;; Try longest match first
       (let [prefixes ["clojure.core" "clojure.string" "clojure.set"
                        "clojure.walk" "clojure.zip" "clojure.test"
                        "yamlscript.common" "yamlscript.util"
-                       "ys.v0" "ys.std" "ys.dwim" "ys.fs"
+                       "ys.base" "ys.v0" "ys.v1" "ys.std" "ys.dwim" "ys.fs"
                        "ys.http" "ys.ipc" "ys.json"]]
         (some (fn [prefix]
                 (let [prefix-encoded (str/replace
@@ -372,9 +373,9 @@
    Config keys:
      :build-dir   - the build output directory
      :gloat-root  - gloat project root
-     :ys-v0-glj-dir - ys-v0-glj module checkout
+     :ys-glj-dir  - ys-vN-glj module checkout
      :stdlib-dir  - glojure stdlib directory"
-  [ns-name {:keys [build-dir ys-v0-glj-dir stdlib-dir]}]
+  [ns-name {:keys [build-dir ys-glj-dir stdlib-dir]}]
   (cond
     ;; User code
     (not (or (str/starts-with? ns-name "ys.")
@@ -386,7 +387,7 @@
     (let [ns-path (str/replace ns-name "." "/")]
       (str build-dir "/pkg/" ns-path "/loader.go"))
 
-    ;; YAMLScript runtime namespaces supplied by ys-v0-glj
+    ;; YAMLScript runtime namespaces supplied by the ys-vN-glj module
     (or (str/starts-with? ns-name "ys.")
         (str/starts-with? ns-name "yamlscript.")
         (str/starts-with? ns-name "babashka.")
@@ -395,7 +396,7 @@
     (let [ns-path (-> ns-name
                       (str/replace "." "/")
                       (str/replace "-" "_"))]
-      (str ys-v0-glj-dir "/" ns-path "/loader.go"))
+      (str ys-glj-dir "/" ns-path "/loader.go"))
 
     ;; clojure.core and other clojure.* namespaces
     (str/starts-with? ns-name "clojure.")
@@ -915,14 +916,14 @@
       :used-namespaces - set of ys/yamlscript namespaces that are needed
       :stats         - map of ns -> {:kept N :total N}}"
   [config]
-  (let [{:keys [build-dir gloat-root ys-v0-glj-dir stdlib-dir
+  (let [{:keys [build-dir gloat-root ys-glj-dir stdlib-dir
                 runtime-keeps deps-mode quiet verbose]} config
 
         ;; Build the full dependency graph (now scans clojure.core
         ;; loader.go blocks directly instead of using clojure-core.yaml)
         graph-config {:build-dir build-dir
                       :gloat-root gloat-root
-                      :ys-v0-glj-dir ys-v0-glj-dir
+                      :ys-glj-dir ys-glj-dir
                       :stdlib-dir stdlib-dir
                       :source-required-nses
                       (:source-required-nses config)}

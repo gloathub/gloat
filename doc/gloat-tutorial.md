@@ -14,8 +14,9 @@ The normal YAMLScript pipeline is:
 .ys -> ys -T clj -> .clj -> glj compile -> .go -> go build -> binary
 ```
 
-The YAMLScript compiler produces portable Clojure that requires `ys.v0` and
-calls `ys.v0/init`. Gloat uses the source tree shipped by `ys-v0-glj` while
+The YAMLScript compiler produces portable Clojure that requires `ys.vN` and
+calls `ys.vN/init`, where N is the YAMLScript API version (`ys.v0`, `ys.v1`).
+Gloat uses the source tree shipped by `ys-vN-glj` while
 Glojure analyzes the application, then links the precompiled runtime loaders
 from that module into the generated Go program.
 
@@ -24,15 +25,17 @@ from that module into the generated Go program.
 The main repositories in the build are:
 
 - `gloathub/gloat` — the compiler orchestration and output templates.
-- `gloathub/ys-v0-glj` — patched portable `ys.v0` sources, Glojure-native
+- `gloathub/ys-v0-glj`, `gloathub/ys-v1-glj` — patched portable `ys.base`,
+  `ys.v0` (and `ys.v1`) sources, Glojure-native
   backends, and generated Go loaders.
 - `glojurelang/glojure` — the Clojure-to-Go compiler and runtime.
-- `yaml/yamlscript` — the YAMLScript compiler and published `ys.v0` sources.
+- `yaml/yamlscript` — the YAMLScript compiler and published `ys.vN` sources.
 - `makeplus/makes` — repository-local tool and dependency management.
 
 The runtime has its own release lifecycle. Gloat pins it with
-`YS-V0-GLJ-VERSION` in `common/common.mk`; a Gloat release does not publish or
-tag the runtime module.
+`YS-V0-GLJ-VERSION` and `YS-V1-GLJ-VERSION` in `common/common.mk`; the make
+variable `YS-API` (default 0) selects which one Gloat links. A Gloat release
+does not publish or tag the runtime modules.
 
 ## Repository Layout
 
@@ -47,18 +50,18 @@ gloat/
 |-- common/common.mk      Pinned dependency versions
 |-- util/make-do          Build and release helpers
 |-- ys/lg/                let-go runtime sources
-`-- repos/ys-v0-glj/       Optional development checkout
+`-- repos/ys-vN-glj/       Optional development checkout (per API version)
 ```
 
 Gloat no longer keeps copies of the YAMLScript Clojure, Glojure, or generated
-Go runtime trees. Installed copies clone the pinned `ys-v0-glj` tag into
-`.cache/ys-v0-glj`; a checkout at `repos/ys-v0-glj` takes precedence for local
+Go runtime trees. Installed copies clone the pinned `ys-vN-glj` tag into
+`.cache/ys-vN-glj`; a checkout at `repos/ys-vN-glj` takes precedence for local
 development.
 
 The standalone runtime repository contains:
 
 ```text
-ys-v0-glj/
+ys-vN-glj/
 |-- source/               Exact patched analysis sources
 |-- ys/                   Generated ys namespace loaders
 |-- yamlscript/           Generated compatibility loaders
@@ -76,7 +79,7 @@ ys-v0-glj/
 For a directory, binary, library, or WebAssembly output, Gloat:
 
 1. Compiles YAMLScript to portable Clojure.
-2. Copies `ys-v0-glj/source` into a temporary compiler workspace.
+2. Copies `ys-vN-glj/source` into a temporary compiler workspace.
 3. Rewrites and compiles the application namespace with Glojure.
 4. Copies only application loaders into the generated module.
 5. Renders `go.mod` and the appropriate Go entry point.
@@ -88,7 +91,7 @@ The generated `go.mod` has this dependency shape:
 ```go
 require (
     github.com/glojurelang/glojure GLOJURE-VERSION
-    github.com/gloathub/ys-v0-glj YS-V0-GLJ-VERSION
+    YS-GLJ-MODULE YS-GLJ-VERSION
 )
 ```
 
@@ -96,26 +99,27 @@ Setting `GLOAT_EXTRA_GO_DIR` to a directory copies that Go package tree into
 the generated module as `internal/<directory name>`, so a build can ship hand
 written Go packages next to the compiled loaders.
 
-When `repos/ys-v0-glj` exists, Gloat adds a local `replace` pointing at that
+When `repos/ys-vN-glj` exists, Gloat adds a local `replace` pointing at that
 development checkout. Cached runtime clones never produce a `replace`, so
 generated modules otherwise resolve the pinned tag through the Go proxy.
 
 ## Runtime Loading and Pruning
 
 The normal templates blank-import the generated application package plus the
-`ys-v0-glj` and Glojure stdlib namespaces the application loaders reach.
+`ys-vN-glj` and Glojure stdlib namespaces the application loaders reach.
 Gloat finds that set by following the namespace symbols in each loader
 transitively, so a program that never touches the YS runtime links none of it,
-while a YAMLScript program pulls in the `ys.v0.*` namespaces its compiled
+while a YAMLScript program pulls in the `ys.vN.*` layer namespaces (and the
+`ys.base.*` namespaces behind them) its compiled
 form refers to, and what those require.
 The requires run in the order recorded by `runtime/namespaces.edn`, and the
-`ENV`, `CWD`, `RUN` and `NS` globals are set only when `ys.v0.global` and
-`ys.v0` are loaded.
+`ENV`, `CWD` and `RUN` globals are set only when `ys.base.global` is loaded,
+and `NS` only in the `ys.vN` umbrellas that are loaded.
 Set `GLOAT_YS_RUNTIME=all` to link and require the whole runtime for programs
 that reach namespaces only through strings built at run time.
 
 With pruning enabled, Gloat analyzes references from the user loaders and the
-runtime loaders in `ys-v0-glj`. It copies the retained runtime packages into
+runtime loaders in `ys-vN-glj`. It copies the retained runtime packages into
 the generated module's internal tree and emits ordered imports and requires.
 This keeps pruned programs independent of internal Gloat runtime copies while
 allowing unused loader blocks to be removed.
@@ -125,7 +129,7 @@ allowing unused loader blocks to be removed.
 Gloat can also stop before building Go:
 
 - `-t clj` emits the portable Clojure produced by YAMLScript.
-- `-t bb` prepends `ys-v0-glj/bb/runtime.clj`, producing a self-contained
+- `-t bb` prepends `ys-vN-glj/bb/runtime.clj`, producing a self-contained
   Babashka program with no run-time Java or Maven requirement.
 - `-t go` emits the generated application loader.
 - `-t lg` uses the `ys/lg` source tree for the let-go engine.
@@ -161,11 +165,13 @@ To work on the runtime module beside Gloat:
 git clone https://github.com/gloathub/ys-v0-glj repos/ys-v0-glj
 make -C repos/ys-v0-glj generate
 make -C repos/ys-v0-glj test
+
+Use `ys-v1-glj` and `YS-API=1` for the YAMLScript v1 runtime.
 make test
 ```
 
 The runtime generator normally downloads the pinned
-`org.yamlscript/ys.v0` Clojars artifact. To test unpublished YAMLScript
+`org.yamlscript/ys.vN` Clojars artifact. To test unpublished YAMLScript
 sources, point it at the portable source tree:
 
 ```bash
@@ -173,7 +179,7 @@ YS_V0_SOURCE=/path/to/yamlscript/core/src \
   make -C repos/ys-v0-glj generate
 ```
 
-Temporary AOT compatibility changes live in `ys-v0-glj/patches` and are
+Temporary AOT compatibility changes live in `ys-vN-glj/patches` and are
 applied with zero fuzz before the Go-native backend sources are overlaid.
 After changing the runtime, run `make check-generated` in that repository and
 commit the source changes and generated loaders together.
@@ -192,7 +198,8 @@ YS-V0-GLJ-VERSION := v0.1.2
 to `src/gloat.clj`. Gloat renders those values into generated `go.mod` files.
 
 Release the runtime module first when its code or generated loaders change.
-After its tag is visible on the Go proxy, update `YS-V0-GLJ-VERSION`, validate
+After its tag is visible on the Go proxy, update `YS-V0-GLJ-VERSION` (or
+`YS-V1-GLJ-VERSION`), validate
 Gloat, and release Gloat separately.
 
 ## Downstream Projects
@@ -208,4 +215,4 @@ make -C build
 
 For local integration, keep the `replace` generated by Gloat. Before
 publishing a downstream Go module, remove local replacements and verify that
-both Glojure and `ys-v0-glj` resolve from the Go proxy.
+both Glojure and the `ys-vN-glj` modules resolve from the Go proxy.

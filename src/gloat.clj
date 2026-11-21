@@ -102,8 +102,29 @@
 
 (def make-vars nil)
 
-(defn ys-v0-source-dir []
-  (str (:YS-V0-GLJ-DIR make-vars) "/source"))
+(defn ys-api
+  "The YAMLScript API version Gloat builds for (make var YS-API). The
+  linked runtime module is ys-v<api>-glj, which ships the ys.vN layers
+  and umbrellas of every major version up to its API version."
+  []
+  (let [api (str (:YS-API make-vars))]
+    (if (re-matches #"\d+" api) (parse-long api) 0)))
+
+(defn ys-umbrella
+  "The umbrella namespace of the API version: ys.v0, ys.v1."
+  []
+  (str "ys.v" (ys-api)))
+
+(defn ys-umbrellas
+  "The umbrella namespaces the runtime module provides."
+  []
+  (mapv #(str "ys.v" %1) (range (inc (ys-api)))))
+
+(defn ys-glj-module []
+  (str "github.com/gloathub/ys-v" (ys-api) "-glj"))
+
+(defn ys-source-dir []
+  (str (:YS-GLJ-DIR make-vars) "/source"))
 
 (defn setup []
   (let [result (process/shell
@@ -868,9 +889,20 @@ Less common:
                     (:out result) (:err result))))
         path))))
 
-(def star-preamble-heads ['require 'deps/add-deps 'ns 'ys.v0/init])
+;; The init call of any YS major version (ys.v0/init, ys.v1/init) is
+;; read as ys-init-head when matching preambles.
+(def ys-init-head 'ys.vN/init)
+(def star-preamble-heads ['require 'deps/add-deps 'ns ys-init-head])
 (def legacy-clj-plus-preamble-heads ['when-not 'ns 'when-not])
-(def clj-plus-preamble-heads ['ns 'when-not 'ys.v0/init])
+(def clj-plus-preamble-heads ['ns 'when-not ys-init-head])
+
+(defn form-head
+  "The head symbol of a form; a ys.vN/init call reads as ys-init-head."
+  [form]
+  (let [head (when (seq? form) (first form))]
+    (if (and (symbol? head) (re-matches #"ys\.v\d+/init" (str head)))
+      ys-init-head
+      head)))
 
 (defn read-clojure-forms
   ([text] (read-clojure-forms text nil))
@@ -887,16 +919,13 @@ Less common:
                (recur (conj forms form))))))))))
 
 (defn star-forms? [forms]
-  (let [heads #(mapv (fn [form]
-                       (when (seq? form) (first form)))
-                     (take %1 forms))]
+  (let [heads #(mapv form-head (take %1 forms))]
     (or (= star-preamble-heads (heads 4))
         (= legacy-clj-plus-preamble-heads (heads 3))
         (= clj-plus-preamble-heads (heads 3)))))
 
 (defn portable-preamble-count [forms]
-  (if (= star-preamble-heads
-         (mapv #(when (seq? %1) (first %1)) (take 4 forms)))
+  (if (= star-preamble-heads (mapv form-head (take 4 forms)))
     4
     3))
 
@@ -966,7 +995,7 @@ Less common:
                             body-forms)
                           body-forms)
         use-forms (filter star-use-form? body-forms)
-        use-call #(str "(ys.v0.ys/+use *ns* '"
+        use-call #(str "(" (ys-umbrella) ".ys/+use *ns* '"
                     (pr-str (rest %1)) ")")
         use-calls (mapv use-call use-forms)
         body (->> namespace-forms
@@ -999,6 +1028,7 @@ Less common:
         template-content (slurp (str TEMPLATE "/clojure.clj"))
         result-content (render-template template-content
                          [["NAMESPACE" namespace]
+                          ["YS-UMBRELLA" (ys-umbrella)]
                           ["BODY\n" (str body "\n")]
                           ["MAIN-FN" main-fn]
                           ["SOURCE-FILE" source-abs]
@@ -1058,10 +1088,10 @@ Less common:
     (fs/copy input (str output-dir "/" ns-path (source-ext input))
              {:replace-existing true})
 
-    ;; Copy the patched portable ys.v0 source tree into the writable compile
+    ;; Copy the patched portable YS source tree into the writable compile
     ;; workspace. Glojure analyzes these sources while the final program links
-    ;; their precompiled loaders from github.com/gloathub/ys-v0-glj.
-    (let [ys-source-dir (ys-v0-source-dir)]
+    ;; their precompiled loaders from the ys-vN-glj module.
+    (let [ys-source-dir (ys-source-dir)]
       (doseq [file (fs/glob ys-source-dir "**/*")]
         (when (fs/regular-file? file)
           (let [rel-path (str (fs/relativize ys-source-dir file))
@@ -1171,7 +1201,7 @@ Less common:
    "global-hierarchy" "parents" "isa?"])
 
 (defn ys-ns-order []
-  (->> (slurp (str (:YS-V0-GLJ-DIR make-vars) "/runtime/namespaces.edn"))
+  (->> (slurp (str (:YS-GLJ-DIR make-vars) "/runtime/namespaces.edn"))
        edn/read-string
        (mapv str)))
 
@@ -1208,7 +1238,6 @@ Less common:
                    ordered))))
 
 (def GLOJURE-STDLIB-MODULE "github.com/glojurelang/glojure/pkg/stdlib")
-(def YS-V0-GLJ-MODULE "github.com/gloathub/ys-v0-glj")
 
 (defn stdlib-namespaces
   "Glojure stdlib namespaces with an AOT loader, apart from the ones the
@@ -1222,7 +1251,7 @@ Less common:
        sort))
 
 (defn runtime-namespaces
-  "The runtime namespaces main.go links and requires: the ys-v0-glj and
+  "The runtime namespaces main.go links and requires: the ys-vN-glj and
    glojure stdlib namespaces the program's loaders reach, or all of them
    when GLOAT_YS_RUNTIME is all.
    Returns them in load order with their Go import paths."
@@ -1236,7 +1265,7 @@ Less common:
                (prune/used-runtime-namespaces
                 candidates
                 {:build-dir output-dir
-                 :ys-v0-glj-dir (:YS-V0-GLJ-DIR make-vars)
+                 :ys-glj-dir (:YS-GLJ-DIR make-vars)
                  :stdlib-dir stdlib-dir}))
         stdlib-set (set stdlib-nses)
         ordered (concat (remove (set ys-nses) (filter used stdlib-nses))
@@ -1247,7 +1276,7 @@ Less common:
                            (str/replace "-" "_"))
                   module (if (contains? stdlib-set ns-name)
                            GLOJURE-STDLIB-MODULE
-                           YS-V0-GLJ-MODULE)]
+                           (ys-glj-module))]
               [ns-name (str module "/" path)]))
           ordered)))
 
@@ -1279,7 +1308,7 @@ Less common:
                         :list)))
         config {:build-dir output-dir
                 :gloat-root GLOAT-ROOT
-                :ys-v0-glj-dir (:YS-V0-GLJ-DIR make-vars)
+                :ys-glj-dir (:YS-GLJ-DIR make-vars)
                 :stdlib-dir stdlib-dir
                 :runtime-keeps PRUNE-RUNTIME-KEEPS
                 :deps-mode deps-mode
@@ -1299,7 +1328,7 @@ Less common:
       (:used-namespaces result))))
 
 (defn generate-bb [clj-file]
-  (str (slurp (str (:YS-V0-GLJ-DIR make-vars) "/bb/runtime.clj"))
+  (str (slurp (str (:YS-GLJ-DIR make-vars) "/bb/runtime.clj"))
          "\n"
          (slurp clj-file)
          "\n(apply -main *command-line-args*)\n"))
@@ -1347,16 +1376,16 @@ Less common:
 (def lg-source-paths (str GLOAT-ROOT "/ys/lg:."))
 
 (defn generate-lg-body [clj-file]
-  ;; The ys stdlib is NOT inlined: lg resolves (:require [ys.v0 ...])
+  ;; The ys stdlib is NOT inlined: lg resolves (:require [ys.vN ...])
   ;; from source paths, so run output with ys/lg/ on LG_SOURCE_PATHS
   ;; (lg -b embeds the resolved namespaces in the bundle).
   ;; The str alias comes for free on ys/bb (sci default aliases) but
   ;; lg needs it required explicitly.
   (-> (slurp clj-file)
       (str/replace-first
-       "(:require ys.v0)"
-       "(:require [ys.v0 :refer :all]\n   [clojure.string :as str])")
-      (str/replace #"(?m)^\(ys\.v0/init\)\n+" "")))
+       #"\(:require ys\.v(\d+)\)"
+       "(:require [ys.v$1 :refer :all]\n   [clojure.string :as str])")
+      (str/replace #"(?m)^\(ys\.v\d+/init\)\n+" "")))
 
 (defn generate-lg [clj-file]
   ;; The *compiling-aot* guard keeps `lg -c/-b/-w` from running the
@@ -2131,7 +2160,7 @@ Less common:
             entry-ns (:namespace entry)
             project-root (str (fs/canonicalize project-root))
             source-paths (cond-> [src-dir]
-                           @yaml-script? (conj (ys-v0-source-dir)))
+                           @yaml-script? (conj (ys-source-dir)))
             source-alias (pr-str
                            {:aliases
                             {:gloat/jolt-engine
@@ -2501,7 +2530,7 @@ Less common:
                     (or ns (parse-namespace clj-file))))
                 ;; Collect ys/yamlscript namespaces from bare require forms
                 ;; Matches: 'ys.fs and '[ys.http :as http] but NOT
-                ;; (:require [ys.v0 ...]) which is handled by loader scanning
+                ;; (:require [ys.vN ...]) which is handled by loader scanning
                 (let [nses (re-seq #"'(?:\[)?(ys\.\w+|yamlscript\.\w+)"
                                    clj-content)]
                   (doseq [[_ ns-name] nses]
@@ -2529,8 +2558,8 @@ Less common:
 
           ;; Copy the patched portable runtime into the writable compiler
           ;; workspace. Generated runtime loaders are excluded below because
-          ;; the final module links github.com/gloathub/ys-v0-glj.
-          (let [ys-source-dir (ys-v0-source-dir)]
+          ;; the final module links the ys-vN-glj module.
+          (let [ys-source-dir (ys-source-dir)]
             (doseq [file (fs/glob ys-source-dir "**/*")]
               (when (fs/regular-file? file)
                 (let [rel-path (str (fs/relativize ys-source-dir file))
@@ -2614,7 +2643,7 @@ Less common:
                          (.getMessage e)))))))
 
           ;; Copy generated user Go files to output directory under pkg/.
-          ;; Runtime loaders come from the external ys-v0-glj module.
+          ;; Runtime loaders come from the external ys-vN-glj module.
           (fs/create-dirs (str output-dir "/pkg"))
           (let [runtime-loaders (into #{} (map ns-to-loader-path)
                                   (ys-ns-order))]
@@ -2649,27 +2678,26 @@ Less common:
             ;; Generate go.mod
             (let [glojure-version (:GLOJURE-VERSION make-vars)
                   glojure-dir (:GLOJURE-DIR make-vars)
-                  ys-v0-glj-version (:YS-V0-GLJ-VERSION make-vars)
-                  ys-v0-glj-dir (:YS-V0-GLJ-DIR make-vars)
-                  ys-v0-glj-dev-dir (:YS-V0-GLJ-DEV-DIR make-vars)
+                  ys-glj-version (:YS-GLJ-VERSION make-vars)
+                  ys-glj-dev-dir (:YS-GLJ-DEV-DIR make-vars)
                   template-content (slurp (str TEMPLATE "/go.mod"))
                   result (render-template
                           template-content
                           [["GO-MODULE" go-module]
                            ["GLOJURE-VERSION" (go-mod-version glojure-version)]
-                           ["YS-V0-GLJ-VERSION" ys-v0-glj-version]
+                           ["YS-GLJ-MODULE" (ys-glj-module)]
+                           ["YS-GLJ-VERSION" ys-glj-version]
                            ["GLOAT-ROOT" GLOAT-ROOT]
                            ["EXTRA-DEPS" (render-extra-deps extra-deps)]])
                   local-glojure-replace
                   (when (and (seq glojure-dir) (fs/exists? glojure-dir))
                     [["github.com/glojurelang/glojure" glojure-dir]])
-                  local-ys-v0-glj-replace
-                  (when (and (seq ys-v0-glj-dev-dir)
-                             (fs/exists? ys-v0-glj-dev-dir))
-                    [["github.com/gloathub/ys-v0-glj"
-                      ys-v0-glj-dev-dir]])
+                  local-ys-glj-replace
+                  (when (and (seq ys-glj-dev-dir)
+                             (fs/exists? ys-glj-dev-dir))
+                    [[(ys-glj-module) ys-glj-dev-dir]])
                   replaces (concat local-glojure-replace
-                                   local-ys-v0-glj-replace)
+                                   local-ys-glj-replace)
                   replace-block (when (seq replaces)
                                   (str "\n"
                                        (str/join "\n"
@@ -2773,7 +2801,10 @@ Less common:
                              ["YS-REQUIRES" ys-requires]
                              ["ALL-NS-IMPORTS" all-ns-imports]
                              ["ALL-NS-REQUIRES" all-ns-requires]
-                             ["PORTABLE-USE-LOADS" portable-use-loads]])]
+                             ["PORTABLE-USE-LOADS" portable-use-loads]
+                             ["YS-UMBRELLAS"
+                              (str/join ", "
+                                (map pr-str (ys-umbrellas)))]])]
                 (spit (str output-dir "/main.go") result)
                 (msg "Generated:" (str output-dir "/main.go")))
 

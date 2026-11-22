@@ -19,20 +19,20 @@ main=$TMP/used/main.go
 try "cat $main"
 has "$got" '_ "github.com/gloathub/ys-v0-glj/ys/v0/json"' \
   'main.go imports the ys.v0.json loader the program uses'
-has "$got" '_ "github.com/gloathub/ys-v0-glj/ys/base/json"' \
-  'main.go imports ys.base.json behind the ys.v0.json layer'
-has "$got" '_ "github.com/gloathub/ys-v0-glj/ys/base/util"' \
-  'main.go imports ys.base.util through ys.base.json'
+has "$got" '_ "github.com/gloathub/ys-v0-glj/yamlscript/json"' \
+  'main.go imports yamlscript.json behind the ys.v0.json layer'
+has "$got" '_ "github.com/gloathub/ys-v0-glj/yamlscript/util"' \
+  'main.go imports yamlscript.util through yamlscript.json'
 has "$got" '_ "github.com/glojurelang/glojure/pkg/stdlib/clojure/string"' \
   'main.go imports the clojure.string loader the program uses'
-has "$got" 'require.Invoke(lang.NewSymbol("ys.base.util"))' \
-  'main.go requires ys.base.util'
+has "$got" 'require.Invoke(lang.NewSymbol("yamlscript.util"))' \
+  'main.go requires yamlscript.util'
 hasnt "$got" 'ys-v0-glj/runtime' \
   'main.go does not load the whole runtime'
-hasnt "$got" 'ys/base/std' \
-  'main.go leaves out ys.base.std'
-try "grep -c 'require.Invoke(lang.NewSymbol(\"ys.base.util\"))' $main"
-is "$got" 1 'ys.base.util is required once'
+hasnt "$got" 'yamlscript/std' \
+  'main.go leaves out yamlscript.std'
+try "grep -c 'require.Invoke(lang.NewSymbol(\"yamlscript.util\"))' $main"
+is "$got" 1 'yamlscript.util is required once'
 
 try "GLOAT_YS_RUNTIME=all gloat -q -o $TMP/all/ $fixture 2>&1"
 is "$rc" 0 'gloat generates a module with GLOAT_YS_RUNTIME=all'
@@ -47,8 +47,8 @@ is "$rc" 0 'gloat generates a module for a YAMLScript program'
 try "cat $TMP/ys/main.go"
 has "$got" '_ "github.com/gloathub/ys-v0-glj/ys/v0/std"' \
   'a YAMLScript program links ys.v0.std'
-has "$got" '_ "github.com/gloathub/ys-v0-glj/ys/base/global"' \
-  'a YAMLScript program links ys.base.global'
+has "$got" '_ "github.com/gloathub/ys-v0-glj/yamlscript/global"' \
+  'a YAMLScript program links yamlscript.global'
 
 if [[ -z ${RUN_SLOW_TESTS:-} ]]; then
   pass 'Skipping slow runtime-ns binary build. Try RUN_SLOW_TESTS=1.'

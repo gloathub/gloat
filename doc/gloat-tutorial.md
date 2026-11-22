@@ -25,9 +25,9 @@ from that module into the generated Go program.
 The main repositories in the build are:
 
 - `gloathub/gloat` — the compiler orchestration and output templates.
-- `gloathub/ys-v0-glj`, `gloathub/ys-v1-glj` — patched portable `ys.base`,
-  `ys.v0` (and `ys.v1`) sources, Glojure-native
-  backends, and generated Go loaders.
+- `gloathub/ys-v0-glj`, `gloathub/ys-v1-glj` — patched portable
+  `yamlscript.*` and `ys.v0` (and `ys.v1`) sources, Glojure-native backends,
+  and generated Go loaders.
 - `glojurelang/glojure` — the Clojure-to-Go compiler and runtime.
 - `yaml/yamlscript` — the YAMLScript compiler and published `ys.vN` sources.
 - `makeplus/makes` — repository-local tool and dependency management.
@@ -63,8 +63,8 @@ The standalone runtime repository contains:
 ```text
 ys-vN-glj/
 |-- source/               Exact patched analysis sources
-|-- ys/                   Generated ys namespace loaders
-|-- yamlscript/           Generated compatibility loaders
+|-- ys/                   Generated ys.vN layer and alias loaders
+|-- yamlscript/           Generated yamlscript runtime loaders
 |-- babashka/             Go-native process and HTTP backends
 |-- clojure/              Go-native JSON and walk loaders
 |-- runtime/              Ordered Load function and manifests
@@ -110,10 +110,10 @@ The normal templates blank-import the generated application package plus the
 Gloat finds that set by following the namespace symbols in each loader
 transitively, so a program that never touches the YS runtime links none of it,
 while a YAMLScript program pulls in the `ys.vN.*` layer namespaces (and the
-`ys.base.*` namespaces behind them) its compiled
+`yamlscript.*` namespaces behind them) its compiled
 form refers to, and what those require.
 The requires run in the order recorded by `runtime/namespaces.edn`, and the
-`ENV`, `CWD` and `RUN` globals are set only when `ys.base.global` is loaded,
+`ENV`, `CWD` and `RUN` globals are set only when `yamlscript.global` is loaded,
 and `NS` only in the `ys.vN` umbrellas that are loaded.
 Set `GLOAT_YS_RUNTIME=all` to link and require the whole runtime for programs
 that reach namespaces only through strings built at run time.
@@ -175,7 +175,7 @@ The runtime generator normally downloads the pinned
 sources, point it at the portable source tree:
 
 ```bash
-YS_V0_SOURCE=/path/to/yamlscript/core/src \
+YS_SOURCE=/path/to/yamlscript/core/lib \
   make -C repos/ys-v0-glj generate
 ```
 

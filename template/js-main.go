@@ -126,7 +126,7 @@ ALL-NS-REQUIRES
 	)
 
 	// The YS globals exist only when the program links the YS runtime.
-	if lang.FindNamespace(lang.NewSymbol("ys.base.global")) != nil {
+	if lang.FindNamespace(lang.NewSymbol("yamlscript.global")) != nil {
 		environ := os.Environ()
 		envPairs := make([]any, 0, len(environ)*2)
 		for _, entry := range environ {
@@ -135,14 +135,14 @@ ALL-NS-REQUIRES
 			}
 		}
 		alterVarRoot.Invoke(
-			glj.Var("ys.base.global", "ENV"),
+			glj.Var("yamlscript.global", "ENV"),
 			constantly.Invoke(lang.NewMap(envPairs...)),
 		)
 
 		cwd, _ := os.Getwd()
-		alterVarRoot.Invoke(glj.Var("ys.base.global", "CWD"), constantly.Invoke(cwd))
+		alterVarRoot.Invoke(glj.Var("yamlscript.global", "CWD"), constantly.Invoke(cwd))
 		alterVarRoot.Invoke(
-			glj.Var("ys.base.global", "RUN"),
+			glj.Var("yamlscript.global", "RUN"),
 			constantly.Invoke(lang.NewMap(
 				lang.NewKeyword("args"), lang.NewVector(),
 				lang.NewKeyword("pid"), int64(os.Getpid()),

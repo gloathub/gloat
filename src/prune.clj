@@ -249,14 +249,25 @@
       ;; The decoded form has dots for _DOT_ and other chars decoded.
       ;; We need to find where the namespace ends.
       ;; Known namespace patterns: clojure.core, clojure.string,
-      ;; ys.base, ys.v0, ys.v1, ys.std, ys.dwim, ys.fs, ys.http, ys.ipc,
-      ;; ys.json,
-      ;; yamlscript.common, yamlscript.util
+      ;; the yamlscript.* runtime, ys.v0, ys.v1 and the ys.std, ys.dwim,
+      ;; ys.fs, ys.http, ys.ipc, ys.json compatibility aliases
       ;; Try longest match first
       (let [prefixes ["clojure.core" "clojure.string" "clojure.set"
                        "clojure.walk" "clojure.zip" "clojure.test"
-                       "yamlscript.common" "yamlscript.util"
-                       "ys.base" "ys.v0" "ys.v1" "ys.std" "ys.dwim" "ys.fs"
+                       "yamlscript.clj" "yamlscript.common"
+                       "yamlscript.csv" "yamlscript.debug"
+                       "yamlscript.dwim" "yamlscript.ext"
+                       "yamlscript.fs" "yamlscript.global"
+                       "yamlscript.http" "yamlscript.imports"
+                       "yamlscript.init" "yamlscript.io"
+                       "yamlscript.ipc" "yamlscript.json"
+                       "yamlscript.layer" "yamlscript.manifest"
+                       "yamlscript.platform" "yamlscript.pods"
+                       "yamlscript.pprint" "yamlscript.re"
+                       "yamlscript.regex" "yamlscript.std"
+                       "yamlscript.taptest" "yamlscript.util"
+                       "yamlscript.yaml" "yamlscript.ys"
+                       "ys.v0" "ys.v1" "ys.std" "ys.dwim" "ys.fs"
                        "ys.http" "ys.ipc" "ys.json"]]
         (some (fn [prefix]
                 (let [prefix-encoded (str/replace

@@ -33,7 +33,7 @@ ALL-NS-REQUIRES
 			envPairs = append(envPairs, e[:idx], e[idx+1:])
 		}
 	}
-	envVar := glj.Var("ys.base.global", "ENV")
+	envVar := glj.Var("yamlscript.global", "ENV")
 	alterVarRoot.Invoke(envVar, constantly.Invoke(lang.NewMap(envPairs...)))
 
 	// NS: the user's namespace object, in every linked ys.vN umbrella
@@ -53,7 +53,7 @@ ALL-NS-REQUIRES
 
 	// CWD: current working directory
 	cwd, _ := os.Getwd()
-	cwdVar := glj.Var("ys.base.global", "CWD")
+	cwdVar := glj.Var("yamlscript.global", "CWD")
 	alterVarRoot.Invoke(cwdVar, constantly.Invoke(cwd))
 
 	// RUN: runtime metadata map (includes args and pid)
@@ -67,7 +67,7 @@ ALL-NS-REQUIRES
 		lang.NewKeyword("args"), argsVec,
 		lang.NewKeyword("pid"), int64(os.Getpid()),
 	)
-	runVar := glj.Var("ys.base.global", "RUN")
+	runVar := glj.Var("yamlscript.global", "RUN")
 	alterVarRoot.Invoke(runVar, constantly.Invoke(runMap))
 
 	// ARGV and ARGS are set in -main function itself

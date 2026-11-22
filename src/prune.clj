@@ -262,6 +262,8 @@
                        "yamlscript.init" "yamlscript.io"
                        "yamlscript.ipc" "yamlscript.json"
                        "yamlscript.layer" "yamlscript.manifest"
+                       "yamlscript.v0.manifest"
+                       "yamlscript.v1.manifest"
                        "yamlscript.platform" "yamlscript.pods"
                        "yamlscript.pprint" "yamlscript.re"
                        "yamlscript.regex" "yamlscript.std"

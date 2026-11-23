@@ -125,6 +125,13 @@ ALL-NS-REQUIRES
 		lang.NewMap(glj.Var("clojure.core", "*ns*"), namespace),
 	)
 
+	// Run the umbrella's init in the user's namespace, as the portable
+	// Clojure runtimes do when they load the program: the AOT snapshot
+	// keeps the refers and aliases it made, but not its runtime state.
+	if lang.FindNamespace(lang.NewSymbol("YS-MAIN-UMBRELLA")) != nil {
+		glj.Var("YS-MAIN-UMBRELLA", "init").Invoke()
+	}
+
 	// The YS globals exist only when the program links the YS runtime.
 	if lang.FindNamespace(lang.NewSymbol("yamlscript.global")) != nil {
 		environ := os.Environ()

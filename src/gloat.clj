@@ -63,6 +63,9 @@
 (def ^:dynamic *opts* {})
 (def portable-use-found (atom false))
 (def portable-use-namespaces (atom #{}))
+
+;; The ys.vN umbrella of each portable namespace, from its preamble.
+(def portable-umbrellas (atom {}))
 (def ^:dynamic *source-file* nil)
 (def ^:dynamic *compile-start* nil)
 (def ^:dynamic *timer-start* nil)
@@ -973,10 +976,21 @@ Less common:
     " expression "))
 "))
 
+(defn preamble-umbrella
+  "The ys.vN umbrella the stream was compiled for: the namespace of the
+  preamble's ys.vN/init call, or the API version's umbrella when the
+  preamble has none (legacy clj+ output)."
+  [forms]
+  (or (some #(when (= ys-init-head (form-head %1))
+               (namespace (first %1)))
+        (take 4 forms))
+      (ys-umbrella)))
+
 (defn write-star-clj [forms output namespace input]
   (when-not (star-forms? forms)
     (die "Unexpected YAMLScript portable preamble"))
-  (let [body-forms (->> (drop (portable-preamble-count forms) forms)
+  (let [umbrella (preamble-umbrella forms)
+        body-forms (->> (drop (portable-preamble-count forms) forms)
                         (remove #(= %1 '(apply main ARGS))))
         main? (star-function-defined? body-forms 'main)
         dash-main? (star-function-defined? body-forms '-main)
@@ -995,7 +1009,7 @@ Less common:
                             body-forms)
                           body-forms)
         use-forms (filter star-use-form? body-forms)
-        use-call #(str "(" (ys-umbrella) ".ys/+use *ns* '"
+        use-call #(str "(" umbrella ".ys/+use *ns* '"
                     (pr-str (rest %1)) ")")
         use-calls (mapv use-call use-forms)
         body (->> namespace-forms
@@ -1028,11 +1042,12 @@ Less common:
         template-content (slurp (str TEMPLATE "/clojure.clj"))
         result-content (render-template template-content
                          [["NAMESPACE" namespace]
-                          ["YS-UMBRELLA" (ys-umbrella)]
+                          ["YS-UMBRELLA" umbrella]
                           ["BODY\n" (str body "\n")]
                           ["MAIN-FN" main-fn]
                           ["SOURCE-FILE" source-abs]
                           ["SOURCE-DIR" source-dir]])]
+    (swap! portable-umbrellas assoc (str namespace) umbrella)
     (spit output result-content)))
 
 (defn clj-to-clj [input output namespace]
@@ -1266,7 +1281,8 @@ Less common:
                 candidates
                 {:build-dir output-dir
                  :ys-glj-dir (:YS-GLJ-DIR make-vars)
-                 :stdlib-dir stdlib-dir}))
+                 :stdlib-dir stdlib-dir
+                 :root-namespaces (distinct (vals @portable-umbrellas))}))
         stdlib-set (set stdlib-nses)
         ordered (concat (remove (set ys-nses) (filter used stdlib-nses))
                         (filter used ys-nses))]
@@ -2449,6 +2465,7 @@ Less common:
 (defn convert-directory [input-dir output format namespace module platform]
   (reset! portable-use-found false)
   (reset! portable-use-namespaces #{})
+  (reset! portable-umbrellas {})
   (let [deps-file (resolve-deps-file)
         extra-deps (when deps-file (parse-gljdeps deps-file))
         is-dir-output (= format "dir")
@@ -2802,6 +2819,9 @@ Less common:
                              ["ALL-NS-IMPORTS" all-ns-imports]
                              ["ALL-NS-REQUIRES" all-ns-requires]
                              ["PORTABLE-USE-LOADS" portable-use-loads]
+                             ["YS-MAIN-UMBRELLA"
+                              (get @portable-umbrellas
+                                (str @main-namespace) (ys-umbrella))]
                              ["YS-UMBRELLAS"
                               (str/join ", "
                                 (map pr-str (ys-umbrellas)))]])]

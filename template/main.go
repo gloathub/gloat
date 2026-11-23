@@ -27,6 +27,13 @@ ALL-NS-REQUIRES
 	bindings := lang.NewMap(nsStarVar, nsObj)
 	pushBindings.Invoke(bindings)
 
+	// Run the umbrella's init in the user's namespace, as the portable
+	// Clojure runtimes do when they load the program: the AOT snapshot
+	// keeps the refers and aliases it made, but not its runtime state.
+	if lang.FindNamespace(lang.NewSymbol("YS-MAIN-UMBRELLA")) != nil {
+		glj.Var("YS-MAIN-UMBRELLA", "init").Invoke()
+	}
+
 	args := os.Args[1:]
 	anyArgs := make([]any, len(args))
 	for i, arg := range args {

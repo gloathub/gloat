@@ -440,12 +440,17 @@
   "The candidate namespaces reachable from the loaders under the build
    directory's pkg/, following loader references transitively.
    This works at namespace level, so it is a superset of what the deep
-   prune keeps and covers runtime require and use forms too."
+   prune keeps and covers runtime require and use forms too.
+   The config's :root-namespaces are used whether or not a loader
+   names them (the ys.vN umbrellas main.go initializes)."
   [candidates config]
   (let [candidates (set candidates)
-        roots (map str (fs/glob (str (:build-dir config) "/pkg")
-                                "**/loader.go"))]
-    (loop [queue (vec roots) seen #{} used #{}]
+        root-nses (filter candidates (:root-namespaces config))
+        roots (concat
+                (map str (fs/glob (str (:build-dir config) "/pkg")
+                                  "**/loader.go"))
+                (map #(ns-to-loader-path % config) root-nses))]
+    (loop [queue (vec roots) seen #{} used (set root-nses)]
       (if-let [path (first queue)]
         (let [queue (subvec queue 1)]
           (if (or (contains? seen path) (not (fs/exists? path)))

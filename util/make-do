@@ -93,7 +93,7 @@ release() (
 
   # The runtime modules are released independently. Refuse to release Gloat
   # until every pinned module version is available from the public Go proxy.
-  perl -ne 'print "ys-v$1-glj@$2\n" if /^YS-V(\d+)-GLJ-VERSION := (\S+)/' \
+  perl -ne 'print "ys-v$1-glj\@$2\n" if /^YS-V(\d+)-GLJ-VERSION := (\S+)/' \
     common/common.mk |
   while read -r module; do
     GOPROXY=https://proxy.golang.org go list -m \

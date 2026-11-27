@@ -24,10 +24,9 @@ OA-macos-int64 := x86_64-macos
 GO-VERSION := 1.24.0
 
 # The YAMLScript API version Gloat builds for, and the pinned release of
-# its ys-v$(YS-API)-glj runtime module (ys-v1-glj is not released yet; use
-# a repos/ys-v1-glj checkout for YS-API=1).
+# its ys-v$(YS-API)-glj runtime module.
 YS-API ?= 0
-YS-V0-GLJ-VERSION := v0.1.9
+YS-V0-GLJ-VERSION := v0.1.10
 YS-V1-GLJ-VERSION := v0.1.0
 YS-GLJ-VERSION := $(YS-V$(YS-API)-GLJ-VERSION)
 

@@ -55,7 +55,7 @@ gloat/
 
 Gloat no longer keeps copies of the YAMLScript Clojure, Glojure, or generated
 Go runtime trees. Installed copies clone the pinned `ys-vN-glj` tag into
-`.cache/ys-vN-glj`; a checkout at `repos/ys-vN-glj` takes precedence for local
+`.cache/ys-vN-glj-<tag>`; a checkout at `repos/ys-vN-glj` takes precedence for local
 development.
 
 The standalone runtime repository contains:

@@ -81,9 +81,11 @@ $(LET-GO-SRC):
 
 # The YAMLScript runtime module is ys-v$(YS-API)-glj. A sibling checkout
 # is the development override. Installed copies use a shallow checkout of
-# the pinned Go runtime module under Gloat's cache.
+# the pinned Go runtime module under Gloat's cache. The checkout is named
+# after the pinned tag so a version bump clones the new runtime instead
+# of reusing the old one.
 YS-GLJ-DEV-SRC := $(ROOT)/repos/ys-v$(YS-API)-glj
-YS-GLJ-CACHE-SRC := $(ROOT)/.cache/ys-v$(YS-API)-glj
+YS-GLJ-CACHE-SRC := $(ROOT)/.cache/ys-v$(YS-API)-glj-$(YS-GLJ-VERSION)
 YS-GLJ-DEV-DIR := $(if $(wildcard $(YS-GLJ-DEV-SRC)),$(YS-GLJ-DEV-SRC))
 YS-GLJ-DIR ?= $(or $(YS-GLJ-DEV-DIR),$(YS-GLJ-CACHE-SRC))
 

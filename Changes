@@ -1,3 +1,15 @@
+- version: 0.1.95
+  date:    Fri Nov 27 04:25:24 PM EST 2026
+  changes:
+  - Name the cached runtime checkout after its tag
+  - Pin the ys-v0-glj v0.1.11 and ys-v1-glj v0.1.1 runtimes
+  - Escape the module separator in the proxy check
+  - Pin the ys-v0-glj v0.1.10 runtime
+  - Initialize the stream umbrella in Gloat binaries
+  - Prune the per major manifest namespaces
+  - Follow the yamlscript namespace rename
+  - Select the runtime module by YS API version
+
 - version: 0.1.94
   date:    Wed Oct 28 02:37:43 PM EDT 2026
   changes:

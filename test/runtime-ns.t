@@ -19,10 +19,10 @@ main=$TMP/used/main.go
 try "cat $main"
 has "$got" '_ "github.com/gloathub/ys-v0-glj/ys/v0/json"' \
   'main.go imports the ys.v0.json loader the program uses'
-has "$got" '_ "github.com/gloathub/ys-v0-glj/yamlscript/json"' \
-  'main.go imports yamlscript.json behind the ys.v0.json layer'
+hasnt "$got" '_ "github.com/gloathub/ys-v0-glj/yamlscript/json"' \
+  'main.go leaves out yamlscript.json; the layer carries its compiled vars'
 has "$got" '_ "github.com/gloathub/ys-v0-glj/yamlscript/util"' \
-  'main.go imports yamlscript.util through yamlscript.json'
+  'main.go imports yamlscript.util through the ys.v0.json layer'
 has "$got" '_ "github.com/glojurelang/glojure/pkg/stdlib/clojure/string"' \
   'main.go imports the clojure.string loader the program uses'
 has "$got" 'require.Invoke(lang.NewSymbol("yamlscript.util"))' \
